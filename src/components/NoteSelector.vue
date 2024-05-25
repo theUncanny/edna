@@ -85,9 +85,23 @@ export default {
     },
 
     filteredItems() {
-      const nameLC = this.sanitizedFilter.toLowerCase()
+      // we split the search term by space, the name of the note
+      // must match all parts
+      let lc = this.sanitizedFilter.toLowerCase();
+      let parts = lc.split(" ")
+      let n = len(parts);
+      for (let i = 0; i < n; i++) {
+        let s = parts[i];
+        parts[i] = s.trim();
+      }
       return this.items.filter((noteInfo) => {
-        return noteInfo.nameLC.indexOf(nameLC) !== -1
+        let s = noteInfo.nameLC;
+        for (let p of parts) {
+          if (s.indexOf(p) === -1) {
+            return false;
+          }
+        }
+        return true;
       })
     },
     /**
