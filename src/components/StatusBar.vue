@@ -122,31 +122,53 @@ export default {
   </div>
 </template>
 
-<style scoped lang="sass">
-  .status-block
-      padding: 4px 10px
-      cursor: default
-      &:first-child
-          padding-left: 12px
-      &:last-child
-          padding-right: 12px
-      &.clickable
-          cursor: pointer
-          &:hover
-              background-color: rgba(255,255,255, 0.1)
-      .icon
-          +dark-mode
-              opacity: 0.9
-  .line-number
-      color: rgba(255, 255, 255, 0.7)
-      .num
-          color: rgba(255, 255, 255, 1.0)
-      +dark-mode
-          color: rgba(255, 255, 255, 0.55)
-          .num
-              color: rgba(255, 255, 255, 0.75)
-  .lang .auto
-      color: rgba(255, 255, 255, 0.7)
-      +dark-mode
-          color: rgba(255, 255, 255, 0.55)
+<style scoped>
+.status-block {
+  padding: 4px 10px;
+  cursor: default;
+}
+
+.status-block:first-child {
+  padding-left: 12px;
+}
+
+.status-block:last-child {
+  padding-right: 12px;
+}
+
+.status-block.clickable {
+  cursor: pointer;
+}
+
+.status-block.clickable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+html[theme=dark] .status-block .icon {
+  opacity: 0.9;
+}
+
+.line-number {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.line-number .num {
+  color: white;
+}
+
+html[theme=dark] .line-number {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+html[theme=dark] .line-number .num {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.lang .auto {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+html[theme=dark] .lang .auto {
+  color: rgba(255, 255, 255, 0.55);
+}
 </style>
