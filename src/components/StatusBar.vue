@@ -120,7 +120,7 @@ export default {
             class="stroke-000000"></path>
         </svg></div>
     </div>
-    <div @click="$emit('toggleHelp')" class="status-block clickable" title="Help">?</div>
+    <div @click="$emit('toggleHelp')" class="status-block clickable" title="Help">Help</div>
   </div>
 </template>
 

@@ -123,48 +123,70 @@ export default {
   </div>
 </template>
 
-<style scoped lang="sass">
-    .language-selector
-        font-size: 12px
-        //background: #48b57e
-        background: #efefef
-        box-shadow: 0 0 10px rgba(0,0,0,0.3)
-        +dark-mode
-            background: #151516
-            box-shadow: 0 0 10px rgba(0,0,0,0.5)
-        +webapp-mobile
-            max-width: calc(100% - 80px)
+<style scoped>
+.language-selector {
+  font-size: 12px;
+  background: #efefef;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
 
-        input
-            border: 1px solid #ccc
-            &:focus
-                outline: none
-                border: 1px solid #fff
-                // outline: 2px solid #48b57e
-                outline: 2px solid #487eb5
-            +dark-mode
-                background: #3b3b3b
-                color: rgba(255,255,255, 0.9)
-                border: 1px solid #5a5a5a
-                &:focus
-                    border: 1px solid #3b3b3b
-            +webapp-mobile
-                font-size: 16px
-                max-width: 100%
-        
-        .items
-            > li
-                &:hover
-                    background: #e2e2e2
-                &.selected
-                    // background: #48b57e
-                    background: #487eb5
-                    color: #fff
-                +dark-mode
-                    color: rgba(255,255,255, 0.53)
-                    &:hover
-                        background: #29292a
-                    &.selected
-                        background: #1b6540
-                        color: rgba(255,255,255, 0.87)
+html[theme=dark] .language-selector {
+  background: #151516;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+  html[webapp] .language-selector {
+    max-width: calc(100% - 80px);
+  }
+}
+
+.language-selector input {
+  border: 1px solid #ccc;
+}
+
+.language-selector input:focus {
+  outline: none;
+  border: 1px solid #fff;
+  outline: 2px solid #487eb5;
+}
+
+html[theme=dark] .language-selector input {
+  background: #3b3b3b;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #5a5a5a;
+}
+
+html[theme=dark] .language-selector input:focus {
+  border: 1px solid #3b3b3b;
+}
+
+@media (max-width: 600px) {
+  html[webapp] .language-selector input {
+    font-size: 16px;
+    max-width: 100%;
+  }
+}
+
+.language-selector .items>li:hover {
+  background: #e2e2e2;
+}
+
+.language-selector .items>li.selected {
+  background: #487eb5;
+  color: #fff;
+}
+
+html[theme=dark] .language-selector .items>li {
+  color: rgba(255, 255, 255, 0.53);
+}
+
+html[theme=dark] .language-selector .items>li:hover {
+  background: #29292a;
+}
+
+html[theme=dark] .language-selector .items>li.selected {
+  background: #1b6540;
+  color: rgba(255, 255, 255, 0.87);
+}
 </style>

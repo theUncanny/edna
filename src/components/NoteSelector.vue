@@ -396,64 +396,96 @@ export default {
   </div>
 </template>
 
-<style scoped lang="sass">
-  .note-selector
-      font-size: 13px
-      //background: #48b57e
-      background: #efefef
-      box-shadow: 0 0 10px rgba(0,0,0,0.3)
-      +dark-mode
-          background: #151516
-          box-shadow: 0 0 10px rgba(0,0,0,0.5)
-      +webapp-mobile
-          max-width: calc(100% - 80px)
+<style scoped>
+.note-selector {
+  font-size: 13px;
+  background: #efefef;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
 
-      input
-          border: 1px solid #ccc
-          &:focus
-              outline: none
-              border: 1px solid #fff
-              // outline: 2px solid #48b57e
-              outline: 2px solid #487eb5
-          +dark-mode
-              background: #3b3b3b
-              color: rgba(255,255,255, 0.9)
-              border: 1px solid #5a5a5a
-              &:focus
-                  border: 1px solid #3b3b3b
-          +webapp-mobile
-              font-size: 16px
-              max-width: 100%
-      .items
-          > li
-              &:hover
-                  background: #e2e2e2
-              &.selected
-                  // background: #48b57e
-                  background: #487eb5
-                  color: #fff
-              +dark-mode
-                  color: rgba(255,255,255, 0.53)
-                  &:hover
-                      background: #29292a
-                  &.selected
-                      background: #1b6540
-                      color: rgba(255,255,255, 0.87)
-      .kbd-grid
-          +dark-mode
-                  color: rgba(255,255,255, 0.53)
-      .kbd
-          font-family: monospace
-          font-size: 10px
-          border: 1px solid #ccc
-          border-radius: 4px
-          padding: 3px 5px
-          background-color: white
-          +dark-mode
-              background-color: #3b3b3b
-              color: rgba(255,255,255, 0.9)
-      .red
-          color: red
-          +dark-mode
-              color: #ff7b72
+html[theme=dark] .note-selector {
+  background: #151516;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+  html[webapp] .note-selector {
+    max-width: calc(100% - 80px);
+  }
+}
+
+.note-selector input {
+  border: 1px solid #ccc;
+}
+
+.note-selector input:focus {
+  outline: none;
+  border: 1px solid #fff;
+  outline: 2px solid #487eb5;
+}
+
+html[theme=dark] .note-selector input {
+  background: #3b3b3b;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #5a5a5a;
+}
+
+html[theme=dark] .note-selector input:focus {
+  border: 1px solid #3b3b3b;
+}
+
+@media (max-width: 600px) {
+  html[webapp] .note-selector input {
+    font-size: 16px;
+    max-width: 100%;
+  }
+}
+
+.note-selector .items>li:hover {
+  background: #e2e2e2;
+}
+
+.note-selector .items>li.selected {
+  background: #487eb5;
+  color: #fff;
+}
+
+html[theme=dark] .note-selector .items>li {
+  color: rgba(255, 255, 255, 0.53);
+}
+
+html[theme=dark] .note-selector .items>li:hover {
+  background: #29292a;
+}
+
+html[theme=dark] .note-selector .items>li.selected {
+  background: #1b6540;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+html[theme=dark] .note-selector .kbd-grid {
+  color: rgba(255, 255, 255, 0.53);
+}
+
+.note-selector .kbd {
+  font-family: monospace;
+  font-size: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px 5px;
+  background-color: white;
+}
+
+html[theme=dark] .note-selector .kbd {
+  background-color: #3b3b3b;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.note-selector .red {
+  color: red;
+}
+
+html[theme=dark] .note-selector .red {
+  color: #ff7b72;
+}
 </style>

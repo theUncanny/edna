@@ -2,6 +2,10 @@
 ∞∞∞markdown
 # Release notes for Edna
 
+## 1.3
+
+* show note name in the upper right corner
+
 ## 1.2
 
 * add export of notes to a .zip file
