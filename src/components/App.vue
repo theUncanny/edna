@@ -131,14 +131,24 @@ export default {
   },
 
   computed: {
-    noteNameStatusBar() {
-      let name = this.noteName
+    noteShortcut() {
+      let name = this.noteName;
       let m = getMetadataForNote(name)
       if (m && m.altShortcut) {
-        name = `${name} (${this.altChar} + ${m.altShortcut})`
+        return `${this.altChar} + ${m.altShortcut}`
+      }
+      return ""
+    },
+
+    noteNameStatusBar() {
+      let name = this.noteName
+      let s = this.noteShortcut;
+      if (s) {
+        name = `${name} (${s})`
       }
       return name
     },
+
     mcStyle() {
       return {
         display: this.showingMenu ? "block" : "none"
@@ -722,6 +732,7 @@ export default {
       <div>{{ noteName }}</div>
       <div>23 notes</div>
     </div> -->
+    <TopNav :noteName="noteName" :shortcut="noteShortcut" />
     <Editor @cursorChange="onCursorChange" :theme="theme" :development="development" :debugSyntaxTree="false"
       :keymap="settings.keymap" :emacsMetaKey="settings.emacsMetaKey"
       :showLineNumberGutter="settings.showLineNumberGutter" :showFoldGutter="settings.showFoldGutter"

@@ -634,6 +634,7 @@ export function getNotesMetadata() {
  * @returns {NoteMetadata}
  */
 export function getMetadataForNote(noteName) {
+  console.log("getMetadataForNote:", noteName);
   let meta = notesMetadata;
   for (let m of meta) {
     if (m.name === noteName) {
@@ -644,6 +645,7 @@ export function getMetadataForNote(noteName) {
 }
 
 export async function loadNotesMetadata() {
+  console.log("loadNotesMetadata: started");
   let dh = getStorageFS();
   let s;
   if (!dh) {
@@ -659,6 +661,7 @@ export async function loadNotesMetadata() {
   }
   s = s || "[]";
   notesMetadata = JSON.parse(s);
+  console.log("loadNotesMetadata: finished", notesMetadata);
   return notesMetadata;
 }
 
