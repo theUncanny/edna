@@ -241,27 +241,43 @@ export default {
           return;
         }
       }
-
+      let nItems = len(this.filteredItems);
+      let selectedIdx = this.selected;
       if (event.key === "ArrowDown") {
-        this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
+        if (selectedIdx >= nItems - 1) {
+          // wrap around
+          selectedIdx = 0;
+        } else {
+          selectedIdx += 1;
+        }
         event.preventDefault()
-        if (this.selected === this.filteredItems.length - 1) {
+        this.selected = selectedIdx;
+        if (selectedIdx === nItems - 1) {
           container.scrollIntoView({ block: "end" })
         } else {
-          this.$refs.item[this.selected].scrollIntoView({ block: "nearest" })
+          let el = this.$refs.item[selectedIdx];
+          el.scrollIntoView({ block: "nearest" })
         }
       } else if (event.key === "ArrowUp") {
-        this.selected = Math.max(this.selected - 1, 0)
+        if (selectedIdx > 0) {
+          selectedIdx -= 1
+        } else {
+          if (nItems > 1) {
+            // wrap around
+            selectedIdx = nItems - 1;
+          }
+        }
+        this.selected = selectedIdx;
         event.preventDefault()
-        if (this.selected === 0) {
+        if (selectedIdx === 0) {
           container.scrollIntoView({ block: "start" })
         } else {
-          this.$refs.item[this.selected].scrollIntoView({ block: "nearest" })
+          this.$refs.item[selectedIdx].scrollIntoView({ block: "nearest" })
         }
       } else if (event.key === "Enter") {
         event.preventDefault()
         let name = this.sanitizedFilter;
-        console.log("selected:", this.selected, "name:", name);
+        console.log("selected:", selectedIdx, "name:", name);
         if (this.canCreateWithEnter) {
           this.emitCreateNote(name);
           return;
@@ -270,7 +286,7 @@ export default {
           this.emitCreateNote(this.sanitizedFilter)
           return;
         }
-        const selected = this.filteredItems[this.selected]
+        const selected = this.filteredItems[selectedIdx]
         if (selected) {
           this.emitOpenNote(selected)
         } else {
@@ -340,7 +356,7 @@ export default {
         <li v-for="item, idx in filteredItems" :key="item.name"
           class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5" :class="idx === selected ? 'selected' : ''"
           @click="emitOpenNote(item)" ref="item">
-          <div :class="this.isSysNote(item) ? 'italic' : ''">
+          <div class="truncate" :class="this.isSysNote(item) ? 'italic' : ''">
             {{ item.name }}
           </div>
           <div class="grow"></div>
