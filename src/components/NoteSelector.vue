@@ -244,13 +244,13 @@ export default {
       let nItems = len(this.filteredItems);
       let selectedIdx = this.selected;
       if (event.key === "ArrowDown") {
+        event.preventDefault()
         if (selectedIdx >= nItems - 1) {
           // wrap around
           selectedIdx = 0;
         } else {
           selectedIdx += 1;
         }
-        event.preventDefault()
         this.selected = selectedIdx;
         if (selectedIdx === nItems - 1) {
           container.scrollIntoView({ block: "end" })
@@ -259,6 +259,7 @@ export default {
           el.scrollIntoView({ block: "nearest" })
         }
       } else if (event.key === "ArrowUp") {
+        event.preventDefault()
         if (selectedIdx > 0) {
           selectedIdx -= 1
         } else {
@@ -268,7 +269,6 @@ export default {
           }
         }
         this.selected = selectedIdx;
-        event.preventDefault()
         if (selectedIdx === 0) {
           container.scrollIntoView({ block: "start" })
         } else {

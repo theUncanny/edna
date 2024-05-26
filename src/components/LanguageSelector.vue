@@ -1,5 +1,6 @@
 <script>
 import { LANGUAGES } from '../editor/languages.js'
+import { len } from '../util'
 
 const items = LANGUAGES.map(l => {
   return {
@@ -39,22 +40,39 @@ export default {
   methods: {
     onKeydown(event) {
       let container = /** @type {HTMLElement} */(this.$refs.container);
+      let nItems = len(this.filteredItems);
+      let selectedIdx = this.selected;
+
       if (event.key === "ArrowDown") {
-        this.selected = Math.min(this.selected + 1, this.filteredItems.length - 1)
         event.preventDefault()
-        if (this.selected === this.filteredItems.length - 1) {
+        if (selectedIdx >= nItems - 1) {
+          // wrap around
+          selectedIdx = 0;
+        } else {
+          selectedIdx += 1;
+        }
+        this.selected = selectedIdx;
+        if (selectedIdx === nItems - 1) {
           container.scrollIntoView({ block: "end" })
         } else {
-          this.$refs.item[this.selected].scrollIntoView({ block: "nearest" })
+          let el = this.$refs.item[selectedIdx];
+          el.scrollIntoView({ block: "nearest" })
         }
-
       } else if (event.key === "ArrowUp") {
-        this.selected = Math.max(this.selected - 1, 0)
         event.preventDefault()
-        if (this.selected === 0) {
+        if (selectedIdx > 0) {
+          selectedIdx -= 1
+        } else {
+          if (nItems > 1) {
+            // wrap around
+            selectedIdx = nItems - 1;
+          }
+        }
+        this.selected = selectedIdx;
+        if (selectedIdx === 0) {
           container.scrollIntoView({ block: "start" })
         } else {
-          this.$refs.item[this.selected].scrollIntoView({ block: "nearest" })
+          this.$refs.item[selectedIdx].scrollIntoView({ block: "nearest" })
         }
       } else if (event.key === "Enter") {
         const selected = this.filteredItems[this.selected]
