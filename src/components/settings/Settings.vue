@@ -200,52 +200,78 @@ export default {
   </div>
 </template>
 
-<style lang="sass" scoped>
-  .dialog
-    +dark-mode
-        background: #333
-        color: #eee
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3)
-  .sidebar
-      +dark-mode
-          border-right: 1px solid #222
-  .settings-content
-      select
-          height: 22px
-          +dark-mode
-              background: #222
-              color: #eee
-      .row
-          display: flex
-          .entry
-              margin-bottom: 24px
-              margin-right: 20px
-              &:last-child
-                  margin-right: 0
-              h2
-                  font-weight: 600
-                  margin-bottom: 10px
-                  font-size: 14px
-              select
-                  width: 200px
-                  &:focus
-                      outline: none
-              label
-                  display: block
-                  user-select: none
-                  > input[type=checkbox]
-                      position: relative
-                      top: 2px
-                      left: -3px
+<style scoped>
+html[theme=dark] .dialog {
+  background: #333;
+  color: #eee;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+}
 
-  .bottom-bar
-      +dark-mode
-          background: #222
-      .close
-          height: 28px
-          &:hover
-            background-color: lightgray
-            +dark-mode
-                background: #333
-                color: #eee
+html[theme=dark] .sidebar {
+  border-right: 1px solid #222;
+}
+
+.settings-content select {
+  height: 22px;
+}
+
+html[theme=dark] .settings-content select {
+  background: #222;
+  color: #eee;
+}
+
+.settings-content .row {
+  display: flex;
+}
+
+.settings-content .row .entry {
+  margin-bottom: 24px;
+  margin-right: 20px;
+}
+
+.settings-content .row .entry:last-child {
+  margin-right: 0;
+}
+
+.settings-content .row .entry h2 {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.settings-content .row .entry select {
+  width: 200px;
+}
+
+.settings-content .row .entry select:focus {
+  outline: none;
+}
+
+.settings-content .row .entry label {
+  display: block;
+  user-select: none;
+}
+
+.settings-content .row .entry label>input[type=checkbox] {
+  position: relative;
+  top: 2px;
+  left: -3px;
+}
+
+html[theme=dark] .bottom-bar {
+  background: #222;
+}
+
+.bottom-bar .close {
+  height: 28px;
+}
+
+.bottom-bar .close:hover {
+  background-color: lightgray;
+}
+
+html[theme=dark] .bottom-bar .close:hover {
+  background: #333;
+  color: #eee;
+}
 </style>

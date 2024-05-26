@@ -149,26 +149,35 @@ export default {
   </div>
 </template>
 
-<style lang="sass" scoped>
-    .keyboard-hotkey
-        display: flex
-        padding: 7px
-        border-radius: 3px
-        border: 1px solid #c4c4c4
-        background: #eee
-        +dark-mode
-            border: 1px solid #666
-            background: #555
+<style scoped>
+.keyboard-hotkey {
+  display: flex;
+  padding: 7px;
+  border-radius: 3px;
+  border: 1px solid #c4c4c4;
+  background: #eee;
+}
 
-        &.disabled
-            opacity: 0.3
+html[theme=dark] .keyboard-hotkey {
+  border: 1px solid #666;
+  background: #555;
+}
 
-        .modifier
-            margin-right: 5px
-            user-select: none
-            .text
-                position: relative
-                top: -2px
-        select
-            margin-right: 5px
+.keyboard-hotkey.disabled {
+  opacity: 0.3;
+}
+
+.keyboard-hotkey .modifier {
+  margin-right: 5px;
+  user-select: none;
+}
+
+.keyboard-hotkey .modifier .text {
+  position: relative;
+  top: -2px;
+}
+
+.keyboard-hotkey select {
+  margin-right: 5px;
+}
 </style>

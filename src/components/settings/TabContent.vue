@@ -16,9 +16,12 @@ export default {
   </div>
 </template>
 
-<style scoped lang="sass">
-    .tab-content
-        display: none
-        &.active
-            display: block
+<style scoped>
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
 </style>

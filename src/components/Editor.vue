@@ -304,22 +304,26 @@ export default {
   </div>
 </template>
 
-<style lang="sass" scoped>
-    .debug-syntax-tree
-        position: absolute
-        top: 0
-        bottom: 0
-        right: 0
-        width: 50%
-        background-color: rgba(240, 240, 240, 0.85)
-        color: #000
-        font-size: 12px
-        font-family: monospace
-        padding: 10px
-        overflow: auto
+<style scoped>
+.debug-syntax-tree {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  background-color: rgba(240, 240, 240, 0.85);
+  color: #000;
+  font-size: 12px;
+  font-family: monospace;
+  padding: 10px;
+  overflow: auto;
+}
 
-        ul
-            padding-left: 20px
-        > ul
-            padding-left: 0
+.debug-syntax-tree ul {
+  padding-left: 20px;
+}
+
+.debug-syntax-tree>ul {
+  padding-left: 0;
+}
 </style>
