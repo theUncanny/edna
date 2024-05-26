@@ -1,17 +1,19 @@
+@import "@imengyu/vue3-context-menu/lib/vue3-context-menu.css";
+@import "vue-toastification/dist/index.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import "@imengyu/vue3-context-menu/lib/vue3-context-menu.css";
-@import "vue-toastification/dist/index.css";
-
 :root,
 :root[theme="light"] {
+  --col-bg: #487eb5;
   --status-bar-background: #487eb5;
   --status-bar-color: #fff;
 }
 
 :root[theme="dark"] {
+  --col-bg: ;
   --status-bar-background: #0e1712;
   --status-bar-color: rgba(255, 255, 255, 0.75);
 }
@@ -66,6 +68,97 @@ html[theme="dark"] body {
 .no-border-outline:focus-visible {
   border: none;
   outline: none;
+}
+
+input {
+  border: 1px solid #ccc;
+  &:focus {
+    outline: none;
+    border: 1px solid #fff;
+    outline: 2px solid #487eb5;
+  }
+}
+
+html[theme="dark"] input {
+  background: #3b3b3b;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #5a5a5a;
+  &:focus {
+    border: 1px solid #3b3b3b;
+  }
+}
+
+@media (max-width: 600px) {
+  html[webapp] input {
+    font-size: 16px;
+    max-width: 100%;
+  }
+}
+
+/* note selector, language selector, history selector */
+@media (max-width: 600px) {
+  html[webapp] .selector {
+    max-width: calc(100% - 80px);
+  }
+}
+
+.selector {
+  font-size: 13px;
+  background: #efefef;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+html[theme="dark"] .selector {
+  background: #151516;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.selector .items > li:hover {
+  background: #e2e2e2;
+}
+
+.selector .items > li.selected {
+  background: #487eb5;
+  color: #fff;
+}
+
+html[theme="dark"] .selector .items > li {
+  color: rgba(255, 255, 255, 0.53);
+}
+
+html[theme="dark"] .selector .items > li:hover {
+  background: #29292a;
+}
+
+html[theme="dark"] .selector .items > li.selected {
+  background: #1b6540;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+html[theme="dark"] .selector .kbd-grid {
+  color: rgba(255, 255, 255, 0.53);
+}
+
+.selector .kbd {
+  font-family: monospace;
+  font-size: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 3px 5px;
+  background-color: white;
+}
+
+html[theme="dark"] .selector .kbd {
+  background-color: #3b3b3b;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.selector .red {
+  color: red;
+}
+
+html[theme="dark"] .selector .red {
+  color: #ff7b72;
 }
 
 /* vue3-context-menu */

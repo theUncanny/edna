@@ -348,7 +348,7 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form class="note-selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col w-[32em] top-0 absolute p-3 "
+    <form class="selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col w-[32em] top-0 absolute p-3 "
       tabindex="-1" @focusout="onFocusOut" ref="container">
       <input type="text" ref="input" @keydown="onKeydown" @input="onInput" v-model="filter"
         class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
@@ -395,97 +395,3 @@ export default {
     </form>
   </div>
 </template>
-
-<style scoped>
-.note-selector {
-  font-size: 13px;
-  background: #efefef;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-html[theme=dark] .note-selector {
-  background: #151516;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-@media (max-width: 600px) {
-  html[webapp] .note-selector {
-    max-width: calc(100% - 80px);
-  }
-}
-
-.note-selector input {
-  border: 1px solid #ccc;
-}
-
-.note-selector input:focus {
-  outline: none;
-  border: 1px solid #fff;
-  outline: 2px solid #487eb5;
-}
-
-html[theme=dark] .note-selector input {
-  background: #3b3b3b;
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid #5a5a5a;
-}
-
-html[theme=dark] .note-selector input:focus {
-  border: 1px solid #3b3b3b;
-}
-
-@media (max-width: 600px) {
-  html[webapp] .note-selector input {
-    font-size: 16px;
-    max-width: 100%;
-  }
-}
-
-.note-selector .items>li:hover {
-  background: #e2e2e2;
-}
-
-.note-selector .items>li.selected {
-  background: #487eb5;
-  color: #fff;
-}
-
-html[theme=dark] .note-selector .items>li {
-  color: rgba(255, 255, 255, 0.53);
-}
-
-html[theme=dark] .note-selector .items>li:hover {
-  background: #29292a;
-}
-
-html[theme=dark] .note-selector .items>li.selected {
-  background: #1b6540;
-  color: rgba(255, 255, 255, 0.87);
-}
-
-html[theme=dark] .note-selector .kbd-grid {
-  color: rgba(255, 255, 255, 0.53);
-}
-
-.note-selector .kbd {
-  font-family: monospace;
-  font-size: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 3px 5px;
-  background-color: white;
-}
-
-html[theme=dark] .note-selector .kbd {
-  background-color: #3b3b3b;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.note-selector .red {
-  color: red;
-}
-
-html[theme=dark] .note-selector .red {
-  color: #ff7b72;
-}
-</style>

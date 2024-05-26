@@ -53,12 +53,13 @@ export default {
   color: #333;
 }
 
+html[theme="dark"] .topnav {
+  background-color: #29292a;
+  color: rgba(255, 255, 255, 0.87);
+}
+
 .title {
   padding: 2px 4px;
-  /* border-left: 1px solid lightgray;
-  border-right: 1px solid lightgray;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray; */
 }
 
 .shortcut {
@@ -67,11 +68,21 @@ export default {
   color: #939393;
 }
 
-.help {
-  padding: 2px 4px;
+html[theme="dark"] .shortcut {
+  color: #a3a3a3;
 }
 
-.help:hover {
-  background-color: #f3f3f3;
+.help {
+  padding: 2px 4px;
+
+  &:hover {
+    background-color: #f3f3f3;
+  }
+}
+
+html[theme="dark"] .help {
+  &:hover {
+    background-color: #49494a;
+  }
 }
 </style>
