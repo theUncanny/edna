@@ -1,6 +1,8 @@
 // history of opened files
 
-const kMaxHistory = 10;
+import { len } from "./util";
+
+const kMaxHistory = 16;
 
 /** @type {string[]} */
 let openedHistory = [];
@@ -10,18 +12,29 @@ let openedHistory = [];
  */
 export function historyPush(name) {
   console.log("historyPush:", name);
-  let i = openedHistory.indexOf(name);
-  if (i >= 0) {
-    openedHistory.splice(i, 1);
-  }
-  openedHistory.unshift(name);
+  removeNoteFromHistory(name);
+  openedHistory.unshift(name); // insert at the beginning
   if (openedHistory.length > kMaxHistory) {
     openedHistory.pop();
   }
 }
 
+/**
+ * @returns {string[]}
+ */
 export function getHistory() {
-  return openedHistory;
+  // we don't return first element because it's the current one
+  if (len(openedHistory) > 1) {
+    return openedHistory.slice(1);
+  }
+  return [];
+}
+
+/**
+ * @returns {boolean}
+ */
+export function hasHistory() {
+  return len(openedHistory) > 1;
 }
 
 /**
@@ -35,6 +48,9 @@ export function renameInHistory(oldName, newName) {
   }
 }
 
+/**
+ * @param {string} name
+ */
 export function removeNoteFromHistory(name) {
   let i = openedHistory.indexOf(name);
   if (i >= 0) {

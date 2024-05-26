@@ -38,6 +38,9 @@ export default {
   },
 
   methods: {
+    /**
+     * @param {KeyboardEvent} event
+     */
     onKeydown(event) {
       let container = /** @type {HTMLElement} */(this.$refs.container);
       let nItems = len(this.filteredItems);
@@ -83,8 +86,9 @@ export default {
         }
         event.preventDefault()
       } else if (event.key === "Escape") {
-        this.$emit("close")
         event.preventDefault()
+        event.stopImmediatePropagation()
+        this.$emit("close")
       }
     },
 

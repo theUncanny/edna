@@ -43,6 +43,7 @@ export const kEventOpenLanguageSelector = "openLanguageSelector";
 export const kEventOpenNoteSelector = "openNoteSelector";
 export const kEventDocChanged = "docChanged";
 export const kEventCreateNewScratchNote = "createNewScratchNote";
+export const kEventOpenHistorySelector = "openHistorySelector";
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
@@ -254,6 +255,11 @@ export class EdnaEditor {
 
   openLanguageSelector() {
     this.element.dispatchEvent(new Event(kEventOpenLanguageSelector));
+  }
+
+  openHistorySelector() {
+    console.log("openHistorySelector");
+    this.element.dispatchEvent(new Event(kEventOpenHistorySelector));
   }
 
   openNoteSelector() {

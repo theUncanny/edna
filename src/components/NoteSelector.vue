@@ -304,9 +304,10 @@ export default {
           this.$emit("close")
         }
       } else if (event.key === "Escape") {
+        event.preventDefault()
+        event.stopImmediatePropagation()
         // TODO: we also call onFocusOut() and emit "close" event twice
         this.$emit("close")
-        event.preventDefault()
       }
     },
 

@@ -1,5 +1,5 @@
 <script>
-import { kEventDocChanged, EdnaEditor, kEventOpenLanguageSelector, kEventOpenNoteSelector, kEventCreateNewScratchNote } from '../editor/editor.js'
+import { kEventDocChanged, EdnaEditor, kEventOpenLanguageSelector, kEventOpenNoteSelector, kEventCreateNewScratchNote, kEventOpenHistorySelector } from '../editor/editor.js'
 import { syntaxTree } from "@codemirror/language"
 import { kScratchNoteName, loadCurrentNote, loadNote, saveCurrentNote } from '../notes.js'
 import { rememberEditor } from '../state.js'
@@ -66,6 +66,9 @@ export default {
     })
     editor.addEventListener(kEventCreateNewScratchNote, (e) => {
       this.$emit(kEventCreateNewScratchNote)
+    })
+    editor.addEventListener(kEventOpenHistorySelector, (e) => {
+      this.$emit(kEventOpenHistorySelector)
     })
 
     // load buffer content and create editor

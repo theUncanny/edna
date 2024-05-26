@@ -4,6 +4,7 @@
 
 ## 1.3
 
+* `Esc` and `Ctrl + E` for history selection
 * show note name in the upper right corner
 
 ## 1.2

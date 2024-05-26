@@ -8,6 +8,7 @@ import TopNav from './TopNav.vue'
 import RenameNote from './RenameNote.vue'
 import ToastUndo from './ToastUndo.vue'
 import Loading from './Loading.vue'
+import History from "./History.vue"
 
 import Settings from './settings/Settings.vue'
 import { isAltNumEvent, setURLHashNoReload, stringSizeInUtf8Bytes, sleep } from '../util'
@@ -19,7 +20,7 @@ import { onOpenSettings, getSettings, onSettingsChange, setSetting } from '../se
 import { boot } from '../webapp-boot'
 import { getLanguage, langSupportsFormat, langSupportsRun } from '../editor/languages'
 import { useToast, POSITION } from "vue-toastification";
-import { getHistory } from '../history';
+import { getHistory, hasHistory } from '../history';
 import { exportNotesToZip } from '../notes-export'
 import { logAppExit, logAppOpen, logNoteOp } from '../log'
 
@@ -47,6 +48,7 @@ export default {
     Help,
     LanguageSelector,
     NoteSelector,
+    History,
     RenameNote,
     Settings,
     StatusBar,
@@ -80,10 +82,10 @@ export default {
       showingNoteSelector: false,
       showingSettings: false,
       showingRenameNote: false,
+      showingHistorySelector: false,
       theme: settings.theme,
       isSpellChecking: false,
       spellcheckToastID: 0,
-      lastEscTime: 0,
       altChar: getAltChar(),
       loadingNoteName: "",
     }
@@ -190,17 +192,11 @@ export default {
     onKeyDown(e) {
 
       if (e.key === "Escape") {
-        let sinceLast = performance.now() - this.lastEscTime
-        let shouldSwitchToPrev = sinceLast < 300
-        // console.log("Escape: sinceLast:", sinceLast)
-        let hist = getHistory()
-        // console.log("Escape: hist:", hist)
-        if (shouldSwitchToPrev && hist.length > 1) {
-          let prev = hist[1];
-          console.log("Escape: switching to previous note:", prev)
-          this.openNote(prev)
+        if (this.showingHistorySelector || this.showingHelp || this.showingLanguageSelector || this.showingNoteSelector) {
+          return;
         }
-        this.lastEscTime = performance.now()
+        this.openHistorySelector()
+        return
       }
 
       // if (e.key === "F2") {
@@ -602,6 +598,27 @@ export default {
       this.getEditor().setLanguage(language)
     },
 
+    openHistorySelector() {
+      let h = getHistory();
+      console.log("openHistorySelector: history=", h)
+      if (!hasHistory()) {
+        console.log("not opening history because no history")
+        return;
+      }
+      this.showingHistorySelector = true
+    },
+
+    closeHistorySelector() {
+      console.log("closeHistorySelector")
+      this.showingHistorySelector = false
+    },
+
+    onSelectHistory(name) {
+      this.showingHistorySelector = false
+      console.log("onSelectHistory:", name);
+      this.openNote(name)
+    },
+
     openNoteSelector() {
       this.showingNoteSelector = true
     },
@@ -738,7 +755,8 @@ export default {
       :showLineNumberGutter="settings.showLineNumberGutter" :showFoldGutter="settings.showFoldGutter"
       :bracketClosing="settings.bracketClosing" :fontFamily="settings.fontFamily" :fontSize="settings.fontSize"
       class="overflow-hidden" ref="editor" @openLanguageSelector="openLanguageSelector"
-      @createNewScratchNote="createNewScratchNote" @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
+      @openHistorySelector="openHistorySelector" @createNewScratchNote="createNewScratchNote"
+      @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
     <StatusBar :noteName="noteNameStatusBar" :line="line" :column="column" :docSize="docSize"
       :selectionSize="selectionSize" :language="language" :languageAuto="languageAuto"
       :isSpellChecking="isSpellChecking" @openLanguageSelector="openLanguageSelector"
@@ -750,6 +768,7 @@ export default {
       @close="closeLanguageSelector" />
     <NoteSelector v-if="showingNoteSelector" @openNote="onOpenNote" @createNote="onCreateNote"
       @deleteNote="onDeleteNote" @close="closeNoteSelector" />
+    <History v-if="showingHistorySelector" @close="closeHistorySelector" @selectHistory="onSelectHistory" />
     <Settings v-if="showingSettings" :initialSettings="settings" @close="onCloseSettings" />
   </div>
   <div :style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">
