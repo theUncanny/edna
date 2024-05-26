@@ -24,14 +24,14 @@ export default {
 
 </script>
 <template>
-  <div class="topnav fixed top-0 flex items-center z-50 shadow-xl" :style="topnavStyle">
-    <div class="title">
+  <div class="topnav fixed top-0 flex items-center z-50 shadow-xl px-1 py-[2px]" :style="topnavStyle">
+    <div class="title max-w-32 truncate" :title="noteName">
       {{ noteName }}
     </div>
-    <div class="shortcut">
+    <div v-if="shortcut" class="shortcut">
       {{ shortcut }}
     </div>
-    <a class="ml-1 help mt-[1px]" href="https://github.com/kjk/edna" target="_blank" title="source on GitHub">
+    <a class="help mt-[1px]" href="https://github.com/kjk/edna" target="_blank" title="source on GitHub">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="1em" height="1em"
         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
         stroke-linejoin="round">
@@ -41,7 +41,7 @@ export default {
         </path>
       </svg>
     </a>
-    <a class="help ml-1" href="/help" target="_blank">Help</a>
+    <a class="help" href="/help" target="_blank">Help</a>
   </div>
 </template>
 
@@ -51,8 +51,6 @@ export default {
   line-height: 1.5;
   background-color: white;
   color: #333;
-  padding: 2px 1rem;
-  /* border-bottom: 1px lightgray solid; */
 }
 
 .title {
