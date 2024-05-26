@@ -150,6 +150,7 @@ export default {
     },
 
     mcStyle() {
+      console.log("mcStyle");
       return {
         display: this.showingMenu ? "block" : "none"
       }
@@ -752,7 +753,7 @@ export default {
       @deleteNote="onDeleteNote" @close="closeNoteSelector" />
     <Settings v-if="showingSettings" :initialSettings="settings" @close="onCloseSettings" />
   </div>
-  <div style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">
+  <div :style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">
     <form class="relative w-full h-full pointer-events-none z-50 text-[8px]" ref="menuContainer" tabIndex="-1"></form>
   </div>
   <Help @close="onCloseHelp" :anchor="helpAnchor" v-if="showingHelp" />

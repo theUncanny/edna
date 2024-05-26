@@ -208,3 +208,29 @@ export function sleep(ms) {
     (resolve) => (sleepSetTimeout_ctrl = setTimeout(resolve, ms))
   );
 }
+
+// needs the following css:
+/*
+.scrollbar-width-detector {
+  position: absolute;
+  visibility: hidden;
+  width: 100px;
+  height: 100px;
+  overflow: scroll;
+}
+*/
+/**
+ * @returns number
+ */
+export function getScrollbarWidth() {
+  const scrollbarWidthDetector = document.createElement("div");
+  scrollbarWidthDetector.className = "scrollbar-width-detector";
+  document.body.appendChild(scrollbarWidthDetector);
+
+  const scrollbarWidth =
+    scrollbarWidthDetector.offsetWidth - scrollbarWidthDetector.clientWidth;
+
+  document.body.removeChild(scrollbarWidthDetector);
+
+  return scrollbarWidth;
+}
