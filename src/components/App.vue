@@ -150,7 +150,6 @@ export default {
     },
 
     mcStyle() {
-      console.log("mcStyle");
       return {
         display: this.showingMenu ? "block" : "none"
       }

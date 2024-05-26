@@ -277,6 +277,7 @@ export default {
       this.diskContent = content
       let newState = this.editor.createState(content)
       this.editor.view.setState(newState);
+      this.editor.setTheme(this.theme);
       // TODO: move this logic to App.onDocChanged
       // a bit magic: sometimes we open at the beginning, sometimes at the end
       // TODO: remember selection in memory so that we can restore during a session
