@@ -14,7 +14,7 @@ import {
   incNoteSaveCount,
   isDocDirty,
 } from "./state";
-import { historyPush, removeFromHistory, renameInHistory } from "./history";
+import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
 import sanitize from "sanitize-filename";
@@ -474,7 +474,8 @@ export async function deleteNote(name) {
     await dh.removeEntry(fileName);
   }
   incNoteDeleteCount();
-  removeFromHistory(name);
+  removeNoteFromHistory(name);
+  await removeNoteFromMetadata(name);
   await updateLatestNoteNames();
 }
 
@@ -642,6 +643,21 @@ export function getMetadataForNote(noteName) {
     }
   }
   return null;
+}
+
+/**
+ * @param {string} noteName
+ */
+export async function removeNoteFromMetadata(noteName) {
+  console.log("deleteMetadataForNote:", noteName);
+  let meta = notesMetadata;
+  let res = [];
+  for (let m of meta) {
+    if (m.name !== noteName) {
+      res.push(m);
+    }
+  }
+  await saveNotesMetadata(res);
 }
 
 export async function loadNotesMetadata() {

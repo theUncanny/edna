@@ -35,7 +35,7 @@ export function renameInHistory(oldName, newName) {
   }
 }
 
-export function removeFromHistory(name) {
+export function removeNoteFromHistory(name) {
   let i = openedHistory.indexOf(name);
   if (i >= 0) {
     openedHistory.splice(i, 1);
