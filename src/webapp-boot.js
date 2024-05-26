@@ -1,5 +1,4 @@
 import "./css/main.css";
-import "./css/application.sass";
 
 import {
   createDefaultNotes,

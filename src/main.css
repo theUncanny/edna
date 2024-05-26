@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@imengyu/vue3-context-menu/lib/vue3-context-menu.css";
+@import "vue-toastification/dist/index.css";
+
+:root,
+:root[theme="light"] {
+  --status-bar-background: #487eb5;
+  --status-bar-color: #fff;
+}
+
+:root[theme="dark"] {
+  --status-bar-background: #0e1712;
+  --status-bar-color: rgba(255, 255, 255, 0.75);
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: #444;
+  font-family: system-ui, sans-serif;
+  height: 100%;
+  font-size: 12px;
+  overscroll-behavior-y: none;
+}
+
+html[theme="dark"] body {
+  background: #252b37;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+.editor {
+  height: 100%;
+}
+.editor .cm-editor {
+  height: 100%;
+}
+
+#syntaxTree {
+  height: 20%;
+  overflow-y: auto;
+}
+
+.center-with-translate {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.no-border-outlineactive,
+.no-border-outline:selected,
+.no-border-outline:focus,
+.no-border-outline:focus-visible {
+  border: none;
+  outline: none;
+}
+
+/* vue3-context-menu */
+body {
+  --mx-menu-text: #000;
+  --mx-menu-disabled-text: #808080;
+}
+
+.mx-context-menu {
+  line-height: 1.2;
+}
+
+.mx-context-menu-item .label {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  padding-right: 1em;
+}
+
+.mx-right-arrow {
+  width: 8px;
+  height: 8px;
+}
+
+.mx-shortcut {
+  border: 1px solid white;
+}
+
+/* vue-toastification */
+.Vue-Toastification__toast-body {
+  font-size: 14px !important;
+  padding: 0;
+  margin: 0;
+  padding-right: 1em;
+}
+
+.Vue-Toastification__toast-component-body {
+  display: flex;
+}
+
+.Vue-Toastification__toast {
+  padding: 4px 8px !important;
+  min-height: 12px !important;
+}
+
+/* for getScrollbarWidth() */
+.scrollbar-width-detector {
+  position: absolute;
+  visibility: hidden;
+  width: 100px;
+  height: 100px;
+  overflow: scroll;
+}

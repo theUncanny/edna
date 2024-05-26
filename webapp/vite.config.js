@@ -58,16 +58,6 @@ export default defineConfig({
     },
   },
 
-  css: {
-    preprocessorOptions: {
-      sass: {
-        additionalData: `
-    @import "../src/css/include.sass"
-    `,
-      },
-    },
-  },
-
   resolve: {
     alias: {
       "@": path.resolve(__dirname, ".."),

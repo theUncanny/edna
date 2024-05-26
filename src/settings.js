@@ -18,9 +18,7 @@ import { ipcRenderer } from "./ipcrenderer";
 export const kEventOpenSettings = "open-settings";
 export const kEventSettingsChange = "settings-change";
 
-// Note: was "Hack" but it requires custom font which takes time to load
-// To re-enable Hack we also have to un-comment font.sass
-// TODO: should be "Consolas" instead of "Cacadia Code"?
+// TODO: should be "Consolas" instead of "Cascadia Code"?
 // TODO: something else for Linux?
 export let kDefaultFontFamily = platform.isMac ? "Menlo" : "Cascadia Code";
 
