@@ -258,7 +258,6 @@ export class EdnaEditor {
   }
 
   openHistorySelector() {
-    console.log("openHistorySelector");
     this.element.dispatchEvent(new Event(kEventOpenHistorySelector));
   }
 

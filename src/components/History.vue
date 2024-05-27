@@ -5,16 +5,17 @@ import { len } from '../util'
 
 export default {
   data() {
-    let h = getHistory();
-    console.log("history:", h);
-
-    let items = h.map(l => {
-      return {
-        "name": l,
-        "nameLC": l.toLowerCase(),
-      }
-    })
-    let selected = len(items) > 1 ? 1 : 0;
+    let history = getHistory();
+    let n = len(history);
+    let items = Array(n)
+    for (let i = 0; i < n; i++) {
+      let el = history[i];
+      items[i] = {
+        "name": el,
+        "nameLC": el.toLowerCase(),
+      };
+    }
+    let selected = n > 1 ? 1 : 0;
     return {
       items: items,
       selected: selected,
@@ -100,7 +101,7 @@ export default {
   <div class="fixed inset-0 overflow-auto">
     <form class="focus:outline-none selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col absolute top-0 p-3"
       tabindex="-1" @focusout="onFocusOut" ref="container" @keydown="onKeydown">
-      <div class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center">Recently
+      <div class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center dark:bg-white">Recently
         opened</div>
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in items" :key="item.name" :class="idx === selected ? 'selected' : ''"
