@@ -30,7 +30,7 @@ Press `Mod + P` to show note selector and:
 
 Press `Mod + E` or `Esc` to switch to a note from list of recently opened notes.
 
-First 10 recently opened notes get `0' ... `9` shortcut.
+First 10 recently opened notes get `0` ... `9` shortcut.
 
 To switch to previous note: press `Esc` and `Enter`.
 
