@@ -290,7 +290,7 @@ export default {
      * @param {MouseEvent} e
      */
     onContextMenu(e) {
-      if (this.showingNoteSelector || this.showingLanguageSelector || this.showingSettings) {
+      if (this.showingNoteSelector || this.showingLanguageSelector || this.showingSettings || this.showingHelp) {
         return
       }
       // show native context menu if ctrl or shift is pressed
@@ -602,8 +602,8 @@ export default {
     },
 
     closeHistorySelector() {
-      console.log("closeHistorySelector")
       this.showingHistorySelector = false
+      this.getEditor().focus()
     },
 
     onSelectHistory(name) {
@@ -742,7 +742,7 @@ export default {
       <div>{{ noteName }}</div>
       <div>23 notes</div>
     </div> -->
-    <TopNav :noteName="noteName" :shortcut="noteShortcut" />
+    <TopNav :noteName="noteName" :shortcut="noteShortcut" @openNoteSelector="openNoteSelector" />
     <Editor @cursorChange="onCursorChange" :theme="theme" :development="development" :debugSyntaxTree="false"
       :keymap="settings.keymap" :emacsMetaKey="settings.emacsMetaKey"
       :showLineNumberGutter="settings.showLineNumberGutter" :showFoldGutter="settings.showFoldGutter"

@@ -32,7 +32,6 @@ export default {
      * @param {KeyboardEvent} event
      */
     onKeydown(event) {
-      console.log("History:", event);
       let container = /** @type {HTMLElement} */(this.$refs.container);
       let nItems = len(this.items);
       let selectedIdx = this.selected;
