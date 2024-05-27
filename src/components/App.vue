@@ -20,7 +20,6 @@ import { onOpenSettings, getSettings, onSettingsChange, setSetting } from '../se
 import { boot } from '../webapp-boot'
 import { getLanguage, langSupportsFormat, langSupportsRun } from '../editor/languages'
 import { useToast, POSITION } from "vue-toastification";
-import { getHistory, hasHistory } from '../history';
 import { exportNotesToZip } from '../notes-export'
 import { logAppExit, logAppOpen, logNoteOp } from '../log'
 
@@ -599,12 +598,6 @@ export default {
     },
 
     openHistorySelector() {
-      let h = getHistory();
-      console.log("openHistorySelector: history=", h)
-      if (!hasHistory()) {
-        console.log("not opening history because no history")
-        return;
-      }
       this.showingHistorySelector = true
     },
 

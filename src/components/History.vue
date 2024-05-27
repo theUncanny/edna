@@ -14,9 +14,10 @@ export default {
         "nameLC": l.toLowerCase(),
       }
     })
+    let selected = len(items) > 1 ? 1 : 0;
     return {
       items: items,
-      selected: 0,
+      selected: selected,
       filter: "",
     }
   },
@@ -24,17 +25,6 @@ export default {
   mounted() {
     // @ts-ignore
     this.$refs.container.focus()
-    // @ts-ignore
-    this.$refs.input.focus()
-  },
-
-  computed: {
-    filteredItems() {
-      const filterLC = this.filter.toLowerCase()
-      return this.items.filter((lang) => {
-        return lang.nameLC.indexOf(filterLC) !== -1
-      })
-    },
   },
 
   methods: {
@@ -44,7 +34,7 @@ export default {
     onKeydown(event) {
       console.log("History:", event);
       let container = /** @type {HTMLElement} */(this.$refs.container);
-      let nItems = len(this.filteredItems);
+      let nItems = len(this.items);
       let selectedIdx = this.selected;
 
       if (event.key === "ArrowDown") {
@@ -79,7 +69,7 @@ export default {
           this.$refs.item[selectedIdx].scrollIntoView({ block: "nearest" })
         }
       } else if (event.key === "Enter") {
-        const selected = this.filteredItems[this.selected]
+        const selected = this.items[this.selected]
         if (selected) {
           this.selectItem(selected.name)
         } else {
@@ -97,11 +87,6 @@ export default {
       this.$emit("selectHistory", token)
     },
 
-    onInput(event) {
-      // reset selection
-      this.selected = 0
-    },
-
     onFocusOut(event) {
       let container = /** @type {HTMLElement} */(this.$refs.container);
       if (container !== event.relatedTarget && !container.contains(event.relatedTarget)) {
@@ -114,12 +99,12 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form class="selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col absolute top-0 p-3" tabindex="-1"
-      @focusout="onFocusOut" ref="container">
-      <input type="text" ref="input" @keydown="onKeydown" @input="onInput" v-model="filter"
-        class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
+    <form class="focus:outline-none selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col absolute top-0 p-3"
+      tabindex="-1" @focusout="onFocusOut" ref="container" @keydown="onKeydown">
+      <div class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center">Recently
+        opened</div>
       <ul class="items overflow-y-auto">
-        <li v-for="item, idx in filteredItems" :key="item.name" :class="idx === selected ? 'selected' : ''"
+        <li v-for="item, idx in items" :key="item.name" :class="idx === selected ? 'selected' : ''"
           class="cursor-pointer py-0.5 px-2 rounded-sm leading-5" @click="selectItem(item.name)" ref="item">
           {{ item.name }}
         </li>

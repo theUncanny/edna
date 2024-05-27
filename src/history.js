@@ -23,18 +23,7 @@ export function historyPush(name) {
  * @returns {string[]}
  */
 export function getHistory() {
-  // we don't return first element because it's the current one
-  if (len(openedHistory) > 1) {
-    return openedHistory.slice(1);
-  }
-  return [];
-}
-
-/**
- * @returns {boolean}
- */
-export function hasHistory() {
-  return len(openedHistory) > 1;
+  return openedHistory;
 }
 
 /**
