@@ -3,6 +3,7 @@
 import {
   getScrollbarWidth
 } from "../util.js";
+import { isDocDirty } from '../state'
 
 export default {
   props: [
@@ -17,6 +18,7 @@ export default {
     console.log("topnavStyle:", topnavStyle);
     return {
       topnavStyle,
+      isDocDirty,
     }
   },
 
@@ -29,6 +31,8 @@ export default {
     <div class="title clickable max-w-32 truncate" @click="$emit('openNoteSelector')" :title="noteName">
       {{ noteName }}
     </div>
+    <div class="ml-1 w-[1em]" v-if="isDocDirty">&bull;</div>
+    <div class="ml-1 w-[1em]" v-else>&nbsp;</div>
     <div v-if="shortcut" class="shortcut">
       {{ shortcut }}
     </div>
