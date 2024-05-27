@@ -1,9 +1,10 @@
 <script>
-import { kEventDocChanged, EdnaEditor, kEventOpenLanguageSelector, kEventOpenNoteSelector, kEventCreateNewScratchNote, kEventOpenHistorySelector } from '../editor/editor.js'
+import { EdnaEditor } from '../editor/editor.js'
 import { syntaxTree } from "@codemirror/language"
 import { kScratchNoteName, loadCurrentNote, loadNote, saveCurrentNote } from '../notes.js'
 import { rememberEditor } from '../state.js'
 import { getSettings } from '../settings.js'
+import { isDocDirty } from "../state.js";
 
 export default {
   props: {
@@ -44,6 +45,20 @@ export default {
   },
 
   mounted() {
+    document.addEventListener("keydown", (e) => {
+      // console.log(e);
+      // prevent the default Save dialog from opening and save if dirty
+      let isCtrlS = e.ctrlKey && e.key === "s";
+      isCtrlS = isCtrlS || (e.metaKey && e.key === "s");
+      if (isCtrlS) {
+        e.preventDefault();
+        // TODO: track isDocDirty state here?
+        if (isDocDirty.value) {
+          this.saveForce();
+        }
+      }
+    });
+
     let editor = /** @type {HTMLElement} */ (this.$refs.editor);
     editor.addEventListener("selectionChange", (ev) => {
       let e = /** @type {import("../editor/event.js").SelectionChangeEvent} */ (ev);
@@ -55,21 +70,22 @@ export default {
       })
     })
 
-    editor.addEventListener(kEventOpenLanguageSelector, (e) => {
-      this.$emit(kEventOpenLanguageSelector)
+    editor.addEventListener("openLanguageSelector", (e) => {
+      this.$emit("openLanguageSelector")
     })
-    editor.addEventListener(kEventOpenNoteSelector, (e) => {
-      this.$emit(kEventOpenNoteSelector)
+    editor.addEventListener("openNoteSelector", (e) => {
+      this.$emit("openNoteSelector")
     })
-    editor.addEventListener(kEventDocChanged, (e) => {
-      this.$emit(kEventDocChanged)
+    editor.addEventListener("docChanged", (e) => {
+      this.$emit("docChanged")
     })
-    editor.addEventListener(kEventCreateNewScratchNote, (e) => {
-      this.$emit(kEventCreateNewScratchNote)
+    editor.addEventListener("createNewScratchNote", (e) => {
+      this.$emit("createNewScratchNote")
     })
-    editor.addEventListener(kEventOpenHistorySelector, (e) => {
-      this.$emit(kEventOpenHistorySelector)
+    editor.addEventListener("openHistorySelector", (e) => {
+      this.$emit("openHistorySelector")
     })
+
 
     // load buffer content and create editor
     loadCurrentNote().then((content) => {
@@ -78,15 +94,7 @@ export default {
         element: this.$refs.editor,
         content: content,
         theme: this.theme,
-        saveFunction: async (content) => {
-          if (content === this.diskContent) {
-            console.log("saveFunction: content unchanged, skipping save")
-            return
-          }
-          console.log("saveFunction: saving content")
-          this.diskContent = content
-          await saveCurrentNote(content)
-        },
+        saveFunction: this.saveFunction,
         keymap: this.keymap,
         emacsMetaKey: this.emacsMetaKey,
         showLineNumberGutter: this.showLineNumberGutter,
@@ -166,6 +174,21 @@ export default {
   },
 
   methods: {
+    async saveFunction(content) {
+      if (content === this.diskContent) {
+        console.log("saveFunction: content unchanged, skipping save")
+        return
+      }
+      console.log("saveFunction: saving content")
+      this.diskContent = content
+      await saveCurrentNote(content)
+    },
+
+    saveForce() {
+      console.log("saveForce");
+      this.saveFunction(this.getContent());
+    },
+
     setSpellChecking(value) {
       // console.log("setSpellChecking:", value)
       let ce = document.querySelector('[contenteditable="true"]');

@@ -1,5 +1,5 @@
 <script>
-import { LANGUAGES, getLanguage, getLanguageNameFromToken, langSupportsFormat, langSupportsRun } from '../editor/languages.js'
+import { getLanguage, getLanguageNameFromToken, langSupportsFormat, langSupportsRun } from '../editor/languages.js'
 import { fmtSize, platform } from '../util'
 import { isDocDirty } from '../state'
 

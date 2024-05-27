@@ -3,9 +3,10 @@ import debounce from "debounce";
 import { isDocDirty } from "../state";
 
 export const autoSaveContent = (saveFunction, interval) => {
-  const save = debounce((view) => {
+  const debouncedSave = debounce((view) => {
     //console.log("saving buffer")
     saveFunction(view.state.sliceDoc());
+    isDocDirty.value = false;
   }, interval);
 
   return ViewPlugin.fromClass(
@@ -13,7 +14,7 @@ export const autoSaveContent = (saveFunction, interval) => {
       update(update) {
         if (update.docChanged) {
           isDocDirty.value = true;
-          save(update.view);
+          debouncedSave(update.view);
         }
       }
     }

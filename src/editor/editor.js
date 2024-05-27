@@ -33,17 +33,10 @@ import { heynoteDark } from "./theme/dark.js";
 import { heynoteKeymap } from "./keymap.js";
 import { heynoteLang } from "./lang-heynote/heynote.js";
 import { heynoteLight } from "./theme/light.js";
-import { isDocDirty } from "../state.js";
 import { languageDetection } from "./language-detection/autodetect.js";
 import { links } from "./links.js";
 import { markdown } from "@codemirror/lang-markdown";
 import { todoCheckboxPlugin } from "./todo-checkbox";
-
-export const kEventOpenLanguageSelector = "openLanguageSelector";
-export const kEventOpenNoteSelector = "openNoteSelector";
-export const kEventDocChanged = "docChanged";
-export const kEventCreateNewScratchNote = "createNewScratchNote";
-export const kEventOpenHistorySelector = "openHistorySelector";
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
@@ -84,7 +77,7 @@ export class EdnaEditor {
     let updateListenerExtension = EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         // console.log("docChanged:", update)
-        this.element.dispatchEvent(new Event(kEventDocChanged));
+        this.element.dispatchEvent(new Event("docChanged"));
       }
     });
     this.createState = (content) => {
@@ -144,20 +137,6 @@ export class EdnaEditor {
     };
     const state = this.createState(content);
 
-    document.addEventListener("keydown", (e) => {
-      // console.log(e);
-      // prevent the default Save dialog from opening and save if dirty
-      let isCtrlS = e.ctrlKey && e.key === "s";
-      isCtrlS = isCtrlS || (e.metaKey && e.key === "s");
-      if (isCtrlS) {
-        e.preventDefault();
-        // TODO: track isDocDirty state here?
-        if (isDocDirty.value) {
-          this.saveForce();
-        }
-      }
-    });
-
     this.view = new EditorView({
       state: state,
       parent: element,
@@ -173,11 +152,6 @@ export class EdnaEditor {
       });
       this.view.focus();
     }
-  }
-
-  saveForce() {
-    console.log("saveForce");
-    this.saveFunction(this.getContent());
   }
 
   getContent() {
@@ -251,19 +225,19 @@ export class EdnaEditor {
 
   createNewScratchNote() {
     console.log("createNewScratchNote");
-    this.element.dispatchEvent(new Event(kEventCreateNewScratchNote));
+    this.element.dispatchEvent(new Event("createNewScratchNote"));
   }
 
   openLanguageSelector() {
-    this.element.dispatchEvent(new Event(kEventOpenLanguageSelector));
+    this.element.dispatchEvent(new Event("openLanguageSelector"));
   }
 
   openHistorySelector() {
-    this.element.dispatchEvent(new Event(kEventOpenHistorySelector));
+    this.element.dispatchEvent(new Event("openHistorySelector"));
   }
 
   openNoteSelector() {
-    this.element.dispatchEvent(new Event(kEventOpenNoteSelector));
+    this.element.dispatchEvent(new Event("openNoteSelector"));
   }
 
   setCurrentLanguage(lang, auto = false) {
