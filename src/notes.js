@@ -448,6 +448,24 @@ export async function loadCurrentNote() {
 }
 
 /**
+ * @returns {Promise<string>}
+ */
+export async function loadCurrentNoteIfOnDisk() {
+  let settings = getSettings();
+  let name = settings.currentNoteName;
+  if (isSystemNoteName(name)) {
+    return null;
+  }
+  let dh = getStorageFS();
+  if (!dh) {
+    return null;
+  }
+  let path = notePathFromNameFS(name);
+  let content = await fsReadTextFile(dh, path);
+  return content;
+}
+
+/**
  * @param {string} name
  * @returns {boolean}
  */

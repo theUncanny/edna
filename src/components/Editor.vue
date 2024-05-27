@@ -1,10 +1,11 @@
 <script>
 import { EdnaEditor } from '../editor/editor.js'
 import { syntaxTree } from "@codemirror/language"
-import { kScratchNoteName, loadCurrentNote, loadNote, saveCurrentNote } from '../notes.js'
+import { kScratchNoteName, loadCurrentNote, loadCurrentNoteIfOnDisk, loadNote, saveCurrentNote } from '../notes.js'
 import { rememberEditor } from '../state.js'
 import { getSettings } from '../settings.js'
 import { isDocDirty } from "../state.js";
+import debounce from "debounce";
 
 export default {
   props: {
@@ -41,6 +42,7 @@ export default {
     return {
       syntaxTreeDebugContent: null,
       diskContent: null,
+      debouncedRefreshFunc: null,
     }
   },
 
@@ -86,7 +88,6 @@ export default {
       this.$emit("openHistorySelector")
     })
 
-
     // load buffer content and create editor
     loadCurrentNote().then((content) => {
       this.diskContent = content
@@ -110,9 +111,7 @@ export default {
       console.log("loadCurrentNote: triggering docChanged event, name:", name)
       this.$emit("docChanged", name)
 
-      // setTimeout(() => {
-      //   this.setSpellChecking(true);
-      // }, 10)
+      this.scheduleRefreshFromDisk();
     })
 
     // if debugSyntaxTree prop is set, display syntax tree for debugging
@@ -174,6 +173,38 @@ export default {
   },
 
   methods: {
+    maybeRefreshFromDisk() {
+      loadCurrentNoteIfOnDisk().then((latestContentOnDisk) => {
+        if (!latestContentOnDisk) {
+          this.scheduleRefreshFromDisk();
+          return;
+        }
+        let currContent = this.getContent();
+        if (latestContentOnDisk != currContent) {
+          console.log("the content was modified on disk");
+          // TODO: maybe restore cursor position
+          this.setEditorContent(latestContentOnDisk);
+          // console.log("openNote: triggering docChanged event, name:", name)
+          // this.$emit("docChanged", name)
+        }
+        this.scheduleRefreshFromDisk();
+      });
+    },
+
+    scheduleRefreshFromDisk() {
+      if (this.debouncedRefreshFunc) {
+        console.log("calling debouncedRefreshFunc.clear()");
+        this.debouncedRefreshFunc.clear();
+        this.debouncedRefreshFunc = null;
+      }
+      console.log("creating debounce for maybeRefreshFromDisk");
+      this.debouncedRefreshFunc = debounce(() => {
+        console.log("about to run maybeRefreshFromDisk");
+        this.maybeRefreshFromDisk();
+      }, 5000)
+      this.debouncedRefreshFunc();
+    },
+
     async saveFunction(content) {
       if (content === this.diskContent) {
         console.log("saveFunction: content unchanged, skipping save")
@@ -182,6 +213,8 @@ export default {
       console.log("saveFunction: saving content")
       this.diskContent = content
       await saveCurrentNote(content)
+
+      this.scheduleRefreshFromDisk();
     },
 
     saveForce() {
@@ -289,6 +322,12 @@ export default {
       await this.editor.saveFunction(this.editor.getContent())
     },
 
+    setEditorContent(content) {
+      this.diskContent = content
+      let newState = this.editor.createState(content)
+      this.editor.view.setState(newState);
+    },
+
     /**
      * @param {string} name
      */
@@ -300,13 +339,11 @@ export default {
       }
       let content = await loadNote(name);
       console.log("Editor.openNote: loaded:", name)
-      this.diskContent = content
-      let newState = this.editor.createState(content)
-      this.editor.view.setState(newState);
       this.editor.setTheme(this.theme);
       // TODO: move this logic to App.onDocChanged
       // a bit magic: sometimes we open at the beginning, sometimes at the end
       // TODO: remember selection in memory so that we can restore during a session
+
       let pos = 0;
       if (name === kScratchNoteName) {
         pos = content.length
