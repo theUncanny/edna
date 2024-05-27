@@ -1,5 +1,5 @@
 import { ViewPlugin } from "@codemirror/view";
-import { debounce } from "debounce";
+import debounce from "debounce";
 import { isDocDirty } from "../state";
 
 export const autoSaveContent = (saveFunction, interval) => {
