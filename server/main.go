@@ -334,12 +334,10 @@ func humanSize(n int) string {
 
 func testCompress() {
 	logf("testCompress()\n")
-	emptyFrontEndBuildDir()
+	rebuildFrontend()
 	if hasBun() {
-		u.RunLoggedInDirMust(".", "bun", "install")
 		u.RunLoggedInDirMust(".", "bun", "run", "build")
 	} else if u.IsWindows() {
-		u.RunLoggedInDirMust(".", "yarn")
 		u.RunLoggedInDirMust(".", "yarn", "build")
 	}
 

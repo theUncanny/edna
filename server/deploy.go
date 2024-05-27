@@ -115,17 +115,6 @@ func copyToServerMaybeGzippedMust(client *goph.Client, sftp *sftp.Client, localP
 	}
 }
 
-func deleteOldBuilds() {
-	pattern := projectName + "-*"
-	files, err := filepath.Glob(pattern)
-	must(err)
-	for _, path := range files {
-		err = os.Remove(path)
-		must(err)
-		logf("deleted %s\n", path)
-	}
-}
-
 func validateSecrets(m map[string]string, wantedSecrets []string) {
 	for _, k := range wantedSecrets {
 		_, ok := m[k]
@@ -146,6 +135,18 @@ func emptyFrontEndBuildDir() {
 	createEmptyFile(filepath.Join(frontEndBuildDir, "gitkeep.txt"), "don't delete this folder\n")
 }
 
+func reinstallPackages() {
+	must(os.RemoveAll("node_modules"))
+	os.Remove("bun.lockb")
+	os.Remove("yarn.lock")
+	os.Remove("package-lock.json")
+	if hasBun() {
+		u.RunLoggedInDirMust(".", "bun", "install")
+	} else if u.IsWindows() {
+		u.RunLoggedInDirMust(".", "yarn", "install")
+	}
+}
+
 func hasBun() bool {
 	_, err := exec.LookPath("bun")
 	return err == nil
@@ -155,11 +156,10 @@ func rebuildFrontend() {
 	// assuming this is not deployment: re-build the frontend
 	emptyFrontEndBuildDir()
 	logf("deleted frontend dist dir '%s'\n", frontEndBuildDir)
+	reinstallPackages()
 	if hasBun() {
-		u.RunLoggedInDirMust(".", "bun", "install")
 		u.RunLoggedInDirMust(".", "bun", "run", "build")
 	} else if u.IsWindows() {
-		u.RunLoggedInDirMust(".", "yarn")
 		u.RunLoggedInDirMust(".", "yarn", "build")
 	}
 	// copy files from webapp\dist => server\dist
@@ -180,6 +180,18 @@ func getGitHashDateMust() (string, string) {
 }
 
 func buildForProd(forLinux bool) string {
+	{
+		// delete old builds
+		pattern := projectName + "-*"
+		files, err := filepath.Glob(pattern)
+		must(err)
+		for _, path := range files {
+			err = os.Remove(path)
+			must(err)
+			logf("deleted %s\n", path)
+		}
+	}
+
 	// re-build the frontend. remove build process artifacts
 	// to keep things clean
 	{
@@ -224,7 +236,6 @@ func buildForProd(forLinux bool) string {
 }
 
 func buildForProdLocal() string {
-	deleteOldBuilds()
 	exeName := buildForProd(false)
 	exeSize := u.FormatSize(u.FileSize(exeName))
 	logf("created:\n%s %s\n", exeName, exeSize)
@@ -238,7 +249,6 @@ How deploying to hetzner works:
 - run on hetzner
 */
 func deployToHetzner() {
-	deleteOldBuilds()
 	exeName := buildForProd(true)
 	panicIf(!u.FileExists(exeName), "file '%s' doesn't exist", exeName)
 	emptyFrontEndBuildDir()
