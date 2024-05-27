@@ -8,17 +8,16 @@ import {
 import { kSettingsPath, loadSettings } from "./settings";
 
 import { formatDateYYYYMMDD } from "./util";
-import { lazyLoadZipJs } from "./lazyimport";
 
 /**
+ * @param {any} libZip
  * @param {any} zipWriter
  * @param {string} fileName
  * @param {string} text
  */
-async function addTextFile(zipWriter, fileName, text) {
-  let zip = await lazyLoadZipJs();
+async function addTextFile(libZip, zipWriter, fileName, text) {
   let fileBlob = new Blob([text], { type: "text/plain" });
-  let blobReader = new zip.BlobReader(fileBlob);
+  let blobReader = new libZip.BlobReader(fileBlob);
   let opts = {
     level: 9,
   };
@@ -27,25 +26,26 @@ async function addTextFile(zipWriter, fileName, text) {
 
 export async function exportNotesToZip() {
   console.log("exportNotesToZip");
-  let zip = await lazyLoadZipJs();
-  let blobWriter = new zip.BlobWriter("application/zip");
-  let zipWriter = new zip.ZipWriter(blobWriter);
+  let libZip = await import("@zip.js/zip.js");
+  console.log("zipJS:", libZip);
+  let blobWriter = new libZip.BlobWriter("application/zip");
+  let zipWriter = new libZip.ZipWriter(blobWriter);
   let noteNames = await loadNoteNames();
   for (let name of noteNames) {
     let s = await loadNote(name);
     let fileName = notePathFromNameFS(name);
-    await addTextFile(zipWriter, fileName, s);
+    await addTextFile(libZip, zipWriter, fileName, s);
   }
   {
     let meta = await loadNotesMetadata();
     let s = JSON.stringify(meta, null, 2);
-    await addTextFile(zipWriter, kMetadataName, s);
+    await addTextFile(libZip, zipWriter, kMetadataName, s);
   }
   {
     // note: note sure if I should export this
     let settings = await loadSettings();
     let s = JSON.stringify(settings, null, 2);
-    await addTextFile(zipWriter, kSettingsPath, s);
+    await addTextFile(libZip, zipWriter, kSettingsPath, s);
   }
   let blob = await zipWriter.close();
   let name = "edna.notes.export-" + formatDateYYYYMMDD() + ".zip";
