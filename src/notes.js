@@ -419,7 +419,7 @@ function loadNoteLS(name) {
  * @param {string} name
  * @returns {Promise<string>}
  */
-export async function loadNote(name, preLoad = false) {
+export async function loadNote(name) {
   console.log("loadNote:", name);
   let content;
   if (isSystemNoteName(name)) {
@@ -432,9 +432,6 @@ export async function loadNote(name, preLoad = false) {
       let path = notePathFromNameFS(name);
       content = await fsReadTextFile(dh, path);
     }
-  }
-  if (preLoad) {
-    return content;
   }
   historyPush(name);
   // TODO: this should happen in App.vue:onDocChange(); this was easier to write
@@ -551,13 +548,13 @@ export async function preLoadAllNotes() {
   if (dh === null) {
     return;
   }
-  if (false) {
-    // when testing delays due to replication
-    return;
-  }
   let noteNames = await loadNoteNames();
   for (let name of noteNames) {
-    await loadNote(name, true);
+    if (isSystemNoteName(name)) {
+      continue;
+    }
+    let path = notePathFromNameFS(name);
+    await fsReadTextFile(dh, path);
   }
   return len(noteNames);
 }
