@@ -4,15 +4,6 @@ import {
   tsxLanguage,
   typescriptLanguage,
 } from "@codemirror/lang-javascript";
-import {
-  lazyLoadBabelPrettierPlugin,
-  lazyLoadCssPrettierPlugin,
-  lazyLoadHtmlPrettierPlugin,
-  lazyLoadMarkdownPrettierPlugin,
-  lazyLoadPrettierPluginEstree,
-  lazyLoadTypescriptPlugin,
-  lazyLoadYamlPrettierPlugin,
-} from "../lazyimport";
 
 import { StandardSQL } from "@codemirror/lang-sql";
 import { StreamLanguage } from "@codemirror/language";
@@ -369,15 +360,22 @@ export async function langGetPrettierInfo(lang) {
   console.log("getPrettierInfo:", lang.token);
   let token = lang.token;
   if (token == "json") {
-    let babelPrettierPlugin = await lazyLoadBabelPrettierPlugin();
-    let prettierPluginEstree = await lazyLoadPrettierPluginEstree();
+    let babelPrettierPlugin = (await import("prettier/plugins/babel.mjs"))
+      .default;
+    console.log("babelPrettierPlugin:", babelPrettierPlugin);
+    // import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
+    let prettierPluginEstree = await import("prettier/plugins/estree.mjs");
+    console.log("prettierPluginEstree:", prettierPluginEstree);
     return {
       parser: "json-stringify",
       plugins: [babelPrettierPlugin, prettierPluginEstree],
     };
   }
   if (token === "html") {
-    let htmlPrettierPlugin = await lazyLoadHtmlPrettierPlugin();
+    // import htmlPrettierPlugin from "prettier/esm/parser-html.mjs";
+    let htmlPrettierPlugin = (await import("prettier/plugins/html.mjs"))
+      .default;
+    console.log("htmlPrettierPlugin:", htmlPrettierPlugin);
     return {
       parser: "html",
       plugins: [htmlPrettierPlugin],
@@ -385,7 +383,10 @@ export async function langGetPrettierInfo(lang) {
   }
 
   if (token === "markdown") {
-    let markdownPrettierPlugin = await lazyLoadMarkdownPrettierPlugin();
+    // import markdownPrettierPlugin from "prettier/esm/parser-markdown.mjs";
+    let markdownPrettierPlugin = (await import("prettier/plugins/markdown.mjs"))
+      .default;
+    console.log("markdownPrettierPlugin:", markdownPrettierPlugin);
     return {
       parser: "markdown",
       plugins: [markdownPrettierPlugin],
@@ -393,7 +394,9 @@ export async function langGetPrettierInfo(lang) {
   }
 
   if (token === "css") {
-    let cssPrettierPlugin = lazyLoadCssPrettierPlugin();
+    let cssPrettierPlugin = (await import("prettier/plugins/postcss.mjs"))
+      .default;
+    console.log("cssPrettierPlugin:", cssPrettierPlugin);
     return {
       parser: "css",
       plugins: [cssPrettierPlugin],
@@ -401,7 +404,10 @@ export async function langGetPrettierInfo(lang) {
   }
 
   if (token === "yaml") {
-    let yamlPrettierPlugin = await lazyLoadYamlPrettierPlugin();
+    // import yamlPrettierPlugin from "prettier/plugins/yaml.mjs";
+    let yamlPrettierPlugin = (await import("prettier/plugins/yaml.mjs"))
+      .default;
+    console.log("yamlPrettierPlugin:", yamlPrettierPlugin);
     return {
       parser: "yaml",
       plugins: [yamlPrettierPlugin],
@@ -409,16 +415,25 @@ export async function langGetPrettierInfo(lang) {
   }
 
   if (token === "javascript" || token === "jsx") {
-    let babelPrettierPlugin = await lazyLoadBabelPrettierPlugin();
-    let prettierPluginEstree = await lazyLoadPrettierPluginEstree();
+    let babelPrettierPlugin = (await import("prettier/plugins/babel.mjs"))
+      .default;
+    console.log("babelPrettierPlugin:", babelPrettierPlugin);
+    // import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
+    let prettierPluginEstree = await import("prettier/plugins/estree.mjs");
+    console.log("prettierPluginEstree:", prettierPluginEstree);
     return {
       parser: "babel",
       plugins: [babelPrettierPlugin, prettierPluginEstree],
     };
   }
+
   if (token === "typescript" || token === "tsx") {
-    let typescriptPlugin = await lazyLoadTypescriptPlugin();
-    let prettierPluginEstree = await lazyLoadPrettierPluginEstree();
+    let typescriptPlugin = (await import("prettier/plugins/typescript.mjs"))
+      .default;
+    console.log("typescriptPlugin:", typescriptPlugin);
+    // import * as prettierPluginEstree from "prettier/plugins/estree.mjs";
+    let prettierPluginEstree = await import("prettier/plugins/estree.mjs");
+    console.log("prettierPluginEstree:", prettierPluginEstree);
     return {
       parser: "typescript",
       plugins: [typescriptPlugin, prettierPluginEstree],

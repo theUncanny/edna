@@ -8,7 +8,6 @@ import {
 import { EditorSelection } from "@codemirror/state";
 import { findEditorByView } from "../../state.js";
 import { getActiveNoteBlock } from "./block.js";
-import { lazyLoadPrettier } from "../../lazyimport.js";
 
 async function formatGo(s) {
   // setProcessingMessage("Formatting code...");
@@ -109,7 +108,8 @@ export async function formatBlockContent(view) {
     useFormat = true;
   }
 
-  const prettier = await lazyLoadPrettier();
+  let prettier = await import("prettier/standalone");
+  console.log("prettier:", prettier);
   const { parser, plugins } = await langGetPrettierInfo(language);
 
   let formattedContent;
