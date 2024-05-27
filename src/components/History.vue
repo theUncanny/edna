@@ -37,7 +37,24 @@ export default {
       let nItems = len(this.items);
       let selectedIdx = this.selected;
 
-      if (event.key === "ArrowDown") {
+      let key = event.key;
+
+      // '0' ... '9' picks an item
+      let idx = key.charCodeAt(0) - '0'.charCodeAt(0);
+      if (idx >= 0 && idx < nItems) {
+        event.preventDefault();
+        let item = this.items[idx];
+        console.log("idx:", idx, "item:", item);
+        if (idx == 0) {
+          // perf: selecting current note is a no-op
+          this.$emit("close");
+          return;
+        }
+        this.selectItem(item.name);
+        return;
+      }
+
+      if (key === "ArrowDown") {
         event.preventDefault()
         if (selectedIdx >= nItems - 1) {
           // wrap around
@@ -52,7 +69,10 @@ export default {
           let el = this.$refs.item[selectedIdx];
           el.scrollIntoView({ block: "nearest" })
         }
-      } else if (event.key === "ArrowUp") {
+        return;
+      }
+
+      if (key === "ArrowUp") {
         event.preventDefault()
         if (selectedIdx > 0) {
           selectedIdx -= 1
@@ -68,18 +88,25 @@ export default {
         } else {
           this.$refs.item[selectedIdx].scrollIntoView({ block: "nearest" })
         }
-      } else if (event.key === "Enter") {
+        return;
+      }
+
+      if (key === "Enter") {
+        event.preventDefault()
         const selected = this.items[this.selected]
         if (selected) {
           this.selectItem(selected.name)
         } else {
           this.$emit("close")
         }
-        event.preventDefault()
-      } else if (event.key === "Escape") {
+        return;
+      }
+
+      if (key === "Escape") {
         event.preventDefault()
         event.stopImmediatePropagation()
         this.$emit("close")
+        return;
       }
     },
 
@@ -105,8 +132,12 @@ export default {
         opened</div>
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in items" :key="item.name" :class="idx === selected ? 'selected' : ''"
-          class="cursor-pointer py-0.5 px-2 rounded-sm leading-5" @click="selectItem(item.name)" ref="item">
-          {{ item.name }}
+          class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5" @click="selectItem(item.name)" ref="item">
+          <div class="truncate">
+            {{ item.name }}
+          </div>
+          <div class="grow"></div>
+          <div v-if="idx < 10">{{ idx }}</div>
         </li>
       </ul>
     </form>

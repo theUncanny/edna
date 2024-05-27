@@ -4,7 +4,7 @@
 
 ## 1.3
 
-* `Esc` and `Ctrl + E` for history selection
+* `Esc` or `Ctrl + E` for quickly switching to recently opened notes
 * show note name in the upper right corner
 
 ## 1.2

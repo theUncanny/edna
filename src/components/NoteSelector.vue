@@ -243,7 +243,10 @@ export default {
       }
       let nItems = len(this.filteredItems);
       let selectedIdx = this.selected;
-      if (event.key === "ArrowDown") {
+
+      let key = event.key;
+
+      if (key === "ArrowDown") {
         event.preventDefault()
         if (selectedIdx >= nItems - 1) {
           // wrap around
@@ -258,7 +261,10 @@ export default {
           let el = this.$refs.item[selectedIdx];
           el.scrollIntoView({ block: "nearest" })
         }
-      } else if (event.key === "ArrowUp") {
+        return;
+      }
+
+      if (key === "ArrowUp") {
         event.preventDefault()
         if (selectedIdx > 0) {
           selectedIdx -= 1
@@ -274,7 +280,10 @@ export default {
         } else {
           this.$refs.item[selectedIdx].scrollIntoView({ block: "nearest" })
         }
-      } else if (event.key === "Enter") {
+        return;
+      }
+
+      if (key === "Enter") {
         event.preventDefault()
         let name = this.sanitizedFilter;
         console.log("selected:", selectedIdx, "name:", name);
@@ -303,11 +312,15 @@ export default {
         } else {
           this.$emit("close")
         }
-      } else if (event.key === "Escape") {
+        return;
+      }
+
+      if (key === "Escape") {
         event.preventDefault()
         event.stopImmediatePropagation()
         // TODO: we also call onFocusOut() and emit "close" event twice
         this.$emit("close")
+        return;
       }
     },
 
