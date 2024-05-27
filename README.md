@@ -78,6 +78,8 @@ See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.ht
 **On Mac**
 
 ```
+⌘ + P               Open another note
+⌘ + E               Open recent note
 ⌘ + Enter           Add new block below the current block
 ⌥ + Enter           Add new block before the current block
 ⌘ + Shift + Enter   Add new block at the end of the buffer
@@ -95,6 +97,8 @@ See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.ht
 **On Windows and Linux**
 
 ```
+Ctrl + P               Open another note
+Ctrl + E               Open recent note
 Ctrl + Enter           Add new block below the current block
 Alt + Enter            Add new block before the current block
 Ctrl + Shift + Enter   Add new block at the end of the buffer

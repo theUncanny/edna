@@ -362,7 +362,7 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form class="selector left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col w-[32em] top-0 absolute p-3 "
+    <form class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] max-h-[94vh] flex flex-col w-[32em] p-3"
       tabindex="-1" @focusout="onFocusOut" ref="container">
       <input type="text" ref="input" @keydown="onKeydown" @input="onInput" v-model="filter"
         class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />

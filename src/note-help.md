@@ -4,9 +4,9 @@
 
 [Edna](https://edna.arslexis.io) is a scratchpad and note taker for developers and power users.
 
-This is a help note. To switch to a different note, press `Mod + K`.
+This is a help note. To switch to a different note, press `Mod + P`.
 
-To see help in HTML, press `?` at the bottom right or visit https://edna.arslexis.io/help
+To see help in HTML, press `Help` at the bottom right or visit https://edna.arslexis.io/help
 
 ∞∞∞markdown
 # Keyboard shortcuts
@@ -20,16 +20,24 @@ To see help in HTML, press `?` at the bottom right or visit https://edna.arslexi
 
 [Edna](https://edna.arslexis.io) is optimized for speed of note taking.
 
-Use `Mod + K` to show note selector and:
+Press `Mod + P` to show note selector and:
 - switch between notes
 - create new note
 - delete a note
 - assign a quick access `Alt + N` shortcut
 
+## Switch to recently opened note
+
+Press `Mod + E` or `Esc` to switch to a note from list of recently opened notes.
+
+First 10 recently opened notes get `0' ... `9` shortcut.
+
+To switch to previous note: press `Esc` and `Enter`.
+
 ## Quick access shortcut
 
 You can assign `Alt + 0` to `Alt + 9` for quickly accessing notes:
-- `Mod + K` for note selector dialog
+- `Mod + P` for note selector dialog
 - select a note
 - press `Alt + 0` to `Alt + 9` to assign it as quick access shortcut
 
@@ -38,7 +46,7 @@ You can assign `Alt + 0` to `Alt + 9` for quickly accessing notes:
 - `Alt + 2` : daily journal
 - `Alt + 3` : inbox
 
-Notes with quick access shortcut are shown at the top of note selector (`Ctrl + K`).
+Notes with quick access shortcut are shown at the top of note selector (`Mod + P`).
 
 ## Blocks and notes
 
@@ -80,7 +88,7 @@ The code block must be a valid Go program.
 
 ## Create a new note
 
-- `Mod + K` to open note selector
+- `Mod + P` to open note selector
 - type name of the note to create
 - `Enter` to create if the name doesn't match any existing note
 - `Mod + Enter` to create if the name partially matches an existing note
@@ -95,7 +103,7 @@ We'll auto-create a unique name `scratch-N`
 
 Right-click for context menu, `Note / Delete current note`, or:
 
-- `Mod + K`
+- `Mod + P`
 - select a note with arrow key or by typing a partial name match
 - `Mod + Delete` or `Mod + Backspace` to delete selected note
 
@@ -113,7 +121,7 @@ You can efficiently move between blocks, create new blocks and delete them with 
 
 ## Open a different note
 
-- `Mod + K`
+- `Mod + P`
 - click on note to open or
 - enter text to narrow down list of notes
 - `up` / `down` arrow keys to select a note
@@ -123,11 +131,16 @@ You can efficiently move between blocks, create new blocks and delete them with 
 
 You can assign `Alt + 0` to `Alt + 9` keyboard shortcuts for quickly opening up to 10 notes.
 
-- `Mod + K`
+- `Mod + P`
 - select a note
 - press `Alt + N` shortcut to re-assign it to selected note
 
-Notes with assigned shortcut show up at the top of note selector (`Mod + K`).
+Notes with assigned shortcut show up at the top of note selector (`Mod + P`).
+
+## Open recent note
+
+Press `Mod + E` or `Esc`.
+
 
 ∞∞∞markdown
 # Default notes

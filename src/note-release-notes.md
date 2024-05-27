@@ -4,7 +4,7 @@
 
 ## 1.3
 
-* `Esc` or `Ctrl + E` for quickly switching to recently opened notes
+* `Esc` or `Mod + E` for quickly switching to recently opened notes
 * show note name in the upper right corner
 
 ## 1.2
@@ -26,7 +26,7 @@ The first release since forking Heynote. Changes from Heynote:
   * delete / rename notes
 * store notes either in browser (localStorage) or directory on disk
 * context menu with most frequent operations
-* add Ctrl + K shortcut for note switcher
+* add Mod + P shortcut for note switcher
 * add formatting and execution of Go
 * add svelte and vue languages syntax highlighting
 * set window title based on note name

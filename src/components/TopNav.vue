@@ -24,7 +24,8 @@ export default {
 
 </script>
 <template>
-  <div class="topnav fixed top-0 flex items-center z-50 shadow-xl px-1 py-[2px]" :style="topnavStyle">
+  <div class="topnav fixed top-0 flex items-center z-50 px-1 py-[2px] mt-[-1px] border-gray-400 border"
+    :style="topnavStyle">
     <div class="title clickable max-w-32 truncate" @click="$emit('openNoteSelector')" :title="noteName">
       {{ noteName }}
     </div>

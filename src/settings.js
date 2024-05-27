@@ -58,7 +58,14 @@ export function updateWebsiteTheme() {
   if (theme === "system") {
     theme = mediaMatch.matches ? "dark" : "light";
   }
-  document.documentElement.setAttribute("theme", theme);
+  console.log("setting theme:", theme);
+  let el = document.documentElement;
+  el.setAttribute("theme", theme);
+  if (theme === "dark") {
+    el.classList.add("dark");
+  } else {
+    el.classList.remove("dark");
+  }
 }
 
 mediaMatch.addEventListener("change", async () => {
