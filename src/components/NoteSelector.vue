@@ -362,9 +362,8 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form @keydown="onKeydown"
-      class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col w-[32em] p-3" tabindex="-1"
-      @focusout="onFocusOut" ref="container">
+    <form @keydown="onKeydown" class="selector absolute center-x-with-translate top-[2rem] flex flex-col w-[32em] p-3"
+      tabindex="-1" @focusout="onFocusOut" ref="container">
       <input type="text" ref="input" @input="onInput" v-model="filter"
         class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
       <ul class="items overflow-y-auto">

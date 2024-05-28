@@ -158,7 +158,7 @@ export default {
   background: #eee;
 }
 
-html[theme=dark] .keyboard-hotkey {
+html.dark .keyboard-hotkey {
   border: 1px solid #666;
   background: #555;
 }

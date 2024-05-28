@@ -209,13 +209,13 @@ export default {
 </template>
 
 <style scoped>
-html[theme=dark] .dialog {
+html.dark .dialog {
   background: #333;
   color: #eee;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
 }
 
-html[theme=dark] .sidebar {
+html.dark .sidebar {
   border-right: 1px solid #222;
 }
 
@@ -223,7 +223,7 @@ html[theme=dark] .sidebar {
   height: 22px;
 }
 
-html[theme=dark] .settings-content select {
+html.dark .settings-content select {
   background: #222;
   color: #eee;
 }
@@ -266,7 +266,7 @@ html[theme=dark] .settings-content select {
   left: -3px;
 }
 
-html[theme=dark] .bottom-bar {
+html.dark .bottom-bar {
   background: #222;
 }
 
@@ -278,7 +278,7 @@ html[theme=dark] .bottom-bar {
   background-color: lightgray;
 }
 
-html[theme=dark] .bottom-bar .close:hover {
+html.dark .bottom-bar .close:hover {
   background: #333;
   color: #eee;
 }

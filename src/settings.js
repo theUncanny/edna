@@ -60,7 +60,6 @@ export function updateWebsiteTheme() {
   }
   console.log("setting theme:", theme);
   let el = document.documentElement;
-  el.setAttribute("theme", theme);
   if (theme === "dark") {
     el.classList.add("dark");
   } else {

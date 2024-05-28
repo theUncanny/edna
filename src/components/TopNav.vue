@@ -58,7 +58,7 @@ export default {
   color: #333;
 }
 
-html[theme="dark"] .topnav {
+html.dark .topnav {
   background-color: #29292a;
   color: rgba(255, 255, 255, 0.87);
 }
@@ -74,7 +74,7 @@ html[theme="dark"] .topnav {
   color: #939393;
 }
 
-html[theme="dark"] .shortcut {
+html.dark .shortcut {
   color: #a3a3a3;
 }
 
@@ -90,7 +90,7 @@ html[theme="dark"] .shortcut {
   }
 }
 
-html[theme="dark"] .clickable {
+html.dark .clickable {
   &:hover {
     background-color: #49494a;
   }

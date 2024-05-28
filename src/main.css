@@ -5,13 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
-:root,
-:root[theme="light"] {
+:root {
   --status-bar-background: #487eb5;
   --status-bar-color: #fff;
 }
 
-:root[theme="dark"] {
+html.dark {
   --status-bar-background: #0e1712;
   --status-bar-color: rgba(255, 255, 255, 0.75);
 }
@@ -33,7 +32,7 @@ body {
   overscroll-behavior-y: none;
 }
 
-html[theme="dark"] body {
+html.dark body {
   background: #252b37;
 }
 
@@ -82,7 +81,7 @@ input {
   }
 }
 
-html[theme="dark"] input {
+html.dark input {
   background: #3b3b3b;
   color: rgba(255, 255, 255, 0.9);
   border: 1px solid #5a5a5a;
@@ -92,7 +91,7 @@ html[theme="dark"] input {
 }
 
 @media (max-width: 600px) {
-  html[webapp] input {
+  html.webapp input {
     font-size: 16px;
     max-width: 100%;
   }
@@ -100,7 +99,7 @@ html[theme="dark"] input {
 
 /* note selector, language selector, history selector */
 @media (max-width: 600px) {
-  html[webapp] .selector {
+  html.webapp .selector {
     max-width: calc(100% - 80px);
   }
 }
@@ -109,9 +108,10 @@ html[theme="dark"] input {
   font-size: 13px;
   background: #efefef;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-height: calc(100% - 4rem);
 }
 
-html[theme="dark"] .selector {
+html.dark .selector {
   background: #151516;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
@@ -125,20 +125,20 @@ html[theme="dark"] .selector {
   color: #fff;
 }
 
-html[theme="dark"] .selector .items > li {
+html.dark .selector .items > li {
   color: rgba(255, 255, 255, 0.53);
 }
 
-html[theme="dark"] .selector .items > li:hover {
+html.dark .selector .items > li:hover {
   background: #29292a;
 }
 
-html[theme="dark"] .selector .items > li.selected {
+html.dark .selector .items > li.selected {
   background: #1b6540;
   color: rgba(255, 255, 255, 0.87);
 }
 
-html[theme="dark"] .selector .kbd-grid {
+html.dark .selector .kbd-grid {
   color: rgba(255, 255, 255, 0.53);
 }
 
@@ -151,7 +151,7 @@ html[theme="dark"] .selector .kbd-grid {
   background-color: white;
 }
 
-html[theme="dark"] .selector .kbd {
+html.dark .selector .kbd {
   background-color: #3b3b3b;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -160,7 +160,7 @@ html[theme="dark"] .selector .kbd {
   color: red;
 }
 
-html[theme="dark"] .selector .red {
+html.dark .selector .red {
   color: #ff7b72;
 }
 

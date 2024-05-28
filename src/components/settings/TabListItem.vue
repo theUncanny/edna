@@ -26,7 +26,7 @@ li:hover {
   background: #f1f1f1;
 }
 
-html[theme=dark] li:hover {
+html.dark li:hover {
   background: #292929;
 }
 
@@ -36,7 +36,7 @@ li.active {
   cursor: default;
 }
 
-html[theme=dark] li.active {
+html.dark li.active {
   background: #1b6540;
 }
 </style>

@@ -146,7 +146,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-html[theme=dark] .status-block .icon {
+html.dark .status-block .icon {
   opacity: 0.9;
 }
 
@@ -158,11 +158,11 @@ html[theme=dark] .status-block .icon {
   color: white;
 }
 
-html[theme=dark] .line-number {
+html.dark .line-number {
   color: rgba(255, 255, 255, 0.55);
 }
 
-html[theme=dark] .line-number .num {
+html.dark .line-number .num {
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -170,7 +170,7 @@ html[theme=dark] .line-number .num {
   color: rgba(255, 255, 255, 0.7);
 }
 
-html[theme=dark] .lang .auto {
+html.dark .lang .auto {
   color: rgba(255, 255, 255, 0.55);
 }
 </style>
