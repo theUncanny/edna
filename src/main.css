@@ -60,6 +60,11 @@ html[theme="dark"] body {
   transform: translate(-50%, -50%);
 }
 
+.center-x-with-translate {
+  left: 50%;
+  transform: translate(-50%);
+}
+
 .no-border-outlineactive,
 .no-border-outline:selected,
 .no-border-outline:focus,

@@ -12,6 +12,12 @@ export default {
     }
   },
 
+  mounted() {
+    console.log("RenameNote mounted: oldName:", this.oldName)
+    this.newName = this.oldName;
+    /** @type {HTMLElement} */(this.$refs.input).focus();
+  },
+
   computed: {
     sanitizedNewName() {
       return sanitizeNoteName(this.newName)
@@ -59,10 +65,11 @@ export default {
       }
     },
 
-    focusInput() {
-      console.log("focusInput")
-      let input = /** @type {HTMLElement} */(this.$refs.input);
-      input.focus();
+    onFocusOut(event) {
+      let container = /** @type {HTMLElement} */(this.$refs.container);
+      if (container !== event.relatedTarget && !container.contains(event.relatedTarget)) {
+        this.$emit("close")
+      }
     },
 
     emitRename() {
@@ -70,27 +77,22 @@ export default {
     }
   },
 
-  mounted() {
-    console.log("RenameNote mounted: oldName:", this.oldName)
-    this.newName = this.oldName
-    this.focusInput()
-  },
-
 }
 </script>
 
 <template>
   <div class="fixed inset-0">
-    <form @keydown="onKeydown" tabindex="-1"
-      class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] z-20 flex flex-col bg-white max-w-full max-h-full rounded shadow-xl w-[640px] center-with-translate overflow-y-auto no-border-outline px-4 py-4">
+    <form ref="container" @keydown="onKeydown" @focusout="onFocusOut" tabindex="-1"
+      class="selector absolute center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full p-3">
       <div>Rename <span class="font-bold">{{ oldName }}</span> to:</div>
-      <input ref="input" v-model="newName" class="p-2 border mt-2"></input>
-      <div class="text-sm mt-2">New name: <span class="font-bold">"{{ sanitizedNewName }}"</span> <span
-          v-if="!canRename" class="text-red-500 font-bold">{{ renameError }}</span></div>
+      <input ref="input" v-model="newName" class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"></input>
+      <div class=" text-sm mt-2">New name: <span class="font-bold">"{{ sanitizedNewName }}"</span> <span
+          v-if="!canRename" class="text-red-500 font-bold">{{ renameError }}</span>
+      </div>
       <div class="flex justify-end mt-2">
         <button @click="$emit('close')" class="mr-4 px-4 py-1 border border-black hover:bg-gray-100">Cancel</button>
         <button @click="emitRename" :disabled="!canRename"
-          class="px-4 py-1 border border-black hover:bg-gray-100 disabled:text-gray-200 disabled:border-gray-200 disabled:hover:bg-white default:bg-slate-700"
+          class="px-4 py-1 border border-black hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-400  default:bg-slate-700"
           default>Rename</button>
       </div>
     </form>

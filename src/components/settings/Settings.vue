@@ -101,7 +101,7 @@ export default {
 <template>
   <div class="fixed inset-0">
     <div
-      class="dialog gray-700 absolute z-20 flex flex-col bg-white max-w-full max-h-full rounded shadow-xl w-[640px] h-[460px] center-with-translate overflow-y-auto no-border-outline">
+      class="dialog gray-700 absolute top-[2rem] z-20 flex flex-col bg-white max-w-full max-h-full rounded shadow-xl w-[640px] h-[460px] center-x-with-translate overflow-y-auto no-border-outline">
       <div class="flex grow">
         <nav class="sidebar w-[140px] pt-[20px] border-r border-gray-300 border-solid">
           <h1 class="text-[16px] font-bold mb-[20px] py-0 px-[20px]">Settings</h1>

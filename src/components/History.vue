@@ -126,8 +126,7 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form
-      class="absolute left-1/2 -translate-x-1/2 max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
+    <form class="absolute center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
       tabindex="-1" @focusout="onFocusOut" ref="container" @keydown="onKeydown">
       <div class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center dark:text-gray-400">Recently
         opened</div>

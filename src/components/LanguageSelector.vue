@@ -22,10 +22,7 @@ export default {
   },
 
   mounted() {
-    // @ts-ignore
-    this.$refs.container.focus()
-    // @ts-ignore
-    this.$refs.input.focus()
+    /** @type {HTMLElement} */(this.$refs.input).focus();
   },
 
   computed: {
@@ -125,9 +122,9 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] max-h-[94vh] flex flex-col p-3" tabindex="-1"
-      @focusout="onFocusOut" ref="container">
-      <input type="text" ref="input" @keydown="onKeydown" @input="onInput" v-model="filter"
+    <form ref="container" @keydown="onKeydown" @focusout="onFocusOut" tabindex="-1"
+      class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3">
+      <input type="text" ref="input" @input="onInput" v-model="filter"
         class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in filteredItems" :key="item.token" :class="idx === selected ? 'selected' : ''"

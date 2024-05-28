@@ -36,8 +36,8 @@ export default {
     <div v-if="shortcut" class="shortcut">
       {{ shortcut }}
     </div>
-    <a class="help clickable" href="/help" title="documentation" target="_blank">Help</a>
-    <a class="help clickable mt-[1px]" href="https://github.com/kjk/edna" target="_blank" title="source on GitHub">
+    <a class="help clickable" href="/help" title="Documentation" target="_blank">Help</a>
+    <a class="help clickable mt-[1px]" href="https://github.com/kjk/edna" target="_blank" title="Source code on GitHub">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="1em" height="1em"
         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
         stroke-linejoin="round">
