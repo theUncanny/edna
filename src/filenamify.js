@@ -7,6 +7,7 @@
 const reInvalidFileNames = /^(con|prn|aux|nul|com\d|lpt|\.|\.\.|\d)$/i;
 
 /**
+ * escape each char code of the string as its %NNNN hex code
  * @param {string} s
  * @returns {string}
  */
@@ -57,7 +58,7 @@ function charCodeNeedsEscaping(cc) {
   if (cc >= ccA && cc <= ccZ) {
     return false;
   }
-  return cchValid.includes(cc);
+  return !cchValid.includes(cc);
 }
 
 /**
@@ -68,8 +69,6 @@ export function toFileName(s) {
   if (reInvalidFileNames.test(s)) {
     return stringHexEscape(s);
   }
-  // I think this ensures that char and codePoint will be the same
-  // s = s.normalize("NFD");
   let n = s.length;
   /** @type {string[]} */
   let res = Array(n);
@@ -115,24 +114,31 @@ let failed = [];
 
 /**
  * @param {string} s
+ * @param {string} exp
  */
-function test(s) {
-  let fn = toFileName(s);
-  let decoded = fromFileName(fn);
-  if (s !== decoded) {
-    console.log(`fail! '${s}' => '${fn}', decoded: '${decoded}'`);
-    failed.push(s);
+function test(s, exp) {
+  let encoded = toFileName(s);
+  let decoded = fromFileName(encoded);
+  if (encoded != exp || s !== decoded) {
+    console.log(
+      `fail! '${s}' => '${encoded}', exp: '${exp}', decoded: '${decoded}'`
+    );
+    failed.push(s, exp);
   } else {
-    console.log(`ok! ${s} => ${fn} ok!`);
+    console.log(`ok! ${s} => ${encoded} ok!`);
   }
 }
 
 function printFailed() {
-  for (let s of failed) {
-    let fn = toFileName(s);
-    let decoded = fromFileName(fn);
+  let n = failed.length / 2;
+  for (let i = 0; i < n; i += 2) {
+    let s = failed[i];
+    let exp = failed[i + 1];
+    let encoded = toFileName(s);
+    let decoded = fromFileName(encoded);
     console.log(`failed encoding/decoding`);
-    console.log(`  encoded: '${fn}`);
+    console.log(`  encoded: '${encoded}`);
+    console.log(`      exp: '${exp}`);
     console.log(`     orig: '${s}`);
     console.log(`  decoded: '${decoded}`);
   }
@@ -141,18 +147,35 @@ function printFailed() {
 if (true) {
   let toTest = [
     "%",
+    "%0025",
+    "lala",
     "lala",
     "con",
+    "%0063%006f%006e",
     ".",
+    "%002e",
     "..",
+    "%002e%002e",
+    "foo  ",
     "foo  ",
     "gri<ll",
-    "is%here",
+    "gri%003cll",
+    "is%he",
+    "is%0025he",
     "og\u009F",
+    "og%009f",
     "laé",
+    "la%00e9",
+    "✨",
+    "%2728",
+    "draft: hello",
+    "draft%003a hello",
   ];
-  for (let s of toTest) {
-    test(s);
+  let n = toTest.length / 2;
+  for (let i = 0; i < n; i++) {
+    let s = toTest[i * 2];
+    let exp = toTest[i * 2 + 1];
+    test(s, exp);
   }
   printFailed();
 }
