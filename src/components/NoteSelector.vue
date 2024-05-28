@@ -362,9 +362,10 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] max-h-[94vh] flex flex-col w-[32em] p-3"
+    <form @keydown="onKeydown"
+      class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] max-h-[94vh] flex flex-col w-[32em] p-3"
       tabindex="-1" @focusout="onFocusOut" ref="container">
-      <input type="text" ref="input" @keydown="onKeydown" @input="onInput" v-model="filter"
+      <input type="text" ref="input" @input="onInput" v-model="filter"
         class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in filteredItems" :key="item.name"
@@ -393,11 +394,11 @@ export default {
         <div v-if="showDelete"><span class="kbd">Ctrl + Delete</span></div>
         <div v-if="showDelete" class="red">delete note</div>
         <div v-if="showDelete && canDeleteSelected" class="font-bold truncate">{{
-        quoteNoteName(selectedName)
-      }}
+      quoteNoteName(selectedName)
+    }}
         </div>
         <div v-if="showDelete && !canDeleteSelected"><span class="red">can't delete <span class="font-bold truncate">{{
-        quoteNoteName(selectedName) }}</span></span></div>
+      quoteNoteName(selectedName) }}</span></span></div>
 
         <div><span class="kbd">{{ altChar }} + 0...9</span></div>
         <div class="col-span-2">assign quick access shortcut</div>

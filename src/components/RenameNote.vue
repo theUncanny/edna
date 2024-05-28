@@ -40,14 +40,22 @@ export default {
   },
 
   methods: {
+    /**
+     * @param {KeyboardEvent} event
+     */
     onKeydown(event) {
-      if (event.key === "Escape") {
+      let key = event.key;
+
+      if (key === "Escape") {
+        event.preventDefault()
+        event.stopImmediatePropagation()
         this.$emit("close")
+        return;
       }
-      if (this.canRename) {
-        if (event.key === "Enter") {
-          this.emitRename();
-        }
+
+      if (this.canRename && key === "Enter") {
+        this.emitRename();
+        return;
       }
     },
 
@@ -74,7 +82,7 @@ export default {
 <template>
   <div class="fixed inset-0">
     <form @keydown="onKeydown" tabindex="-1"
-      class="text-base gray-700 absolute z-20 flex flex-col bg-white max-w-full max-h-full rounded shadow-xl w-[640px] center-with-translate overflow-y-auto no-border-outline px-4 py-4">
+      class="selector absolute left-1/2 -translate-x-1/2 top-[2rem] z-20 flex flex-col bg-white max-w-full max-h-full rounded shadow-xl w-[640px] center-with-translate overflow-y-auto no-border-outline px-4 py-4">
       <div>Rename <span class="font-bold">{{ oldName }}</span> to:</div>
       <input ref="input" v-model="newName" class="p-2 border mt-2"></input>
       <div class="text-sm mt-2">New name: <span class="font-bold">"{{ sanitizedNewName }}"</span> <span

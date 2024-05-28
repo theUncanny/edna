@@ -132,6 +132,10 @@ export default {
   },
 
   computed: {
+    isShowingDialog() {
+      return this.showingHelp || this.showingHistorySelector || this.showingLanguageSelector || this.showingMenu || this.showingRenameNote || this.showingNoteSelector || this.showingSettings
+    },
+
     noteShortcut() {
       let name = this.noteName;
       let m = getMetadataForNote(name)
@@ -186,19 +190,21 @@ export default {
     },
 
     /**
-     * @param {KeyboardEvent} e
+     * @param {KeyboardEvent} event
      */
-    onKeyDown(e) {
+    onKeyDown(event) {
 
-      if (e.key === "Escape") {
-        if (this.showingHistorySelector || this.showingHelp || this.showingLanguageSelector || this.showingNoteSelector) {
+      if (event.key === "Escape") {
+        if (this.isShowingDialog) {
           return;
         }
+        event.preventDefault()
+        event.stopImmediatePropagation()
         this.openHistorySelector()
         return
       }
 
-      // if (e.key === "F2") {
+      // if (event.key === "F2") {
       //   console.log("F2");
       //   let undoAction = () => {
       //     console.log("undoAction")
@@ -216,7 +222,7 @@ export default {
       // TODO: can I do this better? The same keydown event that sets the Alt-N shortcut
       // in NoteSelector also seems to propagate here and immediately opens the note.
       if (!this.showingNoteSelector) {
-        let altN = isAltNumEvent(e)
+        let altN = isAltNumEvent(event)
         // console.log("onKeyDown: e:", e, "altN:", altN)
         if (altN) {
           let meta = getNotesMetadata()
@@ -224,7 +230,7 @@ export default {
             if (o.altShortcut == altN && o.name !== this.noteName) {
               // console.log("onKeyDown: opening note: ", o.name, " altN:", altN, " e:", e)
               this.openNote(o.name)
-              e.preventDefault()
+              event.preventDefault()
               return
             }
           }
@@ -233,11 +239,11 @@ export default {
 
       // hack: stop Ctrl + O unless it originates from code mirror (because then it
       // triggers NoteSelector.vue)
-      if (e.key == "o" && e.ctrlKey && !e.altKey && !e.shiftKey) {
-        let target = /** @type {HTMLElement} */ (e.target);
+      if (event.key == "o" && event.ctrlKey && !event.altKey && !event.shiftKey) {
+        let target = /** @type {HTMLElement} */ (event.target);
         let fromCodeMirror = target && target.className.includes("cm-content")
         if (!fromCodeMirror) {
-          e.preventDefault()
+          event.preventDefault()
         }
       }
     },

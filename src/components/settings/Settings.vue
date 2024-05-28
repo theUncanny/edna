@@ -61,9 +61,17 @@ export default {
   },
 
   methods: {
+    /**
+     * @param {KeyboardEvent} event
+     */
     onKeyDown(event) {
-      if (event.key === "Escape") {
+      let key = event.key;
+
+      if (key === "Escape") {
+        event.preventDefault()
+        event.stopImmediatePropagation()
         this.$emit("close")
+        return;
       }
     },
 

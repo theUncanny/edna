@@ -31,9 +31,13 @@ export default {
 
   methods: {
     onKeydown(event) {
-      if (event.key === "Escape") {
+      let key = event.key;
+
+      if (key === "Escape") {
+        event.preventDefault()
+        event.stopImmediatePropagation()
         this.$emit("close");
-        event.preventDefault();
+        return;
       }
     },
 
