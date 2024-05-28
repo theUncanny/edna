@@ -308,11 +308,8 @@ export default {
 
       let modChar = getModChar();
       let altChar = getAltChar();
-      let theme = document.documentElement.getAttribute("theme")
-      let menuTheme = "default"
-      if (theme == "dark") {
-        menuTheme = "default dark"
-      }
+      let isDark = document.documentElement.classList.contains("dark");
+      let menuTheme = isDark ? "default dark" : "default";
       e.preventDefault();
       this.showingMenu = true
       let canDelete = this.canDeleteNote();
