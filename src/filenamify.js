@@ -2,10 +2,9 @@
 // https://github.com/sindresorhus/filenamify/blob/main/filenamify.js
 // https://gist.github.com/barbietunnie/7bc6d48a424446c44ff4
 
-const reControlChars = /[\u0000-\u001F\u0080-\u009F]/g;
-// file names that are invalid on windows
+// those are strings are that are not valid names
+// "con", "prn" etc. are for windows
 const reInvalidFileNames = /^(con|prn|aux|nul|com\d|lpt|\.|\.\.|\d)$/i;
-var reIllegal = /[\/\?<>\\:\*\|":]/g;
 
 /**
  * @param {string} s
@@ -14,18 +13,51 @@ var reIllegal = /[\/\?<>\\:\*\|":]/g;
 function stringHexEscape(s) {
   let hexArray = [];
   for (let i = 0; i < s.length; i++) {
-    let chex = "%" + s.charCodeAt(i).toString(16);
+    let c = s.charCodeAt(i);
+    let hex = c.toString(16).padStart(4, "0");
+    let chex = "%" + hex;
     hexArray.push(chex);
   }
   return hexArray.join("");
 }
 
+const cc0 = "0".charCodeAt(0);
+const cc9 = "9".charCodeAt(0);
+const cca = "a".charCodeAt(0);
+const ccz = "z".charCodeAt(0);
+const ccA = "A".charCodeAt(0);
+const ccZ = "Z".charCodeAt(0);
+
+// / ? < > \ : * | " <= those are not valid
+// I also decided not to include: ; ` '
+// % is used for escaping so also needs to be escaped
+// in the order of ascii table https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
+const validChars = " !#$()+,-.=@[]_()~";
+/** @type {number[]} */
+const cchValid = Array(validChars.length);
+for (let i = 0; i < validChars.length; i++) {
+  cchValid[i] = validChars.charCodeAt(i);
+}
+
 /**
- * @param {string} s
- * @returns {string}
+ * return true if a given charCode (0-65536) needs to be escaped
+ * when used in a file name
+ * We're conservative i.e. we would rather encode more than stricly needed
+ * then risk not encoding something we do need
+ * @param {number} cc
+ * @returns {boolean}
  */
-function hexReplacer(s) {
-  return stringHexEscape(s);
+function charCodeNeedsEscaping(cc) {
+  if (cc >= cc0 && cc <= cc9) {
+    return false;
+  }
+  if (cc >= cca && cc <= ccz) {
+    return false;
+  }
+  if (cc >= ccA && cc <= ccZ) {
+    return false;
+  }
+  return cchValid.includes(cc);
 }
 
 /**
@@ -36,10 +68,20 @@ export function toFileName(s) {
   if (reInvalidFileNames.test(s)) {
     return stringHexEscape(s);
   }
-  s.replace("%", hexReplacer);
-  s = s.normalize("NFD");
-  s.replace(reControlChars, hexReplacer);
-  s.replace(reIllegal, hexReplacer);
+  // I think this ensures that char and codePoint will be the same
+  // s = s.normalize("NFD");
+  let n = s.length;
+  /** @type {string[]} */
+  let res = Array(n);
+  for (let i = 0; i < n; i++) {
+    let cc = s.charCodeAt(i);
+    let s2 = String.fromCharCode(cc);
+    if (charCodeNeedsEscaping(cc)) {
+      s2 = stringHexEscape(s2);
+    }
+    res.push(s2);
+  }
+  s = res.join("");
   return s;
 }
 
@@ -60,10 +102,10 @@ export function fromFileName(s) {
       res += c;
       continue;
     }
-    let hex = s.substring(i + 1, i + 3);
+    let hex = s.substring(i + 1, i + 5);
     let cc = parseInt(hex, 16);
     res += String.fromCharCode(cc);
-    i += 2;
+    i += 4;
   }
   return res;
 }
@@ -98,6 +140,7 @@ function printFailed() {
 
 if (true) {
   let toTest = [
+    "%",
     "lala",
     "con",
     ".",
