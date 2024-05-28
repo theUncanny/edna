@@ -7,6 +7,8 @@ import { getSettings } from '../settings.js'
 import { isDocDirty } from "../state.js";
 import debounce from "debounce";
 
+let enableDiskRefresh = false;
+
 export default {
   props: {
     theme: String,
@@ -191,12 +193,18 @@ export default {
       });
     },
 
-    scheduleRefreshFromDisk() {
+    clearScheduledRefreshFromDisk() {
       if (this.debouncedRefreshFunc) {
-        console.log("calling debouncedRefreshFunc.clear()");
         this.debouncedRefreshFunc.clear();
         this.debouncedRefreshFunc = null;
       }
+    },
+
+    scheduleRefreshFromDisk() {
+      if (!enableDiskRefresh) {
+        return;
+      }
+      this.clearScheduledRefreshFromDisk();
       console.log("creating debounce for maybeRefreshFromDisk");
       this.debouncedRefreshFunc = debounce(() => {
         console.log("about to run maybeRefreshFromDisk");
