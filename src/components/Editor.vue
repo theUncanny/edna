@@ -351,7 +351,7 @@ export default {
       // TODO: move this logic to App.onDocChanged
       // a bit magic: sometimes we open at the beginning, sometimes at the end
       // TODO: remember selection in memory so that we can restore during a session
-
+      this.setEditorContent(content);
       let pos = 0;
       if (name === kScratchNoteName) {
         pos = content.length
