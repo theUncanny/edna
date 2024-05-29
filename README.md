@@ -4,8 +4,6 @@
 
 The Edna buffer is divided into blocks, and each block can have its own Language set (e.g. JavaScript, JSON, Markdown, etc.). This gives you syntax highlighting and lets you auto-format that JSON response.
 
-Available on the web under https://edna.arslexis.io
-
 ## Features
 
 -   Persistent text buffer
@@ -21,29 +19,6 @@ Available on the web under https://edna.arslexis.io
 -   Multi-cursor editing
 -   Dark & Light themes
 -   Default or Emacs-like key bindings
-
-
-## Development
-
-To develop Edna you need Go, Node.js. Check out the code and then run:
-
-```
-go run ./server/ -run-dev
-```
-
-### Run Tests
-
-To run the tests:
-
-```
-> npm run test
-```
-
-To run the tests in the Playwright UI:
-
-```
-> npm run test:ui
-```
 
 ### Contributions
 
@@ -117,11 +92,8 @@ Alt + Shift + R        Execute block code (works for Go)
 
 Edna is a fork of [Heynote](https://github.com/heyman/heynote) with the following differences:
 * web first (no desktop apps)
-* multiple files
-* 2 ways of sharing notes between computers:
-  * store files on disk in DropBox/OneDrive/etc. folder
-  * login with GitHub and store as encrypted Gist (each note is a separate gist)
-* not opposed to adding lots of features (while still preserving the character of the app)
+* multiple notes
+* access on multiple computers by storing files in DropBox/OneDrive/Google Drive etc. folder
 
 Edna is built upon [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/) and other great open-source projects.
 
