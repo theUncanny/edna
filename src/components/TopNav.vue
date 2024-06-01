@@ -14,8 +14,7 @@ export default {
   setup() {
     let dx = getScrollbarWidth();
     console.log("getScrollbarWidth:", dx);
-    let topnavStyle = `right: ${dx - 1}px`;
-    console.log("topnavStyle:", topnavStyle);
+    let topnavStyle = `right: ${dx - 2}px`;
     return {
       topnavStyle,
       isDocDirty,
@@ -26,14 +25,15 @@ export default {
 
 </script>
 <template>
-  <div class="topnav fixed top-0 flex items-center z-50 px-1 py-[2px] mt-[-1px] border-gray-400 border"
+  <div
+    class="topnav text-sm fixed top-0 flex items-center z-50 px-1 py-[2px] mt-[-1px] border-gray-400 border border-r-white"
     :style="topnavStyle">
     <div class="ml-[0px] w-[4px]" v-if="isDocDirty">&bull;</div>
     <div class="ml-[0px] w-[4px]" v-else>&nbsp;</div>
     <div class="clickable px-[6px] py-[2px] max-w-32 truncate" @click="$emit('openNoteSelector')" :title="noteName">{{
       noteName }}
     </div>
-    <div v-if="shortcut" class="shortcut py-[2px] ml-1 mt-[1px]">{{ shortcut }}</div>
+    <div v-if="shortcut" class="shortcut text-xs py-[2px] ml-1">{{ shortcut }}</div>
     <a class="clickable px-[6px] py-[2px] ml-1" href="/help" title="Documentation" target="_blank">Help</a>
     <a class="clickable px-[4px] py-[2px] mt-[1px]" href="https://github.com/kjk/edna" target="_blank"
       title="Source code on GitHub">
@@ -51,8 +51,6 @@ export default {
 
 <style scoped>
 .topnav {
-  font-size: 10pt;
-  line-height: 1.5;
   background-color: white;
   color: #333;
 }
@@ -63,7 +61,7 @@ html.dark .topnav {
 }
 
 .shortcut {
-  font-size: 9pt;
+  /* font-size: 9pt; */
   color: #939393;
 }
 

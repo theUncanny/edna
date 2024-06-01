@@ -6,8 +6,10 @@
 @tailwind utilities;
 
 :root {
-  --status-bar-background: #487eb5;
-  --status-bar-color: #fff;
+  /* --status-bar-background: #487eb5; */
+  /* --status-bar-color: #fff; */
+  --status-bar-background: white;
+  --status-bar-color: #333;
 }
 
 html.dark {
