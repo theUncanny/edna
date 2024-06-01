@@ -14,7 +14,7 @@ export default {
   setup() {
     let dx = getScrollbarWidth();
     console.log("getScrollbarWidth:", dx);
-    let topnavStyle = `right: ${dx + 4}px`;
+    let topnavStyle = `right: ${dx - 1}px`;
     console.log("topnavStyle:", topnavStyle);
     return {
       topnavStyle,
@@ -28,16 +28,15 @@ export default {
 <template>
   <div class="topnav fixed top-0 flex items-center z-50 px-1 py-[2px] mt-[-1px] border-gray-400 border"
     :style="topnavStyle">
-    <div class="title clickable max-w-32 truncate" @click="$emit('openNoteSelector')" :title="noteName">
-      {{ noteName }}
+    <div class="ml-[0px] w-[4px]" v-if="isDocDirty">&bull;</div>
+    <div class="ml-[0px] w-[4px]" v-else>&nbsp;</div>
+    <div class="clickable px-[6px] py-[2px] max-w-32 truncate" @click="$emit('openNoteSelector')" :title="noteName">{{
+      noteName }}
     </div>
-    <div class="ml-1 w-[1em]" v-if="isDocDirty">&bull;</div>
-    <div class="ml-1 w-[1em]" v-else>&nbsp;</div>
-    <div v-if="shortcut" class="shortcut">
-      {{ shortcut }}
-    </div>
-    <a class="help clickable" href="/help" title="Documentation" target="_blank">Help</a>
-    <a class="help clickable mt-[1px]" href="https://github.com/kjk/edna" target="_blank" title="Source code on GitHub">
+    <div v-if="shortcut" class="shortcut py-[2px] ml-1 mt-[1px]">{{ shortcut }}</div>
+    <a class="clickable px-[6px] py-[2px] ml-1" href="/help" title="Documentation" target="_blank">Help</a>
+    <a class="clickable px-[4px] py-[2px] mt-[1px]" href="https://github.com/kjk/edna" target="_blank"
+      title="Source code on GitHub">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="1em" height="1em"
         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
         stroke-linejoin="round">
@@ -63,14 +62,8 @@ html.dark .topnav {
   color: rgba(255, 255, 255, 0.87);
 }
 
-.title {
-  padding: 2px 4px;
-}
-
 .shortcut {
-  padding: 2px 4px;
   font-size: 9pt;
-  margin-top: 1px;
   color: #939393;
 }
 
@@ -78,15 +71,12 @@ html.dark .shortcut {
   color: #a3a3a3;
 }
 
-.help {
-  padding: 2px 4px;
-}
-
 .clickable {
   cursor: pointer;
 
   &:hover {
     background-color: #f3f3f3;
+    /* background-color: rgba(255, 255, 255, 0.1); */
   }
 }
 
@@ -95,8 +85,4 @@ html.dark .clickable {
     background-color: #49494a;
   }
 }
-
-/* .clickable:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-} */
 </style>
