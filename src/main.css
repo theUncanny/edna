@@ -124,7 +124,7 @@ html.dark .selector .items > li:hover {
 }
 
 html.dark .selector .items > li.selected {
-  background: #1b6540;
+  background: #487eb5;
   color: rgba(255, 255, 255, 0.87);
 }
 

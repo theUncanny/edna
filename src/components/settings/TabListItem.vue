@@ -37,6 +37,6 @@ li.active {
 }
 
 html.dark li.active {
-  background: #1b6540;
+  background: #487eb5;
 }
 </style>
