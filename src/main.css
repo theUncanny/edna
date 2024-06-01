@@ -5,18 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* --status-bar-background: #487eb5; */
-  /* --status-bar-color: #fff; */
-  --status-bar-background: white;
-  --status-bar-color: #333;
-}
-
-html.dark {
-  --status-bar-background: #0e1712;
-  --status-bar-color: rgba(255, 255, 255, 0.75);
-}
-
 html {
   margin: 0;
   padding: 0;

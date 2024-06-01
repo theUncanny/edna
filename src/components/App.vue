@@ -75,7 +75,6 @@ export default {
       noteName: settings.currentNoteName,
       selectionSize: 0,
       settings: settings,
-      showingHelp: false,
       showingMenu: false,
       showingLanguageSelector: false,
       showingNoteSelector: false,
@@ -133,7 +132,7 @@ export default {
 
   computed: {
     isShowingDialog() {
-      return this.showingHelp || this.showingHistorySelector || this.showingLanguageSelector || this.showingMenu || this.showingRenameNote || this.showingNoteSelector || this.showingSettings
+      return this.showingHistorySelector || this.showingLanguageSelector || this.showingMenu || this.showingRenameNote || this.showingNoteSelector || this.showingSettings
     },
 
     noteShortcut() {
@@ -143,15 +142,6 @@ export default {
         return `${this.altChar} + ${m.altShortcut}`
       }
       return ""
-    },
-
-    noteNameStatusBar() {
-      let name = this.noteName
-      let s = this.noteShortcut;
-      if (s) {
-        name = `${name} (${s})`
-      }
-      return name
     },
 
     mcStyle() {
@@ -261,11 +251,6 @@ export default {
       console.log("onRename: newName:", newName)
     },
 
-    onCloseHelp(e) {
-      this.showingHelp = false
-      this.getEditor().focus()
-    },
-
     async storeNotesOnDisk() {
       let dh = await openDirPicker(true)
       if (!dh) {
@@ -296,7 +281,7 @@ export default {
      * @param {MouseEvent} e
      */
     onContextMenu(e) {
-      if (this.showingNoteSelector || this.showingLanguageSelector || this.showingSettings || this.showingHelp) {
+      if (this.showingNoteSelector || this.showingLanguageSelector || this.showingSettings) {
         return
       }
       // show native context menu if ctrl or shift is pressed
@@ -464,7 +449,7 @@ export default {
       })
       children.push({
         label: "Show help",
-        onClick: () => { this.toggleHelp("storing-notes-on-disk") },
+        onClick: () => { this.showHelp("#storing-notes-on-disk") },
         divided: "up",
       })
       items.push({
@@ -485,11 +470,11 @@ export default {
         children: [
           {
             label: "Show help",
-            onClick: () => { this.toggleHelp() },
+            onClick: () => { this.showHelp() },
           },
           {
             label: "Show help in new tab",
-            onClick: () => { this.showHelpInNewTab() },
+            onClick: () => { this.showHelp() },
           },
           {
             label: "Show help as note",
@@ -633,20 +618,16 @@ export default {
       this.openNote(name)
     },
 
-    toggleHelp(anchor = "") {
-      let willHide = this.showingHelp;
-      if (willHide) {
-        this.showingHelp = false;
-        // this.getEditor().focus()
-        return;
-      }
-      this.helpAnchor = anchor
-      this.showingHelp = true
-    },
-
-    showHelpInNewTab() {
+    /**
+     * @param {string} anchor
+     */
+    showHelp(anchor = "") {
       // let uri = window.location.origin + "/help"
-      window.open("/help", "_blank");
+      let uri = "/help";
+      if (anchor != "") {
+        uri += anchor;
+      }
+      window.open(uri, "_blank");
     },
 
     showHelpAsNote() {
@@ -753,11 +734,11 @@ export default {
       class="overflow-hidden" ref="editor" @openLanguageSelector="openLanguageSelector"
       @openHistorySelector="openHistorySelector" @createNewScratchNote="createNewScratchNote"
       @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
-    <StatusBar :noteName="noteNameStatusBar" :line="line" :column="column" :docSize="docSize"
+    <StatusBar :shortcut="noteShortcut" :noteName="noteName" :line="line" :column="column" :docSize="docSize"
       :selectionSize="selectionSize" :language="language" :languageAuto="languageAuto"
       :isSpellChecking="isSpellChecking" @openLanguageSelector="openLanguageSelector"
       @openNoteSelector="openNoteSelector" @formatCurrentBlock="formatCurrentBlock" @runCurrentBlock="runCurrentBlock"
-      @toggleSpellCheck="toggleSpellCheck" @openSettings="onOpenSettings" @toggleHelp="toggleHelp" class="" />
+      @toggleSpellCheck="toggleSpellCheck" @openSettings="onOpenSettings" @toggleHelp="showHelp" class="" />
   </div>
   <div class="overlay">
     <LanguageSelector v-if="showingLanguageSelector" @selectLanguage="onSelectLanguage"
@@ -770,7 +751,6 @@ export default {
   <div :style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">
     <form class="relative w-full h-full pointer-events-none z-50 text-[8px]" ref="menuContainer" tabIndex="-1"></form>
   </div>
-  <Help @close="onCloseHelp" :anchor="helpAnchor" v-if="showingHelp" />
   <RenameNote @close="onCloseRename" @rename="onRename" :oldName="noteName" v-if="showingRenameNote" />
 
   <Loading :loadingNoteName="loadingNoteName" v-if="loadingNoteName" />
