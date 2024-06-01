@@ -79,7 +79,7 @@ export default {
 
 <template>
   <div :style="statusBarStyle"
-    class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300 bg-gray-50 dark:bg-gray-700">
+    class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
 
     <div class="ml-[0px] w-[4px]" v-if="isDocDirty">&bull;</div>
     <div class="ml-[0px] w-[4px]" v-else>&nbsp;</div>
@@ -138,7 +138,7 @@ export default {
   @apply py-[4px];
 
   &:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-200;
   }
 }
 

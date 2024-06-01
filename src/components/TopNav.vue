@@ -25,7 +25,7 @@ export default {
 </script>
 <template>
   <div
-    class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 bg-gray-50 dark:bg-gray-700"
+    class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 bg-gray-100 dark:bg-gray-700"
     :style="topnavStyle">
     <div class="ml-[0px] w-[4px]" v-if="isDocDirty">&bull;</div>
     <div class="ml-[0px] w-[4px]" v-else>&nbsp;</div>
@@ -55,7 +55,7 @@ export default {
   @apply py-[4px];
 
   &:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-200;
   }
 }
 
