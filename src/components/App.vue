@@ -473,10 +473,6 @@ export default {
             onClick: () => { this.showHelp() },
           },
           {
-            label: "Show help in new tab",
-            onClick: () => { this.showHelp() },
-          },
-          {
             label: "Show help as note",
             onClick: () => { this.showHelpAsNote() },
           },
