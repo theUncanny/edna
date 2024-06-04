@@ -362,10 +362,10 @@ export default {
 
 <template>
   <div class="fixed inset-0 overflow-auto">
-    <form @keydown="onKeydown" class="selector absolute center-x-with-translate top-[2rem] flex flex-col w-[32em] p-3"
-      tabindex="-1" @focusout="onFocusOut" ref="container">
+    <form ref="container" @keydown="onKeydown" @focusout="onFocusOut" tabindex="-1"
+      class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[94vh] w-[32em] p-3">
       <input type="text" ref="input" @input="onInput" v-model="filter"
-        class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
+        class="py-1 px-2 bg-white w-full mb-2 rounded-sm" />
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in filteredItems" :key="item.name"
           class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5" :class="idx === selected ? 'selected' : ''"

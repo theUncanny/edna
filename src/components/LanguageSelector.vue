@@ -125,7 +125,7 @@ export default {
     <form ref="container" @keydown="onKeydown" @focusout="onFocusOut" tabindex="-1"
       class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3">
       <input type="text" ref="input" @input="onInput" v-model="filter"
-        class="py-1 px-2 bg-white w-[400px] mb-2 rounded-sm" />
+        class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm" />
       <ul class="items overflow-y-auto">
         <li v-for="item, idx in filteredItems" :key="item.token" :class="idx === selected ? 'selected' : ''"
           class="cursor-pointer py-0.5 px-2 rounded-sm leading-5" @click="selectItem(item.token)" ref="item">
