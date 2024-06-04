@@ -79,7 +79,7 @@ export default {
 
 <template>
   <div :style="statusBarStyle"
-    class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300 bg-gray-200 dark:bg-gray-700">
+    class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300  border-gray-300 dark:border-gray-500 border-t border-l rounded-tl-lg bg-white dark:bg-gray-700">
 
     <div class="ml-[0px] w-[4px]" v-if="isDocDirty">&bull;</div>
     <div class="ml-[0px] w-[4px]" v-else>&nbsp;</div>
