@@ -12,9 +12,10 @@ import {
 } from "./notes";
 import { getSettings, loadInitialSettings } from "./settings";
 import { isDev, len } from "./util";
+import { mount, unmount } from "svelte";
 
 import App from "./components/App.vue";
-import AskFSPermissions from "./components/AskFSPermissions.vue";
+import AskFSPermissions from "./components/AskFSPermissions.svelte";
 import Toast from "vue-toastification/dist/index.mjs";
 import { createApp } from "vue";
 import { hasHandlePermission } from "./fileutil";
@@ -25,6 +26,7 @@ import { startLoadCurrencies } from "./currency";
 startLoadCurrencies();
 
 let app;
+let appSvelte;
 
 export async function boot() {
   console.log("booting");
@@ -37,8 +39,10 @@ export async function boot() {
     if (!ok) {
       console.log("no permission to write files in directory", dh.name);
       setStorageFS(null);
-      app = createApp(AskFSPermissions);
-      app.mount("#app");
+      const args = {
+        target: document.getElementById("app"),
+      };
+      appSvelte = mount(AskFSPermissions, args);
       return;
     }
   } else {
@@ -87,8 +91,8 @@ export async function boot() {
   // will open this note in Editor.vue on mounted()
   settings.currentNoteName = toOpenAtStartup;
   console.log("mounting App");
-  if (app) {
-    app.unmount();
+  if (appSvelte) {
+    unmount(appSvelte);
   }
   app = createApp(App);
   app.use(Toast, {
