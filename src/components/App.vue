@@ -24,20 +24,20 @@ import { logAppExit, logAppOpen, logNoteOp } from '../log'
 
 /** @typedef {import("@imengyu/vue3-context-menu/lib/ContextMenuDefine").MenuItem} MenuItem */
 
-let toastOptions = {
-  position: POSITION.TOP_RIGHT,
-  timeout: 4000,
-  closeOnClick: true,
-  pauseOnFocusLoss: true,
-  pauseOnHover: true,
-  // draggable: true,
-  // draggablePercent: 0.6,
-  showCloseButtonOnHover: false,
-  hideProgressBar: true,
-  closeButton: "button",
-  icon: false,
-  rtl: false
-};
+// let toastOptions = {
+//   position: POSITION.TOP_RIGHT,
+//   timeout: 4000,
+//   closeOnClick: true,
+//   pauseOnFocusLoss: true,
+//   pauseOnHover: true,
+//   // draggable: true,
+//   // draggablePercent: 0.6,
+//   showCloseButtonOnHover: false,
+//   hideProgressBar: true,
+//   closeButton: "button",
+//   icon: false,
+//   rtl: false
+// };
 
 export default {
   components: {
@@ -61,7 +61,6 @@ export default {
 
   data() {
     let settings = getSettings()
-    // console.log("setting:", settings)
     return {
       column: 1,
       development: window.location.href.indexOf("dev=1") !== -1,
@@ -106,22 +105,6 @@ export default {
       await this.getEditor().saveCurrentNote();
     });
     logAppOpen();
-
-    if (false) {
-      // testing of loadingNoteName dialog
-      setTimeout(
-        () => {
-          this.loadingNoteName = "foo"
-          setTimeout(
-            () => {
-              this.loadingNoteName = ""
-            },
-            2000
-          )
-        },
-        1000
-      )
-    }
   },
 
   beforeUnmount() {
@@ -594,9 +577,6 @@ export default {
       this.openNote(name)
     },
 
-    openNoteSelector() {
-      this.showingNoteSelector = true
-    },
 
     closeNoteSelector() {
       this.showingNoteSelector = false
@@ -720,7 +700,6 @@ export default {
       <div>{{ noteName }}</div>
       <div>23 notes</div>
     </div> -->
-    <TopNav :noteName="noteName" :shortcut="noteShortcut" @openNoteSelector="openNoteSelector" />
     <Editor @cursorChange="onCursorChange" :theme="theme" :development="development" :debugSyntaxTree="false"
       :keymap="settings.keymap" :emacsMetaKey="settings.emacsMetaKey"
       :showLineNumberGutter="settings.showLineNumberGutter" :showFoldGutter="settings.showFoldGutter"
