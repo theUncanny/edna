@@ -432,6 +432,12 @@
     toast(`Deleted note '${name}'`, toastOptions);
     logNoteOp("noteDelete");
   }
+
+  /** @typedef {import("../editor/event.js").SelectionChangeEvent} SelectionChangeEvent */
+
+  /**
+   * @param {SelectionChangeEvent} e
+   */
   function onCursorChange(e) {
     line = e.cursorLine.line;
     column = e.cursorLine.col;
@@ -454,7 +460,9 @@
    */
   function onDocChanged(name) {
     let justOpened = name !== undefined;
-    // console.log(`doc changed: name: ${name} noteName: ${noteName}, justOpened: ${justOpened}`)
+    console.log(
+      `doc changed: name: ${name} noteName: ${noteName}, justOpened: ${justOpened}`
+    );
     if (name === undefined) {
       name = noteName;
     } else {

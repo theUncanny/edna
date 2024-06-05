@@ -29,8 +29,6 @@
 
   /** @type {HTMLElement} */
   let container;
-  /** @type {HTMLElement} */
-  let input;
 
   $effect(() => {
     if (container) {
@@ -39,18 +37,18 @@
   });
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    */
-  function onKeydown(event) {
+  function onKeydown(ev) {
     let nItems = len(items);
     let selectedIdx = selected;
 
-    let key = event.key;
+    let key = ev.key;
 
     // '0' ... '9' picks an item
     let idx = key.charCodeAt(0) - "0".charCodeAt(0);
     if (idx >= 0 && idx < nItems) {
-      event.preventDefault();
+      ev.preventDefault();
       let item = items[idx];
       console.log("idx:", idx, "item:", item);
       if (idx == 0) {
@@ -63,7 +61,7 @@
     }
 
     if (key === "ArrowDown") {
-      event.preventDefault();
+      ev.preventDefault();
       if (selectedIdx >= nItems - 1) {
         // wrap around
         selectedIdx = 0;
@@ -81,7 +79,7 @@
     }
 
     if (key === "ArrowUp") {
-      event.preventDefault();
+      ev.preventDefault();
       if (selectedIdx > 0) {
         selectedIdx -= 1;
       } else {
@@ -101,7 +99,7 @@
     }
 
     if (key === "Enter") {
-      event.preventDefault();
+      ev.preventDefault();
       const selected = items[selectedIdx];
       if (selected) {
         selectItem(selected.name);
@@ -112,8 +110,8 @@
     }
 
     if (key === "Escape") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
       close();
       return;
     }

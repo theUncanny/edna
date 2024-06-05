@@ -12,9 +12,10 @@
   import { getSettings } from "../settings.js";
   import { isDocDirty } from "../state.js";
   import debounce from "debounce";
-  import { throwIf } from "../util.js";
 
   let enableDiskRefresh = false;
+
+  /** @typedef {import("../editor/event.js").SelectionChangeEvent} SelectionChangeEvent */
 
   /** @type {{
     theme: string,
@@ -27,7 +28,7 @@
     bracketClosing: boolean,
     fontFamily: string,
     fontSize: number,
-    cursorChange: (cursorLine: number, selectionSize: number, language: string, langaugeAuto: boolean) => void,
+    cursorChange: (e: SelectionChangeEvent) => void,
     openLanguageSelector: () => void,
     openNoteSelector: () => void,
     docChanged: (name: string) => void,
@@ -87,12 +88,14 @@
     });
 
     // forward events dispatched from editor.js
-    editorEl.addEventListener("selectionChange", (ev) => {
-      let e = /** @type {import("../editor/event.js").SelectionChangeEvent} */ (
-        ev
-      );
-      cursorChange(e.cursorLine, e.selectionSize, e.language, e.languageAuto);
-    });
+
+    /**
+     * @param {SelectionChangeEvent} ev
+     */
+    function onSelChange(ev) {
+      cursorChange(ev);
+    }
+    editorEl.addEventListener("selectionChange", onSelChange);
 
     editorEl.addEventListener("openLanguageSelector", (e) => {
       openLanguageSelector();
@@ -101,9 +104,10 @@
       openNoteSelector();
     });
     editorEl.addEventListener("docChanged", (e) => {
-      throwIf(true, "NYI");
-      // TODO: check what note name to use
-      docChanged("");
+      // when sending a name we signal this is newly opened note
+      // otherwise it's an upde
+      // TODO: make it clearer i.e. provide didOpenNote() callback
+      docChanged(undefined);
     });
     editorEl.addEventListener("createNewScratchNote", (e) => {
       createNewScratchNote();
