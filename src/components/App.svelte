@@ -39,6 +39,7 @@
     setURLHashNoReload,
     stringSizeInUtf8Bytes,
     sleep,
+    throwIf,
   } from "../util";
   import Settings from "./settings/Settings.vue";
   import { getModChar } from "../../src/util";
@@ -267,7 +268,7 @@
     logNoteOp("noteDelete");
   }
 
-  async function createNewScratchNote2() {
+  async function createScratchNote() {
     let name = await createNewScratchNote();
     await onOpenNote(name);
     // TODO: add a way to undo creation of the note
@@ -453,39 +454,36 @@
   function showReleaseNotes() {
     openNote(kReleaseNotesSystemNoteName);
   }
-  /**
-   * called when a new document has been loaded or when a document has been modified
-   * TODO: maybe needs separate event onDocLoaded
-   * @param {string} name
-   */
-  function onDocChanged(name) {
-    let justOpened = name !== undefined;
-    console.log(
-      `doc changed: name: ${name} noteName: ${noteName}, justOpened: ${justOpened}`
-    );
-    if (name === undefined) {
-      name = noteName;
-    } else {
-      noteName = name;
-    }
 
+  function updateDocSize() {
     let editor = getEditor();
     const c = editor.getContent() || "";
     docSize = stringSizeInUtf8Bytes(c);
+  }
 
-    if (justOpened) {
-      console.log("onDocChanged: just opened");
-      let readOnly = isSystemNoteName(name);
-      editor.setReadOnly(readOnly);
-      if (name === kDailyJournalNoteName) {
-        console.log("journal, so going to next block");
-        editor.gotoNextBlock();
-      }
-
-      window.document.title = name;
-      setURLHashNoReload(name);
-      setSetting("currentNoteName", name);
+  /**
+   * @param {string} name
+   */
+  function didOpenNote(name) {
+    console.log("didOpenNote:", name);
+    throwIf(!name);
+    noteName = name;
+    console.log("onDocChanged: just opened");
+    let readOnly = isSystemNoteName(name);
+    editor.setReadOnly(readOnly);
+    if (name === kDailyJournalNoteName) {
+      console.log("journal, so going to next block");
+      // editor.gotoNextBlock();
     }
+
+    window.document.title = name;
+    setURLHashNoReload(name);
+    setSetting("currentNoteName", name);
+    updateDocSize();
+  }
+
+  function docDidChange() {
+    updateDocSize();
   }
 </script>
 
@@ -510,9 +508,10 @@
     bind:this={editor}
     {openLanguageSelector}
     {openHistorySelector}
-    createNewScratchNote={createNewScratchNote2}
+    createNewScratchNote={createScratchNote}
     {openNoteSelector}
-    docChanged={onDocChanged}
+    {didOpenNote}
+    {docDidChange}
   />
   <StatusBar
     shortcut={noteShortcut}

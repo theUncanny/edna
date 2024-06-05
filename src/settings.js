@@ -1,4 +1,4 @@
-import { cloneObjectDeep, objectEqualDeep, platform } from "./util";
+import { cloneObjectDeep, objectEqualDeep, platform, throwIf } from "./util";
 
 import { ipcRenderer } from "./ipcrenderer";
 
@@ -80,6 +80,7 @@ mediaMatch.addEventListener("change", async () => {
  */
 export function saveSettings(newSettings) {
   // console.log("saveSettings:", newSettings);
+  throwIf(!newSettings.currentNoteName);
   if (objectEqualDeep(settings, newSettings)) {
     console.log("saveSettings: no change");
     return false;
@@ -94,7 +95,10 @@ export function saveSettings(newSettings) {
 
 export function loadInitialSettings() {
   let settings = loadSettings();
-  // console.log("settings loaded:", s);
+  console.log("settings loaded:", settings);
+  if (!settings.currentNoteName) {
+    settings.currentNoteName = "scratch";
+  }
 
   // ensure all possible settings are present. Start with defaults and overwrite with persisted settings
   /** @type {Settings} */

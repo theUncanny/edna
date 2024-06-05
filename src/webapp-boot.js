@@ -10,7 +10,7 @@ import {
   preLoadAllNotes,
   setStorageFS,
 } from "./notes";
-import { getSettings, loadInitialSettings } from "./settings";
+import { getSettings, loadInitialSettings, setSetting } from "./settings";
 import { isDev, len } from "./util";
 import { mount, unmount } from "svelte";
 
@@ -74,6 +74,9 @@ export async function boot() {
    * @returns {boolean}
    */
   function isValidNote(name) {
+    if (!name) {
+      return false;
+    }
     return noteNames.includes(name) || isSystemNoteName(name);
   }
 
@@ -86,9 +89,12 @@ export async function boot() {
     toOpenAtStartup = hashName;
     console.log("will open note from url #hash:", hashName);
   }
+  if (!isValidNote(settingsName)) {
+    toOpenAtStartup = "scratch";
+  }
 
   // will open this note in Editor.vue on mounted()
-  settings.currentNoteName = toOpenAtStartup;
+  setSetting("currentNoteName", toOpenAtStartup);
   console.log("mounting App");
   if (appSvelte) {
     unmount(appSvelte);

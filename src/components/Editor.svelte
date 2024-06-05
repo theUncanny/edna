@@ -12,6 +12,7 @@
   import { getSettings } from "../settings.js";
   import { isDocDirty } from "../state.js";
   import debounce from "debounce";
+  import { throwIf } from "../util.js";
 
   let enableDiskRefresh = false;
 
@@ -31,9 +32,10 @@
     cursorChange: (e: SelectionChangeEvent) => void,
     openLanguageSelector: () => void,
     openNoteSelector: () => void,
-    docChanged: (name: string) => void,
+    docDidChange: () => void,
     createNewScratchNote: () => void,
     openHistorySelector: () => void,
+    didOpenNote: (name: string) => void,
    }}*/
 
   let {
@@ -50,9 +52,10 @@
     cursorChange,
     openLanguageSelector,
     openNoteSelector,
-    docChanged,
+    docDidChange,
     createNewScratchNote,
     openHistorySelector,
+    didOpenNote,
   } = $props();
 
   let syntaxTreeDebugContent = $state(null);
@@ -104,10 +107,7 @@
       openNoteSelector();
     });
     editorEl.addEventListener("docChanged", (e) => {
-      // when sending a name we signal this is newly opened note
-      // otherwise it's an upde
-      // TODO: make it clearer i.e. provide didOpenNote() callback
-      docChanged(undefined);
+      docDidChange();
     });
     editorEl.addEventListener("createNewScratchNote", (e) => {
       createNewScratchNote();
@@ -132,12 +132,12 @@
         fontFamily: fontFamily,
         fontSize: fontSize,
       });
-      let settings = getSettings();
       rememberEditor(editor);
       window.document.addEventListener("currenciesLoaded", onCurrenciesLoaded);
+      let settings = getSettings();
       let name = settings.currentNoteName;
-      console.log("loadCurrentNote: triggering docChanged event, name:", name);
-      docChanged(name);
+      throwIf(!name);
+      didOpenNote(name);
 
       scheduleRefreshFromDisk();
     });
@@ -215,8 +215,7 @@
         console.log("the content was modified on disk");
         // TODO: maybe restore cursor position
         setEditorContent(latestContentOnDisk);
-        // console.log("openNote: triggering docChanged event, name:", name)
-        // $emit("docChanged", name)
+        docDidChange();
       }
       scheduleRefreshFromDisk();
     });
@@ -396,7 +395,7 @@
     });
     focus();
     console.log("openNote: triggering docChanged event, name:", name);
-    docChanged(name);
+    didOpenNote(name);
   }
 </script>
 
