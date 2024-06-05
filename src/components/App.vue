@@ -726,5 +726,4 @@ export default {
   </div>
   <RenameNote @close="onCloseRename" @rename="onRename" :oldName="noteName" v-if="showingRenameNote" />
 
-  <Loading :loadingNoteName="loadingNoteName" v-if="loadingNoteName" />
 </template>

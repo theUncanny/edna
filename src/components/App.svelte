@@ -1,6 +1,7 @@
 <script>
   import { getSettings } from "../settings";
   import { getAltChar } from "../util";
+  import Loading from "./Loading.svelte";
   import TopNav from "./TopNav.svelte";
 
   let initialSettings = getSettings();
@@ -43,3 +44,7 @@
 <div>This is app Svelte.</div>
 
 <TopNav {noteName} shortcut={noteShortcut} {openNoteSelector} />
+
+{#if loadingNoteName}
+  <Loading {loadingNoteName} />
+{/if}
