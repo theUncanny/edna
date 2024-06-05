@@ -1,6 +1,5 @@
 <script>
 import Editor from './Editor.vue'
-import Help from './Help.vue'
 import LanguageSelector from './LanguageSelector.vue'
 import NoteSelector from './NoteSelector.vue'
 import StatusBar from './StatusBar.vue'
@@ -44,7 +43,6 @@ export default {
   components: {
     ContextMenu,
     Editor,
-    Help,
     LanguageSelector,
     NoteSelector,
     History,

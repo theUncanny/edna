@@ -1,12 +1,9 @@
 <script>
 import { dbGetDirHandle, dbDelDirHandle, pickAnotherDirectory, setStorageFS, preLoadAllNotes } from '../notes';
-import App from "./App.vue";
 import { requestHandlePermission } from '../fileutil';
 import { boot } from '../webapp-boot';
 
 export default {
-  components: { App },
-
   data() {
     return {
       dirName: "",
