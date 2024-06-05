@@ -1,236 +1,14 @@
 <script>
-import Editor from './Editor.vue'
-import LanguageSelector from './LanguageSelector.vue'
-import NoteSelector from './NoteSelector.vue'
-import StatusBar from './StatusBar.vue'
-import TopNav from './TopNav.vue'
-import RenameNote from './RenameNote.vue'
-import Loading from './Loading.vue'
-import History from "./History.vue"
-
-import Settings from './settings/Settings.vue'
-import { isAltNumEvent, setURLHashNoReload, stringSizeInUtf8Bytes, sleep } from '../util'
-import { createNewScratchNote, createNoteWithName, dbDelDirHandle, deleteNote, getNotesMetadata, getMetadataForNote, getStorageFS, pickAnotherDirectory, switchToStoringNotesOnDisk, kScratchNoteName, canDeleteNote, renameNote, isSystemNoteName, kDailyJournalNoteName, kHelpSystemNoteName, kReleaseNotesSystemNoteName, preLoadAllNotes } from '../notes'
-import { getModChar, getAltChar } from "../../src/util"
-import ContextMenu from '@imengyu/vue3-context-menu'
-import { supportsFileSystem, openDirPicker } from '../fileutil'
-import { onOpenSettings, getSettings, onSettingsChange, setSetting } from '../settings'
-import { boot } from '../webapp-boot'
-import { getLanguage, langSupportsFormat, langSupportsRun } from '../editor/languages'
-import { useToast, POSITION } from "vue-toastification";
-import { exportNotesToZip } from '../notes-export'
-import { logAppExit, logAppOpen, logNoteOp } from '../log'
-
-/** @typedef {import("@imengyu/vue3-context-menu/lib/ContextMenuDefine").MenuItem} MenuItem */
-
-// let toastOptions = {
-//   position: POSITION.TOP_RIGHT,
-//   timeout: 4000,
-//   closeOnClick: true,
-//   pauseOnFocusLoss: true,
-//   pauseOnHover: true,
-//   // draggable: true,
-//   // draggablePercent: 0.6,
-//   showCloseButtonOnHover: false,
-//   hideProgressBar: true,
-//   closeButton: "button",
-//   icon: false,
-//   rtl: false
-// };
 
 export default {
-  components: {
-    ContextMenu,
-    Editor,
-    LanguageSelector,
-    NoteSelector,
-    History,
-    RenameNote,
-    Settings,
-    StatusBar,
-    TopNav,
-    Loading
-  },
-
-  setup() {
-    const toast = useToast();
-    return { toast }
-  },
-
-  data() {
-    let settings = getSettings()
-    return {
-      column: 1,
-      development: window.location.href.indexOf("dev=1") !== -1,
-      docSize: 0,
-      helpAnchor: "",
-      language: "plaintext",
-      languageAuto: true,
-      line: 1,
-      noteName: settings.currentNoteName,
-      selectionSize: 0,
-      settings: settings,
-      showingMenu: false,
-      showingLanguageSelector: false,
-      showingNoteSelector: false,
-      showingSettings: false,
-      showingRenameNote: false,
-      showingHistorySelector: false,
-      theme: settings.theme,
-      isSpellChecking: false,
-      spellcheckToastID: 0,
-      altChar: getAltChar(),
-      loadingNoteName: "",
-    }
-  },
-
-  mounted() {
-    console.log("App.vue mounted")
-    onSettingsChange((settings) => {
-      this.settings = settings;
-      this.theme = settings.theme;
-      //throwIf(this.noteName != settings.currentNoteName, "noteName != settings.currentNoteName")
-      console.log(`onSettingsChange callback, noteName: ${this.noteName}, settings.currentNoteName: ${settings.currentNoteName}, theme: ${this.theme}`)
-    })
-    onOpenSettings(() => {
-      this.showingSettings = true
-    })
-    this.getEditor().setSpellChecking(this.isSpellChecking)
-    window.addEventListener("keydown", this.onKeyDown)
-
-    window.addEventListener("beforeunload", async () => {
-      logAppExit(); // TODO: not sure if this async func will complete
-      await this.getEditor().saveCurrentNote();
-    });
-    logAppOpen();
-  },
-
-  beforeUnmount() {
-    window.removeEventListener("keydown", this.onKeyDown);
-  },
-
-  computed: {
-    isShowingDialog() {
-      return this.showingHistorySelector || this.showingLanguageSelector || this.showingMenu || this.showingRenameNote || this.showingNoteSelector || this.showingSettings
-    },
-
-    noteShortcut() {
-      let name = this.noteName;
-      let m = getMetadataForNote(name)
-      if (m && m.altShortcut) {
-        return `${this.altChar} + ${m.altShortcut}`
-      }
-      return ""
-    },
-
-    mcStyle() {
-      return {
-        display: this.showingMenu ? "block" : "none"
-      }
-    },
-  },
 
   methods: {
-    /**
-     * @returns {Editor}
-    */
-    getEditor() {
-      // @ts-ignore
-      return this.$refs.editor
-    },
-
-
-    /**
-     * @param {KeyboardEvent} event
-     */
-    onKeyDown(event) {
-
-      if (event.key === "Escape") {
-        if (this.isShowingDialog) {
-          return;
-        }
-        event.preventDefault()
-        event.stopImmediatePropagation()
-        this.openHistorySelector()
-        return
-      }
-
-      // if (event.key === "F2") {
-      //   console.log("F2");
-      //   let undoAction = () => {
-      //     console.log("undoAction")
-      //   }
-      //   this.toast({
-      //     component: ToastUndo,
-      //     props: {
-      //       message: "F2 pressed",
-      //       undoText: "Undo delete",
-      //       undoAction: undoAction,
-      //     },
-      //   }, toastOptions)
-      // }
-
-      // TODO: can I do this better? The same keydown event that sets the Alt-N shortcut
-      // in NoteSelector also seems to propagate here and immediately opens the note.
-      if (!this.showingNoteSelector) {
-        let altN = isAltNumEvent(event)
-        // console.log("onKeyDown: e:", e, "altN:", altN)
-        if (altN) {
-          let meta = getNotesMetadata()
-          for (let o of meta) {
-            if (o.altShortcut == altN && o.name !== this.noteName) {
-              // console.log("onKeyDown: opening note: ", o.name, " altN:", altN, " e:", e)
-              this.openNote(o.name)
-              event.preventDefault()
-              return
-            }
-          }
-        }
-      }
-
-      // hack: stop Ctrl + O unless it originates from code mirror (because then it
-      // triggers NoteSelector.vue)
-      if (event.key == "o" && event.ctrlKey && !event.altKey && !event.shiftKey) {
-        let target = /** @type {HTMLElement} */ (event.target);
-        let fromCodeMirror = target && target.className.includes("cm-content")
-        if (!fromCodeMirror) {
-          event.preventDefault()
-        }
-      }
-    },
-
-
-    async storeNotesOnDisk() {
-      let dh = await openDirPicker(true)
-      if (!dh) {
-        return;
-      }
-      // TODO: await this.getEditor().saveCurrentNote() ?
-      await switchToStoringNotesOnDisk(dh);
-      let settings = getSettings();
-      await this.openNote(settings.currentNoteName, true)
-    },
-
-    async pickAnotherDirectory() {
-      let ok = await pickAnotherDirectory();
-      if (!ok) {
-        return
-      }
-      await boot()
-      await preLoadAllNotes()
-    },
-
-    async switchToBrowserStorage() {
-      console.log("switchToBrowserStorage(): deleting dir handle")
-      await dbDelDirHandle();
-      await boot();
-    },
 
     /**
      * @param {MouseEvent} e
      */
     onContextMenu(e) {
-      if (this.showingNoteSelector || this.showingLanguageSelector || this.showingSettings) {
+      if (showingNoteSelector || showingLanguageSelector || showingSettings) {
         return
       }
       // show native context menu if ctrl or shift is pressed
@@ -245,13 +23,13 @@ export default {
       let isDark = document.documentElement.classList.contains("dark");
       let menuTheme = isDark ? "default dark" : "default";
       e.preventDefault();
-      this.showingMenu = true
-      let canDelete = this.canDeleteNote();
+      showingMenu = true
+      let canDelete = canDeleteNote();
       /** @type {MenuItem[]} */
       let items = [
         {
           label: "Open / create / delete note",
-          onClick: () => { this.openNoteSelector() },
+          onClick: () => { openNoteSelector() },
           shortcut: `${modChar} + K`,
         },
         {
@@ -259,17 +37,17 @@ export default {
           children: [
             {
               label: "Rename current note",
-              onClick: () => { this.renameCurrentNote() },
+              onClick: () => { renameCurrentNote() },
               disabled: !canDelete,
             },
             {
               label: "Delete current note",
-              onClick: () => { this.deleteCurrentNote() },
+              onClick: () => { deleteCurrentNote() },
               disabled: !canDelete,
             },
             {
               label: "Create new scratch note",
-              onClick: () => { this.createNewScratchNote() },
+              onClick: () => { createNewScratchNote() },
               shortcut: `${altChar} + N`,
             },
           ]
@@ -279,47 +57,47 @@ export default {
           children: [
             {
               label: "And after current",
-              onClick: () => { this.getEditor().addNewBlockAfterCurrent() },
+              onClick: () => { getEditor().addNewBlockAfterCurrent() },
               shortcut: `${modChar} + Enter`,
             },
             {
               label: "Add before current",
-              onClick: () => { this.getEditor().addNewBlockBeforeCurrent() },
+              onClick: () => { getEditor().addNewBlockBeforeCurrent() },
               shortcut: `${altChar} + Enter`,
             },
             {
               label: "Add at end",
-              onClick: () => { this.getEditor().addNewBlockAfterLast() },
+              onClick: () => { getEditor().addNewBlockAfterLast() },
               shortcut: `${modChar} + Shift + Enter`,
             },
             {
               label: "Add at start",
-              onClick: () => { this.getEditor().addNewBlockBeforeFirst() },
+              onClick: () => { getEditor().addNewBlockBeforeFirst() },
               shortcut: `${altChar} + Shift + Enter`,
             },
             {
               label: "Split at cursor position",
-              onClick: () => { this.getEditor().insertNewBlockAtCursor() },
+              onClick: () => { getEditor().insertNewBlockAtCursor() },
               shortcut: `${modChar} + ${altChar} + Enter`,
             },
             {
               label: "Goto next",
-              onClick: () => { this.getEditor().gotoNextBlock() },
+              onClick: () => { getEditor().gotoNextBlock() },
               shortcut: `${modChar} + Down`,
             },
             {
               label: "Goto previous",
-              onClick: () => { this.getEditor().gotoPreviousBlock() },
+              onClick: () => { getEditor().gotoPreviousBlock() },
               shortcut: `${modChar} + Up`,
             },
             {
               label: "Change language",
-              onClick: () => { this.openLanguageSelector() },
+              onClick: () => { openLanguageSelector() },
               shortcut: `${modChar} + L`,
             },
             {
               label: "Select all text",
-              onClick: () => { this.getEditor().selectAll() },
+              onClick: () => { getEditor().selectAll() },
               shortcut: `${modChar} + A`,
             },
           ]
@@ -327,18 +105,18 @@ export default {
         // TODO: set plain text, markdown
       ]
       let blockChildren = items[2].children
-      let lang = getLanguage(this.language)
+      let lang = getLanguage(language)
       if (langSupportsFormat(lang)) {
         blockChildren.push({
-          label: "Format as " + this.language,
-          onClick: () => { this.getEditor().formatCurrentBlock() },
+          label: "Format as " + language,
+          onClick: () => { getEditor().formatCurrentBlock() },
           shortcut: `${altChar} + Shift + F`,
         })
       }
       if (langSupportsRun(lang)) {
         blockChildren.push({
-          label: "Run " + this.language,
-          onClick: () => { this.getEditor().runCurrentBlock() },
+          label: "Run " + language,
+          onClick: () => { getEditor().runCurrentBlock() },
           shortcut: `${altChar} + Shift + R`,
         })
       }
@@ -367,38 +145,38 @@ export default {
           children.push(
             {
               label: "Move notes from browser to directory",
-              onClick: () => { this.storeNotesOnDisk() },
+              onClick: () => { storeNotesOnDisk() },
             }
           )
           children.push(
             {
               label: "Switch to notes in a directory",
-              onClick: async () => { await this.pickAnotherDirectory() },
+              onClick: async () => { await pickAnotherDirectory() },
             }
           )
         } else {
           children.push(
             {
               label: "Switch to browser (localStorage)",
-              onClick: async () => { await this.switchToBrowserStorage() },
+              onClick: async () => { await switchToBrowserStorage() },
             }
           )
           children.push(
             {
               label: "Switch to notes in a different directory",
-              onClick: async () => { await this.pickAnotherDirectory() },
+              onClick: async () => { await pickAnotherDirectory() },
             }
           )
         }
       }
       children.push({
         label: "Export notes to .zip file",
-        onClick: () => { this.exportNotesToZipFile() },
+        onClick: () => { exportNotesToZipFile() },
         divided: "up",
       })
       children.push({
         label: "Show help",
-        onClick: () => { this.showHelp("#storing-notes-on-disk") },
+        onClick: () => { showHelp("#storing-notes-on-disk") },
         divided: "up",
       })
       items.push({
@@ -406,11 +184,11 @@ export default {
         children: children,
       })
 
-      let s = this.isSpellChecking ? "Disable spell checking" : "Enable spell checking"
+      let s = isSpellChecking ? "Disable spell checking" : "Enable spell checking"
       items.push({
         label: s,
         onClick: () => {
-          this.toggleSpellCheck();
+          toggleSpellCheck();
         },
       })
       items.push({
@@ -419,15 +197,15 @@ export default {
         children: [
           {
             label: "Show help",
-            onClick: () => { this.showHelp() },
+            onClick: () => { showHelp() },
           },
           {
             label: "Show help as note",
-            onClick: () => { this.showHelpAsNote() },
+            onClick: () => { showHelpAsNote() },
           },
           {
             label: "Release notes",
-            onClick: () => { this.showReleaseNotes() },
+            onClick: () => { showReleaseNotes() },
           }
         ]
       })
@@ -444,139 +222,29 @@ export default {
         zIndex: 40,
         // @ts-ignore
         getContainer: () => {
-          const o = this.$refs.menuContainer;
+          const o = $refs.menuContainer;
           // const o = document.body;
           return o
         },
         onClose: (lastClicked) => {
           // console.log("onClose: lastClicked:", lastClicked)
-          this.showingMenu = false
-          // this.getEditor().focus()
+          showingMenu = false
+          // getEditor().focus()
         },
         items: items,
       });
 
       // @ts-ignore
-      this.$refs.menuContainer.focus()
-    },
-
-    exportNotesToZipFile() {
-      exportNotesToZip()
-    },
-
-    onOpenSettings() {
-      this.showingSettings = true
-    },
-
-    onCloseSettings() {
-      this.showingSettings = false
-      this.getEditor().focus()
-    },
-
-    onCursorChange(e) {
-      this.line = e.cursorLine.line
-      this.column = e.cursorLine.col
-      this.selectionSize = e.selectionSize
-      this.language = e.language
-      this.languageAuto = e.languageAuto
-    },
-
-    renameCurrentNote() {
-      console.log("renameNote:");
-      this.showingRenameNote = true;
-    },
-
-    canDeleteNote() {
-      let name = this.noteName
-      if (name == "scratch" || name == "help") {
-        return false
-      }
-      return true
-    },
-
-    async deleteCurrentNote() {
-      let name = this.noteName
-      console.log("deleteNote:", name);
-      if (!canDeleteNote(name)) {
-        console.log("cannot delete note:", name)
-        return
-      }
-      await this.openNote(kScratchNoteName, true)
-      await deleteNote(name)
-      // TODO: add a way to undo deletion of the note
-      this.toast(`Deleted note '${name}'`, toastOptions)
-      logNoteOp("noteDelete")
-    },
-
-    async createNewScratchNote() {
-      let name = await createNewScratchNote()
-      await this.onOpenNote(name)
-      // TODO: add a way to undo creation of the note
-      this.toast(`Created scratch note '${name}'`, toastOptions)
-      logNoteOp("noteCreate")
+      $refs.menuContainer.focus()
     },
 
 
-    showHelpAsNote() {
-      this.openNote(kHelpSystemNoteName);
-    },
-
-    showReleaseNotes() {
-      this.openNote(kReleaseNotesSystemNoteName);
-    },
-
-    /**
-     * called when a new document has been loaded or when a document has been modified
-     * TODO: maybe needs separate event onDocLoaded
-     * @param {string} name
-     */
-    onDocChanged(name) {
-      let justOpened = name !== undefined;
-      // console.log(`doc changed: name: ${name} this.noteName: ${this.noteName}, justOpened: ${justOpened}`)
-      if (name === undefined) {
-        name = this.noteName
-      } else {
-        this.noteName = name
-      }
-
-      let editorComp = this.getEditor()
-      const c = editorComp.getContent() || ""
-      this.docSize = stringSizeInUtf8Bytes(c);
-
-      if (justOpened) {
-        console.log("onDocChanged: just opened")
-        let readOnly = isSystemNoteName(name)
-        editorComp.editor.setReadOnly(readOnly)
-        if (name === kDailyJournalNoteName) {
-          console.log("journal, so going to next block")
-          editorComp.gotoNextBlock()
-        }
-
-        window.document.title = name;
-        setURLHashNoReload(name)
-        setSetting("currentNoteName", name);
-      }
-    },
   },
 }
 
 </script>
 
 <template>
-  <div class="grid w-screen max-h-screen h-screen fixed grid-rows-[1fr_auto]" @contextmenu="onContextMenu($event)">
-    <!--TODO: show note name, a drop-down for switching, search icon, menu -->
-    <!-- <div class="text-base hidden">
-      <div>{{ noteName }}</div>
-      <div>23 notes</div>
-    </div> -->
-    <Editor @cursorChange="onCursorChange" :theme="theme" :development="development" :debugSyntaxTree="false"
-      :keymap="settings.keymap" :emacsMetaKey="settings.emacsMetaKey"
-      :showLineNumberGutter="settings.showLineNumberGutter" :showFoldGutter="settings.showFoldGutter"
-      :bracketClosing="settings.bracketClosing" :fontFamily="settings.fontFamily" :fontSize="settings.fontSize"
-      class="overflow-hidden" ref="editor" @openLanguageSelector="openLanguageSelector"
-      @openHistorySelector="openHistorySelector" @createNewScratchNote="createNewScratchNote"
-      @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
-  </div>
   <div class="overlay">
     <Settings v-if="showingSettings" :initialSettings="settings" @close="onCloseSettings" />
   </div>
