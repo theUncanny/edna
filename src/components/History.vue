@@ -2,7 +2,6 @@
 import { getHistory } from '../history';
 import { len } from '../util'
 
-
 export default {
   data() {
     let history = getHistory();

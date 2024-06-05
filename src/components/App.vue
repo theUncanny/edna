@@ -516,25 +516,6 @@ export default {
       logNoteOp("noteCreate")
     },
 
-    openLanguageSelector() {
-      this.showingLanguageSelector = true
-    },
-
-    openHistorySelector() {
-      this.showingHistorySelector = true
-    },
-
-    closeHistorySelector() {
-      this.showingHistorySelector = false
-      this.getEditor().focus()
-    },
-
-    onSelectHistory(name) {
-      this.showingHistorySelector = false
-      console.log("onSelectHistory:", name);
-      this.openNote(name)
-    },
-
 
     showHelpAsNote() {
       this.openNote(kHelpSystemNoteName);
@@ -597,7 +578,6 @@ export default {
       @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
   </div>
   <div class="overlay">
-    <History v-if="showingHistorySelector" @close="closeHistorySelector" @selectHistory="onSelectHistory" />
     <Settings v-if="showingSettings" :initialSettings="settings" @close="onCloseSettings" />
   </div>
   <div :style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">

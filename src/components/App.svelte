@@ -11,6 +11,7 @@
   } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import RenameNote from "./RenameNote.svelte";
+  import History from "./History.svelte";
   import NoteSelector from "./NoteSelector.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
   import {
@@ -54,12 +55,10 @@
   let theme = $state(initialSettings.theme);
   let isSpellChecking = $state(false);
   let spellcheckToastID = $state(0);
-  let altChar = $state(getAltChar());
+  let altChar = getAltChar();
   let loadingNoteName = $state("");
 
   let noteShortcut = $state("");
-
-  showingNoteSelector = true;
 
   noteName = "a test note";
   $effect(() => {
@@ -127,6 +126,21 @@
     // await renameNote(noteName, newName, s);
     // await openNote(newName, true);
     console.log("onRename: newName:", newName);
+  }
+
+  function openHistorySelector() {
+    showingHistorySelector = true;
+  }
+
+  function closeHistorySelector() {
+    showingHistorySelector = false;
+    // getEditor().focus();
+  }
+
+  function onSelectHistory(name) {
+    showingHistorySelector = false;
+    console.log("onSelectHistory:", name);
+    openNote(name);
   }
 
   function onSelectLanguage(language) {
@@ -241,6 +255,9 @@
       selectLanguage={onSelectLanguage}
       close={closeLanguageSelector}
     />
+  {/if}
+  {#if showingHistorySelector}
+    <History close={closeHistorySelector} selectHistory={onSelectHistory} />
   {/if}
 </div>
 
