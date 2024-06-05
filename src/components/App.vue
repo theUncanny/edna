@@ -5,7 +5,6 @@ import NoteSelector from './NoteSelector.vue'
 import StatusBar from './StatusBar.vue'
 import TopNav from './TopNav.vue'
 import RenameNote from './RenameNote.vue'
-import ToastUndo from './ToastUndo.vue'
 import Loading from './Loading.vue'
 import History from "./History.vue"
 
@@ -50,7 +49,6 @@ export default {
     Settings,
     StatusBar,
     TopNav,
-    ToastUndo,
     Loading
   },
 
@@ -139,14 +137,6 @@ export default {
     getEditor() {
       // @ts-ignore
       return this.$refs.editor
-    },
-
-    toggleSpellCheck() {
-      this.isSpellChecking = !this.isSpellChecking
-      this.getEditor().setSpellChecking(this.isSpellChecking)
-      // if (this.isSpellChecking) {
-      //   this.toast("Press Shift + right mouse click for context menu when spell checking is enabled", toastOptions)
-      // }
     },
 
     async openNote(name, skipSave = false) {
@@ -592,18 +582,6 @@ export default {
       this.openNote(name)
     },
 
-    /**
-     * @param {string} anchor
-     */
-    showHelp(anchor = "") {
-      // let uri = window.location.origin + "/help"
-      let uri = "/help";
-      if (anchor != "") {
-        uri += anchor;
-      }
-      window.open(uri, "_blank");
-    },
-
     showHelpAsNote() {
       this.openNote(kHelpSystemNoteName);
     },
@@ -678,16 +656,6 @@ export default {
         setSetting("currentNoteName", name);
       }
     },
-
-    formatCurrentBlock() {
-      this.getEditor().formatCurrentBlock()
-      logNoteOp("noteFormatBlock")
-    },
-
-    runCurrentBlock() {
-      this.getEditor().runCurrentBlock()
-      logNoteOp("noteRunBlock")
-    },
   },
 }
 
@@ -707,11 +675,6 @@ export default {
       class="overflow-hidden" ref="editor" @openLanguageSelector="openLanguageSelector"
       @openHistorySelector="openHistorySelector" @createNewScratchNote="createNewScratchNote"
       @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
-    <StatusBar :shortcut="noteShortcut" :noteName="noteName" :line="line" :column="column" :docSize="docSize"
-      :selectionSize="selectionSize" :language="language" :languageAuto="languageAuto"
-      :isSpellChecking="isSpellChecking" @openLanguageSelector="openLanguageSelector"
-      @openNoteSelector="openNoteSelector" @formatCurrentBlock="formatCurrentBlock" @runCurrentBlock="runCurrentBlock"
-      @toggleSpellCheck="toggleSpellCheck" @openSettings="onOpenSettings" @toggleHelp="showHelp" class="" />
   </div>
   <div class="overlay">
     <LanguageSelector v-if="showingLanguageSelector" @selectLanguage="onSelectLanguage"

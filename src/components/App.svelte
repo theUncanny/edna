@@ -1,11 +1,17 @@
 <script>
-  import { getSettings } from "../settings";
   import { getAltChar } from "../util";
   import Loading from "./Loading.svelte";
+  import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
+  import {
+    onOpenSettings,
+    getSettings,
+    onSettingsChange,
+    setSetting,
+  } from "../settings";
+  import { logAppExit, logAppOpen, logNoteOp } from "../log";
 
   let initialSettings = getSettings();
-  console.log("initialSettings:", initialSettings);
 
   let column = $state(1);
   let development = $state(window.location.href.indexOf("dev=1") !== -1);
@@ -36,14 +42,83 @@
   });
 
   function openNoteSelector() {
-    console.log("openNoteSelector");
     showingNoteSelector = true;
+  }
+
+  function openLanguageSelector() {
+    showingLanguageSelector = true;
+  }
+
+  function oncontextmenu() {
+    // TODO: implement me
+  }
+
+  function throwNYI() {
+    throw new Error("NYI");
+  }
+
+  function getEditor() {
+    throwNYI();
+  }
+
+  function formatCurrentBlock() {
+    // getEditor().formatCurrentBlock();
+    logNoteOp("noteFormatBlock");
+  }
+
+  function runCurrentBlock() {
+    // getEditor().runCurrentBlock();
+    logNoteOp("noteRunBlock");
+  }
+
+  function toggleSpellCheck() {
+    isSpellChecking = !isSpellChecking;
+    //getEditor().setSpellChecking(isSpellChecking)
+    // if (this.isSpellChecking) {
+    //   this.toast("Press Shift + right mouse click for context menu when spell checking is enabled", toastOptions)
+    // }
+  }
+
+  /**
+   * @param {string} anchor
+   */
+  function showHelp(anchor = "") {
+    // let uri = window.location.origin + "/help"
+    let uri = "/help";
+    if (anchor != "") {
+      uri += anchor;
+    }
+    window.open(uri, "_blank");
   }
 </script>
 
 <div>This is app Svelte.</div>
 
 <TopNav {noteName} shortcut={noteShortcut} {openNoteSelector} />
+
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+  class="grid w-screen max-h-screen h-screen fixed grid-rows-[1fr_auto]"
+  {oncontextmenu}
+>
+  <StatusBar
+    shortcut={noteShortcut}
+    {noteName}
+    {line}
+    {column}
+    {docSize}
+    {selectionSize}
+    {language}
+    {languageAuto}
+    {isSpellChecking}
+    {openLanguageSelector}
+    {openNoteSelector}
+    {formatCurrentBlock}
+    {runCurrentBlock}
+    {toggleSpellCheck}
+    openSettings={onOpenSettings}
+  />
+</div>
 
 {#if loadingNoteName}
   <Loading {loadingNoteName} />

@@ -210,28 +210,28 @@ export function sleep(ms) {
   );
 }
 
-// needs the following css:
-/*
-.scrollbar-width-detector {
-  position: absolute;
-  visibility: hidden;
-  width: 100px;
-  height: 100px;
-  overflow: scroll;
-}
-*/
+let cachedScrollbarDx = 0;
 /**
  * @returns number
  */
 export function getScrollbarWidth() {
-  const scrollbarWidthDetector = document.createElement("div");
-  scrollbarWidthDetector.className = "scrollbar-width-detector";
-  document.body.appendChild(scrollbarWidthDetector);
-
-  const scrollbarWidth =
-    scrollbarWidthDetector.offsetWidth - scrollbarWidthDetector.clientWidth;
-
-  document.body.removeChild(scrollbarWidthDetector);
-
-  return scrollbarWidth;
+  /*
+  needs the following css:
+  .scrollbar-width-detector {
+    position: absolute;
+    visibility: hidden;
+    width: 100px;
+    height: 100px;
+    overflow: scroll;
+  }
+*/
+  if (cachedScrollbarDx > 0) {
+    return cachedScrollbarDx;
+  }
+  const el = document.createElement("div");
+  el.className = "scrollbar-width-detector";
+  document.body.appendChild(el);
+  cachedScrollbarDx = el.offsetWidth - el.clientWidth;
+  document.body.removeChild(el);
+  return cachedScrollbarDx;
 }
