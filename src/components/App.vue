@@ -530,16 +530,6 @@ export default {
       this.showingLanguageSelector = true
     },
 
-    closeLanguageSelector() {
-      this.showingLanguageSelector = false
-      this.getEditor().focus()
-    },
-
-    onSelectLanguage(language) {
-      this.showingLanguageSelector = false
-      this.getEditor().setLanguage(language)
-    },
-
     openHistorySelector() {
       this.showingHistorySelector = true
     },

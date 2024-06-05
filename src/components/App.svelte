@@ -11,6 +11,7 @@
   } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import RenameNote from "./RenameNote.svelte";
+  import LanguageSelector from "./LanguageSelector.svelte";
 
   let initialSettings = getSettings();
 
@@ -105,6 +106,16 @@
     // await openNote(newName, true);
     console.log("onRename: newName:", newName);
   }
+
+  function onSelectLanguage(language) {
+    showingLanguageSelector = false;
+    //getEditor().setLanguage(language)
+  }
+
+  function closeLanguageSelector() {
+    showingLanguageSelector = false;
+    //getEditor().focus()
+  }
 </script>
 
 <div>This is app Svelte.</div>
@@ -133,6 +144,14 @@
     {toggleSpellCheck}
     openSettings={onOpenSettings}
   />
+</div>
+<div class="overlay">
+  {#if showingLanguageSelector}
+    <LanguageSelector
+      selectLanguage={onSelectLanguage}
+      close={closeLanguageSelector}
+    />
+  {/if}
 </div>
 
 {#if loadingNoteName}
