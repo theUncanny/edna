@@ -209,18 +209,6 @@ export default {
       }
     },
 
-    onCloseRename() {
-      this.showingRenameNote = false
-      this.getEditor().focus()
-    },
-
-    async onRename(newName) {
-      this.showingRenameNote = false
-      let s = this.getEditor().getContent() || ""
-      await renameNote(this.noteName, newName, s)
-      await this.openNote(newName, true)
-      console.log("onRename: newName:", newName)
-    },
 
     async storeNotesOnDisk() {
       let dh = await openDirPicker(true)
@@ -687,6 +675,5 @@ export default {
   <div :style="mcStyle" class="fixed inset-0 z-40 pointer-events-none">
     <form class="relative w-full h-full pointer-events-none z-50 text-[8px]" ref="menuContainer" tabIndex="-1"></form>
   </div>
-  <RenameNote @close="onCloseRename" @rename="onRename" :oldName="noteName" v-if="showingRenameNote" />
 
 </template>

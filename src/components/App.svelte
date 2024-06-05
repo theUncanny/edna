@@ -10,6 +10,7 @@
     setSetting,
   } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
+  import RenameNote from "./RenameNote.svelte";
 
   let initialSettings = getSettings();
 
@@ -37,6 +38,7 @@
 
   let noteShortcut = $state("");
 
+  noteName = "a test note";
   $effect(() => {
     console.log(settings);
   });
@@ -90,6 +92,19 @@
     }
     window.open(uri, "_blank");
   }
+
+  function onCloseRename() {
+    showingRenameNote = false;
+    // getEditor().focus();
+  }
+
+  async function onRename(newName) {
+    showingRenameNote = false;
+    // let s = getEditor().getContent() || "";
+    // await renameNote(noteName, newName, s);
+    // await openNote(newName, true);
+    console.log("onRename: newName:", newName);
+  }
 </script>
 
 <div>This is app Svelte.</div>
@@ -122,4 +137,8 @@
 
 {#if loadingNoteName}
   <Loading {loadingNoteName} />
+{/if}
+
+{#if showingRenameNote}
+  <RenameNote close={onCloseRename} rename={onRename} oldName={noteName} />
 {/if}
