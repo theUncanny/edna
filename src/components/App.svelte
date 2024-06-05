@@ -11,7 +11,27 @@
   } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import RenameNote from "./RenameNote.svelte";
+  import NoteSelector from "./NoteSelector.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
+  import {
+    createNewScratchNote,
+    createNoteWithName,
+    dbDelDirHandle,
+    deleteNote,
+    getNotesMetadata,
+    getMetadataForNote,
+    getStorageFS,
+    pickAnotherDirectory,
+    switchToStoringNotesOnDisk,
+    kScratchNoteName,
+    canDeleteNote,
+    renameNote,
+    isSystemNoteName,
+    kDailyJournalNoteName,
+    kHelpSystemNoteName,
+    kReleaseNotesSystemNoteName,
+    preLoadAllNotes,
+  } from "../notes";
 
   let initialSettings = getSettings();
 
@@ -38,6 +58,8 @@
   let loadingNoteName = $state("");
 
   let noteShortcut = $state("");
+
+  showingNoteSelector = true;
 
   noteName = "a test note";
   $effect(() => {
@@ -116,6 +138,65 @@
     showingLanguageSelector = false;
     //getEditor().focus()
   }
+
+  function closeNoteSelector() {
+    showingNoteSelector = false;
+    //getEditor().focus()
+    // console.log("closeNoteSelector")
+  }
+
+  async function openNote(name, skipSave = false) {
+    console.log("App.openNote:", name);
+    // let editor = getEditor();
+    // editor.editor.setReadOnly(true);
+    // loadingNoteName = name;
+    // await editor.openNote(name, skipSave);
+    // // await sleep(400);
+    // loadingNoteName = "";
+    // editor.focus();
+  }
+
+  /**
+   * @param {string} name
+   */
+  function onOpenNote(name) {
+    showingNoteSelector = false;
+    openNote(name);
+  }
+
+  /**
+   * @param {string} name
+   */
+  async function onCreateNote(name) {
+    showingNoteSelector = false;
+    await createNoteWithName(name);
+    openNote(name);
+    // TODO: add a way to undo creation of the note
+    // this.toast(`Created note '${name}'`, toastOptions);
+    logNoteOp("noteCreate");
+  }
+
+  /**
+   * @param {string} name
+   */
+  async function onDeleteNote(name) {
+    showingNoteSelector = false;
+    let settings = getSettings();
+    // if deleting current note, first switch to scratch note
+    // TODO: maybe switch to the most recently opened
+    if (name === settings.currentNoteName) {
+      console.log("deleted current note, opening scratch note");
+      await openNote(kScratchNoteName);
+    }
+    // must delete after openNote() because openNote() saves
+    // current note
+    await deleteNote(name);
+    // getEditor().focus();
+    console.log("deleted note", name);
+    // TODO: add a way to undo deletion of the note
+    // this.toast(`Deleted note '${name}'`, toastOptions);
+    logNoteOp("noteDelete");
+  }
 </script>
 
 <div>This is app Svelte.</div>
@@ -146,6 +227,15 @@
   />
 </div>
 <div class="overlay">
+  {#if showingNoteSelector}
+    <NoteSelector
+      openNote={onOpenNote}
+      createNote={onCreateNote}
+      deleteNote={onDeleteNote}
+      close={closeNoteSelector}
+    />
+  {/if}
+
   {#if showingLanguageSelector}
     <LanguageSelector
       selectLanguage={onSelectLanguage}

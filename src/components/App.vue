@@ -139,16 +139,6 @@ export default {
       return this.$refs.editor
     },
 
-    async openNote(name, skipSave = false) {
-      console.log("App.openNote:", name)
-      let editor = this.getEditor();
-      editor.editor.setReadOnly(true);
-      this.loadingNoteName = name
-      await editor.openNote(name, skipSave);
-      // await sleep(400);
-      this.loadingNoteName = ""
-      editor.focus()
-    },
 
     /**
      * @param {KeyboardEvent} event
@@ -546,60 +536,12 @@ export default {
     },
 
 
-    closeNoteSelector() {
-      this.showingNoteSelector = false
-      this.getEditor().focus()
-      // console.log("closeNoteSelector")
-    },
-
-    /**
-     * @param {string} name
-     */
-    onOpenNote(name) {
-      this.showingNoteSelector = false
-      this.openNote(name)
-    },
-
     showHelpAsNote() {
       this.openNote(kHelpSystemNoteName);
     },
 
     showReleaseNotes() {
       this.openNote(kReleaseNotesSystemNoteName);
-    },
-
-    /**
-     * @param {string} name
-     */
-    async onCreateNote(name) {
-      this.showingNoteSelector = false
-      await createNoteWithName(name)
-      await this.onOpenNote(name)
-      // TODO: add a way to undo creation of the note
-      this.toast(`Created note '${name}'`, toastOptions)
-      logNoteOp("noteCreate")
-    },
-
-    /**
-     * @param {string} name
-     */
-    async onDeleteNote(name) {
-      this.showingNoteSelector = false
-      let settings = getSettings()
-      // if deleting current note, first switch to scratch note
-      // TODO: maybe switch to the most recently opened
-      if (name === settings.currentNoteName) {
-        console.log("deleted current note, opening scratch note")
-        await this.openNote(kScratchNoteName)
-      }
-      // must delete after openNote() because openNote() saves
-      // current note
-      await deleteNote(name)
-      this.getEditor().focus()
-      console.log("deleted note", name)
-      // TODO: add a way to undo deletion of the note
-      this.toast(`Deleted note '${name}'`, toastOptions)
-      logNoteOp("noteDelete")
     },
 
     /**
@@ -655,10 +597,6 @@ export default {
       @openNoteSelector="openNoteSelector" @docChanged="onDocChanged" />
   </div>
   <div class="overlay">
-    <LanguageSelector v-if="showingLanguageSelector" @selectLanguage="onSelectLanguage"
-      @close="closeLanguageSelector" />
-    <NoteSelector v-if="showingNoteSelector" @openNote="onOpenNote" @createNote="onCreateNote"
-      @deleteNote="onDeleteNote" @close="closeNoteSelector" />
     <History v-if="showingHistorySelector" @close="closeHistorySelector" @selectHistory="onSelectHistory" />
     <Settings v-if="showingSettings" :initialSettings="settings" @close="onCloseSettings" />
   </div>
