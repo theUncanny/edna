@@ -395,7 +395,7 @@
     onkeydown={onKeydown}
     onfocusout={onFocusOut}
     tabindex="-1"
-    class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[94vh] w-[32em] p-3"
+    class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[94vh] w-[32em] p-4"
   >
     <input
       type="text"

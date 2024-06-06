@@ -131,10 +131,6 @@
     });
     logAppOpen();
 
-    setTimeout(() => {
-      showingSettings = true;
-    }, 500);
-
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };

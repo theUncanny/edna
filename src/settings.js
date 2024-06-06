@@ -37,6 +37,7 @@ let settings;
  * @returns {Settings}
  */
 export function getSettings() {
+  throwIf(!settings);
   return settings;
 }
 

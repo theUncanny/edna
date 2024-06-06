@@ -94,6 +94,10 @@ html.dark input {
   }
 }
 
+html.dark select {
+  @apply bg-gray-800;
+}
+
 .selector {
   font-size: 13px;
   background: #efefef;
@@ -104,6 +108,7 @@ html.dark input {
 html.dark .selector {
   background: #151516;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  @apply text-gray-300;
 }
 
 .selector .items > li:hover {
