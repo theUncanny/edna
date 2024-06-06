@@ -8,7 +8,16 @@
 }}*/
   let { close, selectHistory } = $props();
 
+  /**
+   * @typedef {Object} HitoryItem
+   * @property {string} name
+   * @property {string} nameLC
+   * @property {HTMLElement} ref
+   */
   let history = getHistory();
+  /**
+   * @return {HitoryItem[]}
+   */
   function buildItems() {
     let n = len(history);
     let items = Array(n);
@@ -23,9 +32,8 @@
     return items;
   }
 
-  let selected = $state(len(history) > 1 ? 1 : 0);
+  let selectedIdx = $state(len(history) > 1 ? 1 : 0);
   let items = $state(buildItems());
-  let filter = $state("");
 
   /** @type {HTMLElement} */
   let container;
@@ -39,18 +47,16 @@
   /**
    * @param {KeyboardEvent} ev
    */
-  function onKeydown(ev) {
-    let nItems = len(items);
-    let selectedIdx = selected;
-
+  function onkeydown(ev) {
+    let lastIdx = len(items) - 1;
     let key = ev.key;
 
     // '0' ... '9' picks an item
     let idx = key.charCodeAt(0) - "0".charCodeAt(0);
-    if (idx >= 0 && idx < nItems) {
+    if (idx >= 0 && idx <= lastIdx) {
       ev.preventDefault();
       let item = items[idx];
-      console.log("idx:", idx, "item:", item);
+      // console.log("idx:", idx, "item:", item);
       if (idx == 0) {
         // perf: selecting current note is a no-op
         close();
@@ -62,17 +68,13 @@
 
     if (key === "ArrowDown") {
       ev.preventDefault();
-      if (selectedIdx >= nItems - 1) {
-        // wrap around
-        selectedIdx = 0;
-      } else {
+      if (selectedIdx < lastIdx) {
         selectedIdx += 1;
       }
-      selected = selectedIdx;
-      if (selectedIdx === nItems - 1) {
+      if (selectedIdx === lastIdx) {
         container.scrollIntoView({ block: "end" });
       } else {
-        let el = items[selectedIdx].refs;
+        let el = items[selectedIdx].ref;
         el.scrollIntoView({ block: "nearest" });
       }
       return;
@@ -82,17 +84,11 @@
       ev.preventDefault();
       if (selectedIdx > 0) {
         selectedIdx -= 1;
-      } else {
-        if (nItems > 1) {
-          // wrap around
-          selectedIdx = nItems - 1;
-        }
       }
-      selected = selectedIdx;
       if (selectedIdx === 0) {
         container.scrollIntoView({ block: "start" });
       } else {
-        let el = items[selectedIdx].refs;
+        let el = items[selectedIdx].ref;
         el.scrollIntoView({ block: "nearest" });
       }
       return;
@@ -100,9 +96,9 @@
 
     if (key === "Enter") {
       ev.preventDefault();
-      const selected = items[selectedIdx];
-      if (selected) {
-        selectItem(selected.name);
+      const item = items[selectedIdx];
+      if (item) {
+        selectItem(item.name);
       } else {
         close();
       }
@@ -121,7 +117,7 @@
     selectHistory(token);
   }
 
-  function onFocusOut(event) {
+  function onfocusout(event) {
     if (
       container !== event.relatedTarget &&
       !container.contains(event.relatedTarget)
@@ -136,9 +132,9 @@
   <form
     class="absolute center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
     tabindex="-1"
-    onfocusout={onFocusOut}
+    {onfocusout}
     bind:this={container}
-    onkeydown={onKeydown}
+    {onkeydown}
   >
     <div
       class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center dark:text-gray-400"
@@ -149,7 +145,7 @@
       {#each items as item, idx (item.name)}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <li
-          class="{idx === selected
+          class="{idx === selectedIdx
             ? 'selected'
             : ''} flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
           onclick={() => {
