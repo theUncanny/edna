@@ -55,7 +55,12 @@
 
 <script>
   import { len } from "../util";
-
+  import { getScrollbarWidth } from "../util.js";
+  let style = $state("");
+  $effect(() => {
+    let dx = getScrollbarWidth();
+    style = `right: ${dx}px`;
+  });
   if (false) {
     addToast("hello");
     addToast("what is my purpose", 500);
@@ -68,7 +73,7 @@
 </script>
 
 {#if len(toasts) > 0}
-  <div class="toast-wrap fixed top-10 right-[19px] text-sm">
+  <div class="toast-wrap fixed top-10 right-[19px] text-sm" {style}>
     {#each toasts as t}
       <div
         class="flex justify-between items-center mb-4 dark:text-gray-300 border-gray-300 dark:border-gray-500 border rounded-md py-2 pl-4 pr-2 min-w-[14ch] bg-white dark:bg-gray-700"

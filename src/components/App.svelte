@@ -7,6 +7,7 @@
   import Loading from "./Loading.svelte";
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
+  import Settings from "./Settings.svelte";
   import {
     onOpenSettings,
     getSettings,
@@ -41,7 +42,6 @@
     sleep,
     throwIf,
   } from "../util";
-  import Settings from "./settings/Settings.vue";
   import { getModChar } from "../../src/util";
   import ContextMenu from "@imengyu/vue3-context-menu";
   import { supportsFileSystem, openDirPicker } from "../fileutil";
@@ -52,30 +52,7 @@
     langSupportsRun,
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
-  import Toaster from "./Toaster.svelte";
-
-  let toastOptions = {
-    // position: POSITION.TOP_RIGHT,
-    timeout: 4000,
-    closeOnClick: true,
-    pauseOnFocusLoss: true,
-    pauseOnHover: true,
-    // draggable: true,
-    // draggablePercent: 0.6,
-    showCloseButtonOnHover: false,
-    hideProgressBar: true,
-    closeButton: "button",
-    icon: false,
-    rtl: false,
-  };
-
-  /**
-   * @param {string} msg
-   * @param {any} opts
-   */
-  function toast(msg, opts) {
-    // do nothing
-  }
+  import Toaster, { addToast } from "./Toaster.svelte";
 
   let initialSettings = getSettings();
 
@@ -153,6 +130,11 @@
       await getEditor().saveCurrentNote();
     });
     logAppOpen();
+
+    setTimeout(() => {
+      showingSettings = true;
+    }, 500);
+
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
@@ -264,7 +246,7 @@
     await openNote(kScratchNoteName, true);
     await deleteNote(name);
     // TODO: add a way to undo deletion of the note
-    toast(`Deleted note '${name}'`, toastOptions);
+    addToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
   }
 
@@ -272,7 +254,7 @@
     let name = await createNewScratchNote();
     await onOpenNote(name);
     // TODO: add a way to undo creation of the note
-    toast(`Created scratch note '${name}'`, toastOptions);
+    addToast(`Created scratch note '${name}'`);
     logNoteOp("noteCreate");
   }
 
@@ -319,9 +301,8 @@
     isSpellChecking = !isSpellChecking;
     getEditor().setSpellChecking(isSpellChecking);
     if (isSpellChecking) {
-      toast(
-        "Press Shift + right mouse click for context menu when spell checking is enabled",
-        toastOptions
+      addToast(
+        "Press Shift + right mouse click for context menu when spell checking is enabled"
       );
     }
   }
@@ -338,8 +319,14 @@
     window.open(uri, "_blank");
   }
 
-  function onCloseRename() {
+  function closeRename() {
     showingRenameNote = false;
+    getEditor().focus();
+  }
+
+  function closeSettings() {
+    console.log("closeSettings");
+    showingSettings = false;
     getEditor().focus();
   }
 
@@ -408,7 +395,7 @@
     await createNoteWithName(name);
     openNote(name);
     // TODO: add a way to undo creation of the note
-    toast(`Created note '${name}'`, toastOptions);
+    addToast(`Created note '${name}'`);
     logNoteOp("noteCreate");
   }
 
@@ -430,7 +417,7 @@
     getEditor().focus();
     console.log("deleted note", name);
     // TODO: add a way to undo deletion of the note
-    toast(`Deleted note '${name}'`, toastOptions);
+    addToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
   }
 
@@ -557,7 +544,10 @@
 {/if}
 
 {#if showingRenameNote}
-  <RenameNote close={onCloseRename} rename={onRename} oldName={noteName} />
+  <RenameNote close={closeRename} rename={onRename} oldName={noteName} />
 {/if}
 
+{#if showingSettings}
+  <Settings close={closeSettings}></Settings>
+{/if}
 <Toaster></Toaster>

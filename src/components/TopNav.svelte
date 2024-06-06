@@ -5,21 +5,16 @@
   /** @type {{ noteName: string, shortcut: string, openNoteSelector: (e) => void}} */
   let { noteName = "", shortcut = "", openNoteSelector } = $props();
 
-  let topNavStyle = $state("");
-
+  let style = $state("");
   $effect(() => {
     let dx = getScrollbarWidth();
-    console.log("getScrollbarWidth:", dx);
-    topNavStyle = `right: ${dx}px`;
-  });
-  $effect(() => {
-    console.log("dirtyState.isDirty:", dirtyState.isDirty);
+    style = `right: ${dx}px`;
   });
 </script>
 
 <div
   class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-b border-l rounded-bl-lg bg-white dark:bg-gray-700"
-  style={topNavStyle}
+  {style}
 >
   <div class="ml-[0px] w-[4px]">
     {#if dirtyState.isDirty}&bull;{:else}&nbsp;{/if}

@@ -28,3 +28,21 @@ console.log(encodeCurrentTimeBase32());
 
 ----------------------------------------------------------------
 
+settings:
+
+Keymap: [default]
+
+# Input settings
+[ ] Auto-close brackets and question marks
+
+# Gutters
+[ ] Show line number
+[ ] Show fold gutter
+
+Theme: [Light]
+
+Font family:
+
+Font size:
+
+Version: 1.3

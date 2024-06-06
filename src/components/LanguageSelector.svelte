@@ -49,7 +49,7 @@
   /**
    * @param {KeyboardEvent} event
    */
-  function onKeydown(event) {
+  function onkeydown(event) {
     let nItems = len(filteredItems);
     let selectedIdx = selected;
 
@@ -116,12 +116,12 @@
     selectLanguage(token);
   }
 
-  function onInput(event) {
+  function oninput(event) {
     // reset selection
     selected = 0;
   }
 
-  function onFocusOut(event) {
+  function onfocusout(event) {
     if (
       container !== event.relatedTarget &&
       !container.contains(event.relatedTarget)
@@ -135,15 +135,15 @@
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <form
     bind:this={container}
-    onkeydown={onKeydown}
-    onfocusout={onFocusOut}
+    {onkeydown}
+    {onfocusout}
     tabindex="-1"
     class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3"
   >
     <input
       type="text"
       bind:this={input}
-      oninput={onInput}
+      {oninput}
       bind:value={filter}
       class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
     />

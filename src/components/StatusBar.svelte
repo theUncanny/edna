@@ -44,9 +44,11 @@
   } = $props();
 
   let isMac = $state(platform.isMac);
-  let dx = getScrollbarWidth();
-  console.log("getScrollbarWidth:", dx);
-  let statusBarStyle = `right: ${dx}px`;
+  let style = $state("");
+  $effect(() => {
+    let dx = getScrollbarWidth();
+    style = `right: ${dx}px`;
+  });
 
   let languageName = $derived(getLanguageNameFromToken(language));
 
@@ -64,7 +66,7 @@
 </script>
 
 <div
-  style={statusBarStyle}
+  {style}
   class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-t border-l rounded-tl-lg bg-white dark:bg-gray-700"
 >
   <div class="ml-[0px] w-[4px]">
