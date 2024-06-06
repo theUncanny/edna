@@ -8,12 +8,7 @@
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
-  import {
-    onOpenSettings,
-    getSettings,
-    onSettingsChange,
-    setSetting,
-  } from "../settings";
+  import { getSettings, onSettingsChange, setSetting } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import {
     createNewScratchNote,
@@ -57,7 +52,6 @@
   let initialSettings = getSettings();
 
   let column = $state(1);
-  let development = $state(window.location.href.indexOf("dev=1") !== -1);
   let docSize = $state(0);
   let helpAnchor = $state("");
   let language = $state("plaintext");
@@ -72,7 +66,6 @@
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
-  let theme = $state(initialSettings.theme);
   let isSpellChecking = $state(false);
   let spellcheckToastID = $state(0);
   let altChar = getAltChar();
@@ -111,17 +104,6 @@
   });
 
   $effect(() => {
-    onSettingsChange((settings) => {
-      settings = settings;
-      theme = settings.theme;
-      //throwIf(noteName != settings.currentNoteName, "noteName != settings.currentNoteName")
-      console.log(
-        `onSettingsChange callback, noteName: ${noteName}, settings.currentNoteName: ${settings.currentNoteName}, theme: ${theme}`
-      );
-    });
-    onOpenSettings(() => {
-      showingSettings = true;
-    });
     getEditor().setSpellChecking(isSpellChecking);
     window.addEventListener("keydown", onKeyDown);
 
@@ -218,7 +200,7 @@
     exportNotesToZip();
   }
 
-  function onOpenSettings2() {
+  function openSettings() {
     showingSettings = true;
   }
 
@@ -478,8 +460,6 @@
   <TopNav {noteName} shortcut={noteShortcut} {openNoteSelector} />
   <Editor
     cursorChange={onCursorChange}
-    {theme}
-    {development}
     debugSyntaxTree={false}
     keymap={settings.keymap}
     emacsMetaKey={settings.emacsMetaKey}
@@ -511,7 +491,7 @@
     {formatCurrentBlock}
     {runCurrentBlock}
     {toggleSpellCheck}
-    openSettings={onOpenSettings2}
+    {openSettings}
   />
 </div>
 <div class="overlay">

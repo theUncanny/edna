@@ -77,7 +77,7 @@
     onclick={openNoteSelector}
     title="Change or create new note"
   >
-    {noteName}
+    {noteName} ⏶
   </button>
   {#if shortcut}
     <div class="text-gray-500 dark:text-gray-400 text-xs ml-1">

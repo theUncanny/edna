@@ -125,11 +125,11 @@
   }
 </script>
 
-<div
-  class="fixed inset-0 overflow-auto bg-black bg-opacity-50 dark:bg-opacity-20"
->
+<div class="fixed inset-0">
+  <div class=" absolute inset-0 z-10 bg-black opacity-50 dark:opacity-20"></div>
+
   <div
-    class="selector absolute center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4"
+    class="selector absolute overflow-auto center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4 max-h-[94vh]"
   >
     <div>
       <h2>Input settings</h2>
@@ -243,8 +243,12 @@
     @apply ml-4;
     @apply border;
     @apply border-black;
+    @apply px-2 py-1;
   }
 
+  option {
+    @apply px-2 py-2;
+  }
   h2 ~ label {
     margin-left: 4px;
   }

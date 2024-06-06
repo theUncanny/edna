@@ -15,7 +15,6 @@ import { ipcRenderer } from "./ipcrenderer";
  * @property {string} [theme] // "system", "light", "dark"
  */
 
-export const kEventOpenSettings = "open-settings";
 export const kEventSettingsChange = "settings-change";
 
 // TODO: should be "Consolas" instead of "Cascadia Code"?
@@ -125,10 +124,6 @@ export function setSetting(key, value) {
   let s = cloneObjectDeep(settings);
   s[key] = value;
   saveSettings(s);
-}
-
-export function onOpenSettings(callback) {
-  ipcRenderer.on(kEventOpenSettings, callback);
 }
 
 export function onSettingsChange(callback) {

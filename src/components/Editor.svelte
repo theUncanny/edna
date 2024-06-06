@@ -9,7 +9,7 @@
     saveCurrentNote as saveCurrentNoteContent,
   } from "../notes.js";
   import { rememberEditor } from "../state.js";
-  import { getSettings } from "../settings.js";
+  import { getSettings, onSettingsChange } from "../settings.js";
   import { dirtyState } from "../state.svelte.js";
   import debounce from "debounce";
   import { throwIf } from "../util.js";
@@ -19,8 +19,6 @@
   /** @typedef {import("../editor/event.js").SelectionChangeEvent} SelectionChangeEvent */
 
   /** @type {{
-    theme: string,
-    development: boolean,
     debugSyntaxTree: boolean,
     keymap: string,
     emacsMetaKey: string,
@@ -39,8 +37,6 @@
    }}*/
 
   let {
-    theme,
-    development,
     debugSyntaxTree,
     keymap = "default",
     emacsMetaKey = "alt",
@@ -68,6 +64,17 @@
 
   /** @type {HTMLElement} */
   let editorEl;
+
+  let theme = getSettings().theme;
+
+  onSettingsChange((newSettings) => {
+    let theme = newSettings.theme;
+    console.log("theme:", theme);
+    if (editor) {
+      console.log("calling editor.setTheme:", theme);
+      editor.setTheme(theme);
+    }
+  });
 
   function mounted() {
     console.log("Editor.svelte: mounted, editorEl:", editorEl);
@@ -174,6 +181,7 @@
   });
 
   $effect(() => {
+    console.log("changing theme");
     if (editor) {
       editor.setTheme(theme);
     }
