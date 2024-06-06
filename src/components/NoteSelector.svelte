@@ -19,7 +19,7 @@
   /**
    * @typedef {Object} Item
    * @property {string} name
-   * @property {string} [nameLC]
+   * @property {string} nameLC
    * @property {number} [altShortcut] - -1 if no shortcut, 0 to 9 for Alt-0 to Alt-9
    * @property {HTMLElement} ref
    */
@@ -146,37 +146,44 @@
   /**
    * @returns {boolean}
    */
-  let canOpenSelected = $derived(() => {
-    if (filteredItems.length === 0) {
+  let canOpenSelected = $derived.by(() => {
+    if (len(filteredItems) === 0) {
+      // console.log("canOpenSelected: no because len(filteredItems)=0");
       return false;
     }
     if (selected < 0) {
+      // console.log("canOpenSelected: no becuase selected=", selected);
       return false;
     }
+    // log("canOpenSelected: yes, selected:", selected);
     return true;
   });
 
   /**
    * @returns {boolean}
    */
-  let canCreate = $derived(() => {
+  let canCreate = $derived.by(() => {
     // TODO: use lowerCase name?
-    let name = sanitizedFilter;
-    if (name.length === 0) {
+    let name = sanitizeNoteName(filter);
+    // console.log("canCreate:", name);
+    if (len(name) === 0) {
+      // console.log(`canCreate: '${name}', no because len(name)=0`);
       return false;
     }
     for (let item of items) {
       if (item.name === name) {
+        // console.log(`canCreate: '${name}', no because matches existing name`);
         return false;
       }
     }
+    // console.log(`canCreate: '${name}', yes`);
     return true;
   });
 
   /**
    * @returns {boolean}
    */
-  let canCreateWithEnter = $derived(() => {
+  let canCreateWithEnter = $derived.by(() => {
     // if there are no matches for the filter, we can create with just Enter
     // otherwise we need Ctrl + Enter
     let name = sanitizedFilter;
@@ -189,7 +196,7 @@
   /**
    * @returns {boolean}
    */
-  let canDeleteSelected = $derived(() => {
+  let canDeleteSelected = $derived.by(() => {
     if (!canOpenSelected) {
       return false;
     }
@@ -207,7 +214,7 @@
     return true;
   });
 
-  let showDelete = $derived(() => {
+  let showDelete = $derived.by(() => {
     return canOpenSelected;
   });
 
@@ -307,7 +314,7 @@
     if (key === "Enter") {
       event.preventDefault();
       let name = sanitizedFilter;
-      console.log("selected:", selectedIdx, "name:", name);
+      // console.log("selected:", selectedIdx, "name:", name);
       if (canCreateWithEnter) {
         emitCreateNote(name);
         return;
@@ -349,12 +356,12 @@
    * @param {Item} item
    */
   function emitOpenNote(item) {
-    console.log("emitOpenNote", item);
+    // console.log("emitOpenNote", item);
     openNote(item.name);
   }
 
   function emitCreateNote(name) {
-    console.log("create note", name);
+    // log("create note", name);
     createNote(name);
   }
 
@@ -362,7 +369,7 @@
    * @param {string} name
    */
   function emitDeleteNote(name) {
-    console.log("deleteNote", name);
+    // console.log("deleteNote", name);
     deleteNote(name);
   }
 
