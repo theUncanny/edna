@@ -145,9 +145,8 @@
       {#each items as item, idx (item.name)}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <li
-          class="{idx === selectedIdx
-            ? 'selected'
-            : ''} flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
+          class:selected={idx === selectedIdx}
+          class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
           onclick={() => {
             selectItem(item.name);
           }}

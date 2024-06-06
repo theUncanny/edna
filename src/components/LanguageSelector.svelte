@@ -151,9 +151,8 @@
       {#each filteredItems as item, idx (item.token)}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <li
-          class="{idx === selected
-            ? 'selected'
-            : ''} cursor-pointer py-0.5 px-2 rounded-sm leading-5"
+          class:selected={idx === selected}
+          class="cursor-pointer py-0.5 px-2 rounded-sm leading-5"
           onclick={() => selectItem(item.token)}
           bind:this={item.ref}
         >

@@ -408,10 +408,8 @@
       {#each filteredItems as item, idx (item.name)}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <li
-          class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5 {idx ===
-          selected
-            ? 'selected'
-            : ''}"
+          class:selected={idx === selected}
+          class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
           onclick={() => emitOpenNote(item)}
           bind:this={item.ref}
         >
