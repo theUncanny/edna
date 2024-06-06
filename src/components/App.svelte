@@ -51,8 +51,8 @@
     langSupportsFormat,
     langSupportsRun,
   } from "../editor/languages";
-  import { useToast, POSITION } from "vue-toastification";
   import { exportNotesToZip } from "../notes-export";
+  import Toaster from "./Toaster.svelte";
 
   let toastOptions = {
     // position: POSITION.TOP_RIGHT,
@@ -559,3 +559,5 @@
 {#if showingRenameNote}
   <RenameNote close={onCloseRename} rename={onRename} oldName={noteName} />
 {/if}
+
+<Toaster></Toaster>
