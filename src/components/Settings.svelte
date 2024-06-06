@@ -129,7 +129,7 @@
   <div class=" absolute inset-0 z-10 bg-black opacity-50 dark:opacity-20"></div>
 
   <div
-    class="selector absolute overflow-auto center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4 max-h-[94vh]"
+    class="selector absolute overflow-auto center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4 max-h-[94vh] select-none"
   >
     <div>
       <h2>Input settings</h2>

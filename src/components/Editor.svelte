@@ -67,14 +67,16 @@
 
   let theme = getSettings().theme;
 
-  onSettingsChange((newSettings) => {
-    let theme = newSettings.theme;
-    console.log("theme:", theme);
-    if (editor) {
-      console.log("calling editor.setTheme:", theme);
-      editor.setTheme(theme);
+  function updateEditorForSettings(newSettings) {
+    if (!editor) {
+      return;
     }
-  });
+    editor.setTheme(newSettings.theme);
+    editor.setBracketClosing(newSettings.bracketClosing);
+    editor.setFoldGutter(newSettings.showFoldGutter);
+    editor.setLineNumberGutter(newSettings.showLineNumberGutter);
+  }
+  onSettingsChange(updateEditorForSettings);
 
   function mounted() {
     console.log("Editor.svelte: mounted, editorEl:", editorEl);
