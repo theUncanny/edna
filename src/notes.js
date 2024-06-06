@@ -12,11 +12,11 @@ import {
   incNoteCreateCount,
   incNoteDeleteCount,
   incNoteSaveCount,
-  isDocDirty,
 } from "./state";
 import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
+import { dirtyState } from "./state.svelte";
 import sanitize from "sanitize-filename";
 
 // is set if we store notes on disk, null if in localStorage
@@ -249,6 +249,8 @@ export async function loadNoteNames() {
   } else {
     res = await loadNoteNamesFS(dh);
   }
+  // TODO: filter out empty names, can be created maliciously or due to a bug
+  res = res.filter((s) => s != "");
   latestNoteNames = res;
   // console.log("loadNoteNames() res:", res);
   return res;
@@ -339,7 +341,7 @@ export async function saveCurrentNote(content) {
   } else {
     await fsWriteTextFile(dh, path, content);
   }
-  isDocDirty.value = false;
+  dirtyState.isDirty = false;
   incNoteSaveCount();
 }
 

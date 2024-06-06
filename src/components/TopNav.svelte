@@ -1,6 +1,6 @@
 <script>
   import { getScrollbarWidth } from "../util.js";
-  import { isDocDirty } from "../state.svelte.js";
+  import { dirtyState } from "../state.svelte.js";
 
   /** @type {{ noteName: string, shortcut: string, openNoteSelector: (e) => void}} */
   let { noteName = "", shortcut = "", openNoteSelector } = $props();
@@ -13,7 +13,7 @@
     topNavStyle = `right: ${dx}px`;
   });
   $effect(() => {
-    console.log("isDocDirty:", isDocDirty);
+    console.log("dirtyState.isDirty:", dirtyState.isDirty);
   });
 </script>
 
@@ -22,7 +22,7 @@
   style={topNavStyle}
 >
   <div class="ml-[0px] w-[4px]">
-    {#if isDocDirty}&bull;{:else}&nbsp;{/if}
+    {#if dirtyState.isDirty}&bull;{:else}&nbsp;{/if}
   </div>
 
   <button

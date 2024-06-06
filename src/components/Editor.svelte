@@ -10,7 +10,7 @@
   } from "../notes.js";
   import { rememberEditor } from "../state.js";
   import { getSettings } from "../settings.js";
-  import { isDocDirty } from "../state.js";
+  import { dirtyState } from "../state.svelte.js";
   import debounce from "debounce";
   import { throwIf } from "../util.js";
 
@@ -83,8 +83,8 @@
       isCtrlS = isCtrlS || (e.metaKey && e.key === "s");
       if (isCtrlS) {
         e.preventDefault();
-        // TODO: track isDocDirty state here?
-        if (isDocDirty.value) {
+        // TODO: track isDirty state here?
+        if (dirtyState.isDirty) {
           saveForce();
         }
       }

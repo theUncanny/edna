@@ -6,7 +6,7 @@
     langSupportsRun,
   } from "../editor/languages.js";
   import { fmtSize, getScrollbarWidth, platform } from "../util";
-  import { isDocDirty } from "../state.svelte";
+  import { dirtyState } from "../state.svelte";
 
   /** @type { {
     noteName: string,
@@ -68,7 +68,7 @@
   class="fixed bottom-0 text-sm text-[13px] flex justify-end items-center z-10 px-1 select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-t border-l rounded-tl-lg bg-white dark:bg-gray-700"
 >
   <div class="ml-[0px] w-[4px]">
-    {#if isDocDirty}&bull;{:else}&nbsp;{/if}
+    {#if dirtyState.isDirty}&bull;{:else}&nbsp;{/if}
   </div>
   <button
     class="clickable max-w-48 truncate"

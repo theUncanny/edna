@@ -1,1 +1,5 @@
-export let isDocDirty = $state(false);
+class DocDirtyState {
+  isDirty = $state(false);
+}
+
+export const dirtyState = new DocDirtyState();
