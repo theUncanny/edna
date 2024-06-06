@@ -235,3 +235,23 @@ export function getScrollbarWidth() {
   document.body.removeChild(el);
   return cachedScrollbarDx;
 }
+
+/**
+ * split("a.b.c", "." 2) => ["a" "b.c"]
+ * which is different from "a.b.c".split(".",2) => ["a", "b"]
+ * @param {string} s
+ * @param {string} sep
+ * @param {number} max
+ * @returns {string[]}
+ */
+export function splitMax(s, sep, max) {
+  throwIf(max === 0);
+  let parts = s.split(sep);
+  if (parts.length <= max) {
+    return parts;
+  }
+  let restParts = parts.slice(max - 1);
+  let restStr = restParts.join(sep);
+  parts[max - 1] = restStr;
+  return parts.slice(0, max);
+}
