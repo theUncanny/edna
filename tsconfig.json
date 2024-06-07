@@ -22,7 +22,7 @@
     "noUncheckedIndexedAccess": true
   },
   // "include": ["./src", "./src/components/*.svelte"],
-  "include": ["./src/**/*.d.ts", "./src/**/*.js", "./src/**/*.svelte", "./src/**/*.vue"],
+  "include": ["./src/**/*.d.ts", "./src/**/*.js", "./src/**/*.svelte"],
 
   "references": [
     { "path": "./tsconfig.node.json" }

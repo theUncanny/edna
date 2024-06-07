@@ -3,13 +3,12 @@ import * as child from "child_process";
 import { defineConfig } from "vite";
 import path from "path";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   publicDir: "../public",
 
-  plugins: [svelte(), vue()],
+  plugins: [svelte()],
 
   build: {
     // target: "esnext", // needed for top-level await

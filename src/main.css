@@ -1,6 +1,3 @@
-@import "@imengyu/vue3-context-menu/lib/vue3-context-menu.css";
-@import "vue-toastification/dist/index.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -183,23 +180,6 @@ body {
 
 .mx-shortcut {
   border: 1px solid white;
-}
-
-/* vue-toastification */
-.Vue-Toastification__toast-body {
-  font-size: 14px !important;
-  padding: 0;
-  margin: 0;
-  padding-right: 1em;
-}
-
-.Vue-Toastification__toast-component-body {
-  display: flex;
-}
-
-.Vue-Toastification__toast {
-  padding: 4px 8px !important;
-  min-height: 12px !important;
 }
 
 /* for getScrollbarWidth() */

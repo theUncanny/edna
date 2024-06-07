@@ -295,4 +295,4 @@ Edna is a fork of [Heynote](https://github.com/heyman/heynote) with the followin
 
 There's a spirit of Notational Velocity and Simplenote in Edna in how it allows quickly creating notes and switching between them.
 
-Edna is built on [CodeMirror](https://codemirror.net/), [Vue](https://vuejs.org/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/).
+Edna is built on [CodeMirror](https://codemirror.net/), [Svelte 5](https://svelte.dev/), [Math.js](https://mathjs.org/), [Prettier](https://prettier.io/).
