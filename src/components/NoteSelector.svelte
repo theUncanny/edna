@@ -9,12 +9,11 @@
   import { getAltChar, isAltNumEvent, len } from "../util";
 
   /** @type {{
-    close: () => void,
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => void,
 }}*/
-  let { close, openNote, createNote, deleteNote } = $props();
+  let { openNote, createNote, deleteNote } = $props();
 
   /**
    * @typedef {Object} Item
@@ -326,8 +325,6 @@
       const selected = filteredItems[selectedIdx];
       if (selected) {
         emitOpenNote(selected);
-      } else {
-        close();
       }
     } else if (isCtrlDelete(event)) {
       event.preventDefault();
@@ -337,17 +334,7 @@
       const selected = selectedNote;
       if (selected) {
         emitDeleteNote(selected.name);
-      } else {
-        close();
       }
-      return;
-    }
-
-    if (key === "Escape") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      // TODO: we also call onFocusOut() and emit "close" event twice
-      close();
       return;
     }
   }
@@ -377,105 +364,93 @@
     // reset selection
     selected = 0;
   }
-
-  function onFocusOut(event) {
-    if (
-      container !== event.relatedTarget &&
-      !container.contains(event.relatedTarget)
-    ) {
-      close();
-    }
-  }
 </script>
 
-<div class="fixed inset-0 overflow-auto">
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <form
-    bind:this={container}
-    onkeydown={onKeydown}
-    onfocusout={onFocusOut}
-    tabindex="-1"
-    class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[94vh] w-[32em] p-4"
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<form
+  bind:this={container}
+  onkeydown={onKeydown}
+  tabindex="-1"
+  class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-4"
+>
+  <input
+    type="text"
+    bind:this={input}
+    oninput={onInput}
+    bind:value={filter}
+    class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
+  />
+  <ul class="items overflow-y-auto">
+    {#each filteredItems as item, idx (item.name)}
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <li
+        class:selected={idx === selected}
+        class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
+        onclick={() => emitOpenNote(item)}
+        bind:this={item.ref}
+      >
+        <div class="truncate {isSysNote(item) ? 'italic' : ''}">
+          {item.name}
+        </div>
+        <div class="grow"></div>
+        <div>{noteShortcut(item)}</div>
+      </li>
+    {/each}
+  </ul>
+  {#if canOpenSelected || canDeleteSelected || filter.length > 0}
+    <hr class="mt-1 mb-1 border-gray-400" />
+  {/if}
+  <div
+    class="kbd-grid grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em]"
   >
-    <input
-      type="text"
-      bind:this={input}
-      oninput={onInput}
-      bind:value={filter}
-      class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
-    />
-    <ul class="items overflow-y-auto">
-      {#each filteredItems as item, idx (item.name)}
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <li
-          class:selected={idx === selected}
-          class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
-          onclick={() => emitOpenNote(item)}
-          bind:this={item.ref}
-        >
-          <div class="truncate {isSysNote(item) ? 'italic' : ''}">
-            {item.name}
-          </div>
-          <div class="grow"></div>
-          <div>{noteShortcut(item)}</div>
-        </li>
-      {/each}
-    </ul>
-    {#if canOpenSelected || canDeleteSelected || filter.length > 0}
-      <hr class="mt-1 mb-1 border-gray-400" />
+    {#if canOpenSelected}
+      <div><span class="kbd">Enter</span></div>
+      <div>open note</div>
+      <div class="font-bold truncate">
+        {quoteNoteName(selectedName)}
+      </div>
     {/if}
-    <div
-      class="kbd-grid grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em]"
-    >
-      {#if canOpenSelected}
-        <div><span class="kbd">Enter</span></div>
-        <div>open note</div>
-        <div class="font-bold truncate">
-          {quoteNoteName(selectedName)}
-        </div>
-      {/if}
 
-      {#if canCreateWithEnter}
-        <div><span class="kbd">Enter</span></div>
-      {/if}
-      {#if canCreate && !canCreateWithEnter}
-        <div>
-          <span class="kbd">Ctrl + Enter</span>
-        </div>
-      {/if}
-      {#if canCreate}
-        <div>create note</div>
-        <div class="font-bold truncate">
-          {quoteNoteName(filter)}
-        </div>
-      {/if}
+    {#if canCreateWithEnter}
+      <div><span class="kbd">Enter</span></div>
+    {/if}
+    {#if canCreate && !canCreateWithEnter}
+      <div>
+        <span class="kbd">Ctrl + Enter</span>
+      </div>
+    {/if}
+    {#if canCreate}
+      <div>create note</div>
+      <div class="font-bold truncate">
+        {quoteNoteName(filter)}
+      </div>
+    {/if}
 
-      {#if showDelete}
-        <div><span class="kbd">Ctrl + Delete</span></div>
-        <div class="red">delete note</div>
-      {/if}
-      {#if showDelete && canDeleteSelected}
-        <div class="font-bold truncate">
-          {quoteNoteName(selectedName)}
-        </div>
-      {/if}
+    {#if showDelete}
+      <div><span class="kbd">Ctrl + Delete</span></div>
+      <div class="red">delete note</div>
+    {/if}
+    {#if showDelete && canDeleteSelected}
+      <div class="font-bold truncate">
+        {quoteNoteName(selectedName)}
+      </div>
+    {/if}
 
-      {#if showDelete && !canDeleteSelected}
-        <div>
-          <span class="red"
-            >can't delete <span class="font-bold truncate"
-              >{quoteNoteName(selectedName)}</span
-            ></span
-          >
-        </div>
-      {/if}
+    {#if showDelete && !canDeleteSelected}
+      <div>
+        <span class="red"
+          >can't delete <span class="font-bold truncate"
+            >{quoteNoteName(selectedName)}</span
+          ></span
+        >
+      </div>
+    {/if}
 
-      <div><span class="kbd">{altChar} + 0...9</span></div>
-      <div class="col-span-2">assign quick access shortcut</div>
+    <div><span class="kbd">{altChar} + 0...9</span></div>
+    <div class="col-span-2">assign quick access shortcut</div>
 
-      <div><span class="kbd">Esc</span></div>
-      <div>dismiss</div>
-      <div class="italic"></div>
-    </div>
-  </form>
-</div>
+    <div><span class="kbd">Esc</span></div>
+    <div>dismiss</div>
+    <div class="italic"></div>
+  </div>
+</form>

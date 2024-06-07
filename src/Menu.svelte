@@ -29,7 +29,7 @@
    filterFn: Function,
    onmenucmd: (cmd: string, ev: Event) => void,
 }}*/
-  let { menu, nest = 1, filterFn, onmenucmd } = $props();
+  let { menu, nest = 1, filterFn = null, onmenucmd } = $props();
 
   // nest: menu nesting needed to style child based on parent
   // see menu-parent1, menu-parent2, menu-parent3,
@@ -183,7 +183,12 @@
           <div
             class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
           >
-            <svelte:self {onmenucmd} menu={submenu} nest={nest + 1} />
+            <svelte:self
+              {onmenucmd}
+              menu={submenu}
+              nest={nest + 1}
+              {filterFn}
+            />
           </div>
         </div>
       {:else}

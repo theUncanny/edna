@@ -8,7 +8,7 @@
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
-  import { getSettings, onSettingsChange, setSetting } from "../settings";
+  import { getSettings, setSetting } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import {
     createNewScratchNote,
@@ -38,7 +38,6 @@
     throwIf,
   } from "../util";
   import { getModChar } from "../../src/util";
-  import ContextMenu from "./ContextMenu.svelte";
   import { supportsFileSystem, openDirPicker } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
@@ -48,6 +47,8 @@
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
   import Toaster, { addToast } from "./Toaster.svelte";
+  import Menu from "../Menu.svelte";
+  import Overlay from "./Overlay.svelte";
 
   let initialSettings = getSettings();
 
@@ -71,7 +72,7 @@
   let altChar = getAltChar();
   let loadingNoteName = $state("");
 
-  let contextMenuStyle = `left: 0px; top: 0px`;
+  let contextMenuStyle = $state(`left: 0px; top: 0px`);
 
   // /** @type {import("../editor/editor").EdnaEditor} */
   // let ednaEditor = $state(null);
@@ -211,11 +212,6 @@
     getEditor().focus();
   }
 
-  function renameCurrentNote() {
-    console.log("renameNote:");
-    showingRenameNote = true;
-  }
-
   async function deleteCurrentNote() {
     let name = noteName;
     console.log("deleteNote:", name);
@@ -252,6 +248,75 @@
     showingLanguageSelector = true;
   }
 
+  let nextMenuID = 1000;
+  function nmid() {
+    nextMenuID++;
+    return nextMenuID;
+  }
+
+  export const MENU_OPEN_NOTE = nmid();
+  export const MENU_RENAME_CURRENT_NOTE = nmid();
+  export const MENU_DELETE_CURRENT_NOTE = nmid();
+  export const MENU_CREATE_SCRATCH_NOTE = nmid();
+  export const MENU_BLOCK_AFTER_CURR = nmid();
+  export const MENU_BLOCK_BEFORE_CURR = nmid();
+  export const MENU_BLOCK_AT_END = nmid();
+  export const MENU_BLOCK_AT_START = nmid();
+  export const MENU_BLOCK_SPLIT_AT_CURSOR = nmid();
+  export const MENU_BLOCK_GOTO_NEXT = nmid();
+  export const MENU_BLOCK_GOTO_PREV = nmid();
+  export const MENU_BLOCK_CHANGE_LANG = nmid();
+  export const MENU_BLOCK_SELECTALL = nmid();
+
+  function buildMenu() {
+    const menuNote = [
+      ["Rename current note", MENU_RENAME_CURRENT_NOTE],
+      ["Delete current note", MENU_DELETE_CURRENT_NOTE],
+      ["Create new scratch note\tAlt + N", MENU_CREATE_SCRATCH_NOTE],
+    ];
+
+    const menuBlock = [
+      ["And after current", MENU_BLOCK_AFTER_CURR],
+      ["Add before current", MENU_BLOCK_BEFORE_CURR],
+      ["Add at end", MENU_BLOCK_AT_END],
+      ["Add at start", MENU_BLOCK_AT_START],
+      ["Split at cursor position", MENU_BLOCK_SPLIT_AT_CURSOR],
+      ["Goto next", MENU_BLOCK_GOTO_NEXT],
+      ["Goto previous", MENU_BLOCK_GOTO_PREV],
+      ["Change language", MENU_BLOCK_CHANGE_LANG],
+      ["Select all text", MENU_BLOCK_SELECTALL],
+    ];
+    const contextMenu = [
+      ["Open / create / delete note\tMod + P", MENU_OPEN_NOTE],
+      ["Note", menuNote],
+      ["Block", menuBlock],
+    ];
+    return contextMenu;
+  }
+
+  function onmenucmd(cmdId, ev) {
+    console.log("cmd:", cmdId);
+    showingMenu = false;
+    if (cmdId == MENU_OPEN_NOTE) {
+      openNoteSelector();
+      return;
+    }
+    if (cmdId == MENU_RENAME_CURRENT_NOTE) {
+      showingRenameNote = true;
+      return;
+    }
+    console.log("unknown menu cmd id");
+  }
+
+  function closeMenu() {
+    showingMenu = false;
+  }
+
+  function menuFilterFn(mi) {
+    return false;
+  }
+
+  let contextMenu = $state(null);
   /**
    * @param {MouseEvent} ev
    */
@@ -268,11 +333,8 @@
     let { x, y } = ev;
     contextMenuStyle = `left: ${x}px; top: ${y}px;`;
     ev.preventDefault();
+    contextMenu = buildMenu();
     showingMenu = true;
-  }
-
-  function throwNYI() {
-    throw new Error("NYI");
   }
 
   /**
@@ -511,16 +573,18 @@
     {openSettings}
   />
 </div>
-<div class="overlay">
-  {#if showingNoteSelector}
+
+{#if showingNoteSelector}
+  <Overlay klass="" onclose={closeNoteSelector}>
     <NoteSelector
       openNote={onOpenNote}
       createNote={onCreateNote}
       deleteNote={onDeleteNote}
-      close={closeNoteSelector}
     />
-  {/if}
+  </Overlay>
+{/if}
 
+<div class="overlay">
   {#if showingLanguageSelector}
     <LanguageSelector
       selectLanguage={onSelectLanguage}
@@ -537,7 +601,9 @@
 {/if}
 
 {#if showingRenameNote}
-  <RenameNote close={closeRename} rename={onRename} oldName={noteName} />
+  <Overlay onclose={closeRename}>
+    <RenameNote rename={onRename} oldName={noteName} />
+  </Overlay>
 {/if}
 
 {#if showingSettings}
@@ -546,7 +612,11 @@
 <Toaster></Toaster>
 
 {#if showingMenu}
-  <div class="absolute z-10" style={contextMenuStyle}>
-    <ContextMenu></ContextMenu>
-  </div>
+  <Overlay
+    onclose={closeMenu}
+    klass="absolute cursor-pointer select-none"
+    style={contextMenuStyle}
+  >
+    <Menu nest={1} filterFn={menuFilterFn} {onmenucmd} menu={contextMenu} />
+  </Overlay>
 {/if}
