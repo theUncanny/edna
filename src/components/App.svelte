@@ -47,7 +47,12 @@
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
   import Toaster, { addToast } from "./Toaster.svelte";
-  import Menu from "../Menu.svelte";
+  import Menu, {
+    kMenuJustText,
+    kMenuSeparator,
+    kMenuStatusNormal,
+    kMenuStatusRemoved,
+  } from "../Menu.svelte";
   import Overlay from "./Overlay.svelte";
 
   let initialSettings = getSettings();
@@ -267,8 +272,21 @@
   export const MENU_BLOCK_GOTO_PREV = nmid();
   export const MENU_BLOCK_CHANGE_LANG = nmid();
   export const MENU_BLOCK_SELECTALL = nmid();
+  export const MENU_BLOCK_FORMAT = nmid();
+  export const MENU_BLOCK_RUN = nmid();
+  export const MENU_TOGGLE_SPELL_CHECKING = nmid();
+  export const MENU_HELP = nmid();
+  export const MENU_HELP_AS_NOTE = nmid();
+  export const MENU_HELP_RELEASE_NOTES = nmid();
+  export const MENU_MOVE_NOTES_TO_DIRECTORY = nmid();
+  export const MENU_SWITCH_TO_NOTES_IN_DIR = nmid();
+  export const MENU_SWITCH_TO_LOCAL_STORAGE = nmid();
+  export const MENU_EXPORTS_NOTES = nmid();
+  export const MENU_SHOW_EXPORT_HELP = nmid();
 
   function buildMenu() {
+    let lang = getLanguage(language);
+
     const menuNote = [
       ["Rename current note", MENU_RENAME_CURRENT_NOTE],
       ["Delete current note", MENU_DELETE_CURRENT_NOTE],
@@ -276,44 +294,165 @@
     ];
 
     const menuBlock = [
-      ["And after current", MENU_BLOCK_AFTER_CURR],
-      ["Add before current", MENU_BLOCK_BEFORE_CURR],
-      ["Add at end", MENU_BLOCK_AT_END],
-      ["Add at start", MENU_BLOCK_AT_START],
-      ["Split at cursor position", MENU_BLOCK_SPLIT_AT_CURSOR],
-      ["Goto next", MENU_BLOCK_GOTO_NEXT],
-      ["Goto previous", MENU_BLOCK_GOTO_PREV],
-      ["Change language", MENU_BLOCK_CHANGE_LANG],
-      ["Select all text", MENU_BLOCK_SELECTALL],
+      ["And after current\tMod + Enter", MENU_BLOCK_AFTER_CURR],
+      ["Add before current\tAlt + Enter", MENU_BLOCK_BEFORE_CURR],
+      ["Add at end\tMod + Shift + Enter", MENU_BLOCK_AT_END],
+      ["Add at start\tAlt + Shift + Enter", MENU_BLOCK_AT_START],
+      [
+        "Split at cursor position\tMod + Alt + Enter",
+        MENU_BLOCK_SPLIT_AT_CURSOR,
+      ],
+      ["Goto next\tMod + Down", MENU_BLOCK_GOTO_NEXT],
+      ["Goto previous\tMod + Up", MENU_BLOCK_GOTO_PREV],
+      ["Change language\tMod + L", MENU_BLOCK_CHANGE_LANG],
+      ["Select all textMod + A", MENU_BLOCK_SELECTALL],
+      ["Format as " + lang + "\tAlt + Shift + F", MENU_BLOCK_FORMAT],
+      ["Run " + lang + "\tAlt + Shift + R", MENU_BLOCK_RUN],
     ];
+
+    let dh = getStorageFS();
+    let currStorage = "Current store: browser (localStorage)";
+    if (dh !== null) {
+      currStorage = `Current store: directory ${dh.name}`;
+    }
+    const menuStorage = [
+      [currStorage, kMenuJustText],
+      ["Move notes from browser to directory", MENU_MOVE_NOTES_TO_DIRECTORY],
+      ["Switch to browser (localStorage)", MENU_SWITCH_TO_LOCAL_STORAGE],
+      ["Switch to notes in a directory", MENU_SWITCH_TO_NOTES_IN_DIR],
+      kMenuSeparator,
+      ["Export notes to .zip file", MENU_EXPORTS_NOTES],
+      kMenuSeparator,
+      ["Show help", MENU_SHOW_EXPORT_HELP],
+    ];
+    if (supportsFileSystem()) {
+      if (dh === null) {
+        menuStorage.push();
+      } else {
+      }
+    }
+
+    const menuHelp = [
+      ["Show help", MENU_HELP],
+      ["Show help as note", MENU_HELP_AS_NOTE],
+      ["Release notes", MENU_HELP_RELEASE_NOTES],
+    ];
+
+    let spelling = (isSpellChecking ? "Disable" : "Enable") + " spell checking";
+
     const contextMenu = [
-      ["Open / create / delete note\tMod + P", MENU_OPEN_NOTE],
+      ["Open note\tMod + P", MENU_OPEN_NOTE],
       ["Note", menuNote],
       ["Block", menuBlock],
+      ["Notes storage", menuStorage],
+      [spelling, MENU_TOGGLE_SPELL_CHECKING],
+      kMenuSeparator,
+      ["Help", menuHelp],
+      ["Tip: Ctrl + click for native context menu", kMenuJustText],
     ];
+
     return contextMenu;
   }
 
-  function onmenucmd(cmdId, ev) {
+  /**
+   * @param {import("../Menu.svelte").MenuItem} mi
+   */
+  function menuItemStatus(mi) {
+    let mid = mi[1];
+    let lang = getLanguage(language);
+    let dh = getStorageFS();
+    let hasFS = supportsFileSystem();
+    if (mid === MENU_BLOCK_FORMAT) {
+      if (!langSupportsFormat(lang)) {
+        return kMenuStatusRemoved;
+      }
+    } else if (mid === MENU_BLOCK_RUN) {
+      if (!langSupportsRun(lang)) {
+        return kMenuStatusRemoved;
+      }
+    } else if (mid === MENU_MOVE_NOTES_TO_DIRECTORY) {
+      if (!hasFS) {
+        return kMenuStatusRemoved;
+      }
+      if (dh === null) {
+        // currently using directory
+        return kMenuStatusRemoved;
+      }
+    } else if (mid == MENU_SWITCH_TO_LOCAL_STORAGE) {
+      if (!hasFS) {
+        return kMenuStatusRemoved;
+      }
+      if (dh === null) {
+        // currently using local storage
+        return kMenuStatusRemoved;
+      }
+    } else if (mid == MENU_SWITCH_TO_NOTES_IN_DIR) {
+      if (!hasFS) {
+        return kMenuStatusRemoved;
+      }
+    }
+    return kMenuStatusNormal;
+  }
+
+  async function onmenucmd(cmdId, ev) {
     console.log("cmd:", cmdId);
     showingMenu = false;
     if (cmdId == MENU_OPEN_NOTE) {
       openNoteSelector();
-      return;
-    }
-    if (cmdId == MENU_RENAME_CURRENT_NOTE) {
+    } else if (cmdId == MENU_RENAME_CURRENT_NOTE) {
       showingRenameNote = true;
-      return;
+    } else if (cmdId == MENU_DELETE_CURRENT_NOTE) {
+      deleteCurrentNote();
+    } else if (cmdId == MENU_CREATE_SCRATCH_NOTE) {
+      createNewScratchNote();
+    } else if (cmdId == MENU_BLOCK_AFTER_CURR) {
+      getEditor().addNewBlockAfterCurrent();
+    } else if (cmdId == MENU_BLOCK_BEFORE_CURR) {
+      getEditor().addNewBlockBeforeCurrent();
+    } else if (cmdId == MENU_BLOCK_AT_END) {
+      getEditor().addNewBlockAfterLast();
+    } else if (cmdId == MENU_BLOCK_AT_START) {
+      getEditor().addNewBlockBeforeFirst();
+    } else if (cmdId == MENU_BLOCK_SPLIT_AT_CURSOR) {
+      getEditor().insertNewBlockAtCursor();
+    } else if (cmdId == MENU_BLOCK_GOTO_NEXT) {
+      getEditor().gotoNextBlock();
+    } else if (cmdId == MENU_BLOCK_GOTO_PREV) {
+      getEditor().gotoPreviousBlock();
+    } else if (cmdId == MENU_BLOCK_CHANGE_LANG) {
+      openLanguageSelector();
+    } else if (cmdId == MENU_BLOCK_SELECTALL) {
+      getEditor().selectAll();
+    } else if (cmdId == MENU_BLOCK_FORMAT) {
+      getEditor().formatCurrentBlock();
+    } else if (cmdId == MENU_BLOCK_RUN) {
+      getEditor().runCurrentBlock();
+    } else if (cmdId == MENU_TOGGLE_SPELL_CHECKING) {
+      toggleSpellCheck();
+    } else if (cmdId == MENU_HELP) {
+      showHelp();
+    } else if (cmdId == MENU_HELP_AS_NOTE) {
+      showHelpAsNote();
+    } else if (cmdId == MENU_HELP_RELEASE_NOTES) {
+      showReleaseNotes();
+    } else if (cmdId == MENU_MOVE_NOTES_TO_DIRECTORY) {
+      storeNotesOnDisk();
+    } else if (cmdId == MENU_SWITCH_TO_NOTES_IN_DIR) {
+      await switchToBrowserStorage();
+    } else if (cmdId == MENU_SWITCH_TO_LOCAL_STORAGE) {
+      await pickAnotherDirectory();
+    } else if (cmdId == MENU_EXPORTS_NOTES) {
+      exportNotesToZipFile();
+    } else if (cmdId == MENU_SHOW_EXPORT_HELP) {
+      showHelp("#storing-notes-on-disk");
+    } else {
+      console.log("unknown menu cmd id");
     }
-    console.log("unknown menu cmd id");
   }
 
   function closeMenu() {
     showingMenu = false;
-  }
-
-  function menuFilterFn(mi) {
-    return false;
+    getEditor().focus();
   }
 
   let contextMenu = $state(null);
@@ -332,6 +471,7 @@
     }
     let { x, y } = ev;
     contextMenuStyle = `left: ${x}px; top: ${y}px;`;
+    console.log("contextMenuStyle:", contextMenuStyle);
     ev.preventDefault();
     contextMenu = buildMenu();
     showingMenu = true;
@@ -617,6 +757,6 @@
     klass="absolute cursor-pointer select-none"
     style={contextMenuStyle}
   >
-    <Menu nest={1} filterFn={menuFilterFn} {onmenucmd} menu={contextMenu} />
+    <Menu nest={1} {menuItemStatus} {onmenucmd} menu={contextMenu} />
   </Overlay>
 {/if}

@@ -1,4 +1,16 @@
 <script context="module">
+  /** @typedef {[string, number|MenuItem[]]} MenuItem */
+  /** @typedef {MenuItem[]} Menu */
+
+  // when used as menu id this will show as a text, not a menu item
+  export const kMenuJustText = -1;
+
+  export const kMenuStatusNormal = 0;
+  export const kMenuStatusDisabled = 1;
+  export const kMenuStatusRemoved = 2;
+
+  export const kMenuSeparator = ["---", 0];
+
   /**
    * @param {string} s
    * @returns {string}
@@ -14,7 +26,6 @@
     let parts = s.split("\t");
     return parts[0];
   }
-  export const menuSep = "---";
 </script>
 
 <script>
@@ -24,12 +35,16 @@
   // based on https://play.tailwindcss.com/0xQBSdXxsK
 
   /** @type {{
-   menu: any[],   // array of menu items
+   menu: Menu,
    nest: number,
-   filterFn: Function,
+   menuItemStatus?: (mi: MenuItem) => number,
    onmenucmd: (cmd: string, ev: Event) => void,
 }}*/
-  let { menu, nest = 1, filterFn = null, onmenucmd } = $props();
+  let { menu, nest = 1, menuItemStatus = menuItemStatusDefault, onmenucmd } = $props();
+
+  function menuItemStatusDefault(mi) {
+    return kMenuStatusNormal;
+  }
 
   // nest: menu nesting needed to style child based on parent
   // see menu-parent1, menu-parent2, menu-parent3,
@@ -53,11 +68,6 @@
     let parts = splitMax(s, "\t", 2);
     if (len(parts) > 1) {
       return sanitizeShortcut(parts[1]);
-    }
-    // TODO: remove this
-    // for the old style menu
-    if (len(mi) > 2) {
-      return mi[2];
     }
     return "";
   }
@@ -108,7 +118,7 @@
     // console.log("menuCliced: ev:", ev);
     // find the parent div that has data-menu-id attribute
     let el = /** @type {HTMLElement} */ (ev.target);
-    while (el && el.tagName != "DIV") {
+    while (el && el.role != "menuitem") {
       el = el.parentElement;
     }
     if (!el) {
@@ -124,6 +134,63 @@
   }
 </script>
 
+{#snippet separator(mi)}
+  <div class="border-y border-gray-200 mt-1 mb-1"></div>
+{/snippet}
+
+{#snippet arrow()}
+  <svg
+    class="h-4 w-4 text-gray-500"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="2"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M8.25 4.5l7.5 7.5-7.5 7.5"
+    />
+  </svg>
+{/snippet}
+
+{#snippet checkmark()}
+  <svg
+    class="w-4 h-4 check invisible"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    ><path
+      fill="currentColor"
+      d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4Z"
+    />
+  </svg>
+{/snippet}
+
+{#snippet menuitem(mi)}
+    {@const cmdId = mi[1]}
+    {@const shortcut = getShortcut(mi)}
+    {@const text = fixMenuName(mi[0])}
+    {@const miStatus = menuItemStatus(mi)}
+    {@const isDisabled = miStatus === kMenuStatusDisabled }
+    <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+    <div
+      role="menuitem"
+      tabindex="-1"
+      data-cmd-id={cmdId}
+      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
+      onmouseleave={handleMouseLeave}
+      onmouseover={handleMouseOver}
+      onmouseenter={handleMouseEnter}
+    >
+      <span class="flex items-center">
+        {@render checkmark()}
+        <span aria-disabled={isDisabled} class="ml-2">{text}</span>
+      </span>
+      <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
+    </div>
+{/snippet}
+
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   role="menu"
@@ -132,16 +199,16 @@
   onclick={handleClicked}
 >
   {#each menu as mi}
-    {@const isDiv = mi === menuSep || mi[0] === menuSep}
+    {@const isDiv = mi[0] === kMenuSeparator[0]}
     {@const text = fixMenuName(mi[0])}
-    {@const cmdId = mi[1]}
-    {@const shortcut = getShortcut(mi)}
     {@const submenu = mi[1]}
     {@const isSubmenu = Array.isArray(submenu)}
-    {@const shouldFilter = filterFn && filterFn(mi)}
-    {#if !shouldFilter}
+    {@const miStatus = menuItemStatus(mi)}
+    {@const isRemoved = miStatus === kMenuStatusRemoved }
+    {@const isDisabled = miStatus === kMenuStatusDisabled }
+    {#if !isRemoved}
       {#if isDiv}
-        <div class="border-y border-gray-200 mt-1 mb-1"></div>
+        {@render separator(mi)}
       {:else if isSubmenu}
         <!-- svelte-ignore a11y_mouse_events_have_key_events -->
         <div
@@ -159,20 +226,7 @@
               <span class="w-4 h-4"></span>
               <span class="ml-2">{text}</span>
             </span>
-            <svg
-              class="h-4 w-4 text-gray-500"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
+            {@render arrow()}
           </button>
           <div
             class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
@@ -181,35 +235,12 @@
               {onmenucmd}
               menu={submenu}
               nest={nest + 1}
-              {filterFn}
+              filterFn={menuItemStatus}
             />
           </div>
         </div>
       {:else}
-        <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-        <div
-          role="menuitem"
-          tabindex="-1"
-          data-cmd-id={cmdId}
-          class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
-          onmouseleave={handleMouseLeave}
-          onmouseover={handleMouseOver}
-          onmouseenter={handleMouseEnter}
-        >
-          <span class="flex items-center">
-            <svg
-              class="w-4 h-4 check invisible"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              ><path
-                fill="currentColor"
-                d="m10 16.4l-4-4L7.4 11l2.6 2.6L16.6 7L18 8.4Z"
-              /></svg
-            >
-            <span class="ml-2">{text}</span>
-          </span>
-          <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
-        </div>
+        {@render menuitem(mi)}
       {/if}
     {/if}
   {/each}

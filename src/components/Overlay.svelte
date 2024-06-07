@@ -28,11 +28,18 @@
       return;
     }
   }
+
+  /** @type {HTMLElement} */
+  let wrapper;
+  $effect( () => {
+    console.log("focused wrapper")
+    wrapper.focus();
+  })
 </script>
 
 <div class="fixed inset-0 overflow-hidden">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="z-20 {klass}" {style} onkeydown={onkeydown}>
+  <div class="z-20 {klass}" {style} onkeydown={onkeydown} bind:this={wrapper}>
     {@render children()}
   </div>
   <!-- this captures the click outside of the actual element -->
