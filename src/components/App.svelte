@@ -38,7 +38,7 @@
     throwIf,
   } from "../util";
   import { getModChar } from "../../src/util";
-  import ContextMenu from "@imengyu/vue3-context-menu";
+  import ContextMenu from "./ContextMenu.svelte";
   import { supportsFileSystem, openDirPicker } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
@@ -70,6 +70,8 @@
   let spellcheckToastID = $state(0);
   let altChar = getAltChar();
   let loadingNoteName = $state("");
+
+  let contextMenuStyle = `left: 0px; top: 0px`;
 
   // /** @type {import("../editor/editor").EdnaEditor} */
   // let ednaEditor = $state(null);
@@ -250,8 +252,23 @@
     showingLanguageSelector = true;
   }
 
-  function oncontextmenu() {
-    // TODO: implement me
+  /**
+   * @param {MouseEvent} ev
+   */
+  function oncontextmenu(ev) {
+    if (isShowingDialog) {
+      return;
+    }
+    // show native context menu if ctrl or shift is pressed
+    // especially important for spell checking
+    let forceNativeMenu = ev.ctrlKey;
+    if (forceNativeMenu) {
+      return;
+    }
+    let { x, y } = ev;
+    contextMenuStyle = `left: ${x}px; top: ${y}px;`;
+    ev.preventDefault();
+    showingMenu = true;
   }
 
   function throwNYI() {
@@ -527,3 +544,9 @@
   <Settings close={closeSettings}></Settings>
 {/if}
 <Toaster></Toaster>
+
+{#if showingMenu}
+  <div class="absolute z-10" style={contextMenuStyle}>
+    <ContextMenu></ContextMenu>
+  </div>
+{/if}

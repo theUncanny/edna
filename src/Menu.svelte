@@ -183,7 +183,7 @@
           <div
             class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
           >
-            <svelte:self menu={submenu} nest={nest + 1} />
+            <svelte:self {onmenucmd} menu={submenu} nest={nest + 1} />
           </div>
         </div>
       {:else}

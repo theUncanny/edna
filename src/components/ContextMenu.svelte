@@ -51,6 +51,4 @@
   }
 </script>
 
-{#if showing}
-  <Menu nest={1} {filterFn} {onmenucmd} menu={contextMenu} />
-{/if}
+<Menu nest={1} {filterFn} {onmenucmd} menu={contextMenu} />
