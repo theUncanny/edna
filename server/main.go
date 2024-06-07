@@ -149,6 +149,7 @@ func main() {
 		flgUpdateGoDeps   bool
 		flgGen            bool
 		flgAdHoc          bool
+		flgClean          bool
 	)
 	{
 		flag.BoolVar(&flgRunDev, "run-dev", false, "run the server in dev mode")
@@ -160,11 +161,21 @@ func main() {
 		flag.BoolVar(&flgUpdateGoDeps, "update-go-deps", false, "update go dependencies")
 		flag.BoolVar(&flgGen, "gen", false, "generate code")
 		flag.BoolVar(&flgAdHoc, "ad-hoc", false, "run ad-hoc code")
+		flag.BoolVar(&flgClean, "clean", false, "remove all files")
 		flag.Parse()
 	}
 
 	if flgAdHoc {
 		testCompress()
+		return
+	}
+
+	if flgClean {
+		emptyFrontEndBuildDir()
+		must(os.RemoveAll("node_modules"))
+		os.Remove("bun.lockb")
+		os.Remove("package-lock.json")
+		os.Remove("yarn.lock")
 		return
 	}
 
