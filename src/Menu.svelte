@@ -131,6 +131,8 @@
       return;
     }
     onmenucmd(cmdId, null);
+    ev.stopPropagation();
+    ev.preventDefault();
   }
 </script>
 
@@ -183,10 +185,7 @@
       onmouseover={handleMouseOver}
       onmouseenter={handleMouseEnter}
     >
-      <span class="flex items-center">
-        {@render checkmark()}
-        <span aria-disabled={isDisabled} class="ml-2">{text}</span>
-      </span>
+      <span aria-disabled={isDisabled}>{text}</span>
       <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
     </div>
 {/snippet}
@@ -221,10 +220,7 @@
           <button
             class="flex w-full items-center justify-between pl-3 pr-2 py-0.5"
           >
-            <span class="flex">
-              <span class="w-4 h-4"></span>
-              <span class="ml-2">{text}</span>
-            </span>
+            <span>{text}</span>
             {@render arrow()}
           </button>
           <div
