@@ -538,6 +538,7 @@
 
   function openHistorySelector() {
     showingHistorySelector = true;
+    getEditor().focus();
   }
 
   function closeHistorySelector() {
@@ -548,7 +549,11 @@
   function onSelectHistory(name) {
     showingHistorySelector = false;
     console.log("onSelectHistory:", name);
-    openNote(name);
+    if (name != noteName) {
+      openNote(name);
+    } else {
+      console.log("onSelectHistory: skipping opening becase same note");
+    }
   }
 
   function onSelectLanguage(language) {
@@ -732,7 +737,9 @@
 {/if}
 
 {#if showingHistorySelector}
-  <History close={closeHistorySelector} selectHistory={onSelectHistory} />
+  <Overlay onclose={closeHistorySelector}>
+    <History selectHistory={onSelectHistory} />
+  </Overlay>
 {/if}
 
 {#if loadingNoteName}

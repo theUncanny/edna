@@ -134,6 +134,16 @@
     ev.stopPropagation();
     ev.preventDefault();
   }
+
+  /** @type { HTMLElement } */
+  let menuEl;
+
+  $effect( () => {
+    if (nest == 1) {
+      console.log("focused menuEl");
+      menuEl.focus();
+    }
+  })
 </script>
 
 {#snippet separator(mi)}
@@ -180,7 +190,7 @@
       role="menuitem"
       tabindex="-1"
       data-cmd-id={cmdId}
-      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
+      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap "
       onmouseleave={handleMouseLeave}
       onmouseover={handleMouseOver}
       onmouseenter={handleMouseEnter}
@@ -194,8 +204,9 @@
 <div
   role="menu"
   tabindex="-1"
-  class="mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg"
+  class="mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none"
   onclick={handleClicked}
+  bind:this={menuEl}
 >
   {#each menu as mi}
     {@const isDiv = mi[0] === kMenuSeparator[0]}

@@ -19,16 +19,15 @@
   }
 
   function onkeydown(ev) {
-    console.log("onkeydown:", ev);
+    // console.log("onkeydown:", ev);
     let key = ev.key;
     if (key === "Escape") {
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
       onclose();
       return;
     }
   }
-
   /** @type {HTMLElement} */
   let wrapper;
   $effect( () => {
