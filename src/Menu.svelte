@@ -62,21 +62,15 @@
     return "";
   }
 
-  function eatClick(ev) {
-    console.log("eat:", ev);
-    ev.preventDefault();
-    ev.stopPropagation();
-  }
-
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseEnter(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
-    if (el.tagName != "DIV") {
+    if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse enter target:", el);
+    // console.log("mouse enter target:", el, "role:", el.role);
     el.classList.add("is-selected-menu");
     ev.stopPropagation();
   }
@@ -86,10 +80,10 @@
    */
   function handleMouseOver(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
-    if (el.tagName != "DIV") {
+    if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse over target:", el);
+    // console.log("mouse over target:", el, el.role);
     el.classList.add("is-selected-menu");
     ev.stopPropagation();
   }
@@ -99,10 +93,10 @@
    */
   function handleMouseLeave(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
-    if (el.tagName != "DIV") {
+    if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse leave target:", el);
+    // console.log("mouse leave target:", el, el.role);
     el.classList.remove("is-selected-menu");
     ev.stopPropagation();
   }
@@ -200,6 +194,7 @@
           class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
           onmouseleave={handleMouseLeave}
           onmouseover={handleMouseOver}
+          onmouseenter={handleMouseEnter}
         >
           <span class="flex items-center">
             <svg
