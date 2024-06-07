@@ -29,6 +29,7 @@ let storageFS = null;
  * @returns {FileSystemDirectoryHandle | null}
  */
 export function getStorageFS() {
+  // console.log("getStorageFS:", storageFS);
   return storageFS;
 }
 
@@ -36,6 +37,7 @@ export function getStorageFS() {
  * @param {FileSystemDirectoryHandle} dh
  */
 export function setStorageFS(dh) {
+  console.log("setStorageFS:", dh);
   storageFS = dh;
 }
 
@@ -49,7 +51,7 @@ const kStorageDirHandleKey = "storageDirHandle";
  */
 export async function dbGetDirHandle() {
   let dh = await db.get(kStorageDirHandleKey);
-  storageFS = dh ? dh : null;
+  setStorageFS(dh ? dh : null);
   return storageFS;
 }
 

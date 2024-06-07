@@ -281,7 +281,7 @@
   export const MENU_MOVE_NOTES_TO_DIRECTORY = nmid();
   export const MENU_SWITCH_TO_NOTES_IN_DIR = nmid();
   export const MENU_SWITCH_TO_LOCAL_STORAGE = nmid();
-  export const MENU_EXPORTS_NOTES = nmid();
+  export const MENU_EXPORT_NOTES = nmid();
   export const MENU_SHOW_EXPORT_HELP = nmid();
 
   function buildMenu() {
@@ -312,7 +312,7 @@
 
     let dh = getStorageFS();
     let currStorage = "Current store: browser (localStorage)";
-    if (dh !== null) {
+    if (dh) {
       currStorage = `Current store: directory ${dh.name}`;
     }
     const menuStorage = [
@@ -321,16 +321,10 @@
       ["Switch to browser (localStorage)", MENU_SWITCH_TO_LOCAL_STORAGE],
       ["Switch to notes in a directory", MENU_SWITCH_TO_NOTES_IN_DIR],
       kMenuSeparator,
-      ["Export notes to .zip file", MENU_EXPORTS_NOTES],
+      ["Export notes to .zip file", MENU_EXPORT_NOTES],
       kMenuSeparator,
       ["Show help", MENU_SHOW_EXPORT_HELP],
     ];
-    if (supportsFileSystem()) {
-      if (dh === null) {
-        menuStorage.push();
-      } else {
-      }
-    }
 
     const menuHelp = [
       ["Show help", MENU_HELP],
@@ -348,7 +342,7 @@
       [spelling, MENU_TOGGLE_SPELL_CHECKING],
       kMenuSeparator,
       ["Help", menuHelp],
-      ["Tip: Ctrl + click for native context menu", kMenuJustText],
+      // ["Tip: Ctrl + click for native context menu", kMenuJustText],
     ];
 
     return contextMenu;
@@ -358,9 +352,13 @@
    * @param {import("../Menu.svelte").MenuItem} mi
    */
   function menuItemStatus(mi) {
+    let s = mi[0];
     let mid = mi[1];
+    // console.log("menuItemStatus:", mi);
+    // console.log("s:", s, "mid:", mid);
     let lang = getLanguage(language);
     let dh = getStorageFS();
+    // console.log("dh:", dh);
     let hasFS = supportsFileSystem();
     if (mid === MENU_BLOCK_FORMAT) {
       if (!langSupportsFormat(lang)) {
@@ -374,10 +372,12 @@
       if (!hasFS) {
         return kMenuStatusRemoved;
       }
-      if (dh === null) {
+      if (dh) {
         // currently using directory
+        console.log("MENU_MOVE_NOTES_TO_DIRECTORY: removed\n");
         return kMenuStatusRemoved;
       }
+      console.log("MENU_MOVE_NOTES_TO_DIRECTORY: not removed\n");
     } else if (mid == MENU_SWITCH_TO_LOCAL_STORAGE) {
       if (!hasFS) {
         return kMenuStatusRemoved;
@@ -438,10 +438,10 @@
     } else if (cmdId == MENU_MOVE_NOTES_TO_DIRECTORY) {
       storeNotesOnDisk();
     } else if (cmdId == MENU_SWITCH_TO_NOTES_IN_DIR) {
-      await switchToBrowserStorage();
-    } else if (cmdId == MENU_SWITCH_TO_LOCAL_STORAGE) {
       await pickAnotherDirectory();
-    } else if (cmdId == MENU_EXPORTS_NOTES) {
+    } else if (cmdId == MENU_SWITCH_TO_LOCAL_STORAGE) {
+      await switchToBrowserStorage();
+    } else if (cmdId == MENU_EXPORT_NOTES) {
       exportNotesToZipFile();
     } else if (cmdId == MENU_SHOW_EXPORT_HELP) {
       showHelp("#storing-notes-on-disk");
@@ -473,6 +473,7 @@
     contextMenuStyle = `left: ${x}px; top: ${y}px;`;
     console.log("contextMenuStyle:", contextMenuStyle);
     ev.preventDefault();
+    ev.stopImmediatePropagation();
     contextMenu = buildMenu();
     showingMenu = true;
   }

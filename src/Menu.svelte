@@ -205,7 +205,6 @@
     {@const isSubmenu = Array.isArray(submenu)}
     {@const miStatus = menuItemStatus(mi)}
     {@const isRemoved = miStatus === kMenuStatusRemoved }
-    {@const isDisabled = miStatus === kMenuStatusDisabled }
     {#if !isRemoved}
       {#if isDiv}
         {@render separator(mi)}
@@ -235,7 +234,7 @@
               {onmenucmd}
               menu={submenu}
               nest={nest + 1}
-              filterFn={menuItemStatus}
+              {menuItemStatus}
             />
           </div>
         </div>
