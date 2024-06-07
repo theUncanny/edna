@@ -3,10 +3,9 @@
   import { len } from "../util";
 
   /** @type {{
-    close: () => void,
     selectLanguage: (name: string) => void,
 }}*/
-  let { close, selectLanguage } = $props();
+  let { selectLanguage } = $props();
 
   let selected = $state(0);
   let filter = $state("");
@@ -98,16 +97,7 @@
       const selectedItem = filteredItems[selected];
       if (selectedItem) {
         selectItem(selectedItem.token);
-      } else {
-        close();
       }
-      return;
-    }
-
-    if (key === "Escape") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      close();
       return;
     }
   }
@@ -120,45 +110,33 @@
     // reset selection
     selected = 0;
   }
-
-  function onfocusout(event) {
-    if (
-      container !== event.relatedTarget &&
-      !container.contains(event.relatedTarget)
-    ) {
-      close();
-    }
-  }
 </script>
 
-<div class="fixed inset-0 overflow-auto">
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <form
-    bind:this={container}
-    {onkeydown}
-    {onfocusout}
-    tabindex="-1"
-    class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3"
-  >
-    <input
-      type="text"
-      bind:this={input}
-      {oninput}
-      bind:value={filter}
-      class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
-    />
-    <ul class="items overflow-y-auto">
-      {#each filteredItems as item, idx (item.token)}
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <li
-          class:selected={idx === selected}
-          class="cursor-pointer py-0.5 px-2 rounded-sm leading-5"
-          onclick={() => selectItem(item.token)}
-          bind:this={item.ref}
-        >
-          {item.name}
-        </li>
-      {/each}
-    </ul>
-  </form>
-</div>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<form
+  bind:this={container}
+  {onkeydown}
+  tabindex="-1"
+  class="selector absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3"
+>
+  <input
+    type="text"
+    bind:this={input}
+    {oninput}
+    bind:value={filter}
+    class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
+  />
+  <ul class="items overflow-y-auto">
+    {#each filteredItems as item, idx (item.token)}
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <li
+        class:selected={idx === selected}
+        class="cursor-pointer py-0.5 px-2 rounded-sm leading-5"
+        onclick={() => selectItem(item.token)}
+        bind:this={item.ref}
+      >
+        {item.name}
+      </li>
+    {/each}
+  </ul>
+</form>

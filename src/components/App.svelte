@@ -469,11 +469,11 @@
     if (forceNativeMenu) {
       return;
     }
+    ev.preventDefault();
+    ev.stopPropagation();
     let { x, y } = ev;
     contextMenuStyle = `left: ${x}px; top: ${y}px;`;
     console.log("contextMenuStyle:", contextMenuStyle);
-    ev.preventDefault();
-    ev.stopImmediatePropagation();
     contextMenu = buildMenu();
     showingMenu = true;
   }
@@ -725,17 +725,15 @@
   </Overlay>
 {/if}
 
-<div class="overlay">
-  {#if showingLanguageSelector}
-    <LanguageSelector
-      selectLanguage={onSelectLanguage}
-      close={closeLanguageSelector}
-    />
-  {/if}
-  {#if showingHistorySelector}
-    <History close={closeHistorySelector} selectHistory={onSelectHistory} />
-  {/if}
-</div>
+{#if showingLanguageSelector}
+  <Overlay onclose={closeLanguageSelector}>
+    <LanguageSelector selectLanguage={onSelectLanguage} />
+  </Overlay>
+{/if}
+
+{#if showingHistorySelector}
+  <History close={closeHistorySelector} selectHistory={onSelectHistory} />
+{/if}
 
 {#if loadingNoteName}
   <Loading {loadingNoteName} />
