@@ -192,7 +192,7 @@ function dontSkip(entry, dir) {
 export async function readDirRecur(
   dirHandle,
   skipEntryFn = dontSkip,
-  dir = dirHandle.name
+  dir = dirHandle.name,
 ) {
   /** @type {FsEntry[]} */
   let entries = [];
@@ -225,7 +225,7 @@ export async function readDirRecur(
 export async function readDir(
   dirHandle,
   skipEntryFn = dontSkip,
-  dir = dirHandle.name
+  dir = dirHandle.name,
 ) {
   /** @type {FsEntry[]} */
   let entries = [];
@@ -264,7 +264,7 @@ export async function readDirRecurFiles(dirHandle, dir = dirHandle.name) {
             enumerable: true,
             get: () => path,
           });
-        })
+        }),
       );
     } else if (entry.kind === "directory") {
       dirs.push(readDirRecurFiles(entry, path));

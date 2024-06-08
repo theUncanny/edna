@@ -67,7 +67,7 @@
     addToast("this is my ever-lasting love");
     addToast(
       "this is a vary, vyer, very, very long toast of london and munification so why are we even considering this as if this is not concernings on every level",
-      0
+      0,
     );
   }
 </script>

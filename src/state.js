@@ -89,7 +89,7 @@ console.log(
   "noteCreateCount:",
   stats.noteCreateCount,
   "noteSaveCount",
-  stats.noteSaveCount
+  stats.noteSaveCount,
 );
 
 incCount("appOpenCount");

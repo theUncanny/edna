@@ -61,7 +61,7 @@
   let runBlockTitle = $derived(`Run Block Code (Alt + Shift + R)`);
   let formatSize = $derived(fmtSize(docSize));
   let changeLanguageTitle = $derived(
-    `Change language for current block (${cmdKey} + L)`
+    `Change language for current block (${cmdKey} + L)`,
   );
 </script>
 

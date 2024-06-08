@@ -173,7 +173,7 @@
     return () => {
       window.document.removeEventListener(
         "currenciesLoaded",
-        onCurrenciesLoaded
+        onCurrenciesLoaded,
       );
     };
   }
