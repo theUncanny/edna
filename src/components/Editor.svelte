@@ -74,9 +74,11 @@
       return;
     }
     editor.setTheme(newSettings.theme);
+    editor.setKeymap(newSettings.keymap, newSettings.emacsMetaKey);
     editor.setBracketClosing(newSettings.bracketClosing);
     editor.setFoldGutter(newSettings.showFoldGutter);
     editor.setLineNumberGutter(newSettings.showLineNumberGutter);
+    editor.setFont(newSettings.fontFamily, newSettings.fontSize);
   }
   onSettingsChange(updateEditorForSettings);
 

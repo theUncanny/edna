@@ -144,7 +144,7 @@
     </label>
   </div>
 
-  <div class="mt-2 flex justify-between">
+  <div class="mt-2 flex justify-end items-center">
     <h2>Keymap</h2>
     <select
       bind:this={keymapSelector}
@@ -159,8 +159,8 @@
     </select>
   </div>
 
-  {#if true || (keymap == "emacs" && isMac)}
-    <div class="mt-2 flex justify-between">
+  {#if keymap == "emacs" && isMac}
+    <div class="mt-2 flex justify-end items-center">
       <h2>Meta Key</h2>
       <select bind:value={metaKey} onchange={updateSettings}>
         <option selected={metaKey === "meta"} value="meta">Command</option>
@@ -169,7 +169,7 @@
     </div>
   {/if}
 
-  <div class="mt-2 flex justify-between">
+  <div class="mt-2 flex justify-end items-center">
     <h2>Font Family</h2>
     <select bind:value={fontFamily} onchange={updateSettings}>
       {#each systemFonts as font}
@@ -182,7 +182,7 @@
     </select>
   </div>
 
-  <div class="mt-2 flex justify-between">
+  <div class="mt-2 flex justify-end items-center">
     <h2>Font Size</h2>
     <select bind:value={fontSize} onchange={updateSettings}>
       {#each fontSizes as size}
@@ -193,7 +193,7 @@
     </select>
   </div>
 
-  <div class="mt-2 flex justify-between">
+  <div class="mt-2 flex justify-end items-center">
     <h2>Theme</h2>
     <select bind:value={theme} onchange={updateTheme}>
       {#each themes as t}
@@ -204,7 +204,7 @@
     </select>
   </div>
 
-  <div class="mt-4 flex text-gray-400">
+  <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
     Current Version: {appVersion}
   </div>
 </div>

@@ -1,9 +1,20 @@
 <script>
   import { getScrollbarWidth } from "../util.js";
   import { dirtyState } from "../state.svelte.js";
+  import SettingsIcon from "./SettingsIcon.svelte";
 
-  /** @type {{ noteName: string, shortcut: string, openNoteSelector: (e) => void}} */
-  let { noteName = "", shortcut = "", openNoteSelector } = $props();
+  /** @type {{ 
+    noteName: string,
+    shortcut: string,
+    openNoteSelector: (e) => void
+    openSettings: (ev) => void,
+  }} */
+  let {
+    noteName = "",
+    shortcut = "",
+    openNoteSelector,
+    openSettings,
+  } = $props();
 
   let style = $state("");
   $effect(() => {
@@ -17,19 +28,19 @@
     class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-b border-l rounded-bl-lg bg-white dark:bg-gray-700"
     {style}
   >
-    <button
-      class="clickable max-w-32 truncate"
-      onclick={openNoteSelector}
-      title={noteName}
+    <button class="clickable" onclick={openNoteSelector} title={noteName}>
+      <span class="max-w-32 truncate">{noteName}</span> ⏷</button
     >
-      {noteName} ⏷
-    </button>
     {#if shortcut}
       <div class="text-gray-500 dark:text-gray-400 text-xs ml-1">
         {shortcut}
       </div>
     {/if}
-    <a class="clickable ml-1" href="/help" title="Documentation" target="_blank"
+    <button onclick={openSettings} class="clickable-icon" title="Settings">
+      <SettingsIcon></SettingsIcon>
+    </button>
+
+    <a class="clickable" href="/help" title="Documentation" target="_blank"
       >Help</a
     >
     <a
