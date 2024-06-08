@@ -41,20 +41,9 @@
   let appVersion = getVersion();
   let currentNoteName = initialSettings.currentNoteName;
 
-  /** @type {HTMLElement} */
-  let container;
-  /** @type {HTMLElement} */
-  let keymapSelector;
-
   let fontSizes = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
   $effect(() => {
     updateLocalFonts();
-    if (container) {
-      container.focus();
-    }
-    if (keymapSelector) {
-      keymapSelector.focus();
-    }
     window.addEventListener("keydown", onkeydown);
     return () => {
       window.removeEventListener("keydown", onkeydown);
@@ -146,11 +135,7 @@
 
   <div class="mt-2 flex justify-end items-center">
     <h2>Keymap</h2>
-    <select
-      bind:this={keymapSelector}
-      bind:value={keymap}
-      onchange={updateSettings}
-    >
+    <select bind:value={keymap} onchange={updateSettings}>
       {#each keymaps as km (km.value)}
         <option selected={km.value === keymap} value={km.value}
           >{km.name}</option
