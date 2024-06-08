@@ -31,16 +31,24 @@
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
   import { len, splitMax } from "./util.js";
+  import { ensurevisible, focus } from "./actions.js";
 
   // based on https://play.tailwindcss.com/0xQBSdXxsK
 
   /** @type {{
    menu: Menu,
    nest: number,
+   ev?: MouseEvent,
    menuItemStatus?: (mi: MenuItem) => number,
    onmenucmd: (cmd: string, ev: Event) => void,
 }}*/
-  let { menu, nest = 1, menuItemStatus = menuItemStatusDefault, onmenucmd } = $props();
+  let {
+    menu,
+    nest = 1,
+    ev = null,
+    menuItemStatus = menuItemStatusDefault,
+    onmenucmd,
+  } = $props();
 
   function menuItemStatusDefault(mi) {
     return kMenuStatusNormal;
@@ -77,10 +85,10 @@
    */
   function handleMouseEnter(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
+    console.log("mouse enter target:", el, "role:", el.role);
     if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse enter target:", el, "role:", el.role);
     el.classList.add("is-selected-menu");
     ev.stopPropagation();
   }
@@ -90,10 +98,10 @@
    */
   function handleMouseOver(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
+    console.log("mouse over target:", el, el.role);
     if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse over target:", el, el.role);
     el.classList.add("is-selected-menu");
     ev.stopPropagation();
   }
@@ -103,10 +111,10 @@
    */
   function handleMouseLeave(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
+    console.log("mouse leave target:", el, el.role);
     if (el.role != "menuitem") {
       return;
     }
-    // console.log("mouse leave target:", el, el.role);
     el.classList.remove("is-selected-menu");
     ev.stopPropagation();
   }
@@ -135,15 +143,35 @@
     ev.preventDefault();
   }
 
+  function initialStyle() {
+    let st = "";
+    if (ev) {
+      st = `position: absolute; left: ${ev.x}px; top: ${ev.y}px`;
+      console.log("initialStyle:", st);
+    }
+    return st;
+  }
+
   /** @type { HTMLElement } */
   let menuEl;
 
-  $effect( () => {
+  $effect(() => {
     if (nest == 1) {
       console.log("focused menuEl");
+      ensurevisible(menuEl);
+      // logNodePos(menuEl);
+      // logNodePos(menuEl.parentElement);
       menuEl.focus();
     }
-  })
+  });
+
+  function logNodePos(node) {
+    /**
+     * @type {DOMRect}
+     */
+    const r = node.getBoundingClientRect();
+    console.log(`rect x: ${r.x}, y: ${r.y}, dx: ${r.width}, dy: ${r.height}`);
+  }
 </script>
 
 {#snippet separator(mi)}
@@ -180,31 +208,32 @@
 {/snippet}
 
 {#snippet menuitem(mi)}
-    {@const cmdId = mi[1]}
-    {@const shortcut = getShortcut(mi)}
-    {@const text = fixMenuName(mi[0])}
-    {@const miStatus = menuItemStatus(mi)}
-    {@const isDisabled = miStatus === kMenuStatusDisabled }
-    <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-    <div
-      role="menuitem"
-      tabindex="-1"
-      data-cmd-id={cmdId}
-      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap "
-      onmouseleave={handleMouseLeave}
-      onmouseover={handleMouseOver}
-      onmouseenter={handleMouseEnter}
-    >
-      <span aria-disabled={isDisabled}>{text}</span>
-      <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
-    </div>
+  {@const cmdId = mi[1]}
+  {@const shortcut = getShortcut(mi)}
+  {@const text = fixMenuName(mi[0])}
+  {@const miStatus = menuItemStatus(mi)}
+  {@const isDisabled = miStatus === kMenuStatusDisabled}
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    role="menuitem"
+    tabindex="-1"
+    data-cmd-id={cmdId}
+    class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
+    onmouseleave={handleMouseLeave}
+    onmouseover={handleMouseOver}
+    onmouseenter={handleMouseEnter}
+  >
+    <span aria-disabled={isDisabled}>{text}</span>
+    <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
+  </div>
 {/snippet}
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   role="menu"
   tabindex="-1"
-  class="mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none"
+  class="z-30 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none"
+  style={initialStyle()}
   onclick={handleClicked}
   bind:this={menuEl}
 >
@@ -214,7 +243,7 @@
     {@const submenu = mi[1]}
     {@const isSubmenu = Array.isArray(submenu)}
     {@const miStatus = menuItemStatus(mi)}
-    {@const isRemoved = miStatus === kMenuStatusRemoved }
+    {@const isRemoved = miStatus === kMenuStatusRemoved}
     {#if !isRemoved}
       {#if isDiv}
         {@render separator(mi)}

@@ -1,18 +1,26 @@
 <script>
+  import { smartfocus } from "../actions";
+  import { throwIf } from "../util";
+
   /**
    * @type {{
-   onclose: () => void,
-   klass?: string,
-   style?: string,
+   onclose?: () => void, // if given, will call it when clicked on overlay (but not on children)
+   noCloseOnEsc?: boolean, // disable close() on Esc
    children: Function,
 }} */
-  let { onclose, klass = "", style="", children } = $props();
+  let { onclose = null, noCloseOnEsc = false, children } = $props();
+
+  // if noCloseOnEsc is false, we must have onclose
+  throwIf(!onclose && !noCloseOnEsc);
 
   /**
    * @param {MouseEvent} ev
    */
   function onclick(ev) {
     console.log("onclick", ev);
+    if (!onclose) {
+      return;
+    }
     ev.preventDefault();
     ev.stopImmediatePropagation();
     onclose();
@@ -20,6 +28,9 @@
 
   function onkeydown(ev) {
     // console.log("onkeydown:", ev);
+    if (!onclose || noCloseOnEsc) {
+      return;
+    }
     let key = ev.key;
     if (key === "Escape") {
       ev.preventDefault();
@@ -28,19 +39,13 @@
       return;
     }
   }
-  /** @type {HTMLElement} */
-  let wrapper;
-  $effect( () => {
-    console.log("focused wrapper")
-    wrapper.focus();
-  })
 </script>
 
 <div class="fixed inset-0 overflow-hidden">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="z-20 {klass}" {style} onkeydown={onkeydown} bind:this={wrapper}>
+  <div class="z-20" {onkeydown} tabindex="-1" use:smartfocus>
     {@render children()}
   </div>
   <!-- this captures the click outside of the actual element -->
-  <button onclick={onclick} class="absolute inset-0 z-10"></button>
+  <button {onclick} class="absolute inset-0 z-10"></button>
 </div>

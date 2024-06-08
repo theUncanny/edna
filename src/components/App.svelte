@@ -77,7 +77,7 @@
   let altChar = getAltChar();
   let loadingNoteName = $state("");
 
-  let contextMenuStyle = $state(`left: 0px; top: 0px`);
+  let contextMenuEv = $state(null);
 
   // /** @type {import("../editor/editor").EdnaEditor} */
   // let ednaEditor = $state(null);
@@ -471,9 +471,7 @@
     }
     ev.preventDefault();
     ev.stopPropagation();
-    let { x, y } = ev;
-    contextMenuStyle = `left: ${x}px; top: ${y}px;`;
-    console.log("contextMenuStyle:", contextMenuStyle);
+    contextMenuEv = ev;
     contextMenu = buildMenu();
     showingMenu = true;
   }
@@ -500,7 +498,7 @@
     getEditor().setSpellChecking(isSpellChecking);
     if (isSpellChecking) {
       addToast(
-        "Press Shift + right mouse click for context menu when spell checking is enabled"
+        "Press Shift + right mouse click for context menu when spell checking is enabled",
       );
     }
   }
@@ -721,7 +719,7 @@
 </div>
 
 {#if showingNoteSelector}
-  <Overlay klass="" onclose={closeNoteSelector}>
+  <Overlay onclose={closeNoteSelector}>
     <NoteSelector
       openNote={onOpenNote}
       createNote={onCreateNote}
@@ -758,11 +756,13 @@
 <Toaster></Toaster>
 
 {#if showingMenu}
-  <Overlay
-    onclose={closeMenu}
-    klass="absolute cursor-pointer select-none"
-    style={contextMenuStyle}
-  >
-    <Menu nest={1} {menuItemStatus} {onmenucmd} menu={contextMenu} />
+  <Overlay onclose={closeMenu}>
+    <Menu
+      nest={1}
+      {menuItemStatus}
+      {onmenucmd}
+      menu={contextMenu}
+      ev={contextMenuEv}
+    />
   </Overlay>
 {/if}
