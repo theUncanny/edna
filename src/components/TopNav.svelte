@@ -12,7 +12,7 @@
   });
 </script>
 
-{#if !dirtyState.isDirty}
+{#if !dirtyState.isDirtyFast}
   <div
     class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-b border-l rounded-bl-lg bg-white dark:bg-gray-700"
     {style}

@@ -536,7 +536,7 @@ async function migrateNote(noteName, diskNoteNames, dh) {
       "migrateNote: created new note",
       fileName,
       "from note with name",
-      name
+      name,
     );
     return;
   }
@@ -554,7 +554,7 @@ async function migrateNote(noteName, diskNoteNames, dh) {
     "migrateNote: created new note",
     fileName,
     "because of different content with",
-    name
+    name,
   );
 }
 
