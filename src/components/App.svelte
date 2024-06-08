@@ -305,7 +305,7 @@
       ["Goto next\tMod + Down", MENU_BLOCK_GOTO_NEXT],
       ["Goto previous\tMod + Up", MENU_BLOCK_GOTO_PREV],
       ["Change language\tMod + L", MENU_BLOCK_CHANGE_LANG],
-      ["Select all textMod + A", MENU_BLOCK_SELECTALL],
+      ["Select all tex\tMod + A", MENU_BLOCK_SELECTALL],
       ["Format as " + lang + "\tAlt + Shift + F", MENU_BLOCK_FORMAT],
       ["Run " + lang + "\tAlt + Shift + R", MENU_BLOCK_RUN],
     ];

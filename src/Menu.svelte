@@ -223,8 +223,8 @@
     onmouseover={handleMouseOver}
     onmouseenter={handleMouseEnter}
   >
-    <span aria-disabled={isDisabled}>{text}</span>
-    <span class="ml-2 text-xs opacity-75">{shortcut || ""}</span>
+    <div aria-disabled={isDisabled}>{text}</div>
+    <div class="ml-4 text-xs opacity-75">{shortcut || ""}</div>
   </div>
 {/snippet}
 
@@ -232,7 +232,7 @@
 <div
   role="menu"
   tabindex="-1"
-  class="z-30 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none"
+  class="z-30 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
   bind:this={menuEl}
