@@ -56,12 +56,6 @@
     if (idx >= 0 && idx <= lastIdx) {
       ev.preventDefault();
       let item = items[idx];
-      // console.log("idx:", idx, "item:", item);
-      if (idx == 0) {
-        // perf: selecting current note is a no-op
-        close();
-        return;
-      }
       selectItem(item.name);
       return;
     }

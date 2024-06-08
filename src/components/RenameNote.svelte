@@ -1,11 +1,11 @@
 <script>
   import { getLatestNoteNames, sanitizeNoteName } from "../notes";
   /** @type { {
-    close: () => void,
+    onclose: () => void,
     oldName: string,
     rename: (newName: string) => void,
 }}*/
-  let { oldName, close, rename } = $props();
+  let { oldName, onclose, rename } = $props();
 
   let newName = $state(oldName);
 
@@ -87,7 +87,7 @@
   </div>
   <div class="flex justify-end mt-2">
     <button
-      onclick={() => close()}
+      onclick={onclose}
       class="mr-4 px-4 py-1 border border-black hover:bg-gray-100"
       >Cancel</button
     >

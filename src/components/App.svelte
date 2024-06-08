@@ -746,7 +746,7 @@
 
 {#if showingRenameNote}
   <Overlay onclose={closeRename}>
-    <RenameNote close={closeRename} rename={onRename} oldName={noteName} />
+    <RenameNote onclose={closeRename} rename={onRename} oldName={noteName} />
   </Overlay>
 {/if}
 
