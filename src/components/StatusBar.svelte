@@ -8,7 +8,11 @@
   import { fmtSize, getScrollbarWidth, platform } from "../util";
   import { dirtyState } from "../state.svelte";
   import SettingsIcon from "./SettingsIcon.svelte";
-  import { globalFuncs } from "../globals.js";
+  import {
+    openLanguageSelector,
+    openNoteSelector,
+    openSettings,
+  } from "../globals.js";
 
   /** @type { {
     noteName: string,
@@ -70,9 +74,7 @@
   </div>
   <button
     class="clickable max-w-48 truncate"
-    onclick={() => {
-      globalFuncs().openNoteSelector();
-    }}
+    onclick={openNoteSelector}
     title="Change or create new note"
   >
     {noteName} ⏶
@@ -97,7 +99,7 @@
     >
   </button>
   <button
-    onclick={() => globalFuncs().openLanguageSelector()}
+    onclick={openLanguageSelector}
     class="clickable"
     title={changeLanguageTitle}
   >
@@ -134,13 +136,7 @@
     </button>
   {/if}
 
-  <button
-    onclick={() => {
-      globalFuncs().openSettings();
-    }}
-    class="clickable-icon"
-    title="Settings"
-  >
+  <button onclick={openSettings} class="clickable-icon" title="Settings">
     <SettingsIcon></SettingsIcon>
   </button>
   <a href="/help" title="Documentation" target="_blank" class="clickable"

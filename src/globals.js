@@ -21,9 +21,22 @@ export function setGlobalFuncs(gf) {
   globalFunctions = gf;
 }
 
-/**
- * @returns {GlobalFuncs}
- */
-export function globalFuncs() {
-  return globalFunctions;
+export function openSettings() {
+  globalFunctions.openSettings();
+}
+
+export function openLanguageSelector() {
+  globalFunctions.openLanguageSelector();
+}
+export function openCreateNewNote() {
+  globalFunctions.openCreateNewNote();
+}
+export function openNoteSelector() {
+  globalFunctions.openNoteSelector();
+}
+export function openHistorySelector() {
+  globalFunctions.openHistorySelector();
+}
+export function createScratchNote() {
+  globalFunctions.createScratchNote();
 }
