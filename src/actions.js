@@ -74,3 +74,40 @@ export function ensurevisible(node) {
   //   `ensurevisible: top: ${st.top}, left: ${st.left}, bottom: ${st.bottom}, right: ${st.right}`,
   // );
 }
+
+/**
+ * @param {HTMLElement} node
+ */
+export function trapfocus(node) {
+  function trapFocusEvent(event) {
+    const focusableElements = node.querySelectorAll(
+      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]',
+    );
+
+    const firstElement = /** @type {HTMLElement} */ (focusableElements[0]);
+    const lastElement = /** @type {HTMLElement} */ (
+      focusableElements[focusableElements.length - 1]
+    );
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
+
+  function handleKeydown(event) {
+    if (event.key === "Tab") {
+      trapFocusEvent(event);
+    }
+  }
+
+  node.addEventListener("keydown", handleKeydown);
+  return {
+    destroy() {
+      node.removeEventListener("keydown", handleKeydown);
+    },
+  };
+}
