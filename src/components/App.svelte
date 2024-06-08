@@ -746,12 +746,14 @@
 
 {#if showingRenameNote}
   <Overlay onclose={closeRename}>
-    <RenameNote rename={onRename} oldName={noteName} />
+    <RenameNote close={closeRename} rename={onRename} oldName={noteName} />
   </Overlay>
 {/if}
 
 {#if showingSettings}
-  <Settings close={closeSettings}></Settings>
+  <Overlay onclose={closeSettings}>
+    <Settings></Settings>
+  </Overlay>
 {/if}
 <Toaster></Toaster>
 

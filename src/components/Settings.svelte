@@ -10,11 +10,6 @@
   import { platform } from "../util";
   import { focus } from "../actions";
 
-  /** @type {{
-    close: () => void,
-}}*/
-  let { close } = $props();
-
   let keymaps = [
     { name: "Default", value: "default" },
     { name: "Emacs", value: "emacs" },
@@ -91,19 +86,6 @@
     systemFonts = a;
   }
 
-  /**
-   * @param {KeyboardEvent} ev
-   */
-  function onkeydown(ev) {
-    let key = ev.key;
-    if (key === "Escape") {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      close();
-      return;
-    }
-  }
-
   function updateTheme() {
     console.log("updateTheme", theme);
     //$emit("setTheme", theme);
@@ -125,115 +107,105 @@
   }
 </script>
 
-<div class="fixed inset-0">
-  <div class=" absolute inset-0 z-10 bg-black opacity-50 dark:opacity-20"></div>
-
-  <div
-    class="selector absolute overflow-auto center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4 max-h-[94vh] select-none"
-  >
-    <div>
-      <h2>Input settings</h2>
-      <label>
-        <input
-          use:focus
-          type="checkbox"
-          bind:checked={bracketClosing}
-          onchange={updateSettings}
-        />
-        Auto-close brackets and quotation marks
-      </label>
-    </div>
-
-    <div class="mt-2 flex flex-col">
-      <h2>Gutters</h2>
-      <label>
-        <input
-          type="checkbox"
-          bind:checked={showLineNumberGutter}
-          onchange={updateSettings}
-        />
-        Show line numbers
-      </label>
-
-      <label>
-        <input
-          type="checkbox"
-          bind:checked={showFoldGutter}
-          onchange={updateSettings}
-        />
-        Show fold gutter
-      </label>
-    </div>
-
-    <div class="mt-2 flex justify-between">
-      <h2>Keymap</h2>
-      <select
-        bind:this={keymapSelector}
-        bind:value={keymap}
+<div
+  class="selector absolute overflow-auto center-x-with-translate top-[2rem] z-20 flex flex-col max-w-full px-4 py-4 max-h-[94vh] select-none"
+>
+  <div>
+    <h2>Input settings</h2>
+    <label>
+      <input
+        use:focus
+        type="checkbox"
+        bind:checked={bracketClosing}
         onchange={updateSettings}
-      >
-        {#each keymaps as km (km.value)}
-          <option selected={km.value === keymap} value={km.value}
-            >{km.name}</option
-          >
-        {/each}
-      </select>
-    </div>
+      />
+      Auto-close brackets and quotation marks
+    </label>
+  </div>
 
-    {#if true || (keymap == "emacs" && isMac)}
-      <div class="mt-2 flex justify-between">
-        <h2>Meta Key</h2>
-        <select bind:value={metaKey} onchange={updateSettings}>
-          <option selected={metaKey === "meta"} value="meta">Command</option>
-          <option selected={metaKey === "alt"} value="alt">Option</option>
-        </select>
-      </div>
-    {/if}
+  <div class="mt-2 flex flex-col">
+    <h2>Gutters</h2>
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={showLineNumberGutter}
+        onchange={updateSettings}
+      />
+      Show line numbers
+    </label>
 
-    <div class="mt-2 flex justify-between">
-      <h2>Font Family</h2>
-      <select bind:value={fontFamily} onchange={updateSettings}>
-        {#each systemFonts as font}
-          {@const family = font[0]}
-          {@const label = font[1]}
-          <option selected={family === fontFamily} value={family}
-            >{label}
-          </option>
-        {/each}
-      </select>
-    </div>
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={showFoldGutter}
+        onchange={updateSettings}
+      />
+      Show fold gutter
+    </label>
+  </div>
 
-    <div class="mt-2 flex justify-between">
-      <h2>Font Size</h2>
-      <select bind:value={fontSize} onchange={updateSettings}>
-        {#each fontSizes as size}
-          <option selected={size === fontSize} value={size}
-            >{size}px{size === defaultFontSize ? " (default)" : ""}</option
-          >
-        {/each}
-      </select>
-    </div>
-
-    <div class="mt-2 flex justify-between">
-      <h2>Theme</h2>
-      <select bind:value={theme} onchange={updateTheme}>
-        {#each themes as t}
-          {@const th = t[0]}
-          {@const label = t[1]}
-          <option selected={th === theme} value={th}>{label} </option>
-        {/each}
-      </select>
-    </div>
-
-    <div class="mt-4 flex text-gray-400">
-      Current Version: {appVersion}
-    </div>
-
-    <button
-      tabindex="-1"
-      class="mt-2 self-end border border-black dark:border-gray-400 px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600"
-      onclick={close}>Close</button
+  <div class="mt-2 flex justify-between">
+    <h2>Keymap</h2>
+    <select
+      bind:this={keymapSelector}
+      bind:value={keymap}
+      onchange={updateSettings}
     >
+      {#each keymaps as km (km.value)}
+        <option selected={km.value === keymap} value={km.value}
+          >{km.name}</option
+        >
+      {/each}
+    </select>
+  </div>
+
+  {#if true || (keymap == "emacs" && isMac)}
+    <div class="mt-2 flex justify-between">
+      <h2>Meta Key</h2>
+      <select bind:value={metaKey} onchange={updateSettings}>
+        <option selected={metaKey === "meta"} value="meta">Command</option>
+        <option selected={metaKey === "alt"} value="alt">Option</option>
+      </select>
+    </div>
+  {/if}
+
+  <div class="mt-2 flex justify-between">
+    <h2>Font Family</h2>
+    <select bind:value={fontFamily} onchange={updateSettings}>
+      {#each systemFonts as font}
+        {@const family = font[0]}
+        {@const label = font[1]}
+        <option selected={family === fontFamily} value={family}
+          >{label}
+        </option>
+      {/each}
+    </select>
+  </div>
+
+  <div class="mt-2 flex justify-between">
+    <h2>Font Size</h2>
+    <select bind:value={fontSize} onchange={updateSettings}>
+      {#each fontSizes as size}
+        <option selected={size === fontSize} value={size}
+          >{size}px{size === defaultFontSize ? " (default)" : ""}</option
+        >
+      {/each}
+    </select>
+  </div>
+
+  <div class="mt-2 flex justify-between">
+    <h2>Theme</h2>
+    <select bind:value={theme} onchange={updateTheme}>
+      {#each themes as t}
+        {@const th = t[0]}
+        {@const label = t[1]}
+        <option selected={th === theme} value={th}>{label} </option>
+      {/each}
+    </select>
+  </div>
+
+  <div class="mt-4 flex text-gray-400">
+    Current Version: {appVersion}
   </div>
 </div>
 

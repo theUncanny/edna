@@ -1,10 +1,11 @@
 <script>
   import { getLatestNoteNames, sanitizeNoteName } from "../notes";
   /** @type { {
+    close: () => void,
     oldName: string,
     rename: (newName: string) => void,
 }}*/
-  let { oldName, rename } = $props();
+  let { oldName, close, rename } = $props();
 
   let newName = $state(oldName);
 
@@ -53,13 +54,6 @@
    */
   function onkeydown(event) {
     let key = event.key;
-
-    if (key === "Escape") {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      close();
-      return;
-    }
 
     if (canRename && key === "Enter") {
       emitRename();
