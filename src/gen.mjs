@@ -121,7 +121,7 @@ let htmlStart = `
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <meta name="color-scheme" content="light dark">
-    <title>About Heynote</title>
+    <title>About Edna</title>
     <link rel="stylesheet" href="help.css">
   </head>
   <body>

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <meta name="color-scheme" content="light dark">
-    <title>About Heynote</title>
+    <title>About Edna</title>
     <link rel="stylesheet" href="help.css">
   </head>
   <body>
@@ -137,15 +137,16 @@ Ctrl + F               Search / replace within a note
 </ul>
 <h1 id="storing-notes-on-disk" tabindex="-1"><a class="header-anchor" href="#storing-notes-on-disk" target="_blank">Storing notes on disk</a></h1>
 <p>By default notes are stored in the browser (localStorage).</p>
-<p>If your browser supports file system access (currently Chrome) you can store notes on disk.</p>
+<p>If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.</p>
 <p>You can do one time export from localStorage to a directory on disk:</p>
 <ul>
 <li>right click for context menu, <code>Notes storage / Move notes from browser to directory</code></li>
 <li>pick a directory on disk</li>
 <li>we save notes on disk as <code>${name}.edna.txt</code> files in chosen directory and delete notes in localStorage</li>
 </ul>
-<p>You can have multiple directories with notes. Use context menu <code>Notes storage / Open notes in directory</code> to open notes in a different directory. If it's a new directory, without existing notes, we'll create default <code>scratch</code> note.</p>
-<p>You can go back to storing in browser with context menu <code>Notes storage / Open notes in browser (localStorage)</code>. Note that unlike going from browser =&gt; directory, it doesn't import the notes from directory. If you moved notes from localStorage to directory, we deleted them from localStorage.</p>
+<p>You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.</p>
+<p>Use context menu <code>Notes storage / Open notes in directory</code> to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default <code>scratch</code> note.</p>
+<p>You can go back to storing notes in the browser with context menu <code>Notes storage / Open notes in browser (localStorage)</code>. Unlike going from browser =&gt; directory, it doesn't import the notes from directory.</p>
 <h1 id="accessing-notes-on-multiple-computers" tabindex="-1"><a class="header-anchor" href="#accessing-notes-on-multiple-computers" target="_blank">Accessing notes on multiple computers</a></h1>
 <p>If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.</p>
 <p>On the first computer export notes from browser to disk:</p>
@@ -210,7 +211,7 @@ Ctrl + F               Search / replace within a note
 <li>ability to access notes on multiple devices by storing them on folder managed by Dropbox / One Drive / Google Drive</li>
 </ul>
 <p>There's a spirit of Notational Velocity and Simplenote in Edna in how it allows quickly creating notes and switching between them.</p>
-<p>Edna is built on <a href="https://codemirror.net/" target="_blank">CodeMirror</a>, <a href="https://vuejs.org/" target="_blank">Vue</a>, <a href="https://mathjs.org/" target="_blank">Math.js</a>, <a href="https://prettier.io/" target="_blank">Prettier</a>.</p>
+<p>Edna is built on <a href="https://codemirror.net/" target="_blank">CodeMirror</a>, <a href="https://svelte.dev/" target="_blank">Svelte 5</a>, <a href="https://mathjs.org/" target="_blank">Math.js</a>, <a href="https://prettier.io/" target="_blank">Prettier</a>.</p>
 
     </div>
   </body>

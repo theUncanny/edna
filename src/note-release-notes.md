@@ -14,7 +14,7 @@
 ## 1.1
 
 * add switching to previous note by hitting `Esc` twice quickly
-* add Alt + K / Cmd + K shortcut for opening / creating notes
+* add Ctrl + P / Cmd + P shortcut for opening / creating notes
 
 ## 1.0
 
