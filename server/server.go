@@ -223,6 +223,9 @@ func makeHTTPServer(serveOpts *hutil.ServeFileOptions, proxyHandler *httputil.Re
 			content := bytes.NewReader([]byte("pong"))
 			http.ServeContent(w, r, "foo.txt", time.Time{}, content)
 			return
+		case "/math.js.map":
+			http.NotFound(w, r)
+			return
 		case "/api/currency_rates.json":
 			serverApiCurrencyRates(w, r)
 			return
