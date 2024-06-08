@@ -3,7 +3,8 @@
   /** @typedef {MenuItem[]} Menu */
 
   // when used as menu id this will show as a text, not a menu item
-  export const kMenuJustText = -1;
+  export const kMenuIdJustText = -1;
+  const kMenuIdSubMenu = -2;
 
   export const kMenuStatusNormal = 0;
   export const kMenuStatusDisabled = 1;
@@ -31,7 +32,7 @@
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
   import { len, splitMax } from "./util.js";
-  import { ensurevisible, focus } from "./actions.js";
+  import { ensurevisible } from "./actions.js";
 
   // based on https://play.tailwindcss.com/0xQBSdXxsK
 
@@ -40,7 +41,7 @@
    nest: number,
    ev?: MouseEvent,
    menuItemStatus?: (mi: MenuItem) => number,
-   onmenucmd: (cmd: string, ev: Event) => void,
+   onmenucmd: (cmd: number, ev: Event) => void,
 }}*/
   let {
     menu,
@@ -81,41 +82,52 @@
   }
 
   /**
+   * @param {Event} ev
+   * @returns { { el: HTMLElement, cmdId: number } }
+   */
+  function findMenuItemElement(ev) {
+    let el = /** @type {HTMLElement} */ (ev.target);
+    while (el && el.role != "menuitem") {
+      el = el.parentElement;
+    }
+    if (!el) {
+      // console.log("Menu.svelte: menuClicked, no div parent for:", ev.target);
+      return { el: null, cmdId: 0 };
+    }
+    const cmdId = parseInt(el.dataset.cmdId); // get data-cmd-id
+    return { el: el, cmdId: cmdId };
+  }
+
+  /**
    * @param {MouseEvent} ev
    */
   function handleMouseEnter(ev) {
-    let el = /** @type {HTMLElement} */ (ev.target);
-    console.log("mouse enter target:", el, "role:", el.role);
-    if (el.role != "menuitem") {
-      return;
+    let { el, cmdId } = findMenuItemElement(ev);
+    if (el && cmdId !== kMenuIdJustText) {
+      el.classList.add("is-selected-menu");
+      // ev.stopPropagation();
     }
-    el.classList.add("is-selected-menu");
-    ev.stopPropagation();
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseOver(ev) {
-    let el = /** @type {HTMLElement} */ (ev.target);
-    console.log("mouse over target:", el, el.role);
-    if (el.role != "menuitem") {
-      return;
+    let { el, cmdId } = findMenuItemElement(ev);
+    if (el && cmdId > 0) {
+      el.classList.add("is-selected-menu");
+      // ev.stopPropagation();
     }
-    el.classList.add("is-selected-menu");
-    ev.stopPropagation();
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseLeave(ev) {
-    let el = /** @type {HTMLElement} */ (ev.target);
-    console.log("mouse leave target:", el, el.role);
-    if (el.role != "menuitem") {
-      return;
+    let { el, cmdId } = findMenuItemElement(ev);
+    if (el && cmdId !== kMenuIdJustText) {
+      el.classList.remove("is-selected-menu");
     }
-    el.classList.remove("is-selected-menu");
     ev.stopPropagation();
   }
 
@@ -123,24 +135,12 @@
    * @param {MouseEvent} ev
    */
   function handleClicked(ev) {
-    // console.log("menuCliced: ev:", ev);
-    // find the parent div that has data-menu-id attribute
-    let el = /** @type {HTMLElement} */ (ev.target);
-    while (el && el.role != "menuitem") {
-      el = el.parentElement;
+    let { el, cmdId } = findMenuItemElement(ev);
+    if (el && cmdId > 0) {
+      onmenucmd(cmdId, null);
+      ev.stopPropagation();
+      ev.preventDefault();
     }
-    if (!el) {
-      console.log("Menu.svelte: menuClicked, no div parent for:", ev.target);
-      return;
-    }
-    const cmdId = el.dataset.cmdId; // get data-cmd-id
-    if (!cmdId || cmdId === "") {
-      console.log("Menu.svelte: menuClicked: no data-menu-id on:", el);
-      return;
-    }
-    onmenucmd(cmdId, null);
-    ev.stopPropagation();
-    ev.preventDefault();
   }
 
   function initialStyle() {
@@ -218,13 +218,38 @@
     role="menuitem"
     tabindex="-1"
     data-cmd-id={cmdId}
-    class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap"
+    class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
+    onmouseleave={handleMouseLeave}
+    onmouseover={handleMouseOver}
+    onmouseenter={handleMouseEnter}
+    aria-disabled={isDisabled}
+  >
+    <div>{text}</div>
+    <div class="ml-4 text-xs opacity-75">{shortcut || ""}</div>
+  </div>
+{/snippet}
+
+{#snippet submenu(mi)}
+  {@const text = fixMenuName(mi[0])}
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    role="menuitem"
+    tabindex="-1"
+    data-cmd-id={kMenuIdSubMenu}
+    class="menu-parent{nest} relative my-1"
     onmouseleave={handleMouseLeave}
     onmouseover={handleMouseOver}
     onmouseenter={handleMouseEnter}
   >
-    <div aria-disabled={isDisabled}>{text}</div>
-    <div class="ml-4 text-xs opacity-75">{shortcut || ""}</div>
+    <button class="flex w-full items-center justify-between pl-3 pr-2 py-0.5">
+      <span>{text}</span>
+      {@render arrow()}
+    </button>
+    <div
+      class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
+    >
+      <svelte:self {onmenucmd} menu={mi[1]} nest={nest + 1} {menuItemStatus} />
+    </div>
   </div>
 {/snippet}
 
@@ -238,42 +263,14 @@
   bind:this={menuEl}
 >
   {#each menu as mi}
-    {@const isDiv = mi[0] === kMenuSeparator[0]}
-    {@const text = fixMenuName(mi[0])}
-    {@const submenu = mi[1]}
-    {@const isSubmenu = Array.isArray(submenu)}
+    {@const isSeparator = mi[0] === kMenuSeparator[0]}
     {@const miStatus = menuItemStatus(mi)}
     {@const isRemoved = miStatus === kMenuStatusRemoved}
     {#if !isRemoved}
-      {#if isDiv}
+      {#if isSeparator}
         {@render separator(mi)}
-      {:else if isSubmenu}
-        <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-        <div
-          role="menuitem"
-          tabindex="-1"
-          class="menu-parent{nest} relative my-1"
-          onmouseleave={handleMouseLeave}
-          onmouseover={handleMouseOver}
-          onmouseenter={handleMouseEnter}
-        >
-          <button
-            class="flex w-full items-center justify-between pl-3 pr-2 py-0.5"
-          >
-            <span>{text}</span>
-            {@render arrow()}
-          </button>
-          <div
-            class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
-          >
-            <svelte:self
-              {onmenucmd}
-              menu={submenu}
-              nest={nest + 1}
-              {menuItemStatus}
-            />
-          </div>
-        </div>
+      {:else if Array.isArray(mi[1])}
+        {@render submenu(mi)}
       {:else}
         {@render menuitem(mi)}
       {/if}

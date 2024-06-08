@@ -48,8 +48,9 @@
   import { exportNotesToZip } from "../notes-export";
   import Toaster, { addToast } from "./Toaster.svelte";
   import Menu, {
-    kMenuJustText,
+    kMenuIdJustText,
     kMenuSeparator,
+    kMenuStatusDisabled,
     kMenuStatusNormal,
     kMenuStatusRemoved,
   } from "../Menu.svelte";
@@ -316,7 +317,7 @@
       currStorage = `Current store: directory ${dh.name}`;
     }
     const menuStorage = [
-      [currStorage, kMenuJustText],
+      [currStorage, kMenuIdJustText],
       ["Move notes from browser to directory", MENU_MOVE_NOTES_TO_DIRECTORY],
       ["Switch to browser (localStorage)", MENU_SWITCH_TO_LOCAL_STORAGE],
       ["Switch to notes in a directory", MENU_SWITCH_TO_NOTES_IN_DIR],
@@ -342,7 +343,7 @@
       [spelling, MENU_TOGGLE_SPELL_CHECKING],
       kMenuSeparator,
       ["Help", menuHelp],
-      // ["Tip: Ctrl + click for native context menu", kMenuJustText],
+      ["Tip: Ctrl + click for native context menu", kMenuIdJustText],
     ];
 
     return contextMenu;
@@ -354,6 +355,10 @@
   function menuItemStatus(mi) {
     let s = mi[0];
     let mid = mi[1];
+    if (mid === kMenuIdJustText) {
+      console.log(`menu '${s}' is disabled`);
+      return kMenuStatusDisabled;
+    }
     // console.log("menuItemStatus:", mi);
     // console.log("s:", s, "mid:", mid);
     let lang = getLanguage(language);
@@ -394,6 +399,10 @@
     return kMenuStatusNormal;
   }
 
+  /**
+   * @param {number} cmdId
+   * @param ev
+   */
   async function onmenucmd(cmdId, ev) {
     console.log("cmd:", cmdId);
     showingMenu = false;
