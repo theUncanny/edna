@@ -373,7 +373,7 @@
 
     const contextMenu = [
       ["Open note\tMod + P", MENU_OPEN_NOTE],
-      ["Create new note\tMod + Y", MENU_CREATE_NEW_NOTE],
+      ["Create new note", MENU_CREATE_NEW_NOTE],
       ["Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],

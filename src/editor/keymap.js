@@ -21,17 +21,17 @@ import {
 import { copyCommand, cutCommand, pasteCommand } from "./copy-paste.js";
 import {
   createScratchNote,
-  openCreateNewNote,
   openHistorySelector,
   openLanguageSelector,
   openNoteSelector,
 } from "../globals.js";
 import { formatBlockContent, runBlockContent } from "./block/format-code.js";
 //import { EditorSelection, EditorState } from "@codemirror/state"
-import { indentLess, indentMore } from "@codemirror/commands";
+import { indentLess, indentMore, redo } from "@codemirror/commands";
 
 import { deleteLine } from "./block/delete-line.js";
 import { keymap } from "@codemirror/view";
+import { platform } from "../util.js";
 
 export function keymapFromSpec(specs) {
   return keymap.of(
@@ -58,7 +58,7 @@ export function keymapFromSpec(specs) {
  * @param {import("./editor.js").EdnaEditor} editor
  */
 export function ednaKeymap(editor) {
-  return keymapFromSpec([
+  let spec = [
     ["Mod-c", copyCommand(editor)],
     ["Mod-v", pasteCommand],
     ["Mod-x", cutCommand(editor)],
@@ -74,7 +74,7 @@ export function ednaKeymap(editor) {
     ["Alt-ArrowUp", moveLineUp],
     ["Alt-ArrowDown", moveLineDown],
     ["Mod-l", openLanguageSelector],
-    ["Mod-y", openCreateNewNote],
+    // ["Mod-y", openCreateNewNote],
     ["Alt-0", openNoteSelector],
     ["Mod-o", openNoteSelector],
     ["Mod-p", openNoteSelector],
@@ -101,5 +101,12 @@ export function ednaKeymap(editor) {
       run: gotoNextParagraph,
       shift: selectNextParagraph,
     },
-  ]);
+  ];
+  // for some reason CodeMirror uses Ctrl + Y on Windows
+  // and only binds Mod-Shift-z on Mac and Linux
+  // Windows editors also use Ctrl-Shift-z
+  if (platform.isWindows) {
+    spec.push(["Mod-Shift-z", redo]);
+  }
+  return keymapFromSpec(spec);
 }
