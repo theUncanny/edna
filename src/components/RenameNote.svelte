@@ -1,5 +1,7 @@
 <script>
   import { getLatestNoteNames, sanitizeNoteName } from "../notes";
+  import { focus } from "../actions";
+
   /** @type { {
     onclose: () => void,
     oldName: string,
@@ -8,17 +10,6 @@
   let { oldName, onclose, rename } = $props();
 
   let newName = $state(oldName);
-
-  /** @type {HTMLElement} */
-  let container;
-  /** @type {HTMLElement} */
-  let input = $state(null);
-
-  $effect(() => {
-    if (input) {
-      input.focus();
-    }
-  });
 
   let sanitizedNewName = $derived.by(() => {
     return sanitizeNoteName(newName);
@@ -68,15 +59,14 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  bind:this={container}
   {onkeydown}
   tabindex="-1"
   class="selector absolute center-x-with-translate top-[4rem] z-20 flex flex-col max-w-full p-3"
 >
   <div>Rename <span class="font-bold">{oldName}</span> to:</div>
   <input
-    bind:this={input}
     bind:value={newName}
+    use:focus
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <div class=" text-sm mt-2">

@@ -17,7 +17,7 @@
    * @param {MouseEvent} ev
    */
   function onclick(ev) {
-    console.log("onclick", ev);
+    // console.log("onclick", ev);
     if (!onclose) {
       return;
     }

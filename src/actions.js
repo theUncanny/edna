@@ -1,17 +1,21 @@
 /**
  * @param {HTMLElement} node
  */
-export function focus(node, delay = 100) {
+export function focus(node, delay = 50) {
   // note: not sure why I need this but e.g. if I have CodeMirror,
   // the codemirror element regains focus if I set my focus
   // immediately on mount. Delay of 100 seems to fix it (50 was too low)
   // is it just with codemirror or more general?
-  setTimeout(() => node.focus(), delay);
+  setTimeout(() => {
+    node.focus();
+    // console.log("focused", node);
+  }, delay);
 }
 
 export function hasFocusedChild(element) {
   // Get the currently focused element
   const activeElement = document.activeElement;
+  // console.log("activeElement:", activeElement);
 
   // Check if the active element is a child of the given element
   return element.contains(activeElement);
@@ -20,34 +24,14 @@ export function hasFocusedChild(element) {
 /**
  * focus but only if doesn't have focused children
  * @param {HTMLElement} node
- * @param {number} delay
  */
-export function smartfocus(node, delay = 100) {
-  if (hasFocusedChild(node)) {
-    return;
-  }
-  focus(node, delay);
-}
-
-/**
- * @param {HTMLElement} node
- * @param {() => void} cb
- */
-export function focusout(node, cb) {
-  console.log("focusout:", node);
-  function onfocusout(ev) {
-    console.log("focusout:", ev);
-    if (node !== ev.relatedTarget && !node.contains(ev.relatedTarget)) {
-      cb();
+export function smartfocus(node) {
+  setTimeout(() => {
+    if (hasFocusedChild(node)) {
+      return;
     }
-  }
-  node.addEventListener("onfocusout", onfocusout);
-  return {
-    destroy() {
-      console.log("focusout destroy:", node);
-      node.removeEventListener("onfocusout", onfocusout);
-    },
-  };
+    node.focus();
+  }, 150);
 }
 
 // return {x, y} position that ensures that rect is visible inside window
@@ -85,7 +69,7 @@ export function ensurevisible(node) {
     left: `${x}px`,
     top: `${y}px`,
   });
-  console.log(`ensureVisible: x: ${x}, y: ${y}, r:`, r);
+  // console.log(`ensureVisible: x: ${x}, y: ${y}, r:`, r);
   // console.log(
   //   `ensurevisible: top: ${st.top}, left: ${st.left}, bottom: ${st.bottom}, right: ${st.right}`,
   // );
