@@ -24,10 +24,6 @@
     return !noteNames.includes(name);
   });
 
-  $effect(() => {
-    console.log("canRename:", canRename);
-  });
-
   let renameError = $derived.by(() => {
     let name = sanitizedNewName;
     if (name === "") {
@@ -41,13 +37,15 @@
   });
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    */
-  function onkeydown(event) {
-    let key = event.key;
+  function onkeydown(ev) {
+    let key = ev.key;
 
     if (canRename && key === "Enter") {
       emitRename();
+      ev.preventDefault();
+      ev.stopPropagation();
       return;
     }
   }
@@ -58,9 +56,9 @@
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<form
+<div
+  role="dialog"
   {onkeydown}
-  tabindex="-1"
   class="selector absolute center-x-with-translate top-[4rem] z-20 flex flex-col max-w-full p-3"
 >
   <div>Rename <span class="font-bold">{oldName}</span> to:</div>
@@ -88,4 +86,4 @@
       >Rename</button
     >
   </div>
-</form>
+</div>
