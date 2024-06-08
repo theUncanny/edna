@@ -24,6 +24,7 @@ import { formatBlockContent, runBlockContent } from "./block/format-code.js";
 import { indentLess, indentMore } from "@codemirror/commands";
 
 import { deleteLine } from "./block/delete-line.js";
+import { globalFuncs } from "../globals.js";
 import { keymap } from "@codemirror/view";
 
 export function keymapFromSpec(specs) {
@@ -57,7 +58,7 @@ export function ednaKeymap(editor) {
     ["Mod-x", cutCommand(editor)],
     ["Tab", indentMore],
     ["Shift-Tab", indentLess],
-    ["Alt-n", () => editor.createNewScratchNote()],
+    ["Alt-n", () => globalFuncs().createScratchNote()],
     ["Alt-Shift-Enter", addNewBlockBeforeFirst],
     ["Mod-Shift-Enter", addNewBlockAfterLast],
     ["Alt-Enter", addNewBlockBeforeCurrent],
@@ -66,13 +67,13 @@ export function ednaKeymap(editor) {
     ["Mod-a", selectAll],
     ["Alt-ArrowUp", moveLineUp],
     ["Alt-ArrowDown", moveLineDown],
-    ["Mod-l", () => editor.openLanguageSelector()],
-    ["Mod-y", () => editor.openCreateNewNote()],
-    ["Alt-0", () => editor.openNoteSelector()],
-    ["Mod-o", () => editor.openNoteSelector()],
-    ["Mod-p", () => editor.openNoteSelector()],
-    ["Mod-k", () => editor.openNoteSelector()],
-    ["Mod-e", () => editor.openHistorySelector()],
+    ["Mod-l", () => globalFuncs().openLanguageSelector()],
+    ["Mod-y", () => globalFuncs().openCreateNewNote()],
+    ["Alt-0", () => globalFuncs().openNoteSelector()],
+    ["Mod-o", () => globalFuncs().openNoteSelector()],
+    ["Mod-p", () => globalFuncs().openNoteSelector()],
+    ["Mod-k", () => globalFuncs().openNoteSelector()],
+    ["Mod-e", () => globalFuncs().openHistorySelector()],
     ["Alt-Shift-f", formatBlockContent],
     ["Alt-Shift-r", runBlockContent],
     ["Mod-Alt-ArrowDown", newCursorBelow],

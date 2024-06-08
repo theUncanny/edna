@@ -223,27 +223,6 @@ export class EdnaEditor {
     });
   }
 
-  createNewScratchNote() {
-    console.log("createNewScratchNote");
-    this.element.dispatchEvent(new Event("createNewScratchNote"));
-  }
-
-  openLanguageSelector() {
-    this.element.dispatchEvent(new Event("openLanguageSelector"));
-  }
-
-  openCreateNewNote() {
-    this.element.dispatchEvent(new Event("openCreateNewNote"));
-  }
-
-  openHistorySelector() {
-    this.element.dispatchEvent(new Event("openHistorySelector"));
-  }
-
-  openNoteSelector() {
-    this.element.dispatchEvent(new Event("openNoteSelector"));
-  }
-
   setCurrentLanguage(lang, auto = false) {
     changeCurrentBlockLanguage(this.view.state, this.view.dispatch, lang, auto);
   }

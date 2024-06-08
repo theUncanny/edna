@@ -8,6 +8,7 @@
   import { fmtSize, getScrollbarWidth, platform } from "../util";
   import { dirtyState } from "../state.svelte";
   import SettingsIcon from "./SettingsIcon.svelte";
+  import { globalFuncs } from "../globals.js";
 
   /** @type { {
     noteName: string,
@@ -19,10 +20,7 @@
     language: string,
     languageAuto: boolean,
     isSpellChecking: boolean,
-    openSettings: (ev) => void,
-    openNoteSelector: (ev) => void ,
     toggleSpellCheck: (ev) => void,
-    openLanguageSelector: (ev) => void ,
     runCurrentBlock: (ev) => void,
     formatCurrentBlock: (ev) => void,
 } } */
@@ -36,10 +34,7 @@
     language = "",
     languageAuto = false,
     isSpellChecking = false,
-    openSettings,
-    openNoteSelector,
     toggleSpellCheck,
-    openLanguageSelector,
     runCurrentBlock,
     formatCurrentBlock,
   } = $props();
@@ -75,7 +70,9 @@
   </div>
   <button
     class="clickable max-w-48 truncate"
-    onclick={openNoteSelector}
+    onclick={() => {
+      globalFuncs().openNoteSelector();
+    }}
     title="Change or create new note"
   >
     {noteName} ⏶
@@ -100,7 +97,7 @@
     >
   </button>
   <button
-    onclick={openLanguageSelector}
+    onclick={() => globalFuncs().openLanguageSelector()}
     class="clickable"
     title={changeLanguageTitle}
   >
@@ -137,7 +134,13 @@
     </button>
   {/if}
 
-  <button onclick={openSettings} class="clickable-icon" title="Settings">
+  <button
+    onclick={() => {
+      globalFuncs().openSettings();
+    }}
+    class="clickable-icon"
+    title="Settings"
+  >
     <SettingsIcon></SettingsIcon>
   </button>
   <a href="/help" title="Documentation" target="_blank" class="clickable"

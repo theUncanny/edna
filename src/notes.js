@@ -380,7 +380,6 @@ export async function createNoteWithName(name, content = null) {
  * @returns {Promise<string>}
  */
 export async function createNewScratchNote() {
-  console.log("createNewScratchNote");
   let noteInfos = await loadNoteNames();
   // generate a unique "scratch-${N}" note name
   let scratchName = pickUniqueNameInNoteNames("scratch", noteInfos);

@@ -55,6 +55,7 @@
     langSupportsRun,
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
+  import { setGlobalFuncs } from "../globals";
 
   let initialSettings = getSettings();
 
@@ -96,6 +97,16 @@
       showingSettings
     );
   });
+
+  let gf = {
+    openSettings: openSettings,
+    openLanguageSelector: openLanguageSelector,
+    openCreateNewNote: openCreateNewNote,
+    openNoteSelector: openNoteSelector,
+    openHistorySelector: openHistorySelector,
+    createScratchNote: createScratchNote,
+  };
+  setGlobalFuncs(gf);
 
   let noteShortcut = $derived.by(() => {
     let name = noteName;
@@ -441,7 +452,7 @@
     } else if (cmdId == MENU_DELETE_CURRENT_NOTE) {
       deleteCurrentNote();
     } else if (cmdId == MENU_CREATE_SCRATCH_NOTE) {
-      createNewScratchNote();
+      await createScratchNote();
     } else if (cmdId == MENU_BLOCK_AFTER_CURR) {
       getEditor().addNewBlockAfterCurrent();
     } else if (cmdId == MENU_BLOCK_BEFORE_CURR) {
@@ -703,12 +714,7 @@
   class="grid w-screen max-h-screen h-screen fixed grid-rows-[1fr_auto]"
   {oncontextmenu}
 >
-  <TopNav
-    {noteName}
-    shortcut={noteShortcut}
-    {openNoteSelector}
-    {openSettings}
-  />
+  <TopNav {noteName} shortcut={noteShortcut} />
   <Editor
     cursorChange={onCursorChange}
     debugSyntaxTree={false}
@@ -720,11 +726,6 @@
     fontFamily={settings.fontFamily}
     fontSize={settings.fontSize}
     bind:this={editor}
-    {openLanguageSelector}
-    {openCreateNewNote}
-    {openHistorySelector}
-    createNewScratchNote={createScratchNote}
-    {openNoteSelector}
     {didOpenNote}
     {docDidChange}
   />
@@ -738,12 +739,9 @@
     {language}
     {languageAuto}
     {isSpellChecking}
-    {openLanguageSelector}
-    {openNoteSelector}
     {formatCurrentBlock}
     {runCurrentBlock}
     {toggleSpellCheck}
-    {openSettings}
   />
 </div>
 

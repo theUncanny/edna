@@ -28,12 +28,7 @@
     fontFamily: string,
     fontSize: number,
     cursorChange: (e: SelectionChangeEvent) => void,
-    openLanguageSelector: () => void,
-    openCreateNewNote: () => void,
-    openNoteSelector: () => void,
     docDidChange: () => void,
-    createNewScratchNote: () => void,
-    openHistorySelector: () => void,
     didOpenNote: (name: string) => void,
    }}*/
 
@@ -47,12 +42,7 @@
     fontFamily,
     fontSize,
     cursorChange,
-    openLanguageSelector,
-    openCreateNewNote,
-    openNoteSelector,
     docDidChange,
-    createNewScratchNote,
-    openHistorySelector,
     didOpenNote,
   } = $props();
 
@@ -112,24 +102,8 @@
       cursorChange(ev);
     }
     editorEl.addEventListener("selectionChange", onSelChange);
-
-    editorEl.addEventListener("openLanguageSelector", (e) => {
-      openLanguageSelector();
-    });
-    editorEl.addEventListener("openCreateNewNote", (e) => {
-      openCreateNewNote();
-    });
-    editorEl.addEventListener("openNoteSelector", (e) => {
-      openNoteSelector();
-    });
     editorEl.addEventListener("docChanged", (e) => {
       docDidChange();
-    });
-    editorEl.addEventListener("createNewScratchNote", (e) => {
-      createNewScratchNote();
-    });
-    editorEl.addEventListener("openHistorySelector", (e) => {
-      openHistorySelector();
     });
 
     // load buffer content and create editor

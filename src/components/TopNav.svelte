@@ -2,19 +2,13 @@
   import { getScrollbarWidth } from "../util.js";
   import { dirtyState } from "../state.svelte.js";
   import SettingsIcon from "./SettingsIcon.svelte";
+  import { globalFuncs } from "../globals.js";
 
   /** @type {{ 
     noteName: string,
     shortcut: string,
-    openNoteSelector: (e) => void
-    openSettings: (ev) => void,
   }} */
-  let {
-    noteName = "",
-    shortcut = "",
-    openNoteSelector,
-    openSettings,
-  } = $props();
+  let { noteName = "", shortcut = "" } = $props();
 
   let style = $state("");
   $effect(() => {
@@ -28,7 +22,13 @@
     class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-b border-l rounded-bl-lg bg-white dark:bg-gray-700"
     {style}
   >
-    <button class="clickable" onclick={openNoteSelector} title={noteName}>
+    <button
+      class="clickable"
+      onclick={() => {
+        globalFuncs().openNoteSelector();
+      }}
+      title={noteName}
+    >
       <span class="max-w-32 truncate">{noteName}</span> ⏷</button
     >
     {#if shortcut}
@@ -36,7 +36,13 @@
         {shortcut}
       </div>
     {/if}
-    <button onclick={openSettings} class="clickable-icon" title="Settings">
+    <button
+      onclick={() => {
+        globalFuncs().openSettings();
+      }}
+      class="clickable-icon"
+      title="Settings"
+    >
       <SettingsIcon></SettingsIcon>
     </button>
 
