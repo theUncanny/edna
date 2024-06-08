@@ -43,14 +43,14 @@ export function keymapFromSpec(specs) {
           preventDefault: true,
         };
       }
-    })
+    }),
   );
 }
 
 /**
  * @param {import("./editor.js").EdnaEditor} editor
  */
-export function heynoteKeymap(editor) {
+export function ednaKeymap(editor) {
   return keymapFromSpec([
     ["Mod-c", copyCommand(editor)],
     ["Mod-v", pasteCommand],
@@ -67,6 +67,7 @@ export function heynoteKeymap(editor) {
     ["Alt-ArrowUp", moveLineUp],
     ["Alt-ArrowDown", moveLineDown],
     ["Mod-l", () => editor.openLanguageSelector()],
+    ["Mod-y", () => editor.openCreateNewNote()],
     ["Alt-0", () => editor.openNoteSelector()],
     ["Mod-o", () => editor.openNoteSelector()],
     ["Mod-p", () => editor.openNoteSelector()],

@@ -43,7 +43,7 @@
 
 <div class="fixed inset-0 overflow-hidden">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="z-20" {onkeydown} tabindex="-1" use:smartfocus use:trapfocus>
+  <div class="z-10" {onkeydown} tabindex="-1" use:smartfocus use:trapfocus>
     {@render children()}
   </div>
   <!-- this captures the click outside of the actual element -->

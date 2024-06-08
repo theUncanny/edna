@@ -59,7 +59,7 @@
 <div
   role="dialog"
   {onkeydown}
-  class="selector absolute center-x-with-translate top-[4rem] z-20 flex flex-col max-w-full p-3"
+  class="selector z-20 absolute center-x-with-translate top-[4rem] flex flex-col max-w-full p-3"
 >
   <div>Rename <span class="font-bold">{oldName}</span> to:</div>
   <input

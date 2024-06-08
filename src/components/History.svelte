@@ -1,6 +1,7 @@
 <script>
   import { getHistory } from "../history";
   import { len } from "../util";
+  import { focus } from "../actions";
 
   /** @type {{
     selectHistory: (name: string) => void,
@@ -37,17 +38,11 @@
   /** @type {HTMLElement} */
   let container;
 
-  $effect(() => {
-    console.log("History.svelte");
-    if (container) {
-      container.focus();
-    }
-  });
-
   /**
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
+    console.log(ev);
     let lastIdx = len(items) - 1;
     let key = ev.key;
 
@@ -105,9 +100,10 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  class="absolute center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
+  class="absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
   tabindex="-1"
   bind:this={container}
+  use:focus
   {onkeydown}
 >
   <div

@@ -216,7 +216,7 @@
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
     role="menuitem"
-    tabindex="-1"
+    tabindex={isDisabled ? undefined : 0}
     data-cmd-id={cmdId}
     class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
     onmouseleave={handleMouseLeave}
@@ -256,8 +256,8 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   role="menu"
-  tabindex="-1"
-  class="z-30 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
+  tabindex="0"
+  class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
   bind:this={menuEl}

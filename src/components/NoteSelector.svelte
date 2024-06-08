@@ -371,7 +371,7 @@
   bind:this={container}
   onkeydown={onKeydown}
   tabindex="-1"
-  class="selector absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-4"
+  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-4"
 >
   <input
     type="text"

@@ -8,6 +8,17 @@
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
+  import Toaster, { addToast } from "./Toaster.svelte";
+  import Menu, {
+    kMenuIdJustText,
+    kMenuSeparator,
+    kMenuStatusDisabled,
+    kMenuStatusNormal,
+    kMenuStatusRemoved,
+  } from "../Menu.svelte";
+  import Overlay from "./Overlay.svelte";
+  import CreateNewNote from "./CreateNewNote.svelte";
+
   import { getSettings, setSetting } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import {
@@ -34,10 +45,8 @@
     isAltNumEvent,
     setURLHashNoReload,
     stringSizeInUtf8Bytes,
-    sleep,
     throwIf,
   } from "../util";
-  import { getModChar } from "../../src/util";
   import { supportsFileSystem, openDirPicker } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
@@ -46,21 +55,11 @@
     langSupportsRun,
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
-  import Toaster, { addToast } from "./Toaster.svelte";
-  import Menu, {
-    kMenuIdJustText,
-    kMenuSeparator,
-    kMenuStatusDisabled,
-    kMenuStatusNormal,
-    kMenuStatusRemoved,
-  } from "../Menu.svelte";
-  import Overlay from "./Overlay.svelte";
 
   let initialSettings = getSettings();
 
   let column = $state(1);
   let docSize = $state(0);
-  let helpAnchor = $state("");
   let language = $state("plaintext");
   let languageAuto = $state(true);
   let line = $state(1);
@@ -70,11 +69,11 @@
   let showingMenu = $state(false);
   let showingLanguageSelector = $state(false);
   let showingNoteSelector = $state(false);
+  let showingCreateNewNote = $state(false);
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
   let isSpellChecking = $state(false);
-  let spellcheckToastID = $state(0);
   let altChar = getAltChar();
   let loadingNoteName = $state("");
 
@@ -93,6 +92,7 @@
       showingMenu ||
       showingRenameNote ||
       showingNoteSelector ||
+      showingCreateNewNote ||
       showingSettings
     );
   });
@@ -246,12 +246,36 @@
     await boot();
   }
 
+  function openCreateNewNote() {
+    showingCreateNewNote = true;
+  }
+
+  function closeCreateNewNote() {
+    showingCreateNewNote = false;
+    getEditor().focus();
+  }
+
   function openNoteSelector() {
     showingNoteSelector = true;
   }
 
+  function closeNoteSelector() {
+    showingNoteSelector = false;
+    getEditor().focus();
+  }
+
   function openLanguageSelector() {
     showingLanguageSelector = true;
+  }
+
+  function closeLanguageSelector() {
+    showingLanguageSelector = false;
+    getEditor().focus();
+  }
+
+  function onSelectLanguage(language) {
+    showingLanguageSelector = false;
+    getEditor().setLanguage(language);
   }
 
   let nextMenuID = 1000;
@@ -261,6 +285,7 @@
   }
 
   export const MENU_OPEN_NOTE = nmid();
+  export const MENU_CREATE_NEW_NOTE = nmid();
   export const MENU_RENAME_CURRENT_NOTE = nmid();
   export const MENU_DELETE_CURRENT_NOTE = nmid();
   export const MENU_CREATE_SCRATCH_NOTE = nmid();
@@ -337,6 +362,7 @@
 
     const contextMenu = [
       ["Open note\tMod + P", MENU_OPEN_NOTE],
+      ["Create new note\tMod + Y", MENU_CREATE_NEW_NOTE],
       ["Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],
@@ -408,6 +434,8 @@
     showingMenu = false;
     if (cmdId == MENU_OPEN_NOTE) {
       openNoteSelector();
+    } else if (cmdId == MENU_CREATE_NEW_NOTE) {
+      openCreateNewNote();
     } else if (cmdId == MENU_RENAME_CURRENT_NOTE) {
       showingRenameNote = true;
     } else if (cmdId == MENU_DELETE_CURRENT_NOTE) {
@@ -563,21 +591,6 @@
     }
   }
 
-  function onSelectLanguage(language) {
-    showingLanguageSelector = false;
-    getEditor().setLanguage(language);
-  }
-
-  function closeLanguageSelector() {
-    showingLanguageSelector = false;
-    getEditor().focus();
-  }
-
-  function closeNoteSelector() {
-    showingNoteSelector = false;
-    getEditor().focus();
-  }
-
   async function openNote(name, skipSave = false) {
     console.log("App.openNote:", name);
     let editor = getEditor();
@@ -602,6 +615,7 @@
    */
   async function onCreateNote(name) {
     showingNoteSelector = false;
+    showingCreateNewNote = false;
     await createNoteWithName(name);
     openNote(name);
     // TODO: add a way to undo creation of the note
@@ -702,6 +716,7 @@
     fontSize={settings.fontSize}
     bind:this={editor}
     {openLanguageSelector}
+    {openCreateNewNote}
     {openHistorySelector}
     createNewScratchNote={createScratchNote}
     {openNoteSelector}
@@ -726,6 +741,13 @@
     {openSettings}
   />
 </div>
+
+{#if showingCreateNewNote}
+  <Overlay onclose={closeCreateNewNote}>
+    <CreateNewNote createNewNote={onCreateNote} onclose={closeCreateNewNote}
+    ></CreateNewNote>
+  </Overlay>
+{/if}
 
 {#if showingNoteSelector}
   <Overlay onclose={closeNoteSelector}>

@@ -29,6 +29,7 @@
     fontSize: number,
     cursorChange: (e: SelectionChangeEvent) => void,
     openLanguageSelector: () => void,
+    openCreateNewNote: () => void,
     openNoteSelector: () => void,
     docDidChange: () => void,
     createNewScratchNote: () => void,
@@ -47,6 +48,7 @@
     fontSize,
     cursorChange,
     openLanguageSelector,
+    openCreateNewNote,
     openNoteSelector,
     docDidChange,
     createNewScratchNote,
@@ -111,6 +113,9 @@
 
     editorEl.addEventListener("openLanguageSelector", (e) => {
       openLanguageSelector();
+    });
+    editorEl.addEventListener("openCreateNewNote", (e) => {
+      openCreateNewNote();
     });
     editorEl.addEventListener("openNoteSelector", (e) => {
       openNoteSelector();
