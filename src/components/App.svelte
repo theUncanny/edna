@@ -130,19 +130,16 @@
     return "";
   });
 
-  let mcStyle = $derived.by(() => {
-    return {
-      display: showingMenu ? "block" : "none",
-    };
-  });
-
   $effect(() => {
     getEditor().setSpellChecking(isSpellChecking);
     window.addEventListener("keydown", onKeyDown);
 
     window.addEventListener("beforeunload", async () => {
       logAppExit(); // TODO: not sure if this async func will complete
-      await getEditor().saveCurrentNote();
+      let e = getEditor();
+      if (e) {
+        await e.saveCurrentNote();
+      }
     });
     logAppOpen();
 
@@ -155,15 +152,15 @@
    * @param {KeyboardEvent} event
    */
   function onKeyDown(event) {
-    if (event.key === "Escape") {
-      if (isShowingDialog) {
-        return;
-      }
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      openHistorySelector();
-      return;
-    }
+    // if (event.key === "Escape") {
+    //   if (isShowingDialog) {
+    //     return;
+    //   }
+    //   event.preventDefault();
+    //   event.stopImmediatePropagation();
+    //   openHistorySelector();
+    //   return;
+    // }
 
     // if (event.key === "F2") {
     //   console.log("F2");
@@ -449,7 +446,12 @@
    * @param ev
    */
   async function onmenucmd(cmdId, ev) {
-    console.log("cmd:", cmdId);
+    // console.log("cmd:", cmdId);
+    if (ev) {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      ev.stopPropagation();
+    }
     showingMenu = false;
     if (cmdId == MENU_OPEN_NOTE) {
       openNoteSelector();
@@ -494,7 +496,7 @@
     } else if (cmdId == MENU_MOVE_NOTES_TO_DIRECTORY) {
       storeNotesOnDisk();
     } else if (cmdId == MENU_SWITCH_TO_NOTES_IN_DIR) {
-      await pickAnotherDirectory();
+      await pickAnotherDirectory2();
     } else if (cmdId == MENU_SWITCH_TO_LOCAL_STORAGE) {
       await switchToBrowserStorage();
     } else if (cmdId == MENU_EXPORT_NOTES) {

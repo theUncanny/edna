@@ -83,21 +83,37 @@ export function ensurevisible(node, makeFixed = false) {
  * @param {KeyboardEvent} ev
  */
 export function trapFocusEvent(node, ev) {
-  const focusableElements = node.querySelectorAll(
+  const focusable = node.querySelectorAll(
     'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]',
   );
+  let active = document.activeElement;
+  // console.log("node:", node);
+  // console.log("active:", active);
 
-  const firstElement = /** @type {HTMLElement} */ (focusableElements[0]);
-  const lastElement = /** @type {HTMLElement} */ (
-    focusableElements[focusableElements.length - 1]
-  );
+  const first = /** @type {HTMLElement} */ (focusable[0]);
+  const last = /** @type {HTMLElement} */ (focusable[focusable.length - 1]);
 
-  if (ev.shiftKey && document.activeElement === firstElement) {
+  // let isInList = false;
+  // focusable.forEach((el) => {
+  //   if (el === active) {
+  //     isInList = true;
+  //   }
+  // });
+  // console.log(
+  //   "active in list:",
+  //   isInList,
+  //   "first:",
+  //   active === first,
+  //   "last:",
+  //   active === last,
+  // );
+
+  if (ev.shiftKey && active === first) {
     ev.preventDefault();
-    lastElement.focus();
-  } else if (!ev.shiftKey && document.activeElement === lastElement) {
+    last.focus();
+  } else if (!ev.shiftKey && active === last) {
     ev.preventDefault();
-    firstElement.focus();
+    first.focus();
   }
 }
 

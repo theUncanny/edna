@@ -87,6 +87,9 @@
       i.isDisabled = miStatus === kMenuStatusDisabled;
       i.isRemoved = miStatus === kMenuStatusRemoved;
       i.isSeparator = mi[0] === kMenuSeparator[0];
+      if (i.isSeparator) {
+        i.isDisabled = true;
+      }
       let idOrSubMenu = mi[1];
       if (Array.isArray(idOrSubMenu)) {
         i.isSubMenu = true;
@@ -106,7 +109,7 @@
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
   import { len, splitMax } from "./util.js";
-  import { ensurevisible, focus, trapfocus } from "./actions.js";
+  import { ensurevisible, focus, trapFocusEvent } from "./actions.js";
 
   /** @type {{
    menuDef: MenuDef,
@@ -191,16 +194,15 @@
   /**
    * @param {MenuItem} mi
    */
-  function selectMenuItem(mi, ev = "") {
+  function selectMenuItem(mi) {
+    // console.log("selectMenuItem:", mi.text, "isSelected:", mi.isSelected);
     if (mi.isSelected) {
-      // console.log(`${ev} already selected '${mi.text}'`);
       return;
     }
     forEachMenuItem((mi) => {
       mi.isSelected = false;
       return true;
     });
-    // console.log(`${ev} selecting menu item '${mi.text}'`);
     if (!mi.isDisabled) {
       mi.isSelected = true;
     }
@@ -208,7 +210,6 @@
     while (mi.parent) {
       mi = mi.parent;
       mi.isSelected = true;
-      // console.log(`${ev} selecting menu parent item '${mi.text}'`);
     }
     showSubMenuTimer = setTimeout(() => {
       updateVisiblityState();
@@ -239,7 +240,7 @@
     if (!mi) {
       return;
     }
-    selectMenuItem(mi, "mouse over ");
+    selectMenuItem(mi);
   }
 
   /**
@@ -252,6 +253,154 @@
     }
     onmenucmd(mi.cmdId, null);
     ev.stopPropagation();
+  }
+
+  /**
+   * @returns {MenuItem}
+   */
+  function findCurrentlySelected() {
+    // find the most nested selected
+    /** @type {MenuItem} */
+    let found;
+    let foundNest;
+    forEachMenuItem((mi) => {
+      if (!mi.isSelected || !isSelectable(mi)) {
+        return true;
+      }
+      let nest = 1;
+      let tmp = mi;
+      while (tmp.parent) {
+        nest++;
+        tmp = tmp.parent;
+      }
+      if (!found || nest > foundNest) {
+        found = mi;
+        foundNest = nest;
+      }
+      return true;
+    });
+    // console.log("currentlySelected:", found.text);
+    return found;
+  }
+
+  /**
+    @param {MenuItem} mi
+    @param {number} dir
+    @returns {MenuItem}
+   */
+  function findSibling(mi, dir) {
+    let items = rootMenu;
+    if (mi.parent) {
+      items = mi.parent.children;
+    }
+    let idx = items.indexOf(mi);
+    if (idx < 0) {
+      return null;
+    }
+    while (true) {
+      idx += dir;
+      if (idx < 0 || idx >= len(items)) {
+        return null;
+      }
+      mi = items[idx];
+      if (!mi.isDisabled && !mi.isRemoved) {
+        return mi;
+      }
+    }
+  }
+
+  function isSelectable(mi) {
+    if (mi.isDisabled) {
+      return false;
+    }
+    if (mi.isSeparator) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * @param {MenuItem[]} items
+   */
+  function selectFirst(items) {
+    // console.log("selectFirst");
+    for (let mi of items) {
+      if (!isSelectable(mi)) {
+        continue;
+      }
+      selectMenuItem(mi);
+      return;
+    }
+  }
+
+  function selectSibling(dir) {
+    let mi = findCurrentlySelected();
+    if (!mi) {
+      selectFirst(rootMenu);
+      return;
+    }
+    mi = findSibling(mi, dir);
+    if (mi) {
+      selectMenuItem(mi);
+    }
+  }
+
+  function selectParent() {
+    let mi = findCurrentlySelected();
+    if (!mi || !mi.parent) {
+      return;
+    }
+    mi.isSelected = false;
+    selectMenuItem(mi.parent);
+  }
+
+  function selectChild() {
+    let mi = findCurrentlySelected();
+    if (!mi || !mi.isSubMenu) {
+      return;
+    }
+    selectFirst(mi.children);
+  }
+
+  function handleKeydown(ev) {
+    let key = ev.key;
+    // console.log("key:", key);
+    if (key === "Enter") {
+      /** @type {MenuItem} */
+      let found = null;
+      forEachMenuItem((mi) => {
+        if (mi.isSelected && !mi.isSubMenu) {
+          found = mi;
+          return false;
+        }
+        return true;
+      });
+      if (found) {
+        onmenucmd(found.cmdId, ev);
+      }
+      return;
+    }
+
+    if (key === "Tab") {
+      // trapFocusEvent(menuEl.parentElement, ev);
+      return;
+    }
+
+    if (key === "ArrowUp") {
+      selectSibling(-1);
+      return;
+    }
+    if (key === "ArrowDown") {
+      selectSibling(1);
+      return;
+    }
+    if (key === "ArrowLeft") {
+      selectParent();
+      return;
+    }
+    if (key === "ArrowRight") {
+      selectChild();
+    }
   }
 
   function initialStyle() {
@@ -270,6 +419,17 @@
     const r = node.getBoundingClientRect();
     console.log(`rect x: ${r.x}, y: ${r.y}, dx: ${r.width}, dy: ${r.height}`);
   }
+
+  // TODO: don't understand why this fires frequently
+  let didSelectFirst = false;
+  $effect(() => {
+    if (didSelectFirst) {
+      return;
+    }
+    didSelectFirst = true;
+    selectFirst(rootMenu);
+  });
+  let menuEl;
 </script>
 
 {#snippet separator(mi)}
@@ -371,6 +531,8 @@
   style={initialStyle()}
   onclick={handleClicked}
   onmouseover={handleMouseOver}
+  onkeydown={handleKeydown}
+  bind:this={menuEl}
 >
   {@render menuItems(rootMenu)}
 </div>
