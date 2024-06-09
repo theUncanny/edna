@@ -63,10 +63,8 @@
     parent = null;
     zIndex = 30;
 
-    showHideTimer;
-
     isSeparator = false;
-    isVisible = $state(false);
+    isRemoved = false;
     isDisabled = false;
     isSubMenu = false;
     isSelected = $state(false);
@@ -87,7 +85,7 @@
       i.shortcut = getShortcut(mi);
       const miStatus = menuItemStatus(mi);
       i.isDisabled = miStatus === kMenuStatusDisabled;
-      i.isVisible = miStatus !== kMenuStatusRemoved;
+      i.isRemoved = miStatus === kMenuStatusRemoved;
       i.isSeparator = mi[0] === kMenuSeparator[0];
       let idOrSubMenu = mi[1];
       if (Array.isArray(idOrSubMenu)) {
@@ -107,7 +105,7 @@
 
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
-  import { len, splitMax } from "./util.js";
+  import { len, splitMax, throwIf } from "./util.js";
   import { ensurevisible, focus, trapfocus } from "./actions.js";
 
   /** @type {{
@@ -175,44 +173,14 @@
 
   const kMenuShowDelay = 300;
 
-  /**
-   * @param {MenuItem} mi
-   */
-  function unSelecteMenuItem(mi) {
-    mi.isSelected = false;
-    if (!mi.submenuElement) {
-      return;
-    }
-    if (mi.showHideTimer) {
-      return;
-    }
-    mi.showHideTimer = setTimeout(() => {
-      mi.submenuElement.style.display = "none";
-    }, kMenuShowDelay);
-  }
+  let showSubMenuTimer;
 
-  /**
-   * @param {MenuItem} mi
-   */
-  function selecteMenuItem(mi) {
-    mi.isSelected = true;
-    if (!mi.submenuElement) {
-      return;
-    }
-    if (mi.showHideTimer) {
-      clearTimeout(mi.showHideTimer);
-      mi.showHideTimer = null;
-    }
-    setTimeout(() => {
-      mi.submenuElement.style.display = "block";
-      // ensurevisible(mi.submenuElement);
-    }, kMenuShowDelay);
-  }
-
-  function unselectAll() {
-    // console.log("unselecting all");
+  function updateVisiblityState() {
     forEachMenuItem((mi) => {
-      unSelecteMenuItem(mi);
+      if (mi.submenuElement) {
+        let display = mi.isSelected ? "block" : "none";
+        mi.submenuElement.style.display = display;
+      }
       return true;
     });
   }
@@ -225,18 +193,23 @@
       // console.log(`${ev} already selected '${mi.text}'`);
       return;
     }
-    unselectAll();
+    forEachMenuItem((mi) => {
+      mi.isSelected = false;
+      return true;
+    });
     // console.log(`${ev} selecting menu item '${mi.text}'`);
     if (!mi.isDisabled) {
-      selecteMenuItem(mi);
+      mi.isSelected = true;
     }
     // also preserve selection state of the parent(s)
-    let parent = mi.parent;
-    while (parent) {
-      selecteMenuItem(parent);
+    while (mi.parent) {
+      mi = mi.parent;
+      mi.isSelected = true;
       // console.log(`${ev} selecting menu parent item '${mi.text}'`);
-      parent = parent.parent;
     }
+    showSubMenuTimer = setTimeout(() => {
+      updateVisiblityState();
+    }, kMenuShowDelay);
   }
 
   /**
@@ -408,7 +381,7 @@
 
 {#snippet menuItems(items)}
   {#each items as mi}
-    {#if mi.isVisible}
+    {#if !mi.isRemoved}
       {#if mi.isSubMenu}
         {@render submenu(mi)}
       {:else}
