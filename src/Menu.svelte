@@ -1,6 +1,6 @@
 <script context="module">
-  /** @typedef {[string, number|MenuItem[]]} MenuItem */
-  /** @typedef {MenuItem[]} Menu */
+  /** @typedef {[string, number|MenuItemDef[]]} MenuItemDef */
+  /** @typedef {MenuItemDef[]} MenuDef */
 
   // when used as menu id this will show as a text, not a menu item
   export const kMenuIdJustText = -1;
@@ -27,37 +27,6 @@
     let parts = s.split("\t");
     return parts[0];
   }
-</script>
-
-<script>
-  import { parseShortcut, serializeShortuct } from "./keys.js";
-  import { len, splitMax } from "./util.js";
-  import { ensurevisible } from "./actions.js";
-
-  // based on https://play.tailwindcss.com/0xQBSdXxsK
-
-  /** @type {{
-   menu: Menu,
-   nest: number,
-   ev?: MouseEvent,
-   menuItemStatus?: (mi: MenuItem) => number,
-   onmenucmd: (cmd: number, ev: Event) => void,
-}}*/
-  let {
-    menu,
-    nest = 1,
-    ev = null,
-    menuItemStatus = menuItemStatusDefault,
-    onmenucmd,
-  } = $props();
-
-  function menuItemStatusDefault(mi) {
-    return kMenuStatusNormal;
-  }
-
-  // nest: menu nesting needed to style child based on parent
-  // see menu-parent1, menu-parent2, menu-parent3,
-  // menu-child1, menu-child2, menu-child3 global classes
 
   function sanitizeShortcut(txt) {
     const s = parseShortcut(txt);
@@ -69,7 +38,7 @@
   }
 
   /**
-   * @param {string[]} mi
+   * @param {MenuItemDef} mi
    * @returns {string}
    */
   function getShortcut(mi) {
@@ -80,6 +49,90 @@
     }
     return "";
   }
+
+  class MenuItem {
+    nest = 0;
+    text = "";
+    shortcut = "";
+    /** @type {MenuItem[]} */
+    children = null;
+    cmdId = 0;
+    /** @type {HTMLElement} */
+    element = null;
+
+    isSeparator = false;
+    isVisible = $state(false);
+    isDisabled = false;
+    isSubMenu = false;
+    // isSelected = $state(false);
+  }
+
+  /**
+   * @param {MenuDef} menuDef
+   * @param {(mi: MenuItemDef) => number} menuItemStatus
+   * @returns {MenuItem[]}
+   */
+  function buildMenuFromDef(menuDef, nest, menuItemStatus) {
+    /*** @type {MenuItem[]} */
+    let res = [];
+    for (let mi of menuDef) {
+      let i = new MenuItem();
+      res.push(i);
+      i.nest = nest;
+      i.text = fixMenuName(mi[0]);
+      i.shortcut = getShortcut(mi);
+      const miStatus = menuItemStatus(mi);
+      i.isDisabled = miStatus === kMenuStatusDisabled;
+      i.isVisible = miStatus !== kMenuStatusRemoved;
+      i.isSeparator = mi[0] === kMenuSeparator[0];
+      let idOrSubMenu = mi[1];
+      if (Array.isArray(idOrSubMenu)) {
+        i.children = buildMenuFromDef(idOrSubMenu, nest + 1, menuItemStatus);
+        i.isSubMenu = true;
+      } else {
+        i.cmdId = idOrSubMenu;
+      }
+    }
+    return res;
+  }
+</script>
+
+<script>
+  import { parseShortcut, serializeShortuct } from "./keys.js";
+  import { len, splitMax } from "./util.js";
+  import { ensurevisible, focus } from "./actions.js";
+
+  // based on https://play.tailwindcss.com/0xQBSdXxsK
+
+  // nest: menu nesting needed to style child based on parent
+  // see menu-parent1, menu-parent2, menu-parent3,
+  // menu-child1, menu-child2, menu-child3 global classes
+
+  /** @type {{
+   menuDef: MenuDef,
+   ev?: MouseEvent,
+   menuItemStatus?: (mi: MenuItemDef) => number,
+   onmenucmd: (cmd: number, ev: Event) => void,
+}}*/
+  let {
+    menuDef: menuDef,
+    ev = null,
+    menuItemStatus = null,
+    onmenucmd,
+  } = $props();
+
+  /**
+   * @param {MenuItemDef} mid
+   */
+  function menuItemStatusDefault(mid) {
+    return kMenuStatusNormal;
+  }
+
+  let menu = buildMenuFromDef(
+    menuDef,
+    1,
+    menuItemStatus || menuItemStatusDefault,
+  );
 
   /**
    * @param {Event} ev
@@ -147,7 +200,7 @@
     let st = "";
     if (ev) {
       st = `position: absolute; left: ${ev.x}px; top: ${ev.y}px`;
-      console.log("initialStyle:", st);
+      // console.log("initialStyle:", st);
     }
     return st;
   }
@@ -156,13 +209,8 @@
   let menuEl;
 
   $effect(() => {
-    if (nest == 1) {
-      console.log("focused menuEl");
-      ensurevisible(menuEl);
-      // logNodePos(menuEl);
-      // logNodePos(menuEl.parentElement);
-      menuEl.focus();
-    }
+    // console.log("focused menuEl");
+    ensurevisible(menuEl);
   });
 
   function logNodePos(node) {
@@ -207,75 +255,83 @@
   </svg>
 {/snippet}
 
-{#snippet menuitem(mi)}
-  {@const cmdId = mi[1]}
-  {@const shortcut = getShortcut(mi)}
-  {@const text = fixMenuName(mi[0])}
-  {@const miStatus = menuItemStatus(mi)}
-  {@const isDisabled = miStatus === kMenuStatusDisabled}
+{#snippet menuItem(mi)}
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-  <div
-    role="menuitem"
-    tabindex={isDisabled ? undefined : 0}
-    data-cmd-id={cmdId}
-    class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
-    onmouseleave={handleMouseLeave}
-    onmouseover={handleMouseOver}
-    onmouseenter={handleMouseEnter}
-    aria-disabled={isDisabled}
-  >
-    <div>{text}</div>
-    <div class="ml-4 text-xs opacity-75">{shortcut || ""}</div>
-  </div>
+  {#if mi.isSeparator}
+    {@render separator(mi)}
+  {:else}
+    <div
+      role="menuitem"
+      tabindex={mi.isDisabled ? undefined : 0}
+      data-cmd-id={mi.cmdId}
+      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
+      onmouseleave={handleMouseLeave}
+      onmouseover={handleMouseOver}
+      onmouseenter={handleMouseEnter}
+      aria-disabled={mi.isDisabled}
+    >
+      <div>{mi.text}</div>
+      <div class="ml-4 text-xs opacity-75">{mi.shortcut || ""}</div>
+    </div>
+  {/if}
 {/snippet}
 
 {#snippet submenu(mi)}
-  {@const text = fixMenuName(mi[0])}
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
     role="menuitem"
     tabindex="-1"
     data-cmd-id={kMenuIdSubMenu}
-    class="menu-parent{nest} relative my-1"
+    class="menu-parent{mi.nest} relative my-1"
     onmouseleave={handleMouseLeave}
     onmouseover={handleMouseOver}
     onmouseenter={handleMouseEnter}
   >
     <button class="flex w-full items-center justify-between pl-3 pr-2 py-0.5">
-      <span>{text}</span>
+      <span>{mi.text}</span>
       {@render arrow()}
     </button>
     <div
-      class="menu-child{nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
+      class="menu-child{mi.nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
     >
-      <svelte:self {onmenucmd} menu={mi[1]} nest={nest + 1} {menuItemStatus} />
+      {@render fullMenu(mi.children)}
     </div>
+  </div>
+{/snippet}
+
+{#snippet menuItems(items)}
+  {#each items as mi}
+    {#if mi.isVisible}
+      {#if mi.isSubMenu}
+        {@render submenu(mi)}
+      {:else}
+        {@render menuItem(mi)}
+      {/if}
+    {/if}
+  {/each}
+{/snippet}
+
+{#snippet fullMenu(m)}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div
+    role="menu"
+    class="mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
+  >
+    {@render menuItems(m)}
   </div>
 {/snippet}
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   role="menu"
-  tabindex="0"
+  tabindex="-1"
+  use:focus
   class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
   bind:this={menuEl}
 >
-  {#each menu as mi}
-    {@const isSeparator = mi[0] === kMenuSeparator[0]}
-    {@const miStatus = menuItemStatus(mi)}
-    {@const isRemoved = miStatus === kMenuStatusRemoved}
-    {#if !isRemoved}
-      {#if isSeparator}
-        {@render separator(mi)}
-      {:else if Array.isArray(mi[1])}
-        {@render submenu(mi)}
-      {:else}
-        {@render menuitem(mi)}
-      {/if}
-    {/if}
-  {/each}
+  {@render menuItems(menu)}
 </div>
 
 <style>

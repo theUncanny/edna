@@ -380,20 +380,19 @@
       [spelling, MENU_TOGGLE_SPELL_CHECKING],
       kMenuSeparator,
       ["Help", menuHelp],
-      ["Tip: Ctrl + click for native context menu", kMenuIdJustText],
+      ["Tip: Ctrl + click for browser's context menu", kMenuIdJustText],
     ];
 
     return contextMenu;
   }
 
   /**
-   * @param {import("../Menu.svelte").MenuItem} mi
+   * @param {import("../Menu.svelte").MenuItemDef} mi
    */
   function menuItemStatus(mi) {
     let s = mi[0];
     let mid = mi[1];
     if (mid === kMenuIdJustText) {
-      console.log(`menu '${s}' is disabled`);
       return kMenuStatusDisabled;
     }
     // console.log("menuItemStatus:", mi);
@@ -416,10 +415,8 @@
       }
       if (dh) {
         // currently using directory
-        console.log("MENU_MOVE_NOTES_TO_DIRECTORY: removed\n");
         return kMenuStatusRemoved;
       }
-      console.log("MENU_MOVE_NOTES_TO_DIRECTORY: not removed\n");
     } else if (mid == MENU_SWITCH_TO_LOCAL_STORAGE) {
       if (!hasFS) {
         return kMenuStatusRemoved;
@@ -797,7 +794,7 @@
       nest={1}
       {menuItemStatus}
       {onmenucmd}
-      menu={contextMenu}
+      menuDef={contextMenu}
       ev={contextMenuEv}
     />
   </Overlay>
