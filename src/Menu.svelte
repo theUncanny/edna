@@ -4,7 +4,6 @@
 
   // when used as menu id this will show as a text, not a menu item
   export const kMenuIdJustText = -1;
-  const kMenuIdSubMenu = -2;
 
   export const kMenuStatusNormal = 0;
   export const kMenuStatusDisabled = 1;
@@ -51,7 +50,6 @@
   }
 
   class MenuItem {
-    nest = 0;
     text = "";
     shortcut = "";
     /** @type {MenuItem[]} */
@@ -63,6 +61,9 @@
     submenuElement = null;
     /** @type {MenuItem} */
     parent = null;
+    zIndex = 30;
+
+    showHideTimer;
 
     isSeparator = false;
     isVisible = $state(false);
@@ -82,7 +83,6 @@
     for (let mi of menuDef) {
       let i = new MenuItem();
       res.push(i);
-      i.nest = nest;
       i.text = fixMenuName(mi[0]);
       i.shortcut = getShortcut(mi);
       const miStatus = menuItemStatus(mi);
@@ -91,8 +91,9 @@
       i.isSeparator = mi[0] === kMenuSeparator[0];
       let idOrSubMenu = mi[1];
       if (Array.isArray(idOrSubMenu)) {
-        i.children = buildMenuFromDef(idOrSubMenu, nest + 1, menuItemStatus);
         i.isSubMenu = true;
+        i.zIndex += nest;
+        i.children = buildMenuFromDef(idOrSubMenu, nest + 1, menuItemStatus);
         for (let c of i.children) {
           c.parent = i;
         }
@@ -107,13 +108,7 @@
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
   import { len, splitMax } from "./util.js";
-  import { ensurevisible, focus } from "./actions.js";
-
-  // based on https://play.tailwindcss.com/0xQBSdXxsK
-
-  // nest: menu nesting needed to style child based on parent
-  // see menu-parent1, menu-parent2, menu-parent3,
-  // menu-child1, menu-child2, menu-child3 global classes
+  import { ensurevisible, focus, trapfocus } from "./actions.js";
 
   /** @type {{
    menuDef: MenuDef,
@@ -178,10 +173,46 @@
     return found;
   }
 
+  const kMenuShowDelay = 300;
+
+  /**
+   * @param {MenuItem} mi
+   */
+  function unSelecteMenuItem(mi) {
+    mi.isSelected = false;
+    if (!mi.submenuElement) {
+      return;
+    }
+    if (mi.showHideTimer) {
+      return;
+    }
+    mi.showHideTimer = setTimeout(() => {
+      mi.submenuElement.style.display = "none";
+    }, kMenuShowDelay);
+  }
+
+  /**
+   * @param {MenuItem} mi
+   */
+  function selecteMenuItem(mi) {
+    mi.isSelected = true;
+    if (!mi.submenuElement) {
+      return;
+    }
+    if (mi.showHideTimer) {
+      clearTimeout(mi.showHideTimer);
+      mi.showHideTimer = null;
+    }
+    setTimeout(() => {
+      mi.submenuElement.style.display = "block";
+      // ensurevisible(mi.submenuElement);
+    }, kMenuShowDelay);
+  }
+
   function unselectAll() {
     // console.log("unselecting all");
     forEachMenuItem((mi) => {
-      mi.isSelected = false;
+      unSelecteMenuItem(mi);
       return true;
     });
   }
@@ -195,15 +226,14 @@
       return;
     }
     unselectAll();
-    if (mi.isDisabled) {
-      return;
-    }
     // console.log(`${ev} selecting menu item '${mi.text}'`);
-    mi.isSelected = true;
+    if (!mi.isDisabled) {
+      selecteMenuItem(mi);
+    }
     // also preserve selection state of the parent(s)
     let parent = mi.parent;
     while (parent) {
-      parent.isSelected = true;
+      selecteMenuItem(parent);
       // console.log(`${ev} selecting menu parent item '${mi.text}'`);
       parent = parent.parent;
     }
@@ -235,6 +265,7 @@
       return;
     }
     selectMenuItem(mi, "mouse enter ");
+    console.log("mouse enter", mi);
   }
 
   /**
@@ -305,7 +336,7 @@
 
 {#snippet arrow()}
   <svg
-    class="h-4 w-4 text-gray-500"
+    class="h-4 w-4"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
@@ -341,7 +372,7 @@
       role="menuitem"
       tabindex={mi.isDisabled ? undefined : 0}
       class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
-      class:is-selected-menu={mi.isSelected}
+      class:is-selected={mi.isSelected}
       aria-disabled={mi.isDisabled}
       bind:this={mi.element}
     >
@@ -356,8 +387,8 @@
   <div
     role="menuitem"
     tabindex="-1"
-    class="menu-parent{mi.nest} relative my-1"
-    class:is-selected-menu={mi.isSelected}
+    class="relative my-1"
+    class:is-selected={mi.isSelected}
     bind:this={mi.element}
   >
     <button class="flex w-full items-center justify-between pl-3 pr-2 py-0.5">
@@ -365,10 +396,12 @@
       {@render arrow()}
     </button>
     <div
+      role="menu"
       bind:this={mi.submenuElement}
-      class="menu-child{mi.nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
+      style:z-index={mi.zIndex}
+      class="sub-menu-wrapper absolute top-0 hidden rounded-md border bg-white border-neutral-50 py-1 shadow-lg"
     >
-      {@render fullMenu(mi.children)}
+      {@render menuItems(mi.children)}
     </div>
   </div>
 {/snippet}
@@ -385,22 +418,13 @@
   {/each}
 {/snippet}
 
-{#snippet fullMenu(m)}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    role="menu"
-    class="mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
-  >
-    {@render menuItems(m)}
-  </div>
-{/snippet}
-
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
   role="menu"
   tabindex="-1"
   use:focus
+  use:trapfocus
   class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
@@ -413,8 +437,12 @@
 </div>
 
 <style>
-  :global(.is-selected-menu) {
-    background-color: #f5f5f5;
+  .is-selected {
+    @apply bg-gray-100;
+  }
+
+  .sub-menu-wrapper {
+    left: calc(80% - 8px);
   }
 
   :global(.menu-disabled) {
@@ -425,31 +453,6 @@
   }
 
   :global(.menu-checked .check) {
-    opacity: 100%;
-    visibility: visible;
-  }
-
-  :global(
-      .menu-parent1:hover .menu-child1,
-      .menu-parent1:focus-within .menu-child1
-    ) {
-    opacity: 100%;
-    visibility: visible;
-  }
-
-  :global(
-      .menu-parent2:hover .menu-child2,
-      .menu-parent2:focus-within .menu-child2
-    ) {
-    opacity: 100%;
-    visibility: visible;
-  }
-
-  :global(
-      .menu-parent3:hover .menu-child3,
-      .menu-parent3:focus-within .menu-child3
-    ) {
-    opacity: 100%;
     visibility: visible;
   }
 </style>
