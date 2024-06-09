@@ -180,6 +180,9 @@
       if (mi.submenuElement) {
         let display = mi.isSelected ? "block" : "none";
         mi.submenuElement.style.display = display;
+        if (mi.isSelected) {
+          ensurevisible(mi.submenuElement, true);
+        }
       }
       return true;
     });
@@ -228,19 +231,6 @@
     return findMenuItemForElement(el);
   }
 
-  // TODO: do I need this?
-  /**
-   * @param {MouseEvent} ev
-   */
-  function handleMouseEnter(ev) {
-    let mi = findMenuItem(ev);
-    if (!mi) {
-      return;
-    }
-    selectMenuItem(mi, "mouse enter ");
-    console.log("mouse enter", mi);
-  }
-
   /**
    * @param {MouseEvent} ev
    */
@@ -250,19 +240,6 @@
       return;
     }
     selectMenuItem(mi, "mouse over ");
-  }
-
-  /**
-   * @param {MouseEvent} ev
-   */
-  function handleMouseLeave(ev) {
-    let mi = findMenuItem(ev);
-    if (!mi) {
-      return;
-    }
-    // TODO: this is not firing at all
-    console.log("mouse leave, unselecting:", mi.text);
-    mi.isSelected = false;
   }
 
   /**
@@ -285,14 +262,6 @@
     }
     return st;
   }
-
-  /** @type { HTMLElement } */
-  let menuEl;
-
-  $effect(() => {
-    // console.log("focused menuEl");
-    ensurevisible(menuEl);
-  });
 
   function logNodePos(node) {
     /**
@@ -397,14 +366,11 @@
   role="menu"
   tabindex="-1"
   use:focus
-  use:trapfocus
+  use:ensurevisible
   class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
-  onmouseleave={handleMouseLeave}
   onmouseover={handleMouseOver}
-  onmouseenter={handleMouseEnter}
-  bind:this={menuEl}
 >
   {@render menuItems(rootMenu)}
 </div>

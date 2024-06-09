@@ -62,14 +62,16 @@ export function ensureRectVisibleInWindow(rect) {
 /* action that ensures that the node is fully visible in the window
  * @param {HTMLElement} node
  */
-export function ensurevisible(node) {
+export function ensurevisible(node, makeFixed = false) {
   const r = node.getBoundingClientRect();
   const { x, y } = ensureRectVisibleInWindow(r);
   Object.assign(node.style, {
-    // position: "fixed",
     left: `${x}px`,
     top: `${y}px`,
   });
+  if (makeFixed) {
+    node.style.position = "fixed";
+  }
   // console.log(`ensureVisible: x: ${x}, y: ${y}, r:`, r);
   // console.log(
   //   `ensurevisible: top: ${st.top}, left: ${st.left}, bottom: ${st.bottom}, right: ${st.right}`,
