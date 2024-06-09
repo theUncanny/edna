@@ -201,7 +201,14 @@ const blockLayer = layer({
                 idx++;
                 return
             }
-            const fromCoordsTop = view.coordsAtPos(Math.max(block.content.from, view.visibleRanges[0].from)).top
+            const fromCoords = view.coordsAtPos(
+                Math.max(block.content.from, view.visibleRanges[0].from),
+              );
+              if (!fromCoords) {
+                // this often fires during refresh in vite
+                return;
+              }
+              const fromCoordsTop = fromCoords.top;
             let toCoordsBottom = view.coordsAtPos(Math.min(block.content.to, view.visibleRanges[view.visibleRanges.length - 1].to)).bottom
             if (idx === blocks.length - 1) {
                 // Calculate how much extra height we need to add to the last block
