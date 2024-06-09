@@ -135,65 +135,87 @@
   );
 
   /**
-   * @param {Event} ev
-   * @returns { { el: HTMLElement, cmdId: number } }
+   * @param {HTMLElement} el
+   * @param {MenuItem[]} items
+   * @returns {MenuItem}
    */
-  function findMenuItemElement(ev) {
+  function findMenuItemForElement(el, items) {
+    /** @type {MenuItem[][]} */
+    let toVisit = [items];
+    while (len(toVisit) > 0) {
+      items = toVisit.shift();
+      for (let mi of items) {
+        if (mi.element == el) {
+          return mi;
+        }
+        if (mi.isSubMenu) {
+          toVisit.push(mi.children);
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param {Event} ev
+   * @returns {MenuItem}
+   */
+  function findMenuItem(ev) {
     let el = /** @type {HTMLElement} */ (ev.target);
     while (el && el.role != "menuitem") {
       el = el.parentElement;
     }
     if (!el) {
-      // console.log("Menu.svelte: menuClicked, no div parent for:", ev.target);
-      return { el: null, cmdId: 0 };
+      console.log("no element with 'menuitem' role");
+      return null;
     }
-    const cmdId = parseInt(el.dataset.cmdId); // get data-cmd-id
-    return { el: el, cmdId: cmdId };
+    return findMenuItemForElement(el, menu);
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseEnter(ev) {
-    let { el, cmdId } = findMenuItemElement(ev);
-    if (el && cmdId !== kMenuIdJustText) {
-      el.classList.add("is-selected-menu");
-      // ev.stopPropagation();
+    let mi = findMenuItem(ev);
+    if (!mi || mi.cmdId == kMenuIdJustText) {
+      return;
     }
+    mi.element.classList.add("is-selected-menu");
+    // ev.stopPropagation();
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseOver(ev) {
-    let { el, cmdId } = findMenuItemElement(ev);
-    if (el && cmdId > 0) {
-      el.classList.add("is-selected-menu");
-      // ev.stopPropagation();
+    let mi = findMenuItem(ev);
+    if (!mi || mi.cmdId == kMenuIdJustText) {
+      return;
     }
+    mi.element.classList.add("is-selected-menu");
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleMouseLeave(ev) {
-    let { el, cmdId } = findMenuItemElement(ev);
-    if (el && cmdId !== kMenuIdJustText) {
-      el.classList.remove("is-selected-menu");
+    let mi = findMenuItem(ev);
+    if (!mi) {
+      return;
     }
-    ev.stopPropagation();
+    mi.element.classList.remove("is-selected-menu");
   }
 
   /**
    * @param {MouseEvent} ev
    */
   function handleClicked(ev) {
-    let { el, cmdId } = findMenuItemElement(ev);
-    if (el && cmdId > 0) {
-      onmenucmd(cmdId, null);
-      ev.stopPropagation();
-      ev.preventDefault();
+    let mi = findMenuItem(ev);
+    if (!mi || mi.cmdId <= 0) {
+      return;
     }
+    onmenucmd(mi.cmdId, null);
+    ev.stopPropagation();
   }
 
   function initialStyle() {
@@ -287,6 +309,7 @@
     onmouseleave={handleMouseLeave}
     onmouseover={handleMouseOver}
     onmouseenter={handleMouseEnter}
+    bind:this={mi.element}
   >
     <button class="flex w-full items-center justify-between pl-3 pr-2 py-0.5">
       <span>{mi.text}</span>

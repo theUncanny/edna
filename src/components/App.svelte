@@ -543,7 +543,7 @@
     getEditor().setSpellChecking(isSpellChecking);
     if (isSpellChecking) {
       addToast(
-        "Press Shift + right mouse click for context menu when spell checking is enabled",
+        "Press Ctrl + right mouse click for context menu when spell checking is enabled",
       );
     }
   }
