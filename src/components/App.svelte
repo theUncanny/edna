@@ -322,12 +322,9 @@
   export const MENU_SHOW_EXPORT_HELP = nmid();
 
   function buildMenuDef() {
-    let lang = getLanguage(language);
-
     const menuNote = [
-      ["Rename current note", MENU_RENAME_CURRENT_NOTE],
-      ["Delete current note", MENU_DELETE_CURRENT_NOTE],
-      ["Create new scratch note\tAlt + N", MENU_CREATE_SCRATCH_NOTE],
+      ["Rename", MENU_RENAME_CURRENT_NOTE],
+      ["Delete", MENU_DELETE_CURRENT_NOTE],
     ];
 
     const menuBlock = [
@@ -343,8 +340,8 @@
       ["Goto previous\tMod + Up", MENU_BLOCK_GOTO_PREV],
       ["Change language\tMod + L", MENU_BLOCK_CHANGE_LANG],
       ["Select all text\tMod + A", MENU_BLOCK_SELECTALL],
-      ["Format as " + lang + "\tAlt + Shift + F", MENU_BLOCK_FORMAT],
-      ["Run " + lang + "\tAlt + Shift + R", MENU_BLOCK_RUN],
+      ["Format as " + language + "\tAlt + Shift + F", MENU_BLOCK_FORMAT],
+      ["Run " + language + "\tAlt + Shift + R", MENU_BLOCK_RUN],
     ];
 
     let dh = getStorageFS();
@@ -374,7 +371,8 @@
     const contextMenu = [
       ["Open note\tMod + P", MENU_OPEN_NOTE],
       ["Create new note", MENU_CREATE_NEW_NOTE],
-      ["Note", menuNote],
+      ["Create new scratch note\tAlt + N", MENU_CREATE_SCRATCH_NOTE],
+      ["This Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],
       [spelling, MENU_TOGGLE_SPELL_CHECKING],

@@ -42,7 +42,7 @@
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
-    console.log(ev);
+    // console.log(ev);
     let lastIdx = len(items) - 1;
     let key = ev.key;
 
