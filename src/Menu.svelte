@@ -64,7 +64,7 @@
     isVisible = $state(false);
     isDisabled = false;
     isSubMenu = false;
-    // isSelected = $state(false);
+    isSelected = $state(false);
   }
 
   /**
@@ -135,25 +135,42 @@
   );
 
   /**
-   * @param {HTMLElement} el
-   * @param {MenuItem[]} items
-   * @returns {MenuItem}
+   * @param {MenuItem[]} rootMenu
+   * @param {(mi: MenuItem) => boolean} visit
    */
-  function findMenuItemForElement(el, items) {
+  function forEachMenuItem(rootMenu, visit) {
     /** @type {MenuItem[][]} */
-    let toVisit = [items];
+    let toVisit = [rootMenu];
     while (len(toVisit) > 0) {
-      items = toVisit.shift();
+      let items = toVisit.shift();
       for (let mi of items) {
-        if (mi.element == el) {
-          return mi;
+        let cont = visit(mi);
+        if (!cont) {
+          return;
         }
         if (mi.isSubMenu) {
           toVisit.push(mi.children);
         }
       }
     }
-    return null;
+  }
+
+  /**
+   * @param {HTMLElement} el
+   * @param {MenuItem[]} rootMenu
+   * @returns {MenuItem}
+   */
+  function findMenuItemForElement(el, rootMenu) {
+    let found = null;
+    function visit(mi) {
+      if (mi.element === el) {
+        found = mi;
+        return false;
+      }
+      return true;
+    }
+    forEachMenuItem(rootMenu, visit);
+    return found;
   }
 
   /**
