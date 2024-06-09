@@ -269,6 +269,7 @@
       onmouseover={handleMouseOver}
       onmouseenter={handleMouseEnter}
       aria-disabled={mi.isDisabled}
+      bind:this={mi.element}
     >
       <div>{mi.text}</div>
       <div class="ml-4 text-xs opacity-75">{mi.shortcut || ""}</div>

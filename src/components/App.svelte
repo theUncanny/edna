@@ -321,7 +321,7 @@
   export const MENU_EXPORT_NOTES = nmid();
   export const MENU_SHOW_EXPORT_HELP = nmid();
 
-  function buildMenu() {
+  function buildMenuDef() {
     let lang = getLanguage(language);
 
     const menuNote = [
@@ -517,7 +517,7 @@
     ev.preventDefault();
     ev.stopPropagation();
     contextMenuEv = ev;
-    contextMenu = buildMenu();
+    contextMenu = buildMenuDef();
     showingMenu = true;
   }
 
