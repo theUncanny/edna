@@ -362,6 +362,9 @@
     selectFirst(mi.children);
   }
 
+  /**
+   * @param {KeyboardEvent} ev
+   */
   function handleKeydown(ev) {
     let key = ev.key;
     // console.log("key:", key);
@@ -382,7 +385,8 @@
     }
 
     if (key === "Tab") {
-      // trapFocusEvent(menuEl.parentElement, ev);
+      selectSibling(1);
+      ev.preventDefault();
       return;
     }
 
