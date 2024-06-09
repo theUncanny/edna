@@ -66,6 +66,7 @@ export function ensurevisible(node) {
   const r = node.getBoundingClientRect();
   const { x, y } = ensureRectVisibleInWindow(r);
   Object.assign(node.style, {
+    // position: "fixed",
     left: `${x}px`,
     top: `${y}px`,
   });

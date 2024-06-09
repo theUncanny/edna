@@ -59,6 +59,8 @@
     cmdId = 0;
     /** @type {HTMLElement} */
     element = null;
+    /** @type {HTMLElement} */
+    submenuElement = null;
     /** @type {MenuItem} */
     parent = null;
 
@@ -199,11 +201,11 @@
     // console.log(`${ev} selecting menu item '${mi.text}'`);
     mi.isSelected = true;
     // also preserve selection state of the parent(s)
-    mi = mi.parent;
-    while (mi) {
-      mi.isSelected = true;
+    let parent = mi.parent;
+    while (parent) {
+      parent.isSelected = true;
       // console.log(`${ev} selecting menu parent item '${mi.text}'`);
-      mi = mi.parent;
+      parent = parent.parent;
     }
   }
 
@@ -223,6 +225,7 @@
     return findMenuItemForElement(el);
   }
 
+  // TODO: do I need this?
   /**
    * @param {MouseEvent} ev
    */
@@ -253,6 +256,7 @@
     if (!mi) {
       return;
     }
+    // TODO: this is not firing at all
     console.log("mouse leave, unselecting:", mi.text);
     mi.isSelected = false;
   }
@@ -361,6 +365,7 @@
       {@render arrow()}
     </button>
     <div
+      bind:this={mi.submenuElement}
       class="menu-child{mi.nest} invisible absolute top-0 left-full transform opacity-0 transition-all duration-300"
     >
       {@render fullMenu(mi.children)}
