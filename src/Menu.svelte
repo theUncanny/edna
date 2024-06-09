@@ -177,7 +177,7 @@
   }
 
   function unselectAll() {
-    console.log("unselecting all");
+    // console.log("unselecting all");
     forEachMenuItem((mi) => {
       mi.isSelected = false;
       return true;
@@ -188,17 +188,21 @@
    * @param {MenuItem} mi
    */
   function selectMenuItem(mi, ev = "") {
+    if (mi.isSelected) {
+      // console.log(`${ev} already selected '${mi.text}'`);
+      return;
+    }
     unselectAll();
     if (mi.isDisabled) {
       return;
     }
-    console.log(`${ev} selecting menu item '${mi.text}'`);
+    // console.log(`${ev} selecting menu item '${mi.text}'`);
     mi.isSelected = true;
     // also preserve selection state of the parent(s)
     mi = mi.parent;
     while (mi) {
       mi.isSelected = true;
-      console.log(`${ev} selecting menu parent item '${mi.text}'`);
+      // console.log(`${ev} selecting menu parent item '${mi.text}'`);
       mi = mi.parent;
     }
   }
@@ -213,7 +217,7 @@
       el = el.parentElement;
     }
     if (!el) {
-      console.log("no element with 'menuitem' role");
+      // console.log("no element with 'menuitem' role");
       return null;
     }
     return findMenuItemForElement(el);
@@ -224,6 +228,9 @@
    */
   function handleMouseEnter(ev) {
     let mi = findMenuItem(ev);
+    if (!mi) {
+      return;
+    }
     selectMenuItem(mi, "mouse enter ");
   }
 
@@ -232,6 +239,9 @@
    */
   function handleMouseOver(ev) {
     let mi = findMenuItem(ev);
+    if (!mi) {
+      return;
+    }
     selectMenuItem(mi, "mouse over ");
   }
 
@@ -326,12 +336,8 @@
     <div
       role="menuitem"
       tabindex={mi.isDisabled ? undefined : 0}
-      data-cmd-id={mi.cmdId}
       class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
       class:is-selected-menu={mi.isSelected}
-      onmouseleave={handleMouseLeave}
-      onmouseover={handleMouseOver}
-      onmouseenter={handleMouseEnter}
       aria-disabled={mi.isDisabled}
       bind:this={mi.element}
     >
@@ -346,12 +352,8 @@
   <div
     role="menuitem"
     tabindex="-1"
-    data-cmd-id={kMenuIdSubMenu}
     class="menu-parent{mi.nest} relative my-1"
     class:is-selected-menu={mi.isSelected}
-    onmouseleave={handleMouseLeave}
-    onmouseover={handleMouseOver}
-    onmouseenter={handleMouseEnter}
     bind:this={mi.element}
   >
     <button class="flex w-full items-center justify-between pl-3 pr-2 py-0.5">
@@ -389,6 +391,7 @@
 {/snippet}
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
   role="menu"
   tabindex="-1"
@@ -396,6 +399,9 @@
   class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
+  onmouseleave={handleMouseLeave}
+  onmouseover={handleMouseOver}
+  onmouseenter={handleMouseEnter}
   bind:this={menuEl}
 >
   {@render menuItems(rootMenu)}

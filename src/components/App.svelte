@@ -516,6 +516,7 @@
     }
     ev.preventDefault();
     ev.stopPropagation();
+    ev.stopImmediatePropagation();
     contextMenuEv = ev;
     contextMenu = buildMenuDef();
     showingMenu = true;
@@ -791,7 +792,6 @@
 {#if showingMenu}
   <Overlay onclose={closeMenu}>
     <Menu
-      nest={1}
       {menuItemStatus}
       {onmenucmd}
       menuDef={contextMenu}
