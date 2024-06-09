@@ -5,6 +5,7 @@
   openNoteSelector: () => void,
   openHistorySelector: () => void,
   createScratchNote: () => void,
+  openContextMenu: (ev: MouseEvent) => void,
 }} GlobalFuncs
 */
 
@@ -39,4 +40,10 @@ export function openHistorySelector() {
 }
 export function createScratchNote() {
   globalFunctions.createScratchNote();
+}
+/**
+ * @param {MouseEvent} ev
+ */
+export function openContextMenu(ev) {
+  globalFunctions.openContextMenu(ev);
 }

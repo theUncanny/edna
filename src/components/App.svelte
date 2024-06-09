@@ -98,6 +98,18 @@
     );
   });
 
+  /**
+   * @param {MouseEvent} ev
+   */
+  function openContextMenu(ev) {
+    // console.log("openContextMenu:", ev);
+    ev.preventDefault();
+    ev.stopPropagation();
+    ev.stopImmediatePropagation();
+    contextMenuEv = ev;
+    showingMenu = true;
+  }
+
   let gf = {
     openSettings: openSettings,
     openLanguageSelector: openLanguageSelector,
@@ -105,6 +117,7 @@
     openNoteSelector: openNoteSelector,
     openHistorySelector: openHistorySelector,
     createScratchNote: createScratchNote,
+    openContextMenu: openContextMenu,
   };
   setGlobalFuncs(gf);
 
@@ -512,12 +525,8 @@
     if (forceNativeMenu) {
       return;
     }
-    ev.preventDefault();
-    ev.stopPropagation();
-    ev.stopImmediatePropagation();
-    contextMenuEv = ev;
     contextMenu = buildMenuDef();
-    showingMenu = true;
+    openContextMenu(ev);
   }
 
   /**

@@ -105,7 +105,7 @@
 
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
-  import { len, splitMax, throwIf } from "./util.js";
+  import { len, splitMax } from "./util.js";
   import { ensurevisible, focus, trapfocus } from "./actions.js";
 
   /** @type {{
