@@ -313,7 +313,7 @@
     <div
       role="menuitem"
       tabindex={mi.isDisabled ? undefined : 0}
-      class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
+      class="min-w-[12em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
       class:is-selected={mi.isSelected}
       aria-disabled={mi.isDisabled}
       bind:this={mi.element}
@@ -341,7 +341,7 @@
       role="menu"
       bind:this={mi.submenuElement}
       style:z-index={mi.zIndex}
-      class="sub-menu-wrapper absolute top-0 hidden rounded-md border bg-white border-neutral-50 py-1 shadow-lg"
+      class="sub-menu-wrapper absolute top-0 hidden rounded-md border bg-white dark:bg-gray-700 border-neutral-50 py-1 shadow-lg"
     >
       {@render menuItems(mi.children)}
     </div>
@@ -367,7 +367,7 @@
   tabindex="-1"
   use:focus
   use:ensurevisible
-  class="z-20 mt-1 rounded-md border border-neutral-50 bg-white py-1 shadow-lg focus:outline-none cursor-pointer select-none"
+  class="z-20 mt-1 rounded-md border border-neutral-50 bg-white dark:bg-gray-700 dark:text-gray-300 py-1 shadow-lg focus:outline-none cursor-pointer select-none"
   style={initialStyle()}
   onclick={handleClicked}
   onmouseover={handleMouseOver}
@@ -379,19 +379,11 @@
   .is-selected {
     @apply bg-gray-100;
   }
+  :global(html.dark) .is-selected {
+    @apply bg-gray-600;
+  }
 
   .sub-menu-wrapper {
     left: calc(80% - 8px);
-  }
-
-  :global(.menu-disabled) {
-    /* TODO: pointer-events and cursor don't seem to take */
-    pointer-events: none !important;
-    cursor: default !important;
-    color: lightgray;
-  }
-
-  :global(.menu-checked .check) {
-    visibility: visible;
   }
 </style>
