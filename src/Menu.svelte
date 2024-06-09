@@ -59,6 +59,8 @@
     cmdId = 0;
     /** @type {HTMLElement} */
     element = null;
+    /** @type {MenuItem} */
+    parent = null;
 
     isSeparator = false;
     isVisible = $state(false);
@@ -89,6 +91,9 @@
       if (Array.isArray(idOrSubMenu)) {
         i.children = buildMenuFromDef(idOrSubMenu, nest + 1, menuItemStatus);
         i.isSubMenu = true;
+        for (let c of i.children) {
+          c.parent = i;
+        }
       } else {
         i.cmdId = idOrSubMenu;
       }
@@ -128,17 +133,16 @@
     return kMenuStatusNormal;
   }
 
-  let menu = buildMenuFromDef(
+  let rootMenu = buildMenuFromDef(
     menuDef,
     1,
     menuItemStatus || menuItemStatusDefault,
   );
 
   /**
-   * @param {MenuItem[]} rootMenu
    * @param {(mi: MenuItem) => boolean} visit
    */
-  function forEachMenuItem(rootMenu, visit) {
+  function forEachMenuItem(visit) {
     /** @type {MenuItem[][]} */
     let toVisit = [rootMenu];
     while (len(toVisit) > 0) {
@@ -157,10 +161,9 @@
 
   /**
    * @param {HTMLElement} el
-   * @param {MenuItem[]} rootMenu
    * @returns {MenuItem}
    */
-  function findMenuItemForElement(el, rootMenu) {
+  function findMenuItemForElement(el) {
     let found = null;
     function visit(mi) {
       if (mi.element === el) {
@@ -169,8 +172,35 @@
       }
       return true;
     }
-    forEachMenuItem(rootMenu, visit);
+    forEachMenuItem(visit);
     return found;
+  }
+
+  function unselectAll() {
+    console.log("unselecting all");
+    forEachMenuItem((mi) => {
+      mi.isSelected = false;
+      return true;
+    });
+  }
+
+  /**
+   * @param {MenuItem} mi
+   */
+  function selectMenuItem(mi, ev = "") {
+    unselectAll();
+    if (mi.isDisabled) {
+      return;
+    }
+    console.log(`${ev} selecting menu item '${mi.text}'`);
+    mi.isSelected = true;
+    // also preserve selection state of the parent(s)
+    mi = mi.parent;
+    while (mi) {
+      mi.isSelected = true;
+      console.log(`${ev} selecting menu parent item '${mi.text}'`);
+      mi = mi.parent;
+    }
   }
 
   /**
@@ -186,7 +216,7 @@
       console.log("no element with 'menuitem' role");
       return null;
     }
-    return findMenuItemForElement(el, menu);
+    return findMenuItemForElement(el);
   }
 
   /**
@@ -194,11 +224,7 @@
    */
   function handleMouseEnter(ev) {
     let mi = findMenuItem(ev);
-    if (!mi || mi.cmdId == kMenuIdJustText) {
-      return;
-    }
-    mi.element.classList.add("is-selected-menu");
-    // ev.stopPropagation();
+    selectMenuItem(mi, "mouse enter ");
   }
 
   /**
@@ -206,10 +232,7 @@
    */
   function handleMouseOver(ev) {
     let mi = findMenuItem(ev);
-    if (!mi || mi.cmdId == kMenuIdJustText) {
-      return;
-    }
-    mi.element.classList.add("is-selected-menu");
+    selectMenuItem(mi, "mouse over ");
   }
 
   /**
@@ -220,7 +243,8 @@
     if (!mi) {
       return;
     }
-    mi.element.classList.remove("is-selected-menu");
+    console.log("mouse leave, unselecting:", mi.text);
+    mi.isSelected = false;
   }
 
   /**
@@ -304,6 +328,7 @@
       tabindex={mi.isDisabled ? undefined : 0}
       data-cmd-id={mi.cmdId}
       class="min-w-[18em] flex items-center justify-between px-3 py-1 whitespace-nowrap aria-disabled:text-gray-400"
+      class:is-selected-menu={mi.isSelected}
       onmouseleave={handleMouseLeave}
       onmouseover={handleMouseOver}
       onmouseenter={handleMouseEnter}
@@ -323,6 +348,7 @@
     tabindex="-1"
     data-cmd-id={kMenuIdSubMenu}
     class="menu-parent{mi.nest} relative my-1"
+    class:is-selected-menu={mi.isSelected}
     onmouseleave={handleMouseLeave}
     onmouseover={handleMouseOver}
     onmouseenter={handleMouseEnter}
@@ -372,7 +398,7 @@
   onclick={handleClicked}
   bind:this={menuEl}
 >
-  {@render menuItems(menu)}
+  {@render menuItems(rootMenu)}
 </div>
 
 <style>
