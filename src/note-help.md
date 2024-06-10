@@ -1,5 +1,5 @@
-
 ∞∞∞markdown
+
 # Welcome to Edna
 
 [Edna](https://edna.arslexis.io) is a scratchpad and note taker for developers and power users.
@@ -9,11 +9,13 @@ This is a help note. To switch to a different note, press `Mod + P`.
 To see help in HTML, press `Help` at the bottom right or visit https://edna.arslexis.io/help
 
 ∞∞∞markdown
+
 # Keyboard shortcuts
 
 {{keyHelp}}
 
 ∞∞∞markdown
+
 # Why Edna?
 
 ## Speed
@@ -21,6 +23,7 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 [Edna](https://edna.arslexis.io) is optimized for speed of note taking.
 
 Press `Mod + P` to show note selector and:
+
 - switch between notes
 - create new note
 - delete a note
@@ -28,7 +31,7 @@ Press `Mod + P` to show note selector and:
 
 ## Switch to recently opened note
 
-Press `Mod + E` or `Esc` to switch to a note from list of recently opened notes.
+Press `Mod + E` to switch to a note from list of recently opened notes.
 
 First 10 recently opened notes get `0` ... `9` shortcut.
 
@@ -37,11 +40,13 @@ To switch to previous note: press `Esc` and `Enter`.
 ## Quick access shortcut
 
 You can assign `Alt + 0` to `Alt + 9` for quickly accessing notes:
+
 - `Mod + P` for note selector dialog
 - select a note
 - press `Alt + 0` to `Alt + 9` to assign it as quick access shortcut
 
- Default shortcuts are:
+Default shortcuts are:
+
 - `Alt + 1` : scratch note
 - `Alt + 2` : daily journal
 - `Alt + 3` : inbox
@@ -65,6 +70,7 @@ Blocks are syntax highlighted based on their type.
 ### Formatting of blocks
 
 You can format current block using:
+
 - `Alt + Shift + F` keyboard shortcut
 - right-click and use context menu `Block / Format as ${type}`
 - press format icon in status bar (bottom right)
@@ -74,6 +80,7 @@ We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
 ### Executing of code blocks
 
 We support execution of Go blocks:
+
 - `Alt + Shift + R` keyboard shortcut
 - right-click and use context menu `Block / Run`
 
@@ -84,6 +91,7 @@ We have the same capabilities as https://tools.arslexis.io/goplayground/
 The code block must be a valid Go program.
 
 ∞∞∞markdown
+
 # Multiple notes
 
 ## Create a new note
@@ -139,18 +147,20 @@ Notes with assigned shortcut show up at the top of note selector (`Mod + P`).
 
 ## Open recent note
 
-Press `Mod + E` or `Esc`.
-
+Press `Mod + E`.
 
 ∞∞∞markdown
+
 # Default notes
 
 We create 3 default notes for you:
+
 - `scratch`, `Alt + 1`
 - `daily journal`, `Alt + 2`
 - `inbox`, `Alt + 3`
 
 ∞∞∞markdown
+
 # Storing notes on disk
 
 By default notes are stored in the browser (localStorage).
@@ -158,6 +168,7 @@ By default notes are stored in the browser (localStorage).
 If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.
 
 You can do one time export from localStorage to a directory on disk:
+
 - right click for context menu, `Notes storage / Move notes from browser to directory`
 - pick a directory on disk
 - we save notes on disk as `${name}.edna.txt` files in chosen directory and delete notes in localStorage
@@ -169,21 +180,25 @@ Use context menu `Notes storage / Open notes in directory` to switch to notes in
 You can go back to storing notes in the browser with context menu `Notes storage / Open notes in browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
 
 ∞∞∞markdown
+
 # Accessing notes on multiple computers
 
 If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.
 
 On the first computer export notes from browser to disk:
+
 - right click for context menu, `Notes storage / Move notes from browser to directory`
 - pick a directory shared by Dropbox / One Drive / Google Drive etc.
 
 On other computers:
+
 - right click for context menu, `Notes storage / Open notes in directory`
 - pick the same directory
 
 Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
 
 ∞∞∞markdown
+
 # Exporting notes to a .zip file
 
 There's no lock in with Edna.
@@ -197,6 +212,7 @@ We pack all the notes into a .zip file and initiate auto-download as `edna.notes
 Look in the browser downloads directory.
 
 ∞∞∞markdown
+
 # Context menu
 
 Right-click for context menu.
@@ -204,6 +220,7 @@ Right-click for context menu.
 For native context menu do `Ctrl + right-click`. This is especially useful when spell checking to correct mis-spellings.
 
 ∞∞∞markdown
+
 # Lists with TODO items
 
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
@@ -215,14 +232,14 @@ In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 This is a Math block. Here, rows are evaluated as math expressions.
 
 radius = 5
-area = radius^2 * PI
+area = radius^2 \* PI
 sqrt(9)
 
 It also supports some basic unit conversions, including currencies:
 
 13 inches in cm
 time = 3900 seconds to minutes
-time * 2
+time \* 2
 
 1 EUR in USD
 
@@ -230,11 +247,12 @@ time * 2
 // Edna is great for storing code snippets
 // this is a javascript block
 // change type of block with `Mod + L`
-  // you can format it with `Alt + Shift + F`
+// you can format it with `Alt + Shift + F`
 let x = 5
 console.log("x is", x)
 
 ∞∞∞markdown
+
 # Privacy and security
 
 Your notes are private and secure.
@@ -244,6 +262,7 @@ Your notes are stored in the browser or on your computer.
 The code is [open source](https:/github.com/kjk/edna) so you can audit it.
 
 ∞∞∞markdown
+
 # No lock in
 
 The notes are stored in plain text files on disk (or in localStorage under `note:${name}` key)
@@ -257,6 +276,7 @@ You can back them up, store in git repositories, write scripts to process them.
 They are not locked in a proprietary Edna format.
 
 ∞∞∞markdown
+
 # How I use Edna
 
 Edna is flexible and you should find your own way of using it.
@@ -272,6 +292,7 @@ I use Edna daily::
 - I have `investing` note for keeping track of various stock investment ideas
 
 ∞∞∞markdown
+
 # Open source
 
 [Edna](https://edna.arslexis.io) is open source: https://github.com/kjk/edna
@@ -279,6 +300,7 @@ I use Edna daily::
 To report a bug or request a feature: https://github.com/kjk/edna/issues
 
 ∞∞∞markdown
+
 # Contact
 
 You can contact me via https://blog.kowalczyk.info/contactme
@@ -286,9 +308,11 @@ You can contact me via https://blog.kowalczyk.info/contactme
 You can find more software by [me](https://blog.kowalczyk.info/) on https://arslexis.io
 
 ∞∞∞markdown
+
 # Credits
 
 Edna is a fork of [Heynote](https://github.com/heyman/heynote) with the following differences:
+
 - web first (no desktop apps)
 - multiple notes
 - ability to access notes on multiple devices by storing them on folder managed by Dropbox / One Drive / Google Drive
