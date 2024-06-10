@@ -58,6 +58,7 @@ export class EdnaEditor {
     showLineNumberGutter = true,
     showFoldGutter = true,
     bracketClosing = false,
+    spacesPerTab = 2,
     fontFamily,
     fontSize,
   }) {
@@ -73,6 +74,13 @@ export class EdnaEditor {
     this.emacsMetaKey = emacsMetaKey;
     this.fontTheme = new Compartment();
     this.saveFunction = saveFunction;
+    this.tabsCompartment = new Compartment();
+
+    const makeTabState = (tabsAsSpaces, tabSpaces) => {
+      const indentChar = tabsAsSpaces ? " ".repeat(tabSpaces) : "\t";
+      const v = indentUnit.of(indentChar);
+      return this.tabsCompartment.of(v);
+    };
 
     let updateListenerExtension = EditorView.updateListener.of((update) => {
       if (update.docChanged) {
@@ -106,7 +114,7 @@ export class EdnaEditor {
           ),
           heynoteBase,
           this.fontTheme.of(getFontTheme(fontFamily, fontSize)),
-          indentUnit.of("    "),
+          makeTabState(true, spacesPerTab),
           EditorView.scrollMargins.of((f) => {
             return { top: 80, bottom: 80 };
           }),
@@ -152,6 +160,15 @@ export class EdnaEditor {
       });
       this.view.focus();
     }
+  }
+
+  setTabsState(tabsAsSpaces, tabSpaces) {
+    if (!this.view) return;
+    const indentChar = tabsAsSpaces ? " ".repeat(tabSpaces) : "\t";
+    const v = indentUnit.of(indentChar);
+    this.view.dispatch({
+      effects: this.tabsCompartment.reconfigure(v),
+    });
   }
 
   getContent() {

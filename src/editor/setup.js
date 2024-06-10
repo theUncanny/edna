@@ -101,6 +101,7 @@ const customSetup = /*@__PURE__*/ (() => [
     //...lintKeymap
   ]),
 ])();
+
 /**
 A minimal set of extensions to create a functional editor. Only
 includes [the default keymap](https://codemirror.net/6/docs/ref/#commands.defaultKeymap), [undo

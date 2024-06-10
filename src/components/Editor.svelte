@@ -121,6 +121,7 @@
         bracketClosing: bracketClosing,
         fontFamily: fontFamily,
         fontSize: fontSize,
+        spacesPerTab: 2, // TODO: add a setting for this
       });
       rememberEditor(editor);
       window.document.addEventListener("currenciesLoaded", onCurrenciesLoaded);
