@@ -534,13 +534,13 @@
     openContextMenu(ev);
   }
 
-  let contextMenuDef = null;
+  let contextMenuDef = $state(null);
 
   /**
    * @param {MouseEvent} ev
    */
   function openContextMenu(ev) {
-    // console.log("openContextMenu:", ev);
+    console.log("openContextMenu:", ev);
     ev.preventDefault();
     ev.stopPropagation();
     ev.stopImmediatePropagation();
