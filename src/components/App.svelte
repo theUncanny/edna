@@ -98,18 +98,6 @@
     );
   });
 
-  /**
-   * @param {MouseEvent} ev
-   */
-  function openContextMenu(ev) {
-    // console.log("openContextMenu:", ev);
-    ev.preventDefault();
-    ev.stopPropagation();
-    ev.stopImmediatePropagation();
-    contextMenuEv = ev;
-    showingMenu = true;
-  }
-
   let gf = {
     openSettings: openSettings,
     openLanguageSelector: openLanguageSelector,
@@ -508,27 +496,62 @@
     }
   }
 
-  function closeMenu() {
-    showingMenu = false;
-    getEditor().focus();
-  }
-
-  let contextMenu = $state(null);
   /**
    * @param {MouseEvent} ev
    */
   function oncontextmenu(ev) {
     if (isShowingDialog) {
+      if (showingHistorySelector) {
+        console.log("contextmenu: showingHistorySelector");
+      }
+      if (showingLanguageSelector) {
+        console.log("contextmenu: showingLanguageSelector");
+      }
+      if (showingMenu) {
+        console.log("contextmenu: showingMenu");
+      }
+      if (showingRenameNote) {
+        console.log("contextmenu: showingRenameNote");
+      }
+      if (showingNoteSelector) {
+        console.log("contextmenu: showingNoteSelector");
+      }
+      if (showingCreateNewNote) {
+        console.log("contextmenu: showingCreateNewNote");
+      }
+      if (showingSettings) {
+        console.log("contextmenu: showingSettings");
+      }
       return;
     }
+    console.log("contextmenu: ", ev);
     // show native context menu if ctrl or shift is pressed
     // especially important for spell checking
     let forceNativeMenu = ev.ctrlKey;
     if (forceNativeMenu) {
       return;
     }
-    contextMenu = buildMenuDef();
     openContextMenu(ev);
+  }
+
+  let contextMenuDef = null;
+
+  /**
+   * @param {MouseEvent} ev
+   */
+  function openContextMenu(ev) {
+    // console.log("openContextMenu:", ev);
+    ev.preventDefault();
+    ev.stopPropagation();
+    ev.stopImmediatePropagation();
+    contextMenuDef = buildMenuDef();
+    contextMenuEv = ev;
+    showingMenu = true;
+  }
+
+  function closeMenu() {
+    showingMenu = false;
+    getEditor().focus();
   }
 
   /**
@@ -803,7 +826,7 @@
     <Menu
       {menuItemStatus}
       {onmenucmd}
-      menuDef={contextMenu}
+      menuDef={contextMenuDef}
       ev={contextMenuEv}
     />
   </Overlay>
