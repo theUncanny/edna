@@ -1,5 +1,3 @@
-∞∞∞markdown
-
 # Welcome to Edna
 
 [Edna](https://edna.arslexis.io) is a scratchpad and note taker for developers and power users.

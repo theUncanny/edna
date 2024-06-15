@@ -1,5 +1,3 @@
-∞∞∞markdown
-
 # Release notes for Edna
 
 ## 1.4
