@@ -292,7 +292,7 @@
     <hr class="mt-1 mb-1 border-gray-400" />
   {/if}
   <div
-    class="kbd-grid grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full"
+    class="grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
   >
     {#if canOpenSelected}
       <div><span class="kbd">Enter</span></div>
@@ -345,3 +345,15 @@
     <div class="italic"></div>
   </div>
 </form>
+
+<style>
+  .kbd {
+    font-size: 10px;
+    /* @apply text-xs; */
+    @apply font-mono;
+    @apply px-[6px] py-[3px];
+    @apply border  rounded-md;
+    @apply border-gray-400 dark:border-gray-500;
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+</style>

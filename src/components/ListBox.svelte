@@ -18,26 +18,41 @@
     initialSelection = 0,
   } = $props();
 
-  let nItems = $derived(len(items));
+  let selectedIdx = $state(-1);
+
   let n = len(items);
-
-  if (initialSelection > n - 1) {
-    initialSelection = n - 1;
-  }
-  if (n === 0) {
-    initialSelection = -1;
-  }
-  let selectedIdx = $state(initialSelection);
-
   let refs = new Array(n);
+  let prevItemsLen = n;
+
+  // make sure to call selectionChanged() callback on initial
+  // selection, so if there's state calcualted based on that,
+  // it gets properly initalized
+  setTimeout(() => {
+    if (initialSelection > n - 1) {
+      initialSelection = n - 1;
+    }
+    if (n === 0) {
+      initialSelection = -1;
+    }
+    select(initialSelection);
+  }, 50);
 
   $effect(() => {
-    if (nItems > len(refs)) {
-      console.log("expanding refs to:", nItems);
-      refs.length = nItems;
+    let n = len(items);
+    if (n > len(refs)) {
+      console.log("expanding refs to:", n);
+      refs.length = n;
     }
+
+    // TODO: this check shouldn't be necessary but
+    // this effect gets re-run after changing selection
+    if (n === prevItemsLen) {
+      return;
+    }
+    console.log("re-runinng effect:", len(items));
+    prevItemsLen = n;
     // reset selection if changing items
-    if (nItems > 0) {
+    if (n > 0) {
       select(0);
     } else {
       select(-1);
@@ -48,7 +63,8 @@
    * @param {number} n
    */
   export function select(n) {
-    // console.log("select:", n, "nItems:", nItems);
+    let nItems = len(items);
+    console.log("select:", n, "nItems:", nItems);
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;
@@ -60,6 +76,7 @@
     if (n >= 0 && n < nItems) {
       selectedIdx = n;
     }
+    console.log("selectedIdx:", selectedIdx);
     let ref = refs[selectedIdx];
     ref.scrollIntoView({ block: "nearest" });
     let item = items[selectedIdx];
@@ -71,6 +88,7 @@
   }
 
   export function up() {
+    let nItems = len(items);
     if (nItems <= 0 || selectedIdx <= 0) {
       return;
     }
@@ -78,6 +96,8 @@
   }
 
   export function down() {
+    let nItems = len(items);
+    console.log("donw: selectedIdx:", selectedIdx, "nItems:", nItems);
     let lastIdx = nItems - 1;
     if (nItems <= 0 || selectedIdx >= lastIdx) {
       return;
@@ -93,7 +113,7 @@
     <li
       role="listitem"
       class:selected={idx === selectedIdx}
-      class="cursor-pointer py-0.5 px-2 rounded-sm leading-5 flex"
+      class="cursor-pointer py-0.5 px-2 rounded-sm leading-5 flex dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600"
       onclick={() => onclick(item)}
       bind:this={refs[idx]}
     >
@@ -103,4 +123,8 @@
 </ul>
 
 <style>
+  .selected {
+    @apply text-white bg-gray-500;
+    @apply dark:text-opacity-85 dark:bg-gray-700;
+  }
 </style>

@@ -623,12 +623,12 @@
   }
 
   function onSelectHistory(name) {
-    showingHistorySelector = false;
-    console.log("onSelectHistory:", name);
+    // console.log("onSelectHistory:", name);
+    closeHistorySelector();
     if (name != noteName) {
       openNote(name);
     } else {
-      console.log("onSelectHistory: skipping opening becase same note");
+      // console.log("onSelectHistory: skipping opening becase same note");
     }
   }
 
