@@ -6,6 +6,7 @@ function getKeyHelp(platform = platformName) {
   const altChar = getAltChar(platform);
   return [
     [`${modChar} + P`, "Open, create or delete a note"],
+    [`${modChar} + B`, "Navigate to a block"],
     [`${modChar} + E`, "Open recent note"],
     [`${altChar} + N`, "Create a new scratch note"],
     [`${modChar} + Enter`, "Add new block below the current block"],
