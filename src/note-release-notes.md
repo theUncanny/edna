@@ -1,11 +1,15 @@
 # Release notes for Edna
 
+## 1.5
+
+- added Ctrl + B for quickly navigating between blocks
+
 ## 1.4
 
 - improved context menu
 - added context menu trigger in upper navigation
 - re-designed and simplifed settings dialog
-- hide upper navigation bar when typing. This is to focus the user and not obscure text under it
+- hide upper navigation bar when typing. This is to not obscure text under it
 
 ## 1.3
 
