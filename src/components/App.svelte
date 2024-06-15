@@ -43,6 +43,7 @@
   import {
     getAltChar,
     isAltNumEvent,
+    len,
     setURLHashNoReload,
     stringSizeInUtf8Bytes,
     throwIf,
@@ -56,6 +57,7 @@
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
+  import BlockSelector from "./BlockSelector.svelte";
 
   let initialSettings = getSettings();
 
@@ -74,6 +76,7 @@
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
+  let showingBlockSelector = $state(false);
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
   let loadingNoteName = $state("");
@@ -94,6 +97,7 @@
       showingRenameNote ||
       showingNoteSelector ||
       showingCreateNewNote ||
+      showingBlockSelector ||
       showingSettings
     );
   });
@@ -106,6 +110,7 @@
     openHistorySelector: openHistorySelector,
     createScratchNote: createScratchNote,
     openContextMenu: openContextMenu,
+    openBlockSelector: openBlockSelector,
   };
   setGlobalFuncs(gf);
 
@@ -255,8 +260,70 @@
     await boot();
   }
 
+  /**
+   * @param {string} c
+   * @param {number} from
+   * @param {number} to
+   * @returns {string}
+   */
+  function extractBlockTitle(c, from, to) {
+    let s = c.substring(from, to);
+    s = s.trim();
+    let idx = s.indexOf("\n");
+    if (idx > 0) {
+      s = s.substring(0, idx);
+    }
+    if (len(s) === 0) {
+      s = "(empty)";
+    }
+    return s;
+  }
+
+  /** @type {import("./BlockSelector.svelte").Item[]} */
+  let blockItems = $state([]);
+  let initialBlockSelection = 0;
+
+  function openBlockSelector() {
+    let blocks = getEditor().getBlocks();
+    let activeBlock = getEditor().getActiveNoteBlock();
+    let c = getEditor().getContent();
+    /** @type {import("./BlockSelector.svelte").Item[]} */
+    let items = [];
+    let blockNo = 0;
+    let currBlockNo = 0;
+    for (let b of blocks) {
+      let title = extractBlockTitle(c, b.content.from, b.content.to);
+      console.log("block title:", title);
+      let bi = {
+        block: b,
+        text: title,
+        key: blockNo,
+      };
+      items.push(bi);
+      if (b == activeBlock) {
+        currBlockNo = blockNo;
+      }
+      blockNo++;
+    }
+    blockItems = items;
+    initialBlockSelection = currBlockNo;
+    showingBlockSelector = true;
+  }
+
+  function closeBlockSelector() {
+    showingBlockSelector = false;
+    getEditor().focus();
+  }
+
   function openCreateNewNote() {
     showingCreateNewNote = true;
+  }
+
+  function selectBlock(blockItem) {
+    console.log(blockItem);
+    let n = blockItem.key;
+    getEditor().gotoBlock(n);
+    closeBlockSelector();
   }
 
   function closeCreateNewNote() {
@@ -501,27 +568,7 @@
    */
   function oncontextmenu(ev) {
     if (isShowingDialog) {
-      if (showingHistorySelector) {
-        console.log("contextmenu: showingHistorySelector");
-      }
-      if (showingLanguageSelector) {
-        console.log("contextmenu: showingLanguageSelector");
-      }
-      if (showingMenu) {
-        console.log("contextmenu: showingMenu");
-      }
-      if (showingRenameNote) {
-        console.log("contextmenu: showingRenameNote");
-      }
-      if (showingNoteSelector) {
-        console.log("contextmenu: showingNoteSelector");
-      }
-      if (showingCreateNewNote) {
-        console.log("contextmenu: showingCreateNewNote");
-      }
-      if (showingSettings) {
-        console.log("contextmenu: showingSettings");
-      }
+      console.log("oncontestmenu: isShowingDialog");
       return;
     }
     console.log("contextmenu: ", ev);
@@ -779,6 +826,16 @@
   <Overlay onclose={closeCreateNewNote}>
     <CreateNewNote createNewNote={onCreateNote} onclose={closeCreateNewNote}
     ></CreateNewNote>
+  </Overlay>
+{/if}
+
+{#if showingBlockSelector}
+  <Overlay onclose={closeBlockSelector} blur={true}>
+    <BlockSelector
+      items={blockItems}
+      {selectBlock}
+      initialSelection={initialBlockSelection}
+    ></BlockSelector>
   </Overlay>
 {/if}
 

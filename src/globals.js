@@ -6,6 +6,7 @@
   openHistorySelector: () => void,
   createScratchNote: () => void,
   openContextMenu: (ev: MouseEvent) => void,
+  openBlockSelector: () => void,
 }} GlobalFuncs
 */
 
@@ -22,6 +23,13 @@ export function setGlobalFuncs(gf) {
   globalFunctions = gf;
 }
 
+/**
+ * @param {MouseEvent} ev
+ */
+export function openContextMenu(ev) {
+  globalFunctions.openContextMenu(ev);
+}
+
 export function openSettings() {
   globalFunctions.openSettings();
 }
@@ -29,21 +37,23 @@ export function openSettings() {
 export function openLanguageSelector() {
   globalFunctions.openLanguageSelector();
 }
+
 export function openCreateNewNote() {
   globalFunctions.openCreateNewNote();
 }
+
 export function openNoteSelector() {
   globalFunctions.openNoteSelector();
 }
+
 export function openHistorySelector() {
   globalFunctions.openHistorySelector();
 }
+
 export function createScratchNote() {
   globalFunctions.createScratchNote();
 }
-/**
- * @param {MouseEvent} ev
- */
-export function openContextMenu(ev) {
-  globalFunctions.openContextMenu(ev);
+
+export function openBlockSelector() {
+  globalFunctions.openBlockSelector();
 }

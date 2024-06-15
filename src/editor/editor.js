@@ -7,6 +7,7 @@ import {
   addNewBlockBeforeCurrent,
   addNewBlockBeforeFirst,
   changeCurrentBlockLanguage,
+  gotoBlock,
   gotoNextBlock,
   gotoPreviousBlock,
   insertNewBlockAtCursor,
@@ -16,6 +17,7 @@ import {
 import {
   blockLineNumbers,
   blockState,
+  getActiveNoteBlock,
   noteBlockExtension,
 } from "./block/block.js";
 import { foldGutter, indentUnit } from "@codemirror/language";
@@ -202,6 +204,10 @@ export class EdnaEditor {
     return this.view.state.selection.main.head;
   }
 
+  getActiveNoteBlock() {
+    return getActiveNoteBlock(this.view.state);
+  }
+
   focus() {
     // console.log("focus");
     focusEditorView(this.view);
@@ -298,6 +304,10 @@ export class EdnaEditor {
 
   insertNewBlockAtCursor() {
     insertNewBlockAtCursor(this.view);
+  }
+
+  gotoBlock(n) {
+    gotoBlock(n, this.view);
   }
 
   gotoNextBlock() {

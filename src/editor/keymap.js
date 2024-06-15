@@ -21,6 +21,7 @@ import {
 import { copyCommand, cutCommand, pasteCommand } from "./copy-paste.js";
 import {
   createScratchNote,
+  openBlockSelector,
   openHistorySelector,
   openLanguageSelector,
   openNoteSelector,
@@ -74,6 +75,7 @@ export function ednaKeymap(editor) {
     ["Alt-ArrowUp", moveLineUp],
     ["Alt-ArrowDown", moveLineDown],
     ["Mod-l", openLanguageSelector],
+    ["Mod-b", openBlockSelector],
     // ["Mod-y", openCreateNewNote],
     ["Alt-0", openNoteSelector],
     ["Mod-o", openNoteSelector],

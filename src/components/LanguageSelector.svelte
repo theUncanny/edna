@@ -1,6 +1,5 @@
 <script>
   import { LANGUAGES } from "../editor/languages.js";
-  import { len } from "../util";
   import { focus } from "../actions.js";
   import ListBox from "./ListBox.svelte";
 

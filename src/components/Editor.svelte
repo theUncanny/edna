@@ -250,6 +250,10 @@
     saveFunction(getContent());
   }
 
+  export function getBlocks() {
+    return editor.getBlocks();
+  }
+
   export function setReadOnly(value) {
     editor.setReadOnly(value);
   }
@@ -331,6 +335,15 @@
 
   export function gotoNextBlock() {
     editor.gotoNextBlock();
+    editor.focus();
+  }
+
+  export function getActiveNoteBlock() {
+    return editor.getActiveNoteBlock();
+  }
+
+  export function gotoBlock(n) {
+    editor.gotoBlock(n);
     editor.focus();
   }
 

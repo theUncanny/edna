@@ -280,7 +280,7 @@ export function fixUpNoteContent(s) {
   }
   if (!s.startsWith("\n∞∞∞")) {
     s = blockHdrMarkdown + s;
-    console.log("fixUpNote: added header to content", s);
+    console.log("fixUpNote: added header to content", s.substring(0, 80));
   }
   return s;
 }
