@@ -115,7 +115,7 @@
   let showDelete = $state(false);
 
   function selectionChanged(item, idx) {
-    console.log("selectionChanged:", item, idx);
+    // console.log("selectionChanged:", item, idx);
     selectedNote = item;
     selectedName = item ? selectedNote.name : "";
     canOpenSelected = !!selectedNote;
@@ -224,10 +224,6 @@
       }
       return;
     }
-    let nItems = len(filteredItems);
-    if (nItems == 0) {
-      return;
-    }
 
     if (key === "ArrowUp") {
       event.preventDefault();
@@ -263,10 +259,6 @@
     deleteNote(name);
   }
 
-  function onInput(event) {
-    // reset selection
-    listbox.select(0);
-  }
   let listbox;
 </script>
 
@@ -279,7 +271,6 @@
   <input
     type="text"
     use:focus
-    oninput={onInput}
     bind:value={filter}
     class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
   />

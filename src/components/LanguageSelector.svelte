@@ -44,13 +44,8 @@
       event.preventDefault();
       const item = listbox.selected();
       if (item) {
-        selectItem(item.token);
+        selectLanguage(item.token);
       }
-      return;
-    }
-
-    let nItems = len(filteredItems);
-    if (nItems === 0) {
       return;
     }
 
@@ -67,14 +62,6 @@
     }
   }
 
-  function selectItem(token) {
-    selectLanguage(token);
-  }
-
-  function oninput(event) {
-    // reset selection
-    listbox.select(0);
-  }
   let listbox;
 </script>
 
@@ -87,13 +74,12 @@
   <input
     use:focus
     type="text"
-    {oninput}
     bind:value={filter}
     class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
   />
   <ListBox
     items={filteredItems}
-    onclick={(item) => selectItem(item.token)}
+    onclick={(item) => selectLanguage(item.token)}
     bind:this={listbox}
   >
     {#snippet renderItem(item)}

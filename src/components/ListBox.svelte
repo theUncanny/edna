@@ -6,6 +6,7 @@
     onclick: (any) => void,
     renderItem: any,
     selectionChanged?: (any, number) => void,
+    initialSelection?: number,
   }}*/
   let {
     items,
@@ -14,17 +15,40 @@
     selectionChanged = (el, idx) => {
       /* no op */
     },
+    initialSelection = 0,
   } = $props();
 
   let nItems = $derived(len(items));
-  let selectedIdx = $state(len(items) > 0 ? 0 : -1);
-  let refs = new Array(len(items));
+  let n = len(items);
+
+  if (initialSelection > n - 1) {
+    initialSelection = n - 1;
+  }
+  if (n === 0) {
+    initialSelection = -1;
+  }
+  let selectedIdx = $state(initialSelection);
+
+  let refs = new Array(n);
+
+  $effect(() => {
+    if (nItems > len(refs)) {
+      console.log("expanding refs to:", nItems);
+      refs.length = nItems;
+    }
+    // reset selection if changing items
+    if (nItems > 0) {
+      select(0);
+    } else {
+      select(-1);
+    }
+  });
 
   /**
    * @param {number} n
    */
   export function select(n) {
-    console.log("select:", n, "nItems:", nItems);
+    // console.log("select:", n, "nItems:", nItems);
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;
@@ -73,7 +97,7 @@
       onclick={() => onclick(item)}
       bind:this={refs[idx]}
     >
-      {@render renderItem(item)}
+      {@render renderItem(item, idx)}
     </li>
   {/each}
 </ul>

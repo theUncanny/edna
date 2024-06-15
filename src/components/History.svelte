@@ -2,6 +2,7 @@
   import { getHistory } from "../history";
   import { len } from "../util";
   import { focus } from "../actions";
+  import ListBox from "./ListBox.svelte";
 
   /** @type {{
     selectHistory: (name: string) => void,
@@ -32,7 +33,6 @@
     return items;
   }
 
-  let selectedIdx = $state(len(history) > 1 ? 1 : 0);
   let items = $state(buildItems());
 
   /**
@@ -40,11 +40,11 @@
    */
   function onkeydown(ev) {
     // console.log(ev);
-    let lastIdx = len(items) - 1;
     let key = ev.key;
 
     // '0' ... '9' picks an item
     let idx = key.charCodeAt(0) - "0".charCodeAt(0);
+    let lastIdx = len(items) - 1;
     if (idx >= 0 && idx <= lastIdx) {
       ev.preventDefault();
       let item = items[idx];
@@ -54,7 +54,7 @@
 
     if (key === "Enter") {
       ev.preventDefault();
-      const item = items[selectedIdx];
+      let item = listbox.selected();
       if (item) {
         selectItem(item.name);
       }
@@ -63,20 +63,13 @@
 
     if (key === "ArrowUp") {
       ev.preventDefault();
-      if (selectedIdx > 0) {
-        selectedIdx -= 1;
-      }
-      let el = items[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.up();
       return;
     }
+
     if (key === "ArrowDown") {
       ev.preventDefault();
-      if (selectedIdx < lastIdx) {
-        selectedIdx += 1;
-      }
-      let el = items[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.down();
       return;
     }
   }
@@ -84,6 +77,7 @@
   function selectItem(token) {
     selectHistory(token);
   }
+  let listbox;
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -98,25 +92,20 @@
   >
     Recently opened
   </div>
-  <ul class="items overflow-y-auto">
-    {#each items as item, idx (item.name)}
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <li
-        class:selected={idx === selectedIdx}
-        class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
-        onclick={() => {
-          selectItem(item.name);
-        }}
-        bind:this={item.ref}
-      >
-        <div class="truncate">
-          {item.name}
-        </div>
-        <div class="grow"></div>
-        {#if idx < 10}
-          <div class="ml-4 font-bold">{idx}</div>
-        {/if}
-      </li>
-    {/each}
-  </ul>
+  <ListBox
+    bind:this={listbox}
+    {items}
+    onclick={(item) => selectItem(item.name)}
+    initialSelection={1}
+  >
+    {#snippet renderItem(item, idx)}
+      <div class="truncate">
+        {item.name}
+      </div>
+      <div class="grow"></div>
+      {#if idx < 10}
+        <div class="ml-4 font-bold">{idx}</div>
+      {/if}
+    {/snippet}
+  </ListBox>
 </form>
