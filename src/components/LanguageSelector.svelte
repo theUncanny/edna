@@ -2,13 +2,13 @@
   import { LANGUAGES } from "../editor/languages.js";
   import { len } from "../util";
   import { focus } from "../actions.js";
+  import ListBox from "./ListBox.svelte";
 
   /** @type {{
     selectLanguage: (name: string) => void,
 }}*/
   let { selectLanguage } = $props();
 
-  let selected = $state(0);
   let filter = $state("");
 
   const items = LANGUAGES.map((l) => {
@@ -42,38 +42,27 @@
     let key = event.key;
     if (key === "Enter") {
       event.preventDefault();
-      const selectedItem = filteredItems[selected];
-      if (selectedItem) {
-        selectItem(selectedItem.token);
+      const item = listbox.selected();
+      if (item) {
+        selectItem(item.token);
       }
       return;
     }
+
     let nItems = len(filteredItems);
-    let selectedIdx = selected;
     if (nItems === 0) {
       return;
     }
 
     if (key === "ArrowUp") {
       event.preventDefault();
-      if (selectedIdx > 0) {
-        selectedIdx -= 1;
-      }
-      selected = selectedIdx;
-      let el = filteredItems[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.up();
       return;
     }
 
     if (key === "ArrowDown") {
       event.preventDefault();
-      let lastIdx = nItems - 1;
-      if (selectedIdx < lastIdx) {
-        selectedIdx += 1;
-      }
-      selected = selectedIdx;
-      let el = filteredItems[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.down();
       return;
     }
   }
@@ -84,8 +73,9 @@
 
   function oninput(event) {
     // reset selection
-    selected = 0;
+    listbox.select(0);
   }
+  let listbox;
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -101,17 +91,13 @@
     bind:value={filter}
     class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
   />
-  <ul class="items overflow-y-auto">
-    {#each filteredItems as item, idx (item.token)}
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <li
-        class:selected={idx === selected}
-        class="cursor-pointer py-0.5 px-2 rounded-sm leading-5"
-        onclick={() => selectItem(item.token)}
-        bind:this={item.ref}
-      >
-        {item.name}
-      </li>
-    {/each}
-  </ul>
+  <ListBox
+    items={filteredItems}
+    onclick={(item) => selectItem(item.token)}
+    bind:this={listbox}
+  >
+    {#snippet renderItem(item)}
+      <div>{item.name}</div>
+    {/snippet}
+  </ListBox>
 </form>
