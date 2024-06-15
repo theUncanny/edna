@@ -7,6 +7,7 @@
     sanitizeNoteName,
   } from "../notes";
   import { getAltChar, isAltNumEvent, len } from "../util";
+  import { focus } from "../actions";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -80,18 +81,6 @@
   let selected = $state(0);
   let filter = $state("");
   let altChar = $state(getAltChar());
-
-  /** @type {HTMLElement } */
-  let container;
-  /** @type {HTMLElement } */
-  let input;
-
-  $effect(() => {
-    if (container) {
-      container.focus();
-      input.focus();
-    }
-  });
 
   let sanitizedFilter = $derived.by(() => {
     return sanitizeNoteName(filter);
@@ -269,7 +258,7 @@
     }
     let key = event.key;
     let selectedIdx = selected;
-    let nFiltered = len(filteredItems);
+    let nItems = len(filteredItems);
 
     if (key === "Enter") {
       event.preventDefault();
@@ -297,19 +286,7 @@
       }
       return;
     }
-    if (nFiltered == 0) {
-      return;
-    }
-
-    if (key === "ArrowDown") {
-      event.preventDefault();
-      let lastIdx = nFiltered - 1;
-      if (selectedIdx < lastIdx) {
-        selectedIdx += 1;
-      }
-      selected = selectedIdx;
-      let el = filteredItems[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+    if (nItems == 0) {
       return;
     }
 
@@ -317,6 +294,18 @@
       event.preventDefault();
       if (selectedIdx > 0) {
         selectedIdx -= 1;
+      }
+      selected = selectedIdx;
+      let el = filteredItems[selectedIdx].ref;
+      el.scrollIntoView({ block: "nearest" });
+      return;
+    }
+
+    if (key === "ArrowDown") {
+      event.preventDefault();
+      let lastIdx = nItems - 1;
+      if (selectedIdx < lastIdx) {
+        selectedIdx += 1;
       }
       selected = selectedIdx;
       let el = filteredItems[selectedIdx].ref;
@@ -354,14 +343,13 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  bind:this={container}
   onkeydown={onKeydown}
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-4"
 >
   <input
     type="text"
-    bind:this={input}
+    use:focus
     oninput={onInput}
     bind:value={filter}
     class="py-1 px-2 bg-white w-full mb-2 rounded-sm"

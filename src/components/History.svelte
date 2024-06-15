@@ -35,9 +35,6 @@
   let selectedIdx = $state(len(history) > 1 ? 1 : 0);
   let items = $state(buildItems());
 
-  /** @type {HTMLElement} */
-  let container;
-
   /**
    * @param {KeyboardEvent} ev
    */
@@ -55,16 +52,11 @@
       return;
     }
 
-    if (key === "ArrowDown") {
+    if (key === "Enter") {
       ev.preventDefault();
-      if (selectedIdx < lastIdx) {
-        selectedIdx += 1;
-      }
-      if (selectedIdx === lastIdx) {
-        container.scrollIntoView({ block: "end" });
-      } else {
-        let el = items[selectedIdx].ref;
-        el.scrollIntoView({ block: "nearest" });
+      const item = items[selectedIdx];
+      if (item) {
+        selectItem(item.name);
       }
       return;
     }
@@ -74,21 +66,17 @@
       if (selectedIdx > 0) {
         selectedIdx -= 1;
       }
-      if (selectedIdx === 0) {
-        container.scrollIntoView({ block: "start" });
-      } else {
-        let el = items[selectedIdx].ref;
-        el.scrollIntoView({ block: "nearest" });
-      }
+      let el = items[selectedIdx].ref;
+      el.scrollIntoView({ block: "nearest" });
       return;
     }
-
-    if (key === "Enter") {
+    if (key === "ArrowDown") {
       ev.preventDefault();
-      const item = items[selectedIdx];
-      if (item) {
-        selectItem(item.name);
+      if (selectedIdx < lastIdx) {
+        selectedIdx += 1;
       }
+      let el = items[selectedIdx].ref;
+      el.scrollIntoView({ block: "nearest" });
       return;
     }
   }
@@ -102,7 +90,6 @@
 <form
   class="absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
   tabindex="-1"
-  bind:this={container}
   use:focus
   {onkeydown}
 >
