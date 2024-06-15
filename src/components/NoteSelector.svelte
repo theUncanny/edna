@@ -8,6 +8,7 @@
   } from "../notes";
   import { getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
+  import ListBox from "./ListBox.svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -76,9 +77,7 @@
     });
     return res;
   }
-  let itemsInitial = rebuildNotesInfo();
-  let items = $state(itemsInitial);
-  let selected = $state(0);
+  let itemsInitial = $state(rebuildNotesInfo());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -96,7 +95,7 @@
       let s = parts[i];
       parts[i] = s.trim();
     }
-    return items.filter((noteInfo) => {
+    return itemsInitial.filter((noteInfo) => {
       let s = noteInfo.nameLC;
       for (let p of parts) {
         if (s.indexOf(p) === -1) {
@@ -107,104 +106,47 @@
     });
   });
 
-  /**
-   * @returns {Item | null}
-   */
-  let selectedNote = $derived.by(() => {
-    if (filteredItems.length === 0) {
-      return null;
-    }
-    if (selected >= 0 && selected < filteredItems.length) {
-      return filteredItems[selected];
-    }
-    return null;
-  });
+  let selectedNote = $state(null);
+  let selectedName = $state("");
+  let canOpenSelected = $state(false);
+  let canCreate = $state(false);
+  let canCreateWithEnter = $state(false);
+  let canDeleteSelected = $state(false);
+  let showDelete = $state(false);
 
-  /**
-   * @returns {string}
-   */
-  let selectedName = $derived.by(() => {
-    let selected = selectedNote;
-    if (selected === null) {
-      return "";
-    }
-    return selected.name;
-  });
+  function selectionChanged(item, idx) {
+    console.log("selectionChanged:", item, idx);
+    selectedNote = item;
+    selectedName = item ? selectedNote.name : "";
+    canOpenSelected = !!selectedNote;
 
-  /**
-   * @returns {boolean}
-   */
-  let canOpenSelected = $derived.by(() => {
-    if (len(filteredItems) === 0) {
-      // console.log("canOpenSelected: no because len(filteredItems)=0");
-      return false;
-    }
-    if (selected < 0) {
-      // console.log("canOpenSelected: no becuase selected=", selected);
-      return false;
-    }
-    // log("canOpenSelected: yes, selected:", selected);
-    return true;
-  });
-
-  /**
-   * @returns {boolean}
-   */
-  let canCreate = $derived.by(() => {
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
-    // console.log("canCreate:", name);
-    if (len(name) === 0) {
-      // console.log(`canCreate: '${name}', no because len(name)=0`);
-      return false;
-    }
-    for (let item of items) {
-      if (item.name === name) {
-        // console.log(`canCreate: '${name}', no because matches existing name`);
-        return false;
+    canCreate = len(name) > 0;
+    for (let i of filteredItems) {
+      if (i.name === name) {
+        canCreate = false;
+        break;
       }
     }
-    // console.log(`canCreate: '${name}', yes`);
-    return true;
-  });
 
-  /**
-   * @returns {boolean}
-   */
-  let canCreateWithEnter = $derived.by(() => {
+    canCreateWithEnter = !canOpenSelected;
     // if there are no matches for the filter, we can create with just Enter
     // otherwise we need Ctrl + Enter
-    let name = sanitizedFilter;
     if (name.length === 0) {
-      return false;
+      canCreateWithEnter = false;
     }
-    return !canOpenSelected;
-  });
 
-  /**
-   * @returns {boolean}
-   */
-  let canDeleteSelected = $derived.by(() => {
-    if (!canOpenSelected) {
-      return false;
+    canDeleteSelected = false;
+    if (item && canOpenSelected) {
+      if (item.name !== "scratch" && !isSystemNoteName(item.name)) {
+        // can't delete scratch note or system notes
+        canDeleteSelected = true;
+      }
     }
-    const item = filteredItems[selected];
-    if (!item) {
-      return false;
-    }
-    // can't delete scratch note
-    if (item.name === "scratch") {
-      return false;
-    }
-    if (isSystemNoteName(item.name)) {
-      return false;
-    }
-    return true;
-  });
 
-  let showDelete = $derived.by(() => {
-    return canOpenSelected;
-  });
+    showDelete = canOpenSelected;
+  }
 
   /**
    * @param {string} name
@@ -251,14 +193,12 @@
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          items = rebuildNotesInfo();
+          itemsInitial = rebuildNotesInfo();
         });
         return;
       }
     }
     let key = event.key;
-    let selectedIdx = selected;
-    let nItems = len(filteredItems);
 
     if (key === "Enter") {
       event.preventDefault();
@@ -271,45 +211,33 @@
         emitCreateNote(sanitizedFilter);
         return;
       }
-      const selected = filteredItems[selectedIdx];
-      if (selected) {
-        emitOpenNote(selected);
+      if (selectedNote) {
+        emitOpenNote(selectedNote);
       }
     } else if (isCtrlDelete(event)) {
       event.preventDefault();
       if (!canDeleteSelected) {
         return;
       }
-      const selected = selectedNote;
-      if (selected) {
-        emitDeleteNote(selected.name);
+      if (selectedNote) {
+        emitDeleteNote(selectedNote.name);
       }
       return;
     }
+    let nItems = len(filteredItems);
     if (nItems == 0) {
       return;
     }
 
     if (key === "ArrowUp") {
       event.preventDefault();
-      if (selectedIdx > 0) {
-        selectedIdx -= 1;
-      }
-      selected = selectedIdx;
-      let el = filteredItems[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.up();
       return;
     }
 
     if (key === "ArrowDown") {
       event.preventDefault();
-      let lastIdx = nItems - 1;
-      if (selectedIdx < lastIdx) {
-        selectedIdx += 1;
-      }
-      selected = selectedIdx;
-      let el = filteredItems[selectedIdx].ref;
-      el.scrollIntoView({ block: "nearest" });
+      listbox.down();
       return;
     }
   }
@@ -337,8 +265,9 @@
 
   function onInput(event) {
     // reset selection
-    selected = 0;
+    listbox.select(0);
   }
+  let listbox;
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -354,23 +283,20 @@
     bind:value={filter}
     class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
   />
-  <ul class="items overflow-y-auto">
-    {#each filteredItems as item, idx (item.name)}
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <li
-        class:selected={idx === selected}
-        class="flex cursor-pointer py-0.5 px-2 rounded-sm leading-5"
-        onclick={() => emitOpenNote(item)}
-        bind:this={item.ref}
-      >
-        <div class="truncate {isSysNote(item) ? 'italic' : ''}">
-          {item.name}
-        </div>
-        <div class="grow"></div>
-        <div>{noteShortcut(item)}</div>
-      </li>
-    {/each}
-  </ul>
+  <ListBox
+    bind:this={listbox}
+    items={filteredItems}
+    {selectionChanged}
+    onclick={(item) => emitOpenNote(item)}
+  >
+    {#snippet renderItem(item)}
+      <div class="truncate {isSysNote(item) ? 'italic' : ''}">
+        {item.name}
+      </div>
+      <div class="grow"></div>
+      <div>{noteShortcut(item)}</div>
+    {/snippet}
+  </ListBox>
   {#if canOpenSelected || canDeleteSelected || filter.length > 0}
     <hr class="mt-1 mb-1 border-gray-400" />
   {/if}

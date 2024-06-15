@@ -5,25 +5,41 @@
     items: any[],
     onclick: (any) => void,
     renderItem: any,
+    selectionChanged?: (any, number) => void,
   }}*/
-  let { items, onclick, renderItem } = $props();
+  let {
+    items,
+    onclick,
+    renderItem,
+    selectionChanged = (el, idx) => {
+      /* no op */
+    },
+  } = $props();
 
-  let nItems = len(items);
-  let lastIdx = nItems - 1;
-  let selectedIdx = $state(nItems > 0 ? 0 : -1);
+  let nItems = $derived(len(items));
+  let selectedIdx = $state(len(items) > 0 ? 0 : -1);
+  let refs = new Array(len(items));
 
   /**
    * @param {number} n
    */
   export function select(n) {
+    console.log("select:", n, "nItems:", nItems);
     if (nItems <= 0) {
-      selectedIdx = -1;
+      if (selectedIdx != -1) {
+        selectedIdx = -1;
+        selectionChanged(null, -1);
+      }
       return;
     }
     selectedIdx = 0;
     if (n >= 0 && n < nItems) {
       selectedIdx = n;
     }
+    let ref = refs[selectedIdx];
+    ref.scrollIntoView({ block: "nearest" });
+    let item = items[selectedIdx];
+    selectionChanged(item, selectedIdx);
   }
 
   export function selected() {
@@ -31,19 +47,18 @@
   }
 
   export function up() {
-    if (selectedIdx > 0) {
-      selectedIdx -= 1;
+    if (nItems <= 0 || selectedIdx <= 0) {
+      return;
     }
-    let el = items[selectedIdx].ref;
-    el.scrollIntoView({ block: "nearest" });
+    select(selectedIdx - 1);
   }
 
   export function down() {
-    if (selectedIdx < lastIdx) {
-      selectedIdx += 1;
+    let lastIdx = nItems - 1;
+    if (nItems <= 0 || selectedIdx >= lastIdx) {
+      return;
     }
-    let el = items[selectedIdx].ref;
-    el.scrollIntoView({ block: "nearest" });
+    select(selectedIdx + 1);
   }
 </script>
 
@@ -54,9 +69,9 @@
     <li
       role="listitem"
       class:selected={idx === selectedIdx}
-      class="cursor-pointer py-0.5 px-2 rounded-sm leading-5"
+      class="cursor-pointer py-0.5 px-2 rounded-sm leading-5 flex"
       onclick={() => onclick(item)}
-      bind:this={item.ref}
+      bind:this={refs[idx]}
     >
       {@render renderItem(item)}
     </li>
