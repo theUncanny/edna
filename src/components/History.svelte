@@ -10,21 +10,24 @@
   let { selectHistory } = $props();
 
   /**
-   * @typedef {Object} HitoryItem
+   * @typedef {Object} HistoryItem
    * @property {string} name
+   * @property {string} key
    * @property {string} nameLC
    * @property {HTMLElement} ref
    */
   let history = getHistory();
   /**
-   * @return {HitoryItem[]}
+   * @returns {HistoryItem[]}
    */
   function buildItems() {
     let n = len(history);
+    /** @type {HistoryItem[]} */
     let items = Array(n);
     for (let i = 0; i < n; i++) {
       let el = history[i];
       items[i] = {
+        key: el,
         name: el,
         nameLC: el.toLowerCase(),
         ref: null,
@@ -82,7 +85,7 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  class="absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-3 focus:outline-none selector"
+  class="selector absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-2 focus:outline-none"
   tabindex="-1"
   use:focus
   {onkeydown}

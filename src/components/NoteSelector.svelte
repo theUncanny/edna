@@ -21,6 +21,7 @@
    * @typedef {Object} Item
    * @property {string} name
    * @property {string} nameLC
+   * @property {string} key
    * @property {number} [altShortcut] - -1 if no shortcut, 0 to 9 for Alt-0 to Alt-9
    * @property {HTMLElement} ref
    */
@@ -37,6 +38,7 @@
     for (let i = 0; i < len(noteNames); i++) {
       let name = noteNames[i];
       let item = {
+        key: name,
         name: name,
         nameLC: name.toLowerCase(),
         ref: null,
@@ -266,7 +268,7 @@
 <form
   onkeydown={onKeydown}
   tabindex="-1"
-  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-4"
+  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-2"
 >
   <input
     type="text"

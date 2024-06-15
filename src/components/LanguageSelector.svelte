@@ -12,6 +12,7 @@
 
   const items = LANGUAGES.map((l) => {
     return {
+      key: l.name,
       token: l.token,
       name: l.name,
       nameLC: l.name.toLowerCase(),
@@ -21,6 +22,7 @@
     return a.name.localeCompare(b.name);
   });
   items.unshift({
+    key: "auto",
     token: "auto",
     name: "Auto-detect",
     nameLC: "auto-detect",
@@ -68,7 +70,7 @@
 <form
   {onkeydown}
   tabindex="-1"
-  class="selector z-20 absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-3"
+  class="selector z-20 absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-2"
 >
   <input
     use:focus

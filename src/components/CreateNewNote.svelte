@@ -15,7 +15,7 @@
   });
 
   let canCreate = $derived.by(() => {
-    let name = sanitizedNewName;
+    let name = sanitizeNoteName(newName);
     if (name === "") {
       return false;
     }
@@ -24,12 +24,14 @@
   });
 
   let renameError = $derived.by(() => {
-    let name = sanitizedNewName;
+    let name = sanitizeNoteName(newName);
+    console.log(`renameError: newName: '${newName}', name: '${name}`);
     if (name === "") {
       return "name cannot be empty";
     }
     let noteNames = getLatestNoteNames();
     if (noteNames.includes(name)) {
+      console.log("already exists");
       return "name already exists";
     }
     return "";
@@ -50,7 +52,8 @@
   }
 
   function emitCreate() {
-    createNewNote(sanitizedNewName);
+    let name = sanitizeNoteName(newName);
+    createNewNote(name);
   }
 </script>
 
@@ -60,7 +63,7 @@
   {onkeydown}
   class="selector z-20 absolute center-x-with-translate top-[4rem] flex flex-col max-w-full p-3"
 >
-  <div>Create new note:</div>
+  <div>Create new note</div>
   <input
     bind:value={newName}
     use:focus

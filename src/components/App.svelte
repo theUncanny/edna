@@ -823,7 +823,7 @@
 </div>
 
 {#if showingCreateNewNote}
-  <Overlay onclose={closeCreateNewNote}>
+  <Overlay onclose={closeCreateNewNote} blur={true}>
     <CreateNewNote createNewNote={onCreateNote} onclose={closeCreateNewNote}
     ></CreateNewNote>
   </Overlay>
