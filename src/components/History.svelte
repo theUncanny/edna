@@ -127,7 +127,7 @@
         </div>
         <div class="grow"></div>
         {#if idx < 10}
-          <div>{idx}</div>
+          <div class="ml-4 font-bold">{idx}</div>
         {/if}
       </li>
     {/each}

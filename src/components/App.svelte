@@ -783,7 +783,7 @@
 {/if}
 
 {#if showingNoteSelector}
-  <Overlay onclose={closeNoteSelector}>
+  <Overlay onclose={closeNoteSelector} blur={true}>
     <NoteSelector
       openNote={onOpenNote}
       createNote={onCreateNote}
@@ -793,13 +793,13 @@
 {/if}
 
 {#if showingLanguageSelector}
-  <Overlay onclose={closeLanguageSelector}>
+  <Overlay onclose={closeLanguageSelector} blur={true}>
     <LanguageSelector selectLanguage={onSelectLanguage} />
   </Overlay>
 {/if}
 
 {#if showingHistorySelector}
-  <Overlay onclose={closeHistorySelector}>
+  <Overlay onclose={closeHistorySelector} blur={true}>
     <History selectHistory={onSelectHistory} />
   </Overlay>
 {/if}
@@ -809,13 +809,13 @@
 {/if}
 
 {#if showingRenameNote}
-  <Overlay onclose={closeRename}>
+  <Overlay onclose={closeRename} blur={true}>
     <RenameNote onclose={closeRename} rename={onRename} oldName={noteName} />
   </Overlay>
 {/if}
 
 {#if showingSettings}
-  <Overlay onclose={closeSettings}>
+  <Overlay onclose={closeSettings} blur={true}>
     <Settings></Settings>
   </Overlay>
 {/if}

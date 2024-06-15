@@ -7,8 +7,14 @@
    onclose?: () => void, // if given, will call it when clicked on overlay (but not on children)
    noCloseOnEsc?: boolean, // disable close() on Esc
    children: Function,
+   blur?: boolean,
 }} */
-  let { onclose = null, noCloseOnEsc = false, children } = $props();
+  let {
+    onclose = null,
+    noCloseOnEsc = false,
+    blur = false,
+    children,
+  } = $props();
 
   // if noCloseOnEsc is false, we must have onclose
   throwIf(!onclose && !noCloseOnEsc);
@@ -47,5 +53,12 @@
     {@render children()}
   </div>
   <!-- this captures the click outside of the actual element -->
-  <button {onclick} class="absolute inset-0 z-10"></button>
+  <button {onclick} class="absolute inset-0 z-10" class:bg-blur={blur}></button>
 </div>
+
+<style>
+  .bg-blur {
+    @apply bg-black;
+    @apply bg-opacity-50;
+  }
+</style>

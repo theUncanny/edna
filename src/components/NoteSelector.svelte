@@ -267,53 +267,13 @@
         return;
       }
     }
-    let nItems = len(filteredItems);
-    let selectedIdx = selected;
-
     let key = event.key;
-
-    if (key === "ArrowDown") {
-      event.preventDefault();
-      if (selectedIdx >= nItems - 1) {
-        // wrap around
-        selectedIdx = 0;
-      } else {
-        selectedIdx += 1;
-      }
-      selected = selectedIdx;
-      if (selectedIdx === nItems - 1) {
-        container.scrollIntoView({ block: "end" });
-      } else {
-        let el = filteredItems[selectedIdx].ref;
-        el.scrollIntoView({ block: "nearest" });
-      }
-      return;
-    }
-
-    if (key === "ArrowUp") {
-      event.preventDefault();
-      if (selectedIdx > 0) {
-        selectedIdx -= 1;
-      } else {
-        if (nItems > 1) {
-          // wrap around
-          selectedIdx = nItems - 1;
-        }
-      }
-      selected = selectedIdx;
-      if (selectedIdx === 0) {
-        container.scrollIntoView({ block: "start" });
-      } else {
-        let el = filteredItems[selectedIdx].ref;
-        el.scrollIntoView({ block: "nearest" });
-      }
-      return;
-    }
+    let selectedIdx = selected;
+    let nFiltered = len(filteredItems);
 
     if (key === "Enter") {
       event.preventDefault();
       let name = sanitizedFilter;
-      // console.log("selected:", selectedIdx, "name:", name);
       if (canCreateWithEnter) {
         emitCreateNote(name);
         return;
@@ -335,6 +295,32 @@
       if (selected) {
         emitDeleteNote(selected.name);
       }
+      return;
+    }
+    if (nFiltered == 0) {
+      return;
+    }
+
+    if (key === "ArrowDown") {
+      event.preventDefault();
+      let lastIdx = nFiltered - 1;
+      if (selectedIdx < lastIdx) {
+        selectedIdx += 1;
+      }
+      selected = selectedIdx;
+      let el = filteredItems[selectedIdx].ref;
+      el.scrollIntoView({ block: "nearest" });
+      return;
+    }
+
+    if (key === "ArrowUp") {
+      event.preventDefault();
+      if (selectedIdx > 0) {
+        selectedIdx -= 1;
+      }
+      selected = selectedIdx;
+      let el = filteredItems[selectedIdx].ref;
+      el.scrollIntoView({ block: "nearest" });
       return;
     }
   }
