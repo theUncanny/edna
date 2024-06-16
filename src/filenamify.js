@@ -22,22 +22,24 @@ function stringHexEscape(s) {
   return hexArray.join("");
 }
 
+// cc stands for "char code"
 const cc0 = "0".charCodeAt(0);
 const cc9 = "9".charCodeAt(0);
 const cca = "a".charCodeAt(0);
 const ccz = "z".charCodeAt(0);
 const ccA = "A".charCodeAt(0);
 const ccZ = "Z".charCodeAt(0);
+const ccPerc = "%".charCodeAt(0);
 
 // / ? < > \ : * | " <= those are not valid
 // I also decided not to include: ; ` '
 // % is used for escaping so also needs to be escaped
 // in the order of ascii table https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
-const validChars = " !#$()+,-.=@[]_()~";
+const charsNoEscape = " !#$()+,-.=@[]_()~";
 /** @type {number[]} */
-const cchValid = Array(validChars.length);
-for (let i = 0; i < validChars.length; i++) {
-  cchValid[i] = validChars.charCodeAt(i);
+const ccNoEscape = Array(charsNoEscape.length);
+for (let i = 0; i < charsNoEscape.length; i++) {
+  ccNoEscape[i] = charsNoEscape.charCodeAt(i);
 }
 
 /**
@@ -58,7 +60,7 @@ function charCodeNeedsEscaping(cc) {
   if (cc >= ccA && cc <= ccZ) {
     return false;
   }
-  return !cchValid.includes(cc);
+  return !ccNoEscape.includes(cc);
 }
 
 /**
@@ -85,10 +87,37 @@ export function toFileName(s) {
 }
 
 /**
+ * returns true
+ * @param {string} s
+ * @returns {boolean}
+ */
+export function isValidFileName(s) {
+  if (reInvalidFileNames.test(s)) {
+    return false;
+  }
+  // shouldn't contain chars
+  let n = s.length;
+  for (let i = 0; i < n; i++) {
+    let cc = s.charCodeAt(i);
+    if (cc === ccPerc) {
+      continue;
+    }
+    if (charCodeNeedsEscaping(cc)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * returns null if s is not a valid encoded file name
  * @param {string} s
  * @returns {string}
  */
 export function fromFileName(s) {
+  if (!isValidFileName(s)) {
+    return null;
+  }
   if (!s.includes("%")) {
     // perf: fast path for when not encoded
     return s;
