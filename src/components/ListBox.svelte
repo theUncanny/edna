@@ -1,5 +1,8 @@
 <script>
   import { len } from "../util";
+  import "overlayscrollbars/overlayscrollbars.css";
+  import { OverlayScrollbars } from "overlayscrollbars";
+  import { getActiveTheme } from "../settings";
 
   /** @type {{ 
     items: any[],
@@ -64,7 +67,7 @@
    */
   export function select(n) {
     let nItems = len(items);
-    console.log("select:", n, "nItems:", nItems);
+    // console.log("select:", n, "nItems:", nItems);
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;
@@ -76,7 +79,7 @@
     if (n >= 0 && n < nItems) {
       selectedIdx = n;
     }
-    console.log("selectedIdx:", selectedIdx);
+    // console.log("selectedIdx:", selectedIdx);
     let ref = refs[selectedIdx];
     ref.scrollIntoView({ block: "nearest" });
     let item = items[selectedIdx];
@@ -104,9 +107,29 @@
     }
     select(selectedIdx + 1);
   }
+
+  let listbox;
+  $effect(() => {
+    let theme = getActiveTheme();
+    // console.log("listbox overlay scrollbars, theme:", theme);
+    let opts = {};
+    if (theme === "dark") {
+      opts = {
+        scrollbars: {
+          theme: "os-theme-dark",
+        },
+      };
+    }
+    OverlayScrollbars(listbox, opts);
+  });
 </script>
 
-<ul class="items overflow-y-auto" role="listbox">
+<ul
+  class="items overflow-y-auto"
+  role="listbox"
+  bind:this={listbox}
+  data-overlayscrollbars-initialize
+>
   {#each items as item, idx (item.key)}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -124,7 +147,10 @@
 
 <style>
   .selected {
-    @apply text-white bg-gray-500;
+    @apply text-white bg-gray-400;
     @apply dark:text-opacity-85 dark:bg-gray-700;
+  }
+  :global(.os-scrollbar) {
+    --os-size: 10px;
   }
 </style>

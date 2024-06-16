@@ -67,6 +67,15 @@ export function updateWebsiteTheme() {
   }
 }
 
+// returns "light" or "dark"
+export function getActiveTheme() {
+  let el = document.documentElement;
+  if (el.classList.contains("dark")) {
+    return "dark";
+  }
+  return "light";
+}
+
 mediaMatch.addEventListener("change", async () => {
   if (settings.theme === "system") {
     console.log("change event listener");
