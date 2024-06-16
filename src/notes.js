@@ -1,4 +1,10 @@
-import { formatDateYYYYMMDDDay, isDev, len, throwIf } from "./util";
+import {
+  formatDateYYYYMMDDDay,
+  isDev,
+  len,
+  stripSuffix,
+  throwIf,
+} from "./util";
 import {
   fsReadTextFile,
   fsWriteTextFile,
@@ -17,6 +23,7 @@ import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
 import { dirtyState } from "./state.svelte";
+import { fromFileName } from "./filenamify";
 import sanitize from "sanitize-filename";
 
 // is set if we store notes on disk, null if in localStorage
@@ -199,15 +206,38 @@ function loadNoteNamesLS() {
 /** @type {string[]} */
 let latestNoteNames = [];
 
-function nameFromFileName(name) {
+/**
+ * returns null if not a valid name
+ * @param {string} fileName
+ * @returns {string}
+ */
+function nameFromFileName(fileName) {
   // strip edna file extensions
-  if (name.endsWith(kEdnaFileExt)) {
-    return name.substring(0, name.length - kEdnaFileExt.length);
+  let encodedName = stripSuffix(fileName, kEdnaFileExt);
+  if (encodedName === null) {
+    encodedName = stripSuffix(fileName, kEdnaEncrFileExt);
   }
-  if (name.endsWith(kEdnaEncrFileExt)) {
-    return name.substring(0, name.length - kEdnaEncrFileExt.length);
+  if (encodedName === null) {
+    // ignore files with extensions that aren't ours
+    console.log(
+      "nameFromFileName: ignoring file with unknown extension:",
+      fileName,
+    );
+    return null;
   }
-  throwIf(true, `invalid file name '${name}'`);
+  if (true) {
+    return encodedName;
+  }
+  // TODO: for now disabled
+  let name = fromFileName(encodedName);
+  if (!name) {
+    console.log(
+      "nameFromFileName: ignoring improperly encoded file name:",
+      fileName,
+    );
+    return null;
+  }
+  return name;
 }
 
 /**
@@ -234,11 +264,14 @@ async function loadNoteNamesFS(dh = null) {
   for (let e of fsEntries.dirEntries) {
     let fileName = e.name;
     let name = nameFromFileName(fileName);
-    res.push(name);
+    if (name) {
+      res.push(name);
+    }
   }
   // console.log("loadNoteNamesFS() res:", res);
   return res;
 }
+
 /**
  * @returns {Promise<string[]>}
  */
@@ -251,7 +284,7 @@ export async function loadNoteNames() {
   } else {
     res = await loadNoteNamesFS(dh);
   }
-  // TODO: filter out empty names, can be created maliciously or due to a bug
+  // filter out empty names, can be created maliciously or due to a bug
   res = res.filter((s) => s != "");
   latestNoteNames = res;
   // console.log("loadNoteNames() res:", res);

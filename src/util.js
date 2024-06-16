@@ -206,7 +206,7 @@ let sleepSetTimeout_ctrl;
 export function sleep(ms) {
   clearInterval(sleepSetTimeout_ctrl);
   return new Promise(
-    (resolve) => (sleepSetTimeout_ctrl = setTimeout(resolve, ms))
+    (resolve) => (sleepSetTimeout_ctrl = setTimeout(resolve, ms)),
   );
 }
 
@@ -254,4 +254,17 @@ export function splitMax(s, sep, max) {
   let restStr = restParts.join(sep);
   parts[max - 1] = restStr;
   return parts.slice(0, max);
+}
+
+/**
+ * returns null if string doesn't have suffix
+ * @param {string} s
+ * @param {string} suffix
+ * @returns {string}
+ */
+export function stripSuffix(s, suffix) {
+  if (!s.endsWith(suffix)) {
+    return null;
+  }
+  return s.substring(0, s.length - suffix.length);
 }
