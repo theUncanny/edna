@@ -134,9 +134,9 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <li
-      role="listitem"
-      class:selected={idx === selectedIdx}
-      class="cursor-pointer py-0.5 px-2 rounded-sm leading-5 flex dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600"
+      role="option"
+      aria-selected={idx === selectedIdx}
+      class="cursor-pointer py-0.5 px-2 leading-5 flex dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 aria-selected:text-white aria-selected:bg-gray-400 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
       onclick={() => onclick(item)}
       bind:this={refs[idx]}
     >
@@ -146,10 +146,6 @@
 </ul>
 
 <style>
-  .selected {
-    @apply text-white bg-gray-400;
-    @apply dark:text-opacity-85 dark:bg-gray-700;
-  }
   :global(.os-scrollbar) {
     --os-size: 10px;
   }
