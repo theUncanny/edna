@@ -58,7 +58,7 @@
 
 <style>
   .bg-blur {
-    @apply bg-black bg-opacity-50;
-    @apply dark:bg-gray-400 dark:bg-opacity-30;
+    @apply bg-black/50;
+    @apply dark:bg-gray-400/30;
   }
 </style>
