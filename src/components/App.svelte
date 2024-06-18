@@ -273,15 +273,20 @@
     if (idx > 0) {
       s = s.substring(0, idx);
     }
+    // trim "#" at the beginning for markdown nodes
+    while (s[0] === "#") {
+      s = s.substring(1);
+    }
+    s = s.trim();
     if (len(s) === 0) {
-      s = "(empty)";
+      return "(empty)";
     }
     return s;
   }
 
   /** @type {import("./BlockSelector.svelte").Item[]} */
   let blockItems = $state([]);
-  let initialBlockSelection = 0;
+  let initialBlockSelection = $state(0);
 
   function openBlockSelector() {
     let blocks = getEditor().getBlocks();
