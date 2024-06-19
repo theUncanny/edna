@@ -64,13 +64,13 @@
       return;
     }
 
-    if (key === "ArrowUp") {
+    if (key === "ArrowUp" || key === "ArrowLeft") {
       ev.preventDefault();
       listbox.up();
       return;
     }
 
-    if (key === "ArrowDown") {
+    if (key === "ArrowDown" || key === "ArrowRight") {
       ev.preventDefault();
       listbox.down();
       return;

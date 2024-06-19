@@ -142,9 +142,9 @@
   });
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    */
-  function onKeyDown(event) {
+  function onKeyDown(ev) {
     // if (event.key === "Escape") {
     //   if (isShowingDialog) {
     //     return;
@@ -173,7 +173,7 @@
     // TODO: can I do this better? The same keydown event that sets the Alt-N shortcut
     // in NoteSelector also seems to propagate here and immediately opens the note.
     if (!showingNoteSelector) {
-      let altN = isAltNumEvent(event);
+      let altN = isAltNumEvent(ev);
       // console.log("onKeyDown: e:", e, "altN:", altN)
       if (altN) {
         let meta = getNotesMetadata();
@@ -181,7 +181,7 @@
           if (o.altShortcut == altN && o.name !== noteName) {
             // console.log("onKeyDown: opening note: ", o.name, " altN:", altN, " e:", e)
             openNote(o.name);
-            event.preventDefault();
+            ev.preventDefault();
             return;
           }
         }
@@ -190,11 +190,11 @@
 
     // hack: stop Ctrl + O unless it originates from code mirror (because then it
     // triggers NoteSelector.vue)
-    if (event.key == "o" && event.ctrlKey && !event.altKey && !event.shiftKey) {
-      let target = /** @type {HTMLElement} */ (event.target);
+    if (ev.key == "o" && ev.ctrlKey && !ev.altKey && !ev.shiftKey) {
+      let target = /** @type {HTMLElement} */ (ev.target);
       let fromCodeMirror = target && target.className.includes("cm-content");
       if (!fromCodeMirror) {
-        event.preventDefault();
+        ev.preventDefault();
       }
     }
   }

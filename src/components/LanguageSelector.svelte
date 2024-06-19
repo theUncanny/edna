@@ -37,12 +37,12 @@
   });
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    */
-  function onkeydown(event) {
-    let key = event.key;
+  function onkeydown(ev) {
+    let key = ev.key;
     if (key === "Enter") {
-      event.preventDefault();
+      ev.preventDefault();
       const item = listbox.selected();
       if (item) {
         selectLanguage(item.token);
@@ -50,14 +50,14 @@
       return;
     }
 
-    if (key === "ArrowUp") {
-      event.preventDefault();
+    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
+      ev.preventDefault();
       listbox.up();
       return;
     }
 
-    if (key === "ArrowDown") {
-      event.preventDefault();
+    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
+      ev.preventDefault();
       listbox.down();
       return;
     }

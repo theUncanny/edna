@@ -167,13 +167,11 @@
   }
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    * @returns {boolean}
    */
-  function isCtrlDelete(event) {
-    return (
-      (event.key === "Delete" || event.key === "Backspace") && event.ctrlKey
-    );
+  function isCtrlDelete(ev) {
+    return (ev.key === "Delete" || ev.key === "Backspace") && ev.ctrlKey;
   }
 
   /**
@@ -185,13 +183,13 @@
   }
 
   /**
-   * @param {KeyboardEvent} event
+   * @param {KeyboardEvent} ev
    */
-  function onKeydown(event) {
+  function onKeydown(ev) {
     // console.log("onKeyDown:", event);
-    let altN = isAltNumEvent(event);
+    let altN = isAltNumEvent(ev);
     if (altN !== null) {
-      event.preventDefault();
+      ev.preventDefault();
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
@@ -200,24 +198,24 @@
         return;
       }
     }
-    let key = event.key;
+    let key = ev.key;
 
     if (key === "Enter") {
-      event.preventDefault();
+      ev.preventDefault();
       let name = sanitizedFilter;
       if (canCreateWithEnter) {
         emitCreateNote(name);
         return;
       }
-      if (event.ctrlKey && canCreate) {
+      if (ev.ctrlKey && canCreate) {
         emitCreateNote(sanitizedFilter);
         return;
       }
       if (selectedNote) {
         emitOpenNote(selectedNote);
       }
-    } else if (isCtrlDelete(event)) {
-      event.preventDefault();
+    } else if (isCtrlDelete(ev)) {
+      ev.preventDefault();
       if (!canDeleteSelected) {
         return;
       }
@@ -227,26 +225,14 @@
       return;
     }
 
-    if (key === "ArrowUp") {
-      event.preventDefault();
+    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
+      ev.preventDefault();
       listbox.up();
       return;
     }
 
-    if (key === "ArrowLeft" && filter === "") {
-      event.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown") {
-      event.preventDefault();
-      listbox.down();
-      return;
-    }
-
-    if (key === "ArrowRight" && filter === "") {
-      event.preventDefault();
+    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
+      ev.preventDefault();
       listbox.down();
       return;
     }
