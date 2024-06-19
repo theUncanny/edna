@@ -384,53 +384,51 @@
     return nextMenuID;
   }
 
-  export const MENU_OPEN_NOTE = nmid();
-  export const MENU_CREATE_NEW_NOTE = nmid();
-  export const MENU_RENAME_CURRENT_NOTE = nmid();
-  export const MENU_DELETE_CURRENT_NOTE = nmid();
-  export const MENU_CREATE_SCRATCH_NOTE = nmid();
-  export const MENU_BLOCK_AFTER_CURR = nmid();
-  export const MENU_BLOCK_BEFORE_CURR = nmid();
-  export const MENU_BLOCK_AT_END = nmid();
-  export const MENU_BLOCK_AT_START = nmid();
-  export const MENU_BLOCK_SPLIT_AT_CURSOR = nmid();
-  export const MENU_BLOCK_GOTO_NEXT = nmid();
-  export const MENU_BLOCK_GOTO_PREV = nmid();
-  export const MENU_BLOCK_CHANGE_LANG = nmid();
-  export const MENU_BLOCK_SELECTALL = nmid();
-  export const MENU_BLOCK_FORMAT = nmid();
-  export const MENU_BLOCK_RUN = nmid();
-  export const MENU_TOGGLE_SPELL_CHECKING = nmid();
-  export const MENU_HELP = nmid();
-  export const MENU_HELP_AS_NOTE = nmid();
-  export const MENU_HELP_RELEASE_NOTES = nmid();
-  export const MENU_MOVE_NOTES_TO_DIRECTORY = nmid();
-  export const MENU_SWITCH_TO_NOTES_IN_DIR = nmid();
-  export const MENU_SWITCH_TO_LOCAL_STORAGE = nmid();
-  export const MENU_EXPORT_NOTES = nmid();
-  export const MENU_SHOW_EXPORT_HELP = nmid();
+  export const kCmdOpenNote = nmid();
+  export const kCmdCreateNewNote = nmid();
+  export const kCmdRenameCurrentNote = nmid();
+  export const kCmdDeleteCurrentNote = nmid();
+  export const kCmdCreateScratchNote = nmid();
+  export const kCmdNewBlockAfterCurrent = nmid();
+  export const kCmdNewBlockBeforeCurrent = nmid();
+  export const kCmdNewBlockAtEnd = nmid();
+  export const kCmdNewBlockAtStart = nmid();
+  export const kCmdSplitBlockAtCursor = nmid();
+  export const kCmdGoToNextBlock = nmid();
+  export const kCmdGoToPreviousBlock = nmid();
+  export const kCmdChangeBlockLanguage = nmid();
+  export const kCmdBlockSelectAll = nmid();
+  export const kCmdFormatBlock = nmid();
+  export const kCmdRunBlock = nmid();
+  export const kCmdToggleSpellChecking = nmid();
+  export const kCmdShowHelp = nmid();
+  export const kCmdShowHelpAsNote = nmid();
+  export const kCmdShowReleaseNotes = nmid();
+  export const kCmdMoveNotesToDirectory = nmid();
+  export const kCmdSwitchToNotesInDir = nmid();
+  export const kCmdSwitchToLocalStorage = nmid();
+  export const kCmdExportNotes = nmid();
+  export const kCmdShowExportHelp = nmid();
+  export const kCmdSettings = nmid();
 
   function buildMenuDef() {
     const menuNote = [
-      ["Rename", MENU_RENAME_CURRENT_NOTE],
-      ["Delete", MENU_DELETE_CURRENT_NOTE],
+      ["Rename", kCmdRenameCurrentNote],
+      ["Delete", kCmdDeleteCurrentNote],
     ];
 
     const menuBlock = [
-      ["And after current\tMod + Enter", MENU_BLOCK_AFTER_CURR],
-      ["Add before current\tAlt + Enter", MENU_BLOCK_BEFORE_CURR],
-      ["Add at end\tMod + Shift + Enter", MENU_BLOCK_AT_END],
-      ["Add at start\tAlt + Shift + Enter", MENU_BLOCK_AT_START],
-      [
-        "Split at cursor position\tMod + Alt + Enter",
-        MENU_BLOCK_SPLIT_AT_CURSOR,
-      ],
-      ["Goto next\tMod + Down", MENU_BLOCK_GOTO_NEXT],
-      ["Goto previous\tMod + Up", MENU_BLOCK_GOTO_PREV],
-      ["Change language\tMod + L", MENU_BLOCK_CHANGE_LANG],
-      ["Select all text\tMod + A", MENU_BLOCK_SELECTALL],
-      ["Format as " + language + "\tAlt + Shift + F", MENU_BLOCK_FORMAT],
-      ["Run " + language + "\tAlt + Shift + R", MENU_BLOCK_RUN],
+      ["And after current\tMod + Enter", kCmdNewBlockAfterCurrent],
+      ["Add before current\tAlt + Enter", kCmdNewBlockBeforeCurrent],
+      ["Add at end\tMod + Shift + Enter", kCmdNewBlockAtEnd],
+      ["Add at start\tAlt + Shift + Enter", kCmdNewBlockAtStart],
+      ["Split at cursor position\tMod + Alt + Enter", kCmdSplitBlockAtCursor],
+      ["Goto next\tMod + Down", kCmdGoToNextBlock],
+      ["Goto previous\tMod + Up", kCmdGoToPreviousBlock],
+      ["Change language\tMod + L", kCmdChangeBlockLanguage],
+      ["Select all text\tMod + A", kCmdBlockSelectAll],
+      ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
+      ["Run " + language + "\tAlt + Shift + R", kCmdRunBlock],
     ];
 
     let dh = getStorageFS();
@@ -440,32 +438,32 @@
     }
     const menuStorage = [
       [currStorage, kMenuIdJustText],
-      ["Move notes from browser to directory", MENU_MOVE_NOTES_TO_DIRECTORY],
-      ["Switch to browser (localStorage)", MENU_SWITCH_TO_LOCAL_STORAGE],
-      ["Switch to notes in a directory", MENU_SWITCH_TO_NOTES_IN_DIR],
+      ["Move notes from browser to directory", kCmdMoveNotesToDirectory],
+      ["Switch to browser (localStorage)", kCmdSwitchToLocalStorage],
+      ["Switch to notes in a directory", kCmdSwitchToNotesInDir],
       kMenuSeparator,
-      ["Export notes to .zip file", MENU_EXPORT_NOTES],
+      ["Export notes to .zip file", kCmdExportNotes],
       kMenuSeparator,
-      ["Show help", MENU_SHOW_EXPORT_HELP],
+      ["Show help", kCmdShowExportHelp],
     ];
 
     const menuHelp = [
-      ["Show help", MENU_HELP],
-      ["Show help as note", MENU_HELP_AS_NOTE],
-      ["Release notes", MENU_HELP_RELEASE_NOTES],
+      ["Show help", kCmdShowHelp],
+      ["Show help as note", kCmdShowHelpAsNote],
+      ["Release notes", kCmdShowReleaseNotes],
     ];
 
     let spelling = (isSpellChecking ? "Disable" : "Enable") + " spell checking";
 
     const contextMenu = [
-      ["Open note\tMod + P", MENU_OPEN_NOTE],
-      ["Create new note", MENU_CREATE_NEW_NOTE],
-      ["Create new scratch note\tAlt + N", MENU_CREATE_SCRATCH_NOTE],
+      ["Open note\tMod + P", kCmdOpenNote],
+      ["Create new note", kCmdCreateNewNote],
+      ["Create new scratch note\tAlt + N", kCmdCreateScratchNote],
       ["This Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],
-      [spelling, MENU_TOGGLE_SPELL_CHECKING],
-      kMenuSeparator,
+      [spelling, kCmdToggleSpellChecking],
+      ["Settings", kCmdSettings],
       ["Help", menuHelp],
       ["Tip: Ctrl + click for browser's context menu", kMenuIdJustText],
     ];
@@ -488,15 +486,15 @@
     let dh = getStorageFS();
     // console.log("dh:", dh);
     let hasFS = supportsFileSystem();
-    if (mid === MENU_BLOCK_FORMAT) {
+    if (mid === kCmdFormatBlock) {
       if (!langSupportsFormat(lang)) {
         return kMenuStatusRemoved;
       }
-    } else if (mid === MENU_BLOCK_RUN) {
+    } else if (mid === kCmdRunBlock) {
       if (!langSupportsRun(lang)) {
         return kMenuStatusRemoved;
       }
-    } else if (mid === MENU_MOVE_NOTES_TO_DIRECTORY) {
+    } else if (mid === kCmdMoveNotesToDirectory) {
       if (!hasFS) {
         return kMenuStatusRemoved;
       }
@@ -504,7 +502,7 @@
         // currently using directory
         return kMenuStatusRemoved;
       }
-    } else if (mid == MENU_SWITCH_TO_LOCAL_STORAGE) {
+    } else if (mid == kCmdSwitchToLocalStorage) {
       if (!hasFS) {
         return kMenuStatusRemoved;
       }
@@ -512,7 +510,7 @@
         // currently using local storage
         return kMenuStatusRemoved;
       }
-    } else if (mid == MENU_SWITCH_TO_NOTES_IN_DIR) {
+    } else if (mid == kCmdSwitchToNotesInDir) {
       if (!hasFS) {
         return kMenuStatusRemoved;
       }
@@ -532,56 +530,58 @@
       ev.stopPropagation();
     }
     showingMenu = false;
-    if (cmdId == MENU_OPEN_NOTE) {
+    if (cmdId === kCmdOpenNote) {
       openNoteSelector();
-    } else if (cmdId == MENU_CREATE_NEW_NOTE) {
+    } else if (cmdId === kCmdCreateNewNote) {
       openCreateNewNote();
-    } else if (cmdId == MENU_RENAME_CURRENT_NOTE) {
+    } else if (cmdId === kCmdRenameCurrentNote) {
       showingRenameNote = true;
-    } else if (cmdId == MENU_DELETE_CURRENT_NOTE) {
+    } else if (cmdId === kCmdDeleteCurrentNote) {
       deleteCurrentNote();
-    } else if (cmdId == MENU_CREATE_SCRATCH_NOTE) {
+    } else if (cmdId === kCmdCreateScratchNote) {
       await createScratchNote();
-    } else if (cmdId == MENU_BLOCK_AFTER_CURR) {
+    } else if (cmdId === kCmdNewBlockAfterCurrent) {
       getEditor().addNewBlockAfterCurrent();
-    } else if (cmdId == MENU_BLOCK_BEFORE_CURR) {
+    } else if (cmdId === kCmdNewBlockBeforeCurrent) {
       getEditor().addNewBlockBeforeCurrent();
-    } else if (cmdId == MENU_BLOCK_AT_END) {
+    } else if (cmdId === kCmdNewBlockAtEnd) {
       getEditor().addNewBlockAfterLast();
-    } else if (cmdId == MENU_BLOCK_AT_START) {
+    } else if (cmdId === kCmdNewBlockAtStart) {
       getEditor().addNewBlockBeforeFirst();
-    } else if (cmdId == MENU_BLOCK_SPLIT_AT_CURSOR) {
+    } else if (cmdId === kCmdSplitBlockAtCursor) {
       getEditor().insertNewBlockAtCursor();
-    } else if (cmdId == MENU_BLOCK_GOTO_NEXT) {
+    } else if (cmdId === kCmdGoToNextBlock) {
       getEditor().gotoNextBlock();
-    } else if (cmdId == MENU_BLOCK_GOTO_PREV) {
+    } else if (cmdId === kCmdGoToPreviousBlock) {
       getEditor().gotoPreviousBlock();
-    } else if (cmdId == MENU_BLOCK_CHANGE_LANG) {
+    } else if (cmdId === kCmdChangeBlockLanguage) {
       openLanguageSelector();
-    } else if (cmdId == MENU_BLOCK_SELECTALL) {
+    } else if (cmdId === kCmdBlockSelectAll) {
       getEditor().selectAll();
-    } else if (cmdId == MENU_BLOCK_FORMAT) {
+    } else if (cmdId === kCmdFormatBlock) {
       getEditor().formatCurrentBlock();
-    } else if (cmdId == MENU_BLOCK_RUN) {
+    } else if (cmdId === kCmdRunBlock) {
       getEditor().runCurrentBlock();
-    } else if (cmdId == MENU_TOGGLE_SPELL_CHECKING) {
+    } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
-    } else if (cmdId == MENU_HELP) {
+    } else if (cmdId === kCmdShowHelp) {
       showHelp();
-    } else if (cmdId == MENU_HELP_AS_NOTE) {
+    } else if (cmdId === kCmdShowHelpAsNote) {
       showHelpAsNote();
-    } else if (cmdId == MENU_HELP_RELEASE_NOTES) {
+    } else if (cmdId === kCmdShowReleaseNotes) {
       showReleaseNotes();
-    } else if (cmdId == MENU_MOVE_NOTES_TO_DIRECTORY) {
+    } else if (cmdId === kCmdMoveNotesToDirectory) {
       storeNotesOnDisk();
-    } else if (cmdId == MENU_SWITCH_TO_NOTES_IN_DIR) {
+    } else if (cmdId === kCmdSwitchToNotesInDir) {
       await pickAnotherDirectory2();
-    } else if (cmdId == MENU_SWITCH_TO_LOCAL_STORAGE) {
+    } else if (cmdId === kCmdSwitchToLocalStorage) {
       await switchToBrowserStorage();
-    } else if (cmdId == MENU_EXPORT_NOTES) {
+    } else if (cmdId === kCmdExportNotes) {
       exportNotesToZipFile();
-    } else if (cmdId == MENU_SHOW_EXPORT_HELP) {
+    } else if (cmdId === kCmdShowExportHelp) {
       showHelp("#storing-notes-on-disk");
+    } else if (cmdId === kCmdSettings) {
+      openSettings();
     } else {
       console.log("unknown menu cmd id");
     }
