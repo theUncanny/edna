@@ -1,5 +1,9 @@
 # Release notes for Edna
 
+## 1.6
+
+- added optional encryption of notes
+
 ## 1.5
 
 - added Ctrl + B for quickly navigating between blocks

@@ -9,6 +9,9 @@
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
   import Toaster, { addToast } from "./Toaster.svelte";
+  import EnterEncryptPassword from "./EnterEncryptPassword.svelte";
+  import EnterDecryptPassword from "./EnterDecryptPassword.svelte";
+  import BlockSelector from "./BlockSelector.svelte";
   import Menu, {
     kMenuIdJustText,
     kMenuSeparator,
@@ -59,7 +62,6 @@
   } from "../editor/languages";
   import { exportNotesToZip } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
-  import BlockSelector from "./BlockSelector.svelte";
 
   let initialSettings = getSettings();
 
@@ -100,6 +102,8 @@
       showingNoteSelector ||
       showingCreateNewNote ||
       showingBlockSelector ||
+      showingDecryptPassword ||
+      showingEncryptPassword ||
       showingSettings
     );
   });
@@ -113,6 +117,7 @@
     createScratchNote: createScratchNote,
     openContextMenu: openContextMenu,
     openBlockSelector: openBlockSelector,
+    getPassword: getPassword,
   };
   setGlobalFuncs(gf);
 
@@ -219,6 +224,41 @@
     }
     await boot();
     await preLoadAllNotes();
+  }
+
+  let showingDecryptPassword = $state(false);
+  let closeDecryptPassword;
+  let onDecryptPassword;
+  async function getPassword() {
+    showingDecryptPassword = true;
+    return new Promise((resolve, reject) => {
+      onDecryptPassword = (pwd) => {
+        resolve(pwd);
+        showingDecryptPassword = false;
+      };
+      closeDecryptPassword = () => {
+        resolve("");
+        showingDecryptPassword = false;
+      };
+    });
+  }
+
+  function openDecryptNotes() {
+    // TODO: implement me
+    throw new Error("NYI");
+  }
+
+  let showingEncryptPassword = $state(false);
+  function openEncryptPassword() {
+    showingEncryptPassword = true;
+  }
+  function closeEncryptPassword() {
+    showingEncryptPassword = false;
+    getEditor().focus();
+  }
+  function onEncryptPassword(pwd) {
+    console.log("got encryption password:", pwd);
+    closeEncryptPassword();
   }
 
   function exportNotesToZipFile() {
@@ -400,7 +440,6 @@
   export const kCmdBlockSelectAll = nmid();
   export const kCmdFormatBlock = nmid();
   export const kCmdRunBlock = nmid();
-  export const kCmdToggleSpellChecking = nmid();
   export const kCmdShowHelp = nmid();
   export const kCmdShowHelpAsNote = nmid();
   export const kCmdShowReleaseNotes = nmid();
@@ -408,6 +447,9 @@
   export const kCmdSwitchToNotesInDir = nmid();
   export const kCmdSwitchToLocalStorage = nmid();
   export const kCmdExportNotes = nmid();
+  export const kCmdEncryptNotes = nmid();
+  export const kCmdDecryptNotes = nmid();
+  export const kCmdToggleSpellChecking = nmid();
   export const kCmdShowExportHelp = nmid();
   export const kCmdSettings = nmid();
 
@@ -447,6 +489,11 @@
       ["Show help", kCmdShowExportHelp],
     ];
 
+    const menuEncrypt = [
+      ["Encrypt all notes", kCmdEncryptNotes],
+      ["Decrypt all notes", kCmdDecryptNotes],
+    ];
+
     const menuHelp = [
       ["Show help", kCmdShowHelp],
       ["Show help as note", kCmdShowHelpAsNote],
@@ -462,6 +509,7 @@
       ["This Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],
+      ["Encryption", menuEncrypt],
       [spelling, kCmdToggleSpellChecking],
       ["Settings", kCmdSettings],
       ["Help", menuHelp],
@@ -582,6 +630,10 @@
       showHelp("#storing-notes-on-disk");
     } else if (cmdId === kCmdSettings) {
       openSettings();
+    } else if (cmdId === kCmdEncryptNotes) {
+      openEncryptPassword();
+    } else if (cmdId === kCmdDecryptNotes) {
+      openDecryptNotes();
     } else {
       console.log("unknown menu cmd id");
     }
@@ -910,5 +962,23 @@
       menuDef={contextMenuDef}
       ev={contextMenuEv}
     />
+  </Overlay>
+{/if}
+
+{#if showingEncryptPassword}
+  <Overlay onclose={closeEncryptPassword} blur={true}>
+    <EnterEncryptPassword
+      onclose={closeEncryptPassword}
+      onpassword={onEncryptPassword}
+    ></EnterEncryptPassword>
+  </Overlay>
+{/if}
+
+{#if showingDecryptPassword}
+  <Overlay onclose={closeDecryptPassword} blur={true}>
+    <EnterDecryptPassword
+      onclose={closeDecryptPassword}
+      onpassword={onDecryptPassword}
+    ></EnterDecryptPassword>
   </Overlay>
 {/if}

@@ -149,14 +149,23 @@ function addTargetBlank(md) {
     // If you are using linkify to automatically detect links, you might want to
     // check if it's an external link here. You can do so based on tokens[idx].href
 
-    // Add target="_blank" to all links
-    var aIndex = tokens[idx].attrIndex("target");
-    if (aIndex < 0) {
-      tokens[idx].attrPush(["target", "_blank"]); // add new attribute
-    } else {
-      tokens[idx].attrs[aIndex][1] = "_blank"; // replace existing attribute
+    // Add target="_blank" to links except the internal #foo links
+    let token = tokens[idx];
+    // console.log("token:", token);
+    // console.log("token.attrs:", token.attrs);
+    let aidx = token.attrIndex("href");
+    let uri = token.attrs[aidx][1];
+    if (uri.startsWith("#")) {
+      // console.log("skipping uri: ", uri);
+      return defaultRender(tokens, idx, options, env, self);
     }
-
+    aidx = token.attrIndex("target");
+    if (aidx < 0) {
+      token.attrPush(["target", "_blank"]); // add new attribute
+    } else {
+      token.attrs[aidx][1] = "_blank"; // replace existing attribute
+    }
+    // console.log("added to uri: ", uri);
     // pass token to default renderer.
     return defaultRender(tokens, idx, options, env, self);
   };
@@ -166,13 +175,12 @@ function genHTMLFromMarkdown() {
   let md = markdownIt({
     linkify: true,
   });
+  md.use(addTargetBlank);
   md.use(markdownItAnchor, {
     // Here you can pass options to markdown-it-anchor
     // For example, setting the permalink option:
     permalink: markdownItAnchor.permalink.headerLink(),
   });
-
-  md.use(addTargetBlank);
 
   {
     let mdText = cleanMd(getHelp("windows"));

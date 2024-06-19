@@ -197,6 +197,34 @@ Please note that that the last written version wins. If you switch really quickl
 
 ∞∞∞markdown
 
+# Encryption
+
+You can optionally encrypt notes with a password.
+
+The password is not sent anywhere. It's only stored in your browser (in local storage).
+
+Encryption and decryption takes place in your browser.
+
+If you loose the password, you'll loose access the to your notes. **Don't loose the password**.
+
+We use [kiss-crypto](https://github.com/team-reflect/kiss-crypto) for encryption.
+
+## Picking good password
+
+Good password is:
+
+- long (the longer the password, the harder it's to brute force crack it)
+- easy to type
+- easy to remember
+
+We recommend passwords that are long, memorable phrases.
+
+Example: "Blue bear attacked a tiny dog".
+
+Such passwords are easier to type and remember than "8a$7y!glo" that most services for you into.
+
+∞∞∞markdown
+
 # Exporting notes to a .zip file
 
 There's no lock in with Edna.
