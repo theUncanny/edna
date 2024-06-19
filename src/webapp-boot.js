@@ -3,6 +3,7 @@ import "./main.css";
 import {
   createDefaultNotes,
   dbGetDirHandle,
+  ensureValidNoteNamesFS,
   isSystemNoteName,
   kScratchNoteName,
   loadNoteNames,
@@ -44,6 +45,7 @@ export async function boot() {
       appSvelte = mount(AskFSPermissions, args);
       return;
     }
+    await ensureValidNoteNamesFS(dh);
   } else {
     console.log("storing data in localStorage");
   }

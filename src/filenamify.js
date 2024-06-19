@@ -29,7 +29,6 @@ const cca = "a".charCodeAt(0);
 const ccz = "z".charCodeAt(0);
 const ccA = "A".charCodeAt(0);
 const ccZ = "Z".charCodeAt(0);
-const ccPerc = "%".charCodeAt(0);
 
 // / ? < > \ : * | " <= those are not valid
 // I also decided not to include: ; ` '
@@ -93,7 +92,7 @@ export function toFileName(s) {
  */
 export function fromFileName(s) {
   if (!s.includes("%")) {
-    // perf: fast path for when not encoded
+    // perf: fast path for when no char was encoded
     return s;
   }
   var res = "";

@@ -192,7 +192,7 @@ export function isAltNumEvent(e) {
 export function setURLHashNoReload(hash) {
   // @ts-ignore
   let url = new URL(window.location);
-  url.hash = hash;
+  url.hash = encodeURIComponent(hash);
   // update browser's URL without reloading the page
   window.history.pushState({}, "", url);
 }
@@ -254,19 +254,6 @@ export function splitMax(s, sep, max) {
   let restStr = restParts.join(sep);
   parts[max - 1] = restStr;
   return parts.slice(0, max);
-}
-
-/**
- * returns null if string doesn't have suffix
- * @param {string} s
- * @param {string} suffix
- * @returns {string}
- */
-export function stripSuffix(s, suffix) {
-  if (!s.endsWith(suffix)) {
-    return null;
-  }
-  return s.substring(0, s.length - suffix.length);
 }
 
 export function trimPrefix(s, prefix) {

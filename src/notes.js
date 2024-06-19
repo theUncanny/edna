@@ -1,12 +1,9 @@
+import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
+import { fromFileName, isValidFileName, toFileName } from "./filenamify";
 import {
-  formatDateYYYYMMDDDay,
-  isDev,
-  len,
-  stripSuffix,
-  throwIf,
-} from "./util";
-import {
+  fsDeleteFile,
   fsReadTextFile,
+  fsRenameFile,
   fsWriteTextFile,
   openDirPicker,
   readDir,
@@ -23,8 +20,6 @@ import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
 import { dirtyState } from "./state.svelte";
-import { fromFileName } from "./filenamify";
-import sanitize from "sanitize-filename";
 
 // is set if we store notes on disk, null if in localStorage
 /** @type {FileSystemDirectoryHandle | null} */
@@ -86,11 +81,17 @@ function isEdnaFile(name) {
   return name.endsWith(kEdnaFileExt) || name.endsWith(kEdnaEncrFileExt);
 }
 
+function trimEdnaExt(name) {
+  let s = trimSuffix(name, kEdnaEncrFileExt);
+  s = trimSuffix(s, kEdnaFileExt);
+  throwIf(s === name); // assumes we chacked before calling
+  return s;
+}
+
 export function notePathFromNameFS(name, encrypted = false) {
-  if (encrypted) {
-    return name + kEdnaEncrFileExt;
-  }
-  return name + kEdnaFileExt;
+  name = toFileName(name);
+  let ext = encrypted ? kEdnaEncrFileExt : kEdnaFileExt;
+  return name + ext;
 }
 
 const kLSKeyPrefix = "note:";
@@ -212,61 +213,62 @@ let latestNoteNames = [];
  * @returns {string}
  */
 function nameFromFileName(fileName) {
-  // strip edna file extensions
-  let encodedName = stripSuffix(fileName, kEdnaFileExt);
-  if (encodedName === null) {
-    encodedName = stripSuffix(fileName, kEdnaEncrFileExt);
-  }
-  if (encodedName === null) {
-    // ignore files with extensions that aren't ours
-    console.log(
-      "nameFromFileName: ignoring file with unknown extension:",
-      fileName,
-    );
-    return null;
-  }
-  if (true) {
-    return encodedName;
-  }
-  // TODO: for now disabled
+  throwIf(!isValidFileName(fileName));
+  let encodedName = trimEdnaExt(fileName);
   let name = fromFileName(encodedName);
-  if (!name) {
-    console.log(
-      "nameFromFileName: ignoring improperly encoded file name:",
-      fileName,
-    );
-    return null;
-  }
   return name;
+}
+
+/**
+ * we might have non-escaped file names if:
+ * - those are notes created before our escaping scheme
+ * - user renmaed the note on disk
+ * @param {FileSystemDirectoryHandle} dh
+ * @returns {Promise<void>}
+ */
+export async function ensureValidNoteNamesFS(dh) {
+  let fsEntries = await readDir(dh);
+  for (let e of fsEntries.dirEntries) {
+    if (e.isDir) {
+      continue;
+    }
+    let oldName = e.name;
+    if (!isEdnaFile(oldName)) {
+      continue;
+    }
+    if (isValidFileName(oldName)) {
+      continue;
+    }
+    let newName = toFileName(oldName);
+    // note: if newName already exists, it'll be over-written
+    fsRenameFile(dh, newName, oldName);
+    console.log(`renamed '${oldName}' => '${newName}`);
+  }
 }
 
 /**
  * @param {FileSystemDirectoryHandle} dh
  * @returns {Promise<string[]>}
  */
-async function loadNoteNamesFS(dh = null) {
-  if (!dh) {
-    dh = getStorageFS();
-    throwIf(!dh, "unknown storage");
-  }
-  let skipEntryFn = (entry, dir) => {
-    if (entry.kind === "directory") {
-      return true;
-    }
-    let name = entry.name;
-    return !isEdnaFile(name);
-  };
-  let fsEntries = await readDir(dh, skipEntryFn);
+async function loadNoteNamesFS(dh) {
+  let fsEntries = await readDir(dh);
   console.log("files", fsEntries);
 
   /** @type {string[]} */
   let res = [];
   for (let e of fsEntries.dirEntries) {
-    let fileName = e.name;
-    let name = nameFromFileName(fileName);
-    if (name) {
-      res.push(name);
+    if (e.isDir) {
+      continue;
     }
+    let fileName = e.name;
+    if (!isEdnaFile(fileName)) {
+      continue;
+    }
+    if (!isValidFileName(fileName)) {
+      continue;
+    }
+    let name = nameFromFileName(fileName);
+    res.push(name);
   }
   // console.log("loadNoteNamesFS() res:", res);
   return res;
@@ -522,7 +524,7 @@ export async function deleteNote(name) {
     localStorage.removeItem(key);
   } else {
     let fileName = notePathFromNameFS(name);
-    await dh.removeEntry(fileName);
+    await fsDeleteFile(dh, fileName);
   }
   incNoteDeleteCount();
   removeNoteFromHistory(name);
@@ -806,16 +808,10 @@ export async function reassignNoteShortcut(name, altShortcut) {
 }
 
 /**
- * Sometimes we save the note in the filesystem so we must ensure that
- * the note name is a valid file name.
- * note: we could do something more sophisticated, like keeping real name
- * in metadata and picking a unique, sanitized file name, but not sure
- * if complications are worth it
  * @param {string} name
  * @returns {string}
  */
 export function sanitizeNoteName(name) {
-  let res = sanitize(name).trim();
-  // console.log(`sanitizeNoteName: ${name} -> ${res}`);
+  let res = name.trim();
   return res;
 }

@@ -346,3 +346,19 @@ export async function fsReadTextFile(dh, fileName) {
   const content = await file.text();
   return content;
 }
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} oldName
+ * @param {string} newName
+ * @returns {Promise<void>}
+ */
+export async function fsRenameFile(dh, newName, oldName) {
+  let d = await fsReadTextFile(dh, oldName);
+  fsWriteTextFile(dh, newName, d);
+  fsDeleteFile(dh, oldName);
+}
+
+export async function fsDeleteFile(dh, name) {
+  await dh.removeEntry(name);
+}
