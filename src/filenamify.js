@@ -87,37 +87,11 @@ export function toFileName(s) {
 }
 
 /**
- * returns true
- * @param {string} s
- * @returns {boolean}
- */
-export function isValidFileName(s) {
-  if (reInvalidFileNames.test(s)) {
-    return false;
-  }
-  // shouldn't contain chars
-  let n = s.length;
-  for (let i = 0; i < n; i++) {
-    let cc = s.charCodeAt(i);
-    if (cc === ccPerc) {
-      continue;
-    }
-    if (charCodeNeedsEscaping(cc)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
  * returns null if s is not a valid encoded file name
  * @param {string} s
  * @returns {string}
  */
 export function fromFileName(s) {
-  if (!isValidFileName(s)) {
-    return null;
-  }
   if (!s.includes("%")) {
     // perf: fast path for when not encoded
     return s;
@@ -136,4 +110,16 @@ export function fromFileName(s) {
     i += 4;
   }
   return res;
+}
+
+/**
+ * returns true if file name is valid per our encoding
+ * i.e. if decode => encode generates the same string
+ * @param {string} s
+ * @returns {boolean}
+ */
+export function isValidFileName(s) {
+  let s2 = fromFileName(s);
+  let s3 = toFileName(s2);
+  return s3 == s;
 }

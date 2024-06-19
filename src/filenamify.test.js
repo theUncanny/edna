@@ -41,7 +41,7 @@ test("encode", () => {
 });
 
 test("isValidFileName", () => {
-  let notValid = ["con", "✨", ".", ".."];
+  let notValid = ["con", "✨", ".", "..", "fo%ga", "%", "a%", "%20"];
   for (let s of notValid) {
     expect(isValidFileName(s)).toBeFalse();
   }
