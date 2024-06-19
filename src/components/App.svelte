@@ -47,6 +47,8 @@
     setURLHashNoReload,
     stringSizeInUtf8Bytes,
     throwIf,
+    trimPrefix,
+    trimSuffix,
   } from "../util";
   import { supportsFileSystem, openDirPicker } from "../fileutil";
   import { boot } from "../webapp-boot";
@@ -278,6 +280,23 @@
       s = s.substring(1);
     }
     s = s.trim();
+
+    // trim /* cmments
+    s = trimPrefix(s, "/*");
+    s = trimSuffix(s, "*/");
+    s = s.trim();
+
+    // trim "//" comments
+    while (s[0] === "/") {
+      s = s.substring(1);
+    }
+    s = s.trim();
+
+    // trim html comments <!--, -->
+    s = trimPrefix(s, "<!--");
+    s = trimSuffix(s, "-->");
+    s = s.trim();
+
     if (len(s) === 0) {
       return "(empty)";
     }

@@ -268,3 +268,17 @@ export function stripSuffix(s, suffix) {
   }
   return s.substring(0, s.length - suffix.length);
 }
+
+export function trimPrefix(s, prefix) {
+  if (!s.startsWith(prefix)) {
+    return s;
+  }
+  return s.substring(prefix.length);
+}
+
+export function trimSuffix(s, suffix) {
+  if (!s.endsWith(suffix)) {
+    return s;
+  }
+  return s.substring(0, s.length - suffix.length);
+}
