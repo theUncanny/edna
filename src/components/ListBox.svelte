@@ -122,22 +122,42 @@
     }
     OverlayScrollbars(listbox, opts);
   });
+
+  /**
+   * @param {MouseEvent} ev
+   */
+  function listboxclick(ev) {
+    // note: could also traverse from ev.target via parentElement
+    // until finds tagName === "LI", but this seems more reliable
+    // slower but only executed on click
+    // could also put a data-index attribute on li and use that to
+    // index into items
+    let n = len(items);
+    for (let i = 0; i < n; i++) {
+      let el = refs[i];
+      if (el.contains(ev.target)) {
+        let item = items[i];
+        onclick(item);
+        return;
+      }
+    }
+    // console.log("didn't find item for ev.target:", ev.target);
+  }
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <ul
   class="items overflow-y-auto"
   role="listbox"
   bind:this={listbox}
   data-overlayscrollbars-initialize
+  onclick={listboxclick}
 >
   {#each items as item, idx (item.key)}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <li
       role="option"
       aria-selected={idx === selectedIdx}
       class="cursor-pointer py-0.5 px-2 leading-5 flex dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 aria-selected:text-white aria-selected:bg-gray-400 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
-      onclick={() => onclick(item)}
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}
