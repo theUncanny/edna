@@ -42,6 +42,7 @@
     kHelpSystemNoteName,
     kReleaseNotesSystemNoteName,
     preLoadAllNotes,
+    isUsingEncryption,
   } from "../notes";
   import {
     getAltChar,
@@ -449,6 +450,7 @@
   export const kCmdExportNotes = nmid();
   export const kCmdEncryptNotes = nmid();
   export const kCmdDecryptNotes = nmid();
+  export const kCmdEncryptionHelp = nmid();
   export const kCmdToggleSpellChecking = nmid();
   export const kCmdShowExportHelp = nmid();
   export const kCmdSettings = nmid();
@@ -492,6 +494,7 @@
     const menuEncrypt = [
       ["Encrypt all notes", kCmdEncryptNotes],
       ["Decrypt all notes", kCmdDecryptNotes],
+      ["Help", kCmdEncryptionHelp],
     ];
 
     const menuHelp = [
@@ -562,6 +565,10 @@
       if (!hasFS) {
         return kMenuStatusRemoved;
       }
+    } else if (mid === kCmdEncryptNotes) {
+      return isUsingEncryption() ? kMenuStatusDisabled : kMenuStatusNormal;
+    } else if (mid === kCmdDecryptNotes) {
+      return isUsingEncryption() ? kMenuStatusNormal : kMenuStatusDisabled;
     }
     return kMenuStatusNormal;
   }
@@ -634,6 +641,8 @@
       openEncryptPassword();
     } else if (cmdId === kCmdDecryptNotes) {
       openDecryptNotes();
+    } else if (cmdId === kCmdEncryptionHelp) {
+      showHelp("#encryption");
     } else {
       console.log("unknown menu cmd id");
     }

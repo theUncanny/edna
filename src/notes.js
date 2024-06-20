@@ -88,28 +88,30 @@ function trimEdnaExt(name) {
   return s;
 }
 
-export function notePathFromNameFS(name, encrypted = false) {
+export function notePathFromNameFS(name) {
   name = toFileName(name);
-  let ext = encrypted ? kEdnaEncrFileExt : kEdnaFileExt;
+  let isEncr = isEncryptedNote(name);
+  let ext = isEncr ? kEdnaEncrFileExt : kEdnaFileExt;
   return name + ext;
 }
 
 const kLSKeyPrefix = "note:";
 const kLSKeyEncrPrefix = "note.encr:";
 
-function notePathFromNameLS(name, encrypted = false) {
-  if (encrypted) {
+function notePathFromNameLS(name) {
+  let isEncr = isEncryptedNote(name);
+  if (isEncr) {
     return kLSKeyEncrPrefix + name;
   }
   return kLSKeyPrefix + name;
 }
 
-export function notePathFromName(name, encrypted = false) {
+export function notePathFromName(name) {
   let dh = getStorageFS();
   if (dh) {
-    return notePathFromNameFS(name, encrypted);
+    return notePathFromNameFS(name);
   } else {
-    return notePathFromNameLS(name, encrypted);
+    return notePathFromNameLS(name);
   }
 }
 
@@ -178,7 +180,7 @@ export async function createDefaultNotes(existingNotes) {
 }
 
 /**
- * @returns {string[]}
+ * @returns {string[][]}
  */
 function loadNoteNamesLS() {
   /**
@@ -190,22 +192,30 @@ function loadNoteNamesLS() {
     return notePath.substring(i + 1);
   }
 
-  const res = [];
+  let allNotes = [];
+  let encryptedNotes = [];
   let nKeys = localStorage.length;
   for (let i = 0; i < nKeys; i++) {
     const key = localStorage.key(i);
-    if (key.startsWith("note:")) {
+    let isEncr = key.startsWith(kLSKeyEncrPrefix);
+    let isRegular = key.startsWith(kLSKeyPrefix);
+    if (isEncr || isRegular) {
       let name = getNoteNameLS(key);
-      res.push(name);
+      allNotes.push(name);
+      if (isEncr) {
+        encryptedNotes.push(name);
+      }
     }
   }
-  return res;
+  return [allNotes, encryptedNotes];
 }
 
 // we must cache those because loadNoteNames() is async and we can't always call it
 // note: there's a potential of getting out of sync
 /** @type {string[]} */
 let latestNoteNames = [];
+/** @type {string[]} */
+let encryptedNoteNames = [];
 
 /**
  * returns null if not a valid name
@@ -248,14 +258,15 @@ export async function ensureValidNoteNamesFS(dh) {
 
 /**
  * @param {FileSystemDirectoryHandle} dh
- * @returns {Promise<string[]>}
+ * @returns {Promise<string[][]>}
  */
 async function loadNoteNamesFS(dh) {
   let fsEntries = await readDir(dh);
   console.log("files", fsEntries);
 
   /** @type {string[]} */
-  let res = [];
+  let allNotes = [];
+  let encryptedNotes = [];
   for (let e of fsEntries.dirEntries) {
     if (e.isDir) {
       continue;
@@ -268,10 +279,17 @@ async function loadNoteNamesFS(dh) {
       continue;
     }
     let name = nameFromFileName(fileName);
-    res.push(name);
+    // filter out empty names, can be created maliciously or due to a bug
+    if (name === "") {
+      continue;
+    }
+    if (fileName.endsWith(kEdnaEncrFileExt)) {
+      encryptedNoteNames.push(name);
+    }
+    allNotes.push(name);
   }
   // console.log("loadNoteNamesFS() res:", res);
-  return res;
+  return [allNotes, encryptedNoteNames];
 }
 
 /**
@@ -279,18 +297,17 @@ async function loadNoteNamesFS(dh) {
  */
 export async function loadNoteNames() {
   let dh = getStorageFS();
-  /** @type {string[]} */
+  /** @type {string[][]} */
   let res = [];
   if (!dh) {
     res = loadNoteNamesLS();
   } else {
     res = await loadNoteNamesFS(dh);
   }
-  // filter out empty names, can be created maliciously or due to a bug
-  res = res.filter((s) => s != "");
-  latestNoteNames = res;
+  latestNoteNames = res[0];
+  encryptedNoteNames = res[1];
   // console.log("loadNoteNames() res:", res);
-  return res;
+  return latestNoteNames;
 }
 
 /**
@@ -443,13 +460,20 @@ function autoCreateDayInJournal(name, content) {
   return content;
 }
 
+function isEncryptedNote(name) {
+  let res = encryptedNoteNames.includes(name);
+  return res;
+}
+
 /**
  * @param {string} name
  * @returns {string}
  */
 function loadNoteLS(name) {
-  // TODO: encrypted notes
-  let key = "note:" + name;
+  let key = kLSKeyPrefix + name;
+  if (isEncryptedNote(name)) {
+    key = kLSKeyEncrPrefix + name;
+  }
   return localStorage.getItem(key);
 }
 
@@ -549,7 +573,6 @@ export async function renameNote(oldName, newName, content) {
  * @param {string} noteName
  * @param {string[]} diskNoteNames
  * @param {FileSystemDirectoryHandle} dh
- * @returns
  */
 async function migrateNote(noteName, diskNoteNames, dh) {
   let name = noteName;
@@ -620,7 +643,7 @@ export async function preLoadAllNotes() {
  */
 export async function switchToStoringNotesOnDisk(dh) {
   console.log("switchToStoringNotesOnDisk");
-  let diskNoteNames = await loadNoteNamesFS(dh);
+  let diskNoteNames = await loadNoteNamesFS(dh)[0];
 
   // migrate notes
   for (let name of latestNoteNames) {
@@ -814,4 +837,18 @@ export async function reassignNoteShortcut(name, altShortcut) {
 export function sanitizeNoteName(name) {
   let res = name.trim();
   return res;
+}
+
+/**
+ * @returns {number}
+ */
+export function getNotesCount() {
+  return len(latestNoteNames);
+}
+
+/**
+ * @returns {boolean}
+ */
+export function isUsingEncryption() {
+  return len(encryptedNoteNames) > 0;
 }

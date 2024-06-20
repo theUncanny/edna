@@ -1,5 +1,6 @@
 <script>
   import { focus } from "../actions";
+  import { getNotesCount } from "../notes";
   import { len } from "../util";
 
   /** @type { {
@@ -38,6 +39,12 @@
     onpassword(password);
   }
   let hidePassword = $state(true);
+
+  let input;
+  // clicking the checkbox or link to docs takes away focus form input, this restores it
+  function onfocusout() {
+    input.focus();
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -49,6 +56,8 @@
 >
   <div class="text-lg">Enter password to encrypt files:</div>
   <input
+    bind:this={input}
+    {onfocusout}
     bind:value={password}
     type={hidePassword ? "password" : "text"}
     use:focus
@@ -81,7 +90,7 @@
       onclick={() => emitGotPassword()}
       disabled={!validPassword}
       class="px-4 py-1 border border-black hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-400 default:bg-slate-700"
-      >Encrypt all notes</button
+      >Encrypt all {getNotesCount()} notes</button
     >
   </div>
 </div>
