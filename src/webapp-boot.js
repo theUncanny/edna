@@ -17,6 +17,7 @@ import { mount, unmount } from "svelte";
 
 import App from "./components/App.svelte";
 import AskFSPermissions from "./components/AskFSPermissions.svelte";
+import { generateSalt } from "kiss-crypto";
 // import Toast from "vue-toastification/dist/index.mjs";
 // import { createApp } from "vue";
 import { hasHandlePermission } from "./fileutil";
@@ -27,6 +28,9 @@ import { startLoadCurrencies } from "./currency";
 startLoadCurrencies();
 
 let appSvelte;
+
+let s = generateSalt();
+console.log("salt:", s);
 
 export async function boot() {
   console.log("booting");

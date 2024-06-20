@@ -199,7 +199,7 @@ Please note that that the last written version wins. If you switch really quickl
 
 # Encryption
 
-You can optionally encrypt notes with a password.
+When storing notes on disk, you can optionally encrypt them with a password.
 
 The password is not sent anywhere. It's only stored in your browser (in local storage).
 

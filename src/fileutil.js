@@ -336,6 +336,19 @@ export async function fsWriteTextFile(dh, fileName, content) {
 /**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
+ * @param {Blob} content
+ */
+export async function fsWriteBlob(dh, fileName, content) {
+  console.log("writing to file:", fileName, content.length);
+  let fileHandle = await dh.getFileHandle(fileName, { create: true });
+  const writable = await fileHandle.createWritable();
+  await writable.write(content);
+  await writable.close();
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} fileName
  * @returns {Promise<string>}
  */
 export async function fsReadTextFile(dh, fileName) {
@@ -345,6 +358,18 @@ export async function fsReadTextFile(dh, fileName) {
   // I assume this reads utf-8
   const content = await file.text();
   return content;
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} fileName
+ * @returns {Promise<Blob>}
+ */
+export async function fsReadBlob(dh, fileName) {
+  console.log("reading file:", fileName);
+  let fileHandle = await dh.getFileHandle(fileName, { create: false });
+  const d = await fileHandle.getFile();
+  return d;
 }
 
 /**
@@ -359,6 +384,29 @@ export async function fsRenameFile(dh, newName, oldName) {
   fsDeleteFile(dh, oldName);
 }
 
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} name
+ */
 export async function fsDeleteFile(dh, name) {
   await dh.removeEntry(name);
+}
+
+/**
+ * @param {Blob} blob
+ * @returns {Promise<Uint8Array>}
+ */
+export async function blobToUint8Array(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      const arrayBuffer = /** @type {ArrayBuffer} */ (ev.target.result);
+      const uint8Array = new Uint8Array(arrayBuffer);
+      resolve(uint8Array);
+    };
+    reader.onerror = function (ev) {
+      reject(new Error("Failed to read the blob as an ArrayBuffer."));
+    };
+    reader.readAsArrayBuffer(blob);
+  });
 }

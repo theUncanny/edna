@@ -512,12 +512,17 @@
       ["This Note", menuNote],
       ["Block", menuBlock],
       ["Notes storage", menuStorage],
-      ["Encryption", menuEncrypt],
+    ];
+    if (dh) {
+      // encryption only for files stored on disk
+      contextMenu.push(["Encryption", menuEncrypt]);
+    }
+    contextMenu.push(
       [spelling, kCmdToggleSpellChecking],
       ["Settings", kCmdSettings],
       ["Help", menuHelp],
       ["Tip: Ctrl + click for browser's context menu", kMenuIdJustText],
-    ];
+    );
 
     return contextMenu;
   }

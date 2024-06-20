@@ -1,13 +1,17 @@
-import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
-import { fromFileName, isValidFileName, toFileName } from "./filenamify";
 import {
+  blobToUint8Array,
   fsDeleteFile,
+  fsReadBlob,
   fsReadTextFile,
   fsRenameFile,
+  fsWriteBlob,
   fsWriteTextFile,
   openDirPicker,
   readDir,
 } from "./fileutil";
+import { decryptBlobAsString, encryptStringAsBlob, hash } from "kiss-crypto";
+import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
+import { fromFileName, isValidFileName, toFileName } from "./filenamify";
 import { getHelp, getInitialContent, getReleaseNotes } from "./initial-content";
 import { getSettings, loadSettings, saveSettings } from "./settings";
 import {
@@ -48,6 +52,24 @@ const db = new KV("edna", "keyval");
 
 const kStorageDirHandleKey = "storageDirHandle";
 
+const kLSPassowrdKey = "edna-password";
+
+/**
+ * @param {string} pwd
+ */
+function rememberPassword(pwd) {
+  localStorage.setItem(kLSPassowrdKey, pwd);
+}
+
+function getPasswordHash() {
+  let pwd = localStorage.getItem(kLSPassowrdKey);
+  if (!pwd) {
+    return null;
+  }
+  let pwdHash = saltPassword();
+  return pwdHash;
+}
+
 /**
  * @returns {Promise<FileSystemDirectoryHandle>}
  */
@@ -73,12 +95,15 @@ export async function dbDelDirHandle() {
 const kEdnaFileExt = ".edna.txt";
 const kEdnaEncrFileExt = ".edna.encr.txt";
 
+function isEncryptedEdnaFile(fileName) {
+  return fileName.endsWith(kEdnaEncrFileExt);
+}
 /**
- * @param {string} name
+ * @param {string} fileName
  * @returns {boolean}
  */
-function isEdnaFile(name) {
-  return name.endsWith(kEdnaFileExt) || name.endsWith(kEdnaEncrFileExt);
+function isEdnaFile(fileName) {
+  return fileName.endsWith(kEdnaFileExt) || isEncryptedEdnaFile(fileName);
 }
 
 function trimEdnaExt(name) {
@@ -258,15 +283,12 @@ export async function ensureValidNoteNamesFS(dh) {
 
 /**
  * @param {FileSystemDirectoryHandle} dh
- * @returns {Promise<string[][]>}
+ * @param {(fileName, noteName, isEncr) => Promise<void>} fn
  */
-async function loadNoteNamesFS(dh) {
-  let fsEntries = await readDir(dh);
-  console.log("files", fsEntries);
 
-  /** @type {string[]} */
-  let allNotes = [];
-  let encryptedNotes = [];
+async function forEachNoteFileFS(dh, fn) {
+  let fsEntries = await readDir(dh);
+  // console.log("files", fsEntries);
   for (let e of fsEntries.dirEntries) {
     if (e.isDir) {
       continue;
@@ -283,11 +305,27 @@ async function loadNoteNamesFS(dh) {
     if (name === "") {
       continue;
     }
-    if (fileName.endsWith(kEdnaEncrFileExt)) {
-      encryptedNoteNames.push(name);
-    }
-    allNotes.push(name);
+    let isEncr = fileName.endsWith(kEdnaEncrFileExt);
+    await fn(fileName, name, isEncr);
   }
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @returns {Promise<string[][]>}
+ */
+async function loadNoteNamesFS(dh) {
+  /** @type {string[]} */
+  let allNotes = [];
+  /** @type {string[]} */
+  let encryptedNotes = [];
+  await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
+    console.log("loadNoteNamesFS:", fileName);
+    allNotes.push(name);
+    if (isEncr) {
+      encryptedNotes.push(name);
+    }
+  });
   // console.log("loadNoteNamesFS() res:", res);
   return [allNotes, encryptedNoteNames];
 }
@@ -393,7 +431,7 @@ export async function saveCurrentNote(content) {
   if (!dh) {
     localStorage.setItem(path, content);
   } else {
-    await fsWriteTextFile(dh, path, content);
+    await writeMaybeEncryptedFS(dh, name, content);
   }
   dirtyState.isDirty = false;
   incNoteSaveCount();
@@ -405,10 +443,10 @@ export async function saveCurrentNote(content) {
  * @returns {Promise<void>}
  */
 export async function createNoteWithName(name, content = null) {
-  const path = notePathFromName(name);
   let dh = getStorageFS();
   content = fixUpNoteContent(content);
   if (!dh) {
+    const path = notePathFromName(name);
     // TODO: should it happen that note already exists?
     if (localStorage.getItem(path) == null) {
       localStorage.setItem(path, content);
@@ -422,7 +460,7 @@ export async function createNoteWithName(name, content = null) {
   }
 
   // TODO: check if exists
-  await fsWriteTextFile(dh, path, content);
+  await writeNoteFS(dh, name, content);
   incNoteCreateCount();
   await updateLatestNoteNames();
 }
@@ -491,14 +529,94 @@ export async function loadNote(name) {
     if (!dh) {
       content = loadNoteLS(name);
     } else {
-      let path = notePathFromNameFS(name);
-      content = await fsReadTextFile(dh, path);
+      let content = await readMaybeEncryptedNoteFS(dh, name);
+      return content;
     }
   }
   historyPush(name);
   // TODO: this should happen in App.vue:onDocChange(); this was easier to write
   content = autoCreateDayInJournal(name, content);
   return fixUpNoteContent(content);
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} name
+ * @returns {Promise<string>}
+ */
+async function readMaybeEncryptedNoteFS(dh, name) {
+  let path = notePathFromNameFS(name);
+  if (!isEncryptedEdnaFile(path)) {
+    let content = await fsReadTextFile(dh, path);
+    return content;
+  }
+  let content = await readEncryptedFS(dh, path);
+  return content;
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} fileName
+ * @param {string} pwdHash
+ * @returns {Promise<string>}
+ */
+async function readEncryptedFS(dh, fileName, pwdHash = null) {
+  if (pwdHash == null) {
+    pwdHash = getPasswordHash();
+    // TODO: ask for password
+    throwIf(!pwdHash, "need password");
+  }
+  let b = await fsReadBlob(dh, fileName);
+  let ua = await blobToUint8Array(b);
+  let s = decryptBlobAsString({ key: pwdHash, cipherblob: ua });
+  // TODO: if returns null, need to ask for password
+  return s;
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} name
+ * @param {string} content
+ * @returns {Promise<void>}
+ */
+async function writeMaybeEncryptedFS(dh, name, content) {
+  let path = notePathFromNameFS(name);
+  if (!isEncryptedNote(name)) {
+    await fsWriteTextFile(dh, path, content);
+    return;
+  }
+  let pwdHash = getPasswordHash();
+  // TODO: ask for password if not present
+  throwIf(!pwdHash, "needs password");
+  await writeEncryptedFS(dh, pwdHash, path, content);
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} pwdHash
+ * @param {string} fileName
+ * @param {string} s
+ * @returns {Promise<void>}
+ */
+async function writeEncryptedFS(dh, pwdHash, fileName, s) {
+  let d = encryptStringAsBlob({ key: pwdHash, plaintext: s });
+  let blob = new Blob([d]);
+  await fsWriteBlob(dh, fileName, blob);
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} name
+ * @param {string} content
+ */
+export async function writeNoteFS(dh, name, content) {
+  const path = notePathFromName(name);
+  let pwdHash = getPasswordHash();
+  if (!pwdHash) {
+    await fsWriteTextFile(dh, path, content);
+    return;
+  }
+  await writeEncryptedFS(dh, pwdHash, path, content);
 }
 
 /**
@@ -522,9 +640,7 @@ export async function loadCurrentNoteIfOnDisk() {
   if (!dh) {
     return null;
   }
-  let path = notePathFromNameFS(name);
-  let content = await fsReadTextFile(dh, path);
-  return content;
+  return await readMaybeEncryptedNoteFS(dh, name);
 }
 
 /**
@@ -633,7 +749,7 @@ export async function preLoadAllNotes() {
       continue;
     }
     let path = notePathFromNameFS(name);
-    await fsReadTextFile(dh, path);
+    await fsReadBlob(dh, path);
   }
   return len(noteNames);
 }
@@ -847,8 +963,62 @@ export function getNotesCount() {
 }
 
 /**
+ * we're using encryption only for disk but
  * @returns {boolean}
  */
 export function isUsingEncryption() {
+  let dh = getStorageFS();
+  if (!dh) {
+    return false;
+  }
+  let pwdHash = getPasswordHash();
+  if (pwdHash) {
+    return true;
+  }
   return len(encryptedNoteNames) > 0;
+}
+
+// salt for hashing the password. not sure if it helps security wise
+// but it's the best we can do. We can't generate unique salts for
+// each password
+const kEdnaSalt = "dbd71826401a4fca6c360f065a281063";
+
+async function encryptNoteFS(dh, oldFileName, pwdHash) {
+  if (isEncryptedEdnaFile(oldFileName)) {
+    console.log("encryptNoteFS:", oldFileName, "already encrypted");
+    return;
+  }
+  console.log("encryptNoteFS:", oldFileName);
+  let s = await fsReadTextFile(dh, oldFileName);
+  let newFileName = trimSuffix(oldFileName, kEdnaFileExt);
+  newFileName += kEdnaEncrFileExt;
+  await writeEncryptedFS(dh, pwdHash, newFileName, s);
+  await dh.removeEntry(oldFileName);
+}
+
+function saltPassword(pwd) {
+  let pwdHash = hash({ key: pwd, salt: kEdnaSalt });
+  return pwdHash;
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} pwd
+ */
+async function encryptAllNotesFS(dh, pwd) {
+  rememberPassword(pwd);
+  let pwdHash = saltPassword(pwd);
+  await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
+    await encryptNoteFS(dh, fileName, pwdHash);
+  });
+}
+
+/**
+ * @param {string} pwd
+ */
+export async function encryptAllNotes(pwd) {
+  let dh = getStorageFS();
+  throwIf(!db, "no encryption for local storage notes");
+  await encryptAllNotesFS(dh, pwd);
+  await loadNoteNamesFS(dh);
 }
