@@ -44,40 +44,40 @@
   }
 </script>
 
-<div
-  class="mt-8 mx-8 flex flex-col justify-center items-center shadow-xl2 bg-white text-base"
->
-  <div class="mt-2 self-center">
-    Your're storing notes on disk in directory <span class="font-bold"
-      >{dirName}</span
-    >
-  </div>
-
-  <div class="self-center">
-    We need permission to access files in that directory.
-  </div>
-  <div class="flex flex-col mt-4 mb-8 text-sm">
-    <button
-      onclick={requestPermissions}
-      class="mt-4 px-4 py-1 border border-black hover:bg-gray-100"
-      >Allow Edna to access files in directory <span class="font-bold"
+<div class="fixed inset-0 overflow-hidden bg-gray-50">
+  <div
+    class="mt-8 mx-auto px-8 py-4 flex flex-col items-center shadow-xl2 bg-white text-base w-fit"
+  >
+    <div class="mt-2 self-center">
+      Your're storing notes on disk in directory <span class="font-bold"
         >{dirName}</span
-      ></button
-    >
-    <button
-      onclick={pickAnotherDirectory2}
-      class="mt-4 px-2 py-1 border border-black hover:bg-gray-100"
-      >Pick another directory with notes</button
-    >
-    <button
-      onclick={switchToBrowserStorage}
-      class="mt-4 px-2 py-1 border border-black hover:bg-gray-100"
-      >Switch to storing notes in browser</button
-    >
-    <a
-      class="mt-4 self-center underline"
-      target="_blank"
-      href="/help#storing-notes-on-disk">learn more</a
-    >
+      >
+    </div>
+
+    <div>We need permission to access files in that directory.</div>
+    <div class="flex flex-col mt-4 mb-8 text-sm">
+      <button
+        onclick={requestPermissions}
+        class="mt-4 px-4 py-1 border border-black hover:bg-gray-100"
+        >Allow Edna to access files in directory <span class="font-bold"
+          >{dirName}</span
+        ></button
+      >
+      <button
+        onclick={pickAnotherDirectory2}
+        class="mt-4 px-2 py-1 border border-black hover:bg-gray-100"
+        >Pick another directory with notes</button
+      >
+      <button
+        onclick={switchToBrowserStorage}
+        class="mt-4 px-2 py-1 border border-black hover:bg-gray-100"
+        >Switch to storing notes in browser</button
+      >
+      <a
+        class="mt-4 self-center underline"
+        target="_blank"
+        href="/help#storing-notes-on-disk">learn more</a
+      >
+    </div>
   </div>
 </div>
