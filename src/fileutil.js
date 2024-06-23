@@ -339,7 +339,7 @@ export async function fsWriteTextFile(dh, fileName, content) {
  * @param {Blob} content
  */
 export async function fsWriteBlob(dh, fileName, content) {
-  console.log("writing to file:", fileName, content.length);
+  console.log("writing to file:", fileName, content.size);
   let fileHandle = await dh.getFileHandle(fileName, { create: true });
   const writable = await fileHandle.createWritable();
   await writable.write(content);
@@ -409,4 +409,12 @@ export async function blobToUint8Array(blob) {
     };
     reader.readAsArrayBuffer(blob);
   });
+}
+
+/**
+ * @param {Uint8Array} ua
+ * @returns {Blob}
+ */
+export function blobFromUint8Array(ua) {
+  return new Blob([ua]);
 }

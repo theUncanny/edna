@@ -1,4 +1,5 @@
 import {
+  blobFromUint8Array,
   blobToUint8Array,
   fsDeleteFile,
   fsReadBlob,
@@ -317,18 +318,18 @@ async function forEachNoteFileFS(dh, fn) {
  */
 async function loadNoteNamesFS(dh) {
   /** @type {string[]} */
-  let allNotes = [];
+  let all = [];
   /** @type {string[]} */
-  let encryptedNotes = [];
+  let encrypted = [];
   await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
     console.log("loadNoteNamesFS:", fileName);
-    allNotes.push(name);
+    all.push(name);
     if (isEncr) {
-      encryptedNotes.push(name);
+      encrypted.push(name);
     }
   });
   // console.log("loadNoteNamesFS() res:", res);
-  return [allNotes, encryptedNoteNames];
+  return [all, encrypted];
 }
 
 /**
@@ -601,7 +602,7 @@ async function writeMaybeEncryptedFS(dh, name, content) {
  */
 async function writeEncryptedFS(dh, pwdHash, fileName, s) {
   let d = encryptStringAsBlob({ key: pwdHash, plaintext: s });
-  let blob = new Blob([d]);
+  let blob = blobFromUint8Array(d);
   await fsWriteBlob(dh, fileName, blob);
 }
 
