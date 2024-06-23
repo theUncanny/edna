@@ -207,7 +207,7 @@ Encryption and decryption takes place on your computer.
 
 If you loose the password, you'll loose the access the to your notes. **Don't loose the password**.
 
-We use [kiss-crypto](https://github.com/team-reflect/kiss-crypto) for encryption.
+Notes are encrypted with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) algorithm via [kiss-crypto](https://github.com/team-reflect/kiss-crypto) library.
 
 ## Picking good password
 
