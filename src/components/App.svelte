@@ -575,6 +575,10 @@
       return isUsingEncryption() ? kMenuStatusDisabled : kMenuStatusNormal;
     } else if (mid === kCmdDecryptNotes) {
       return isUsingEncryption() ? kMenuStatusNormal : kMenuStatusDisabled;
+    } else if (mid === kCmdRenameCurrentNote) {
+      if (noteName === kScratchNoteName) {
+        return kMenuStatusDisabled;
+      }
     }
     return kMenuStatusNormal;
   }
