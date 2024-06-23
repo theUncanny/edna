@@ -114,6 +114,10 @@ function isEdnaFile(fileName) {
   return fileName.endsWith(kEdnaFileExt);
 }
 
+/**
+ * @param {string} name
+ * @returns {string}
+ */
 function trimEdnaExt(name) {
   let s = trimSuffix(name, kEdnaEncrFileExt);
   s = trimSuffix(s, kEdnaFileExt);
@@ -121,8 +125,15 @@ function trimEdnaExt(name) {
   return s;
 }
 
-export function notePathFromNameFS(name) {
-  let isEncr = isEncryptedNote(name);
+/**
+ * @param {string} name
+ * @param {boolean} [isEncr]
+ * @returns {string}
+ */
+export function notePathFromNameFS(name, isEncr = null) {
+  if (isEncr === null) {
+    isEncr = isEncryptedNote(name);
+  }
   name = toFileName(name); // note: must happen after isEncryptedNote() check
   let ext = isEncr ? kEdnaEncrFileExt : kEdnaFileExt;
   return name + ext;
@@ -415,15 +426,6 @@ function pickUniqueName(base, existingNames) {
 }
 
 /**
- * @param {string} base
- * @param {string[]} noteNames
- * @returns {string}
- */
-function pickUniqueNameInNoteNames(base, noteNames) {
-  return pickUniqueName(base, noteNames);
-}
-
-/**
  * @param {string} content
  * @returns
  */
@@ -479,10 +481,10 @@ export async function createNoteWithName(name, content = null) {
  * @returns {Promise<string>}
  */
 export async function createNewScratchNote() {
-  let noteInfos = await loadNoteNames();
+  let noteNames = await loadNoteNames();
   // generate a unique "scratch-${N}" note name
-  let scratchName = pickUniqueNameInNoteNames("scratch", noteInfos);
-  createNoteWithName(scratchName);
+  let scratchName = pickUniqueName("scratch", noteNames);
+  await createNoteWithName(scratchName);
   return scratchName;
 }
 
@@ -614,13 +616,14 @@ async function writeEncryptedFS(dh, pwdHash, fileName, s) {
  * @param {string} content
  */
 export async function writeNoteFS(dh, name, content) {
-  const path = notePathFromName(name);
   let pwdHash = getPasswordHash();
-  if (!pwdHash) {
+  let isEncr = !!pwdHash;
+  const path = notePathFromNameFS(name, isEncr);
+  if (isEncr) {
+    await writeEncryptedFS(dh, pwdHash, path, content);
+  } else {
     await fsWriteTextFile(dh, path, content);
-    return;
   }
-  await writeEncryptedFS(dh, pwdHash, path, content);
 }
 
 /**
@@ -724,7 +727,7 @@ async function migrateNote(noteName, diskNoteNames, dh) {
     return;
   }
   // if the content is different, create a new note with a different name
-  let newName = pickUniqueNameInNoteNames(name, diskNoteNames);
+  let newName = pickUniqueName(name, diskNoteNames);
   let fileName = notePathFromName(newName);
   await fsWriteTextFile(dh, fileName, content);
   console.log(
