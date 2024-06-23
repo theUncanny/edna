@@ -199,13 +199,13 @@ Please note that that the last written version wins. If you switch really quickl
 
 # Encryption
 
-When storing notes on disk, you can optionally encrypt them with a password.
+When storing notes on disk, you can encrypt them with a password.
 
-The password is not sent anywhere. It's only stored in your browser (in local storage).
+The password is only stored in your browser (in local storage). It never leaves your computer.
 
-Encryption and decryption takes place in your browser.
+Encryption and decryption takes place on your computer.
 
-If you loose the password, you'll loose access the to your notes. **Don't loose the password**.
+If you loose the password, you'll loose the access the to your notes. **Don't loose the password**.
 
 We use [kiss-crypto](https://github.com/team-reflect/kiss-crypto) for encryption.
 
@@ -213,29 +213,29 @@ We use [kiss-crypto](https://github.com/team-reflect/kiss-crypto) for encryption
 
 Good password is:
 
-- long (the longer the password, the harder it's to brute force crack it)
+- long (short passwords can be cracked via brute force; long passwords cannot)
 - easy to type
 - easy to remember
 
 We recommend passwords that are long, memorable phrases.
 
-Example: "Blue bear attacked a tiny dog".
+Example: `Blue bear attacked a tiny dog`.
 
-Such passwords are easier to type and remember than "8a$7y!glo" that most services for you into.
+Such passwords are easier to type and remember than typical "8a$7y!glo" passwords.
 
 ∞∞∞markdown
 
 # Exporting notes to a .zip file
 
-There's no lock in with Edna.
+Edna files are just text files with `.edna.txt` extension.
 
 You can export all the notes to a .zip file.
 
 Use right-click context menu and `Export notes to zip file` menu.
 
-We pack all the notes into a .zip file and initiate auto-download as `edna.notes.export-YYYY-MM-DD.zip` file.
+We pack all the notes into a .zip file and initiate auto-download as `edna.notes.export-YYYY-MM-DD.zip` file to browser's downloads directory.
 
-Look in the browser downloads directory.
+You can then e.g. restore the notes by unzipping it to a directory and opening that directory in Edna with `Notes storage` / `Switch to notes in a directory` context menu.
 
 ∞∞∞markdown
 

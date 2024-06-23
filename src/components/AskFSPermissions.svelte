@@ -54,14 +54,14 @@
   </div>
 
   <div class="self-center">
-    Due to browser limitations, we need to re-request permission to access the
-    directory.
+    We need permission to access files in that directory.
   </div>
   <div class="flex flex-col mt-4 mb-8 text-sm">
     <button
       onclick={requestPermissions}
       class="mt-4 px-4 py-1 border border-black hover:bg-gray-100"
-      >Request permission for directory <span class="font-bold">{dirName}</span
+      >Allow Edna access files in directory <span class="font-bold"
+        >{dirName}</span
       ></button
     >
     <button
