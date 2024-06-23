@@ -538,8 +538,7 @@ export async function loadNote(name) {
     if (!dh) {
       res = loadNoteLS(name);
     } else {
-      let content = await readMaybeEncryptedNoteFS(dh, name);
-      return content;
+      res = await readMaybeEncryptedNoteFS(dh, name);
     }
   }
   historyPush(name);

@@ -89,7 +89,7 @@
     <button
       onclick={() => emitGotPassword()}
       disabled={!validPassword}
-      class="px-4 py-1 border border-black hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-400 default:bg-slate-700"
+      class="px-4 py-1 border border-black hover:bg-gray-100 disabled:hover:bg-white disabled:text-gray-400 disabled:border-gray-400 default:bg-slate-700"
       >Encrypt all {getNotesCount()} notes</button
     >
   </div>
