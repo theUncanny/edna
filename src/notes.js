@@ -65,6 +65,10 @@ function rememberPassword(pwd) {
   localStorage.setItem(kLSPassowrdKey, pwd);
 }
 
+function removePassword() {
+  localStorage.removeItem(kLSPassowrdKey);
+}
+
 function getPasswordHash() {
   let pwd = localStorage.getItem(kLSPassowrdKey);
   if (!pwd) {
@@ -997,6 +1001,19 @@ async function encryptNoteFS(dh, oldFileName, pwdHash) {
   await dh.removeEntry(oldFileName);
 }
 
+async function decryptNoteFS(dh, oldFileName) {
+  if (!isEncryptedEdnaFile(oldFileName)) {
+    console.log("encryptNoteFS:", oldFileName, "already decrypted");
+    return;
+  }
+  console.log("decryptNoteFS:", oldFileName);
+  let s = await readEncryptedFS(dh, oldFileName);
+  let newFileName = trimSuffix(oldFileName, kEdnaEncrFileExt);
+  newFileName += kEdnaFileExt;
+  await fsWriteTextFile(dh, newFileName, s);
+  await dh.removeEntry(oldFileName);
+}
+
 /**
  * @param {string} pwd
  * @returns {string}
@@ -1007,26 +1024,42 @@ function saltPassword(pwd) {
 }
 
 /**
- * @param {FileSystemDirectoryHandle} dh
- * @param {string} pwd
- */
-async function encryptAllNotesFS(dh, pwd) {
-  let pwdHash = saltPassword(pwd);
-  await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
-    let msg = `Encrypting <b>${name}</b>`;
-    setModalMessageHTML(msg);
-    await encryptNoteFS(dh, fileName, pwdHash);
-  });
-  clearModalMessage();
-}
-
-/**
  * @param {string} pwd
  */
 export async function encryptAllNotes(pwd) {
   let dh = getStorageFS();
   throwIf(!db, "no encryption for local storage notes");
+
   rememberPassword(pwd);
-  await encryptAllNotesFS(dh, pwd);
+
+  let pwdHash = saltPassword(pwd);
+  await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
+    if (isEncr) {
+      return;
+    }
+    let msg = `Encrypting <b>${name}</b>`;
+    setModalMessageHTML(msg);
+    await encryptNoteFS(dh, fileName, pwdHash);
+  });
+  clearModalMessage();
+
+  await loadNoteNamesFS(dh);
+}
+
+export async function decryptAllNotes() {
+  let dh = getStorageFS();
+  throwIf(!db, "no decryption for local storage notes");
+
+  await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
+    if (!isEncr) {
+      return;
+    }
+    let msg = `Decrypting <b>${name}</b>`;
+    setModalMessageHTML(msg);
+    await decryptNoteFS(dh, fileName);
+  });
+  clearModalMessage();
+
+  removePassword();
   await loadNoteNamesFS(dh);
 }

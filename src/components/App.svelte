@@ -48,6 +48,7 @@
     preLoadAllNotes,
     isUsingEncryption,
     encryptAllNotes,
+    decryptAllNotes,
   } from "../notes";
   import {
     getAltChar,
@@ -246,11 +247,6 @@
         showingDecryptPassword = false;
       };
     });
-  }
-
-  function openDecryptNotes() {
-    // TODO: implement me
-    throw new Error("NYI");
   }
 
   let showingEncryptPassword = $state(false);
@@ -650,7 +646,7 @@
     } else if (cmdId === kCmdEncryptNotes) {
       openEncryptPassword();
     } else if (cmdId === kCmdDecryptNotes) {
-      openDecryptNotes();
+      decryptAllNotes();
     } else if (cmdId === kCmdEncryptionHelp) {
       showHelp("#encryption");
     } else {
