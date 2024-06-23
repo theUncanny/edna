@@ -1045,7 +1045,7 @@ export async function encryptAllNotes(pwd) {
   });
   clearModalMessage();
 
-  await loadNoteNamesFS(dh);
+  await loadNoteNames();
 }
 
 export async function decryptAllNotes() {
@@ -1063,5 +1063,5 @@ export async function decryptAllNotes() {
   clearModalMessage();
 
   removePassword();
-  await loadNoteNamesFS(dh);
+  await loadNoteNames();
 }
