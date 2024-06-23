@@ -4,7 +4,11 @@
   import NoteSelector from "./NoteSelector.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
   import Editor from "./Editor.svelte";
-  import Loading from "./Loading.svelte";
+  import ModalMessage, {
+    clearModalMessage,
+    modalMessageState,
+    setModalMessageHTML,
+  } from "./ModalMessage.svelte";
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
@@ -85,7 +89,6 @@
   let showingBlockSelector = $state(false);
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
-  let loadingNoteName = $state("");
 
   let contextMenuEv = $state(null);
 
@@ -775,10 +778,11 @@
     console.log("App.openNote:", name);
     let editor = getEditor();
     editor.setReadOnly(true);
-    loadingNoteName = name;
+    let msg = `Loading <span class="font-bold">{name}</span>...`;
+    setModalMessageHTML(msg, 300);
     await editor.openNote(name, skipSave);
     // await sleep(400);
-    loadingNoteName = "";
+    clearModalMessage();
     editor.focus();
   }
 
@@ -953,8 +957,8 @@
   </Overlay>
 {/if}
 
-{#if loadingNoteName}
-  <Loading {loadingNoteName} />
+{#if modalMessageState.isShowing}
+  <ModalMessage />
 {/if}
 
 {#if showingRenameNote}

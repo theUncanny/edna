@@ -9,6 +9,10 @@ import {
   openDirPicker,
   readDir,
 } from "./fileutil";
+import {
+  clearModalMessage,
+  setModalMessageHTML,
+} from "./components/ModalMessage.svelte";
 import { decryptBlobAsString, encryptStringAsBlob, hash } from "kiss-crypto";
 import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
 import { fromFileName, isValidFileName, toFileName } from "./filenamify";
@@ -558,7 +562,6 @@ async function readMaybeEncryptedNoteFS(dh, name) {
 /**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
- * @param {string} pwdHash
  * @returns {Promise<string>}
  */
 async function readEncryptedFS(dh, fileName) {
@@ -1010,8 +1013,11 @@ function saltPassword(pwd) {
 async function encryptAllNotesFS(dh, pwd) {
   let pwdHash = saltPassword(pwd);
   await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
+    let msg = `Encrypting <b>${name}</b>`;
+    setModalMessageHTML(msg);
     await encryptNoteFS(dh, fileName, pwdHash);
   });
+  clearModalMessage();
 }
 
 /**
