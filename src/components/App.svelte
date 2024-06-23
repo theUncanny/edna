@@ -43,6 +43,7 @@
     kReleaseNotesSystemNoteName,
     preLoadAllNotes,
     isUsingEncryption,
+    encryptAllNotes,
   } from "../notes";
   import {
     getAltChar,
@@ -260,6 +261,7 @@
   function onEncryptPassword(pwd) {
     console.log("got encryption password:", pwd);
     closeEncryptPassword();
+    encryptAllNotes(pwd);
   }
 
   function exportNotesToZipFile() {

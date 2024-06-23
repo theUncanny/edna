@@ -1006,7 +1006,6 @@ function saltPassword(pwd) {
  * @param {string} pwd
  */
 async function encryptAllNotesFS(dh, pwd) {
-  rememberPassword(pwd);
   let pwdHash = saltPassword(pwd);
   await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
     await encryptNoteFS(dh, fileName, pwdHash);
@@ -1019,6 +1018,7 @@ async function encryptAllNotesFS(dh, pwd) {
 export async function encryptAllNotes(pwd) {
   let dh = getStorageFS();
   throwIf(!db, "no encryption for local storage notes");
+  rememberPassword(pwd);
   await encryptAllNotesFS(dh, pwd);
   await loadNoteNamesFS(dh);
 }
