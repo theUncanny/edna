@@ -163,7 +163,7 @@ export const blockHdrMarkdown = "\n∞∞∞markdown\n";
 
 /**
  * @param {string[]} existingNotes
- * @returns {Promise<string[]>}
+ * @returns {Promise<number>}
  */
 export async function createDefaultNotes(existingNotes) {
   /**
@@ -203,7 +203,7 @@ export async function createDefaultNotes(existingNotes) {
     reassignNoteShortcut("daily journal", "2");
     reassignNoteShortcut("inbox", "3");
   }
-  return latestNoteNames;
+  return nCreated;
 }
 
 /**

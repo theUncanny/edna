@@ -55,7 +55,7 @@ export async function boot() {
   }
 
   let noteNames = await loadNoteNames();
-  let createdNotes = await createDefaultNotes(noteNames);
+  let nCreated = await createDefaultNotes(noteNames);
   await loadNotesMetadata(); // pre-load
 
   let settings = getSettings();
@@ -71,7 +71,7 @@ export async function boot() {
   let settingsName = settings.currentNoteName;
 
   // re-do because could have created default notes
-  if (len(createdNotes) > 0) {
+  if (nCreated > 0) {
     noteNames = await loadNoteNames();
   }
 
