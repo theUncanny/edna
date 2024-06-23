@@ -66,9 +66,9 @@ export async function boot() {
   // - settings.currentNoteName if it exists
   // - fallback to scratch note
   let toOpenAtStartup = kScratchNoteName; // default if nothing else matches
-  let hashName = window.location.hash.slice(1);
-  hashName = decodeURIComponent(hashName);
-  let settingsName = settings.currentNoteName;
+  let nameFromURLHash = window.location.hash.slice(1);
+  nameFromURLHash = decodeURIComponent(nameFromURLHash);
+  let nameFromSettings = settings.currentNoteName;
 
   // re-do because could have created default notes
   if (nCreated > 0) {
@@ -87,15 +87,18 @@ export async function boot() {
   }
 
   // need to do this twice to make sure hashName takes precedence over settings.currentNoteName
-  if (isValidNote(settingsName)) {
-    toOpenAtStartup = settingsName;
-    console.log("will open note from settings.currentNoteName:", settingsName);
+  if (isValidNote(nameFromSettings)) {
+    toOpenAtStartup = nameFromSettings;
+    console.log(
+      "will open note from settings.currentNoteName:",
+      nameFromSettings,
+    );
   }
-  if (isValidNote(hashName)) {
-    toOpenAtStartup = hashName;
-    console.log("will open note from url #hash:", hashName);
+  if (isValidNote(nameFromURLHash)) {
+    toOpenAtStartup = nameFromURLHash;
+    console.log("will open note from url #hash:", nameFromURLHash);
   }
-  if (!isValidNote(settingsName)) {
+  if (!isValidNote(nameFromSettings)) {
     toOpenAtStartup = "scratch";
   }
 

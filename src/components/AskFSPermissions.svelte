@@ -60,7 +60,7 @@
     <button
       onclick={requestPermissions}
       class="mt-4 px-4 py-1 border border-black hover:bg-gray-100"
-      >Allow Edna access files in directory <span class="font-bold"
+      >Allow Edna to access files in directory <span class="font-bold"
         >{dirName}</span
       ></button
     >

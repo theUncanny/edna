@@ -1,8 +1,7 @@
 import {
   blobFromUint8Array,
-  blobToUint8Array,
   fsDeleteFile,
-  fsReadBlob,
+  fsReadBinaryFile,
   fsReadTextFile,
   fsRenameFile,
   fsWriteBlob,
@@ -67,7 +66,7 @@ function getPasswordHash() {
   if (!pwd) {
     return null;
   }
-  let pwdHash = saltPassword();
+  let pwdHash = saltPassword(pwd);
   return pwdHash;
 }
 
@@ -115,8 +114,8 @@ function trimEdnaExt(name) {
 }
 
 export function notePathFromNameFS(name) {
-  name = toFileName(name);
   let isEncr = isEncryptedNote(name);
+  name = toFileName(name); // note: must happen after isEncryptedNote() check
   let ext = isEncr ? kEdnaEncrFileExt : kEdnaFileExt;
   return name + ext;
 }
@@ -523,13 +522,13 @@ function loadNoteLS(name) {
  */
 export async function loadNote(name) {
   console.log("loadNote:", name);
-  let content;
+  let res;
   if (isSystemNoteName(name)) {
-    content = getSystemNoteContent(name);
+    res = getSystemNoteContent(name);
   } else {
     let dh = getStorageFS();
     if (!dh) {
-      content = loadNoteLS(name);
+      res = loadNoteLS(name);
     } else {
       let content = await readMaybeEncryptedNoteFS(dh, name);
       return content;
@@ -537,8 +536,8 @@ export async function loadNote(name) {
   }
   historyPush(name);
   // TODO: this should happen in App.vue:onDocChange(); this was easier to write
-  content = autoCreateDayInJournal(name, content);
-  return fixUpNoteContent(content);
+  res = autoCreateDayInJournal(name, res);
+  return fixUpNoteContent(res);
 }
 
 /**
@@ -549,11 +548,11 @@ export async function loadNote(name) {
 async function readMaybeEncryptedNoteFS(dh, name) {
   let path = notePathFromNameFS(name);
   if (!isEncryptedEdnaFile(path)) {
-    let content = await fsReadTextFile(dh, path);
-    return content;
+    let res = await fsReadTextFile(dh, path);
+    return res;
   }
-  let content = await readEncryptedFS(dh, path);
-  return content;
+  let res = await readEncryptedFS(dh, path);
+  return res;
 }
 
 /**
@@ -562,15 +561,12 @@ async function readMaybeEncryptedNoteFS(dh, name) {
  * @param {string} pwdHash
  * @returns {Promise<string>}
  */
-async function readEncryptedFS(dh, fileName, pwdHash = null) {
-  if (pwdHash == null) {
-    pwdHash = getPasswordHash();
-    // TODO: ask for password
-    throwIf(!pwdHash, "need password");
-  }
-  let b = await fsReadBlob(dh, fileName);
-  let ua = await blobToUint8Array(b);
-  let s = decryptBlobAsString({ key: pwdHash, cipherblob: ua });
+async function readEncryptedFS(dh, fileName) {
+  let pwdHash = getPasswordHash();
+  // TODO: ask for password
+  throwIf(!pwdHash, "need password");
+  let d = await fsReadBinaryFile(dh, fileName);
+  let s = decryptBlobAsString({ key: pwdHash, cipherblob: d });
   // TODO: if returns null, need to ask for password
   return s;
 }
@@ -751,7 +747,7 @@ export async function preLoadAllNotes() {
       continue;
     }
     let path = notePathFromNameFS(name);
-    await fsReadBlob(dh, path);
+    await fsReadBinaryFile(dh, path);
   }
   return len(noteNames);
 }
@@ -998,6 +994,10 @@ async function encryptNoteFS(dh, oldFileName, pwdHash) {
   await dh.removeEntry(oldFileName);
 }
 
+/**
+ * @param {string} pwd
+ * @returns {string}
+ */
 function saltPassword(pwd) {
   let pwdHash = hash({ key: pwd, salt: kEdnaSalt });
   return pwdHash;

@@ -352,24 +352,25 @@ export async function fsWriteBlob(dh, fileName, content) {
  * @returns {Promise<string>}
  */
 export async function fsReadTextFile(dh, fileName) {
-  console.log("reading file:", fileName);
+  console.log("fsReadTextFile:", fileName);
   let fileHandle = await dh.getFileHandle(fileName, { create: false });
   const file = await fileHandle.getFile();
   // I assume this reads utf-8
-  const content = await file.text();
-  return content;
+  const res = await file.text();
+  return res;
 }
 
 /**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
- * @returns {Promise<Blob>}
+ * @returns {Promise<Uint8Array>}
  */
-export async function fsReadBlob(dh, fileName) {
-  console.log("reading file:", fileName);
+export async function fsReadBinaryFile(dh, fileName) {
+  console.log("fsReadBinaryFile:", fileName);
   let fileHandle = await dh.getFileHandle(fileName, { create: false });
-  const d = await fileHandle.getFile();
-  return d;
+  const blob = await fileHandle.getFile();
+  const res = await readBlobAsUint8Array(blob);
+  return res;
 }
 
 /**
@@ -396,7 +397,7 @@ export async function fsDeleteFile(dh, name) {
  * @param {Blob} blob
  * @returns {Promise<Uint8Array>}
  */
-export async function blobToUint8Array(blob) {
+async function readBlobAsUint8Array(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = function (ev) {
