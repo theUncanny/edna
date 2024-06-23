@@ -7,7 +7,7 @@
   createScratchNote: () => void,
   openContextMenu: (ev: MouseEvent) => void,
   openBlockSelector: () => void,
-  getPassword: () => Promise<string>,
+  getPassword: (msg: string) => Promise<string>,
 }} GlobalFuncs
 */
 
@@ -59,8 +59,12 @@ export function openBlockSelector() {
   globalFunctions.openBlockSelector();
 }
 
-export async function getPassword() {
-  let pwd = await globalFunctions.getPassword();
+/**
+ * @param {string} msg
+ * @returns {Promise<string>}
+ */
+export async function getPassword(msg) {
+  let pwd = await globalFunctions.getPassword(msg);
   console.log("got password:", pwd);
   return pwd;
 }

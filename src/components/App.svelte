@@ -233,9 +233,18 @@
   }
 
   let showingDecryptPassword = $state(false);
-  let closeDecryptPassword;
-  let onDecryptPassword;
-  async function getPassword() {
+  let closeDecryptPassword = () => {
+    console.log("empty closeDecryptPassword");
+  };
+  let onDecryptPassword = (pwd) => {
+    console.log("onDecryptPassword:", pwd);
+  };
+
+  /**
+   * @param {string} [msg]
+   * @returns {Promise<string>}
+   */
+  async function getPassword(msg = "") {
     showingDecryptPassword = true;
     return new Promise((resolve, reject) => {
       onDecryptPassword = (pwd) => {

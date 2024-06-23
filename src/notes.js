@@ -970,12 +970,12 @@ export function getNotesCount() {
 }
 
 /**
- * we're using encryption only for disk but
  * @returns {boolean}
  */
 export function isUsingEncryption() {
   let dh = getStorageFS();
   if (!dh) {
+    // no encryption for local storage
     return false;
   }
   let pwdHash = getPasswordHash();
