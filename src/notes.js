@@ -93,7 +93,7 @@ export async function dbDelDirHandle() {
 }
 
 const kEdnaFileExt = ".edna.txt";
-const kEdnaEncrFileExt = ".edna.encr.txt";
+const kEdnaEncrFileExt = ".encr.edna.txt";
 
 function isEncryptedEdnaFile(fileName) {
   return fileName.endsWith(kEdnaEncrFileExt);
@@ -103,7 +103,7 @@ function isEncryptedEdnaFile(fileName) {
  * @returns {boolean}
  */
 function isEdnaFile(fileName) {
-  return fileName.endsWith(kEdnaFileExt) || isEncryptedEdnaFile(fileName);
+  return fileName.endsWith(kEdnaFileExt);
 }
 
 function trimEdnaExt(name) {
@@ -121,6 +121,7 @@ export function notePathFromNameFS(name) {
 }
 
 const kLSKeyPrefix = "note:";
+// TODO: we're not encrypting notes in local storage. maybe we never will
 const kLSKeyEncrPrefix = "note.encr:";
 
 function notePathFromNameLS(name) {
