@@ -145,5 +145,13 @@ export function onSettingsChange(callback) {
 export function getVersion() {
   // __APP_VERSION__ and __GIT_HASH__ are set in vite.config.js
   // @ts-ignore
-  return __APP_VERSION__ + " (" + __GIT_HASH__ + ")";
+  return __APP_VERSION__;
+}
+
+/**
+ * @returns {string}
+ */
+export function getGitHash() {
+  // @ts-ignore
+  return __GIT_HASH__;
 }

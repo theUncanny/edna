@@ -6,6 +6,7 @@
     saveSettings,
     setSetting,
     getSettings,
+    getGitHash,
   } from "../settings";
   import { platform } from "../util";
   import { focus } from "../actions";
@@ -39,6 +40,8 @@
 
   let defaultFontSize = $state(kDefaultFontSize);
   let appVersion = getVersion();
+  let gitHash = getGitHash();
+  let gitURL = "https://github.com/kjk/edna/commit/" + gitHash;
   let currentNoteName = initialSettings.currentNoteName;
 
   let fontSizes = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -190,7 +193,8 @@
   </div>
 
   <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
-    Current Version: {appVersion}
+    Current Version: {appVersion}&nbsp;
+    <a href={gitURL} target="_blank" class="underline">{gitHash}</a>
   </div>
 </div>
 
