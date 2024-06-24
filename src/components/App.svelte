@@ -7,7 +7,7 @@
   import ModalMessage, {
     clearModalMessage,
     modalMessageState,
-    setModalMessageHTML,
+    showModalMessageHTML,
   } from "./ModalMessage.svelte";
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
@@ -233,6 +233,7 @@
   }
 
   let showingDecryptPassword = $state(false);
+  let showingDecryptMessage = $state("");
   let closeDecryptPassword = () => {
     console.log("empty closeDecryptPassword");
   };
@@ -246,6 +247,8 @@
    */
   async function getPassword(msg = "") {
     showingDecryptPassword = true;
+    showingDecryptMessage = msg;
+    clearModalMessage();
     return new Promise((resolve, reject) => {
       onDecryptPassword = (pwd) => {
         resolve(pwd);
@@ -787,8 +790,8 @@
     console.log("App.openNote:", name);
     let editor = getEditor();
     editor.setReadOnly(true);
-    let msg = `Loading <span class="font-bold">{name}</span>...`;
-    setModalMessageHTML(msg, 300);
+    let msg = `Loading <span class="font-bold">${name}</span>...`;
+    showModalMessageHTML(msg, 300);
     await editor.openNote(name, skipSave);
     // await sleep(400);
     clearModalMessage();
@@ -1006,7 +1009,7 @@
 {#if showingDecryptPassword}
   <Overlay onclose={closeDecryptPassword} blur={true}>
     <EnterDecryptPassword
-      onclose={closeDecryptPassword}
+      msg={showingDecryptMessage}
       onpassword={onDecryptPassword}
     ></EnterDecryptPassword>
   </Overlay>

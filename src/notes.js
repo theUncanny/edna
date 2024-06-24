@@ -11,7 +11,7 @@ import {
 } from "./fileutil";
 import {
   clearModalMessage,
-  setModalMessageHTML,
+  showModalMessageHTML,
 } from "./components/ModalMessage.svelte";
 import { decryptBlobAsString, encryptStringAsBlob, hash } from "kiss-crypto";
 import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
@@ -28,6 +28,7 @@ import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
 import { dirtyState } from "./state.svelte";
+import { getPasswordFromUser } from "./globals";
 
 // is set if we store notes on disk, null if in localStorage
 /** @type {FileSystemDirectoryHandle | null} */
@@ -69,6 +70,9 @@ function removePassword() {
   localStorage.removeItem(kLSPassowrdKey);
 }
 
+/**
+ * @returns {string}
+ */
 function getPasswordHash() {
   let pwd = localStorage.getItem(kLSPassowrdKey);
   if (!pwd) {
@@ -76,6 +80,25 @@ function getPasswordHash() {
   }
   let pwdHash = saltPassword(pwd);
   return pwdHash;
+}
+
+/**
+ * @param {string} msg
+ * @returns {Promise<string>}
+ */
+async function getPasswordHashMust(msg) {
+  let pwdHash = getPasswordHash();
+  let simulateNoPassword = false;
+  if (simulateNoPassword) {
+    pwdHash = null;
+  }
+  if (pwdHash) {
+    return pwdHash;
+  }
+  let pwd = await getPasswordFromUser(msg);
+  // TODO: we don't know yet if password is correct, maybe move this somewhere else
+  rememberPassword(pwd);
+  return saltPassword(pwd);
 }
 
 /**
@@ -563,13 +586,25 @@ async function readMaybeEncryptedNoteFS(dh, name) {
  * @returns {Promise<string>}
  */
 async function readEncryptedFS(dh, fileName) {
-  let pwdHash = getPasswordHash();
-  // TODO: ask for password
-  throwIf(!pwdHash, "need password");
-  let d = await fsReadBinaryFile(dh, fileName);
-  let s = decryptBlobAsString({ key: pwdHash, cipherblob: d });
-  // TODO: if returns null, need to ask for password
-  return s;
+  let msg = "";
+  while (true) {
+    let pwdHash = await getPasswordHashMust(msg);
+    let d = await fsReadBinaryFile(dh, fileName);
+    let s = null;
+    try {
+      s = decryptBlobAsString({ key: pwdHash, cipherblob: d });
+    } catch (e) {
+      console.log(e);
+      s = null;
+    }
+    if (s !== null) {
+      return s;
+    }
+    msg = "Entered password was invalid";
+    // password was likely incorrect so remove it so that getPasswordHashMust()
+    // asks the user
+    removePassword();
+  }
 }
 
 /**
@@ -1034,7 +1069,7 @@ export async function encryptAllNotes(pwd) {
       return;
     }
     let msg = `Encrypting <b>${name}</b>`;
-    setModalMessageHTML(msg);
+    showModalMessageHTML(msg);
     await encryptNoteFS(dh, fileName, pwdHash);
   });
   clearModalMessage();
@@ -1051,7 +1086,7 @@ export async function decryptAllNotes() {
       return;
     }
     let msg = `Decrypting <b>${name}</b>`;
-    setModalMessageHTML(msg);
+    showModalMessageHTML(msg);
     await decryptNoteFS(dh, fileName);
   });
   clearModalMessage();

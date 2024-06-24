@@ -63,7 +63,7 @@ export function openBlockSelector() {
  * @param {string} msg
  * @returns {Promise<string>}
  */
-export async function getPassword(msg) {
+export async function getPasswordFromUser(msg) {
   let pwd = await globalFunctions.getPassword(msg);
   console.log("got password:", pwd);
   return pwd;

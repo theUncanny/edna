@@ -3,10 +3,10 @@
   import { len } from "../util";
 
   /** @type { {
-    onclose: () => void,
+    msg: string,
     onpassword: (newName: string) => void,
 }}*/
-  let { onclose, onpassword } = $props();
+  let { msg, onpassword } = $props();
 
   let password = $state("");
 
@@ -38,6 +38,12 @@
     onpassword(password);
   }
   let hidePassword = $state(true);
+
+  /** @type {HTMLElement} */
+  let input;
+  function onchange(ev) {
+    input.focus();
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -48,14 +54,18 @@
   class="selector z-20 absolute center-x-with-translate top-[4rem] flex flex-col max-w-full p-3"
 >
   <div class="text-lg">Enter password to decrypt files:</div>
+  {#if msg}
+    <div class="text-red-500 text-sm my-2">{msg}</div>
+  {/if}
   <input
+    bind:this={input}
     bind:value={password}
     type={hidePassword ? "password" : "text"}
     use:focus
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <label class="mt-2 ml-1.5">
-    <input type="checkbox" bind:checked={hidePassword} />
+    <input type="checkbox" bind:checked={hidePassword} {onchange} />
     Hide password
   </label>
   {#if pwdError}
@@ -78,7 +88,7 @@
 </div>
 
 <style>
-  label > input[type="checkbox"] {
+  input[type="checkbox"] {
     position: relative;
     top: 2px;
     left: -3px;

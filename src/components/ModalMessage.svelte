@@ -13,7 +13,7 @@
    * @param {string} msgHTML
    * @param {number} delay
    */
-  export function setModalMessageHTML(msgHTML, delay) {
+  export function showModalMessageHTML(msgHTML, delay) {
     clearTimeout(timerID);
     timerID = null;
     if (delay <= 0) {
@@ -36,22 +36,15 @@
 </script>
 
 <script>
-  /** @type {HTMLElement} */
-  let btn = $state(null);
-
-  $effect(() => {
-    if (btn) {
-      btn.focus();
-    }
-  });
+  import { focus } from "../actions";
 </script>
 
 <form
   tabindex="-1"
   class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[999] pointer-events-none select-none"
 >
-  <button class="bg-white focus:outline-none" bind:this={btn}>
-    <div class="text-lg text-black px-4 py-2">
+  <button class="bg-white focus:outline-none min-w-[75vw]" use:focus>
+    <div class="text-lg text-black px-4 py-2 text-center">
       {@html modalMessageHTML}
     </div>
   </button>
