@@ -213,7 +213,7 @@ export async function createDefaultNotes(existingNotes) {
     nCreated += await createIfNotExists(kInboxNoteName, initialInbox);
   }
   if (nCreated > 0) {
-    await updateLatestNoteNames();
+    await loadNoteNames();
   }
   if (isFirstRun) {
     await loadNotesMetadata(); // must pre-load to make them available
@@ -351,6 +351,8 @@ async function loadNoteNamesFS(dh) {
 }
 
 /**
+ * after creating / deleting / renaming a note we need to update
+ * cached latestNoteNames
  * @returns {Promise<string[]>}
  */
 export async function loadNoteNames() {
@@ -366,15 +368,6 @@ export async function loadNoteNames() {
   encryptedNoteNames = res[1];
   // console.log("loadNoteNames() res:", res);
   return latestNoteNames;
-}
-
-/**
- * after creating / deleting / renaming a note we need to update
- * cached latestNoteNames
- * @returns {Promise<string[]>}
- */
-async function updateLatestNoteNames() {
-  return await loadNoteNames();
 }
 
 export function getLatestNoteNames() {
@@ -466,14 +459,14 @@ export async function createNoteWithName(name, content = null) {
     } else {
       console.log("note already exists", name);
     }
-    await updateLatestNoteNames();
+    await loadNoteNames();
     return;
   }
 
   // TODO: check if exists
   await writeNoteFS(dh, name, content);
   incNoteCreateCount();
-  await updateLatestNoteNames();
+  await loadNoteNames();
 }
 
 /**
@@ -676,7 +669,7 @@ export async function deleteNote(name) {
   incNoteDeleteCount();
   removeNoteFromHistory(name);
   await removeNoteFromMetadata(name);
-  await updateLatestNoteNames();
+  await loadNoteNames();
 }
 
 /**
@@ -686,10 +679,11 @@ export async function deleteNote(name) {
  */
 export async function renameNote(oldName, newName, content) {
   await createNoteWithName(newName, content);
-  await deleteNote(oldName);
+  // update metadata and history before deleteNote() because it'll
+  // remove from history and metadata
   await renameInMetadata(oldName, newName);
   renameInHistory(oldName, newName);
-  await updateLatestNoteNames();
+  await deleteNote(oldName);
 }
 
 /**
@@ -787,7 +781,7 @@ export async function switchToStoringNotesOnDisk(dh) {
   storageFS = dh;
   // save in indexedDb so that it persists across sessions
   await dbSetDirHandle(dh);
-  let noteNames = await updateLatestNoteNames();
+  let noteNames = await loadNoteNames();
 
   // migrate settings, update currentNoteName
   let settings = loadSettings();
