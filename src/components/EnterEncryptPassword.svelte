@@ -40,9 +40,9 @@
   }
   let hidePassword = $state(true);
 
+  /** @type {HTMLElement} */
   let input;
-  // clicking the checkbox or link to docs takes away focus form input, this restores it
-  function onfocusout() {
+  function onchange(ev) {
     input.focus();
   }
 </script>
@@ -57,14 +57,13 @@
   <div class="text-lg">Enter password to encrypt files:</div>
   <input
     bind:this={input}
-    {onfocusout}
     bind:value={password}
     type={hidePassword ? "password" : "text"}
     use:focus
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <label class="mt-2 ml-1.5">
-    <input type="checkbox" bind:checked={hidePassword} />
+    <input type="checkbox" bind:checked={hidePassword} {onchange} />
     Hide password
   </label>
   {#if pwdError}
@@ -90,13 +89,13 @@
       onclick={() => emitGotPassword()}
       disabled={!validPassword}
       class="px-4 py-1 border border-black hover:bg-gray-100 disabled:hover:bg-white disabled:text-gray-400 disabled:border-gray-400 default:bg-slate-700"
-      >Encrypt all {getNotesCount()} notes</button
+      >Encrypt {getNotesCount()} notes</button
     >
   </div>
 </div>
 
 <style>
-  label > input[type="checkbox"] {
+  input[type="checkbox"] {
     position: relative;
     top: 2px;
     left: -3px;
