@@ -619,8 +619,7 @@ async function writeMaybeEncryptedFS(dh, name, content) {
     await fsWriteTextFile(dh, path, content);
     return;
   }
-  let pwdHash = getPasswordHash();
-  // TODO: ask for password if not present
+  let pwdHash = await getPasswordHashMust("");
   throwIf(!pwdHash, "needs password");
   await writeEncryptedFS(dh, pwdHash, path, content);
 }
@@ -644,14 +643,14 @@ async function writeEncryptedFS(dh, pwdHash, fileName, s) {
  * @param {string} content
  */
 export async function writeNoteFS(dh, name, content) {
-  let pwdHash = getPasswordHash();
-  let isEncr = !!pwdHash;
+  let isEncr = isUsingEncryption();
   const path = notePathFromNameFS(name, isEncr);
-  if (isEncr) {
-    await writeEncryptedFS(dh, pwdHash, path, content);
-  } else {
+  if (!isEncr) {
     await fsWriteTextFile(dh, path, content);
+    return;
   }
+  let pwdHash = await getPasswordHashMust("");
+  await writeEncryptedFS(dh, pwdHash, path, content);
 }
 
 /**
