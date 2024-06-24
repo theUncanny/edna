@@ -14,7 +14,14 @@ import {
   showModalMessageHTML,
 } from "./components/ModalMessage.svelte";
 import { decryptBlobAsString, encryptStringAsBlob, hash } from "kiss-crypto";
-import { formatDateYYYYMMDDDay, isDev, len, throwIf, trimSuffix } from "./util";
+import {
+  formatDateYYYYMMDDDay,
+  isDev,
+  len,
+  removeDuplicates,
+  throwIf,
+  trimSuffix,
+} from "./util";
 import { fromFileName, isValidFileName, toFileName } from "./filenamify";
 import { getHelp, getInitialContent, getReleaseNotes } from "./initial-content";
 import { getSettings, loadSettings, saveSettings } from "./settings";
@@ -387,8 +394,12 @@ export async function loadNoteNames() {
   } else {
     res = await loadNoteNamesFS(dh);
   }
-  latestNoteNames = res[0];
-  encryptedNoteNames = res[1];
+
+  // TODO: got a case where I had both foo.edna.txt and foo.encr.edna.txt which caused
+  // duplicate names which cased note selector to fail due to duplicate key
+  // don't quite know how this happened but it could be done maliciously
+  latestNoteNames = removeDuplicates(res[0]);
+  encryptedNoteNames = removeDuplicates(res[1]);
   // console.log("loadNoteNames() res:", res);
   return latestNoteNames;
 }

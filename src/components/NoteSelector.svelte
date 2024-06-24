@@ -34,14 +34,8 @@
     // console.log("rebuildNotesInfo, notes", noteInfos)
     /** @type {Item[]} */
     let res = Array(len(noteNames));
-    // let res = [];
     for (let i = 0; i < len(noteNames); i++) {
       let name = noteNames[i];
-
-        console.log(`duplicate key ${name}`);
-      }
-      keys[name] = true;
-
       let item = {
         key: name,
         name: name,

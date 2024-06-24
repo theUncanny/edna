@@ -269,3 +269,21 @@ export function trimSuffix(s, suffix) {
   }
   return s.substring(0, s.length - suffix.length);
 }
+
+/**
+ * @param {string[]} a
+ * @returns {string[]}
+ */
+export function removeDuplicates(a) {
+  let res = new Array(a.length);
+  let n = 0;
+  for (let s of a) {
+    if (res.includes(s)) {
+      console.log(`filterDuplicates: found duplicate '${s}'`);
+      continue;
+    }
+    res[n++] = s;
+  }
+  res.length = n;
+  return res;
+}
