@@ -379,10 +379,29 @@ export async function fsReadBinaryFile(dh, fileName) {
  * @param {string} newName
  * @returns {Promise<void>}
  */
-export async function fsRenameFile(dh, newName, oldName) {
+export async function fsRenameFileOld(dh, newName, oldName) {
   let d = await fsReadTextFile(dh, oldName);
   fsWriteTextFile(dh, newName, d);
   fsDeleteFile(dh, oldName);
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} oldName
+ * @param {string} newName
+ * @returns {Promise<boolean>} true if renamed, false if failed
+ */
+export async function fsRenameFile(dh, oldName, newName) {
+  try {
+    let f = await dh.getFileHandle(oldName);
+    // @ts-ignore
+    await f.move(newName);
+  } catch (e) {
+    // getFileHandle() throws exception if file doesn't exist
+    console.log(e);
+    return false;
+  }
+  return true;
 }
 
 /**

@@ -843,7 +843,8 @@ export async function pickAnotherDirectory() {
 }
 
 // meta-data about notes
-export const kMetadataName = "notes.metadata.edna.json";
+export const kMetadataName = "__metadata.edna.json";
+export const kMetadataOldName = "notes.metadata.edna.json";
 
 /**
  * @typedef {Object} NoteMetadata
@@ -888,13 +889,30 @@ export async function removeNoteFromMetadata(noteName) {
   await saveNotesMetadata(res);
 }
 
+/**
+ * @param {string} oldName
+ * @param {string} newName
+ * @returns
+ */
+function renameLS(oldName, newName) {
+  let s = localStorage.getItem(oldName);
+  if (s === null) {
+    // doesn't exist
+    return;
+  }
+  localStorage.setTime(newName, s);
+  localStorage.removeItem(oldName);
+}
+
 export async function loadNotesMetadata() {
   console.log("loadNotesMetadata: started");
   let dh = getStorageFS();
   let s;
   if (!dh) {
+    renameLS(kMetadataOldName, kMetadataName);
     s = localStorage.getItem(kMetadataName);
   } else {
+    await fsRenameFile(dh, kMetadataOldName, kMetadataName);
     try {
       s = await fsReadTextFile(dh, kMetadataName);
     } catch (e) {

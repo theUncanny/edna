@@ -1,5 +1,5 @@
 import {
-  kMetadataName,
+  kMetadataOldName,
   loadNote,
   loadNoteNames,
   loadNotesMetadata,
@@ -39,7 +39,7 @@ export async function exportNotesToZip() {
   {
     let meta = await loadNotesMetadata();
     let s = JSON.stringify(meta, null, 2);
-    await addTextFile(libZip, zipWriter, kMetadataName, s);
+    await addTextFile(libZip, zipWriter, kMetadataOldName, s);
   }
   {
     // note: note sure if I should export this
