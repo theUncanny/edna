@@ -12,6 +12,7 @@ import { ipcRenderer } from "./ipcrenderer";
  * @property {string} keymap
  * @property {boolean} showFoldGutter
  * @property {boolean} showLineNumberGutter
+ * @property {boolean} backupNotes
  * @property {string} [theme] // "system", "light", "dark"
  */
 
@@ -118,6 +119,7 @@ export function loadInitialSettings() {
     keymap: "default",
     showFoldGutter: true,
     showLineNumberGutter: true,
+    backupNotes: false,
     theme: "system",
   };
   let updatedSettings = Object.assign(initialSettings, settings);

@@ -335,8 +335,7 @@ export async function ensureValidNoteNamesFS(dh) {
  * @param {FileSystemDirectoryHandle} dh
  * @param {(fileName, noteName, isEncr) => Promise<void>} fn
  */
-
-async function forEachNoteFileFS(dh, fn) {
+export async function forEachNoteFileFS(dh, fn) {
   let fsEntries = await readDir(dh);
   // console.log("files", fsEntries);
   for (let e of fsEntries.dirEntries) {
@@ -370,7 +369,7 @@ async function loadNoteNamesFS(dh) {
   /** @type {string[]} */
   let encrypted = [];
   await forEachNoteFileFS(dh, async (fileName, name, isEncr) => {
-    console.log("loadNoteNamesFS:", fileName);
+    // console.log("loadNoteNamesFS:", fileName);
     all.push(name);
     if (isEncr) {
       encrypted.push(name);

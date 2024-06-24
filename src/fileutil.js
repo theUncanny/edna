@@ -406,6 +406,22 @@ export async function fsRenameFile(dh, oldName, newName) {
 
 /**
  * @param {FileSystemDirectoryHandle} dh
+ * @param {string} fileName
+ * @returns {Promise<boolean>} true if exists
+ */
+export async function fsFileExists(dh, fileName) {
+  try {
+    await dh.getFileHandle(fileName);
+  } catch (e) {
+    // getFileHandle() throws exception if file doesn't exist
+    console.log(e);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * @param {FileSystemDirectoryHandle} dh
  * @param {string} name
  */
 export async function fsDeleteFile(dh, name) {

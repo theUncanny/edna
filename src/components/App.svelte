@@ -67,7 +67,7 @@
     langSupportsFormat,
     langSupportsRun,
   } from "../editor/languages";
-  import { exportNotesToZip } from "../notes-export";
+  import { exportNotesToZip, maybeBackupNotes } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
 
   let initialSettings = getSettings();
@@ -135,9 +135,13 @@
     }
     return "";
   });
-
   $effect(() => {
     getEditor().setSpellChecking(isSpellChecking);
+  });
+
+  $effect(() => {
+    console.log("App.svelte did mount");
+    maybeBackupNotes();
     window.addEventListener("keydown", onKeyDown);
 
     window.addEventListener("beforeunload", async () => {

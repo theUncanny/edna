@@ -9,6 +9,7 @@
     getGitHash,
   } from "../settings";
   import { platform } from "../util";
+  import { getStorageFS } from "../notes";
   import { focus } from "../actions";
 
   let keymaps = [
@@ -27,8 +28,9 @@
   let fontFamily = $state(initialSettings.fontFamily || kDefaultFontFamily);
   let fontSize = $state(initialSettings.fontSize || kDefaultFontSize);
   let theme = $state(initialSettings.theme);
+  let backupNotes = $state(initialSettings.backupNotes);
 
-  // console.log("fontFamily:", initialSettings.fontFamily);
+  let showBackupSetting = !!getStorageFS();
 
   let defFont = [kDefaultFontFamily, kDefaultFontFamily + " (default)"];
   let systemFonts = $state([defFont]);
@@ -192,6 +194,27 @@
     </select>
   </div>
 
+  {#if showBackupSetting}
+    <div class="mt-2 flex flex-col">
+      <h2>Misc</h2>
+      <label class="flex">
+        <input
+          type="checkbox"
+          bind:checked={backupNotes}
+          onchange={updateSettings}
+        />
+        <div>Backup notes</div>
+        <div class="flex-grow"></div>
+        <a
+          href="/help#backing-up-notes"
+          class="underline"
+          target="_blank"
+          title="info about backup">help</a
+        >
+      </label>
+    </div>
+  {/if}
+
   <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
     Current Version: {appVersion}&nbsp;
     <a href={gitURL} target="_blank" class="underline">{gitHash}</a>
@@ -211,14 +234,17 @@
     @apply px-2 py-2;
   }
   h2 ~ label {
-    margin-left: 4px;
+    margin-left: 2px;
   }
 
-  label > input[type="checkbox"] {
-    position: relative;
-    top: 2px;
-    left: -3px;
+  label {
+    @apply flex items-center relative;
   }
+
+  input[type="checkbox"] {
+    @apply mr-1;
+  }
+
   h2 {
     @apply font-bold;
   }

@@ -120,6 +120,7 @@ export function startTimer() {
 }
 
 /**
+ * returns current date in YYYY-MM-DD format
  * @param {Date} date
  * @returns {string}
  */

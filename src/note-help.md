@@ -225,6 +225,20 @@ Such passwords are easier to type and remember than typical "8a$7y!glo" password
 
 ∞∞∞markdown
 
+# Backing up notes
+
+For notes stored in file system, you can enable notes backup via Settings.
+
+Once a day notes will be packed into a .zip file and saved in `backup` folder as `edna.backup.<YYYY-MM-DD>.zip` file.
+
+Only last 14 backups are stored to save space.
+
+To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Open notes in directory`
+
+Encrypted notes are stored in their encrypted form.
+
+∞∞∞markdown
+
 # Exporting notes to a .zip file
 
 Edna files are just text files with `.edna.txt` extension.
