@@ -1,5 +1,5 @@
 import {
-  kMetadataOldName,
+  kMetadataName,
   loadNote,
   loadNoteNames,
   loadNotesMetadata,
@@ -24,10 +24,12 @@ async function addTextFile(libZip, zipWriter, fileName, text) {
   await zipWriter.add(fileName, blobReader, opts);
 }
 
-export async function exportNotesToZip() {
-  console.log("exportNotesToZip");
+/**
+ * @returns {Promise<Blob>}
+ */
+export async function exportUnencryptedNotesToZipBlob() {
+  console.log("exportUnencryptedNotesToZipBlob");
   let libZip = await import("@zip.js/zip.js");
-  console.log("zipJS:", libZip);
   let blobWriter = new libZip.BlobWriter("application/zip");
   let zipWriter = new libZip.ZipWriter(blobWriter);
   let noteNames = await loadNoteNames();
@@ -39,7 +41,7 @@ export async function exportNotesToZip() {
   {
     let meta = await loadNotesMetadata();
     let s = JSON.stringify(meta, null, 2);
-    await addTextFile(libZip, zipWriter, kMetadataOldName, s);
+    await addTextFile(libZip, zipWriter, kMetadataName, s);
   }
   {
     // note: note sure if I should export this
@@ -48,6 +50,11 @@ export async function exportNotesToZip() {
     await addTextFile(libZip, zipWriter, kSettingsPath, s);
   }
   let blob = await zipWriter.close();
+  return blob;
+}
+
+export async function exportNotesToZip() {
+  let blob = await exportUnencryptedNotesToZipBlob();
   let name = "edna.notes.export-" + formatDateYYYYMMDD() + ".zip";
   browserDownloadBlob(blob, name);
 }
