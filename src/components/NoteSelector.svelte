@@ -290,7 +290,7 @@
         {item.name}
       </div>
       <div class="grow"></div>
-      <div>{noteShortcut(item)}</div>
+      <div class="mr-2">{noteShortcut(item)}</div>
     {/snippet}
   </ListBox>
   {#if canOpenSelected || canDeleteSelected || filter.length > 0}
