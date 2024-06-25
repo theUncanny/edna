@@ -120,6 +120,9 @@
   let noteCountMsg = $derived.by(() => {
     // $state(`${noteCount} notes`);
     let n = len(filteredItems);
+    if (n === 0) {
+      return ""; // don't obscure user entering new, long note name
+    }
     if (n === noteCount) {
       return `${noteCount} notes`;
     }
@@ -158,14 +161,6 @@
     }
 
     showDelete = canOpenSelected;
-  }
-
-  /**
-   * @param {string} name
-   * @returns {string}
-   */
-  function quoteNoteName(name) {
-    return `"` + sanitizeNoteName(name) + `"`;
   }
 
   /**
@@ -307,13 +302,14 @@
     <hr class="mt-1 mb-1 border-gray-400" />
   {/if}
   <div
-    class="grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
+    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
   >
     {#if canOpenSelected}
       <div><span class="kbd">Enter</span></div>
-      <div>open note</div>
-      <div class="font-bold truncate">
-        {quoteNoteName(selectedName)}
+      <div class="truncate">
+        open note <span class="font-bold">
+          {selectedName}
+        </span>
       </div>
     {/if}
 
@@ -326,38 +322,34 @@
       </div>
     {/if}
     {#if canCreate}
-      <div>create note</div>
-      <div class="font-bold truncate">
-        {quoteNoteName(filter)}
+      <div class="truncate">
+        create note <span class="font-bold">
+          {filter}
+        </span>
       </div>
     {/if}
 
-    {#if showDelete}
-      <div><span class="kbd">Ctrl + Delete</span></div>
-      <div class="red">delete note</div>
-    {/if}
     {#if showDelete && canDeleteSelected}
-      <div class="font-bold truncate">
-        {quoteNoteName(selectedName)}
+      <div><span class="kbd">Ctrl + Delete</span></div>
+      <div class="red truncate">
+        delete note <span class="font-bold">
+          {selectedName}
+        </span>
       </div>
     {/if}
 
     {#if showDelete && !canDeleteSelected}
-      <div>
-        <span class="red"
-          >can't delete <span class="font-bold truncate"
-            >{quoteNoteName(selectedName)}</span
-          ></span
-        >
+      <div><span class="kbd">Ctrl + Delete</span></div>
+      <div class="red truncate">
+        can't delete <span class="font-bold">{selectedName}</span>
       </div>
     {/if}
 
     <div><span class="kbd">{altChar} + 0...9</span></div>
-    <div class="col-span-2">assign quick access shortcut</div>
+    <div>assign quick access shortcut</div>
 
     <div><span class="kbd">Esc</span></div>
     <div>dismiss</div>
-    <div class="italic"></div>
   </div>
 </form>
 
@@ -366,6 +358,7 @@
     font-size: 10px;
     /* @apply text-xs; */
     @apply font-mono;
+    @apply text-nowrap whitespace-nowrap;
     @apply px-[6px] py-[3px];
     @apply border  rounded-md;
     @apply border-gray-400 dark:border-gray-500;
