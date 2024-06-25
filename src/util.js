@@ -69,6 +69,7 @@ if (uaPlatform.indexOf("Win") !== -1) {
 export function getModChar(platform = platformName) {
   return platform === "darwin" ? "⌘" : "Ctrl";
 }
+
 export function getAltChar(platform = platformName) {
   return platform === "darwin" ? "⌥" : "Alt";
 }

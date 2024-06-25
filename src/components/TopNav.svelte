@@ -2,6 +2,7 @@
   import { getScrollbarWidth } from "../util.js";
   import { dirtyState } from "../state.svelte.js";
   import SettingsIcon from "./SettingsIcon.svelte";
+  import { getModChar } from "../util.js";
   import {
     openContextMenu,
     openNoteSelector,
@@ -65,11 +66,18 @@
     class="fixed top-0 text-sm flex items-center z-10 px-1 mt-[-1px] select-none dark:text-gray-300 border-gray-300 dark:border-gray-500 border-b border-l rounded-bl-lg bg-white dark:bg-gray-700"
     {style}
   >
-    <button class="clickable" onclick={openNoteSelector} title={noteName}>
+    <button
+      class="cursor-pointer pl-[6px] pr-[2px] py-[4px] hover:bg-gray-100 dark:hover:bg-gray-500"
+      onclick={openNoteSelector}
+      title="click or {getModChar()} + P to open another note"
+    >
       <span class="max-w-32 truncate">{noteName}</span> ⏷</button
     >
     {#if shortcut}
-      <div class="text-gray-500 dark:text-gray-400 text-xs ml-1">
+      <div
+        class="text-gray-500 dark:text-gray-400 text-xs mx-0.5"
+        title="quick access shortcut: {shortcut}"
+      >
         {shortcut}
       </div>
     {/if}
@@ -105,24 +113,14 @@
 <style>
   .clickable,
   .clickable-icon {
-    cursor: pointer;
-
-    @apply px-[6px];
-    @apply py-[4px];
+    @apply cursor-pointer px-[6px] py-[4px];
 
     &:hover {
-      @apply bg-gray-100;
+      @apply bg-gray-100 dark:bg-gray-500;
     }
   }
 
   .clickable-icon {
     @apply px-[4px];
-  }
-
-  :global(html.dark) .clickable,
-  :global(html.dark) .clickable-icon {
-    &:hover {
-      @apply bg-gray-500;
-    }
   }
 </style>
