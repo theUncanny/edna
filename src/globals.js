@@ -11,6 +11,8 @@
 }} GlobalFuncs
 */
 
+import { formatDuration, formatDurationShort } from "./util";
+
 // it's easier to make some functions from App.vue available this way
 // then elaborate scheme of throwing and catching events
 // could also use setContext()
@@ -67,4 +69,13 @@ export async function getPasswordFromUser(msg) {
   let pwd = await globalFunctions.getPassword(msg);
   console.log("got password:", pwd);
   return pwd;
+}
+
+let sessionStart = performance.now();
+/**
+ * @returns {string}
+ */
+export function getSessionDur() {
+  let durMs = Math.round(performance.now() - sessionStart);
+  return formatDurationShort(durMs);
 }

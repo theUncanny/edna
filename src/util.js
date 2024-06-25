@@ -109,6 +109,44 @@ export function fmtSize(n) {
 }
 
 /**
+ * @param {number} ms
+ * @returns {string}
+ */
+export function formatDuration(ms) {
+  const days = Math.floor(ms / 86400000); // 1 day = 86400000 ms
+  const hours = Math.floor((ms % 86400000) / 3600000); // 1 hour = 3600000 ms
+  const mins = Math.floor((ms % 3600000) / 60000); // 1 minute = 60000 ms
+  const secs = Math.floor((ms % 60000) / 1000); // 1 second = 1000 ms
+
+  let res = "";
+
+  if (days > 0) res += `${days} day${days > 1 ? "s" : ""} `;
+  if (hours > 0) res += `${hours} hour${hours > 1 ? "s" : ""} `;
+  if (mins > 0) res += `${mins} minute${mins > 1 ? "s" : ""} `;
+  if (secs > 0) res += `${secs} second${secs > 1 ? "s" : ""}`;
+  return res.trim();
+}
+
+/**
+ * @param {number} ms
+ * @returns {string}
+ */
+export function formatDurationShort(ms) {
+  const days = Math.floor(ms / 86400000); // 1 day = 86400000 ms
+  const hours = Math.floor((ms % 86400000) / 3600000); // 1 hour = 3600000 ms
+  const mins = Math.floor((ms % 3600000) / 60000); // 1 minute = 60000 ms
+  const secs = Math.floor((ms % 60000) / 1000); // 1 second = 1000 ms
+
+  let res = "";
+
+  if (days > 0) res += `${days} d${days > 1 ? "s" : ""} `;
+  if (hours > 0) res += `${hours} hr${hours > 1 ? "s" : ""} `;
+  if (mins > 0) res += `${mins} min${mins > 1 ? "s" : ""} `;
+  if (secs > 0) res += `${secs} sec${secs > 1 ? "s" : ""}`;
+  return res.trim();
+}
+
+/**
  * returns a function that, when called, returns number of elapsed milliseconds
  * @returns {function(): number}
  */

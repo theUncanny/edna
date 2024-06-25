@@ -12,6 +12,8 @@
   import { getStorageFS } from "../notes";
   import { focus } from "../actions";
 
+  import { getSessionDur } from "../globals";
+
   let keymaps = [
     { name: "Default", value: "default" },
     { name: "Emacs", value: "emacs" },
@@ -207,10 +209,9 @@
           onchange={updateSettings}
         />
         <div>Backup notes</div>
-        <div class="flex-grow"></div>
         <a
           href="/help#backing-up-notes"
-          class="underline"
+          class="underline ml-2"
           target="_blank"
           title="info about backup">help</a
         >
@@ -221,6 +222,9 @@
   <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
     Current Version: {appVersion}&nbsp;
     <a href={gitURL} target="_blank" class="underline">{gitHash}</a>
+  </div>
+  <div class="mt-0.5 mr-0.5 flex text-xs justify-end text-gray-400">
+    Session: {getSessionDur()}
   </div>
 </div>
 
