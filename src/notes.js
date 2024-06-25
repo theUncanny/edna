@@ -164,9 +164,9 @@ export function notePathFromNameFS(name, isEncr = null) {
   if (isEncr === null) {
     isEncr = isEncryptedNote(name);
   }
-  name = toFileName(name); // note: must happen after isEncryptedNote() check
   let ext = isEncr ? kEdnaEncrFileExt : kEdnaFileExt;
-  return name + ext;
+  name = toFileName(name + ext); // note: must happen after isEncryptedNote() check
+  return name;
 }
 
 const kLSKeyPrefix = "note:";
@@ -415,8 +415,8 @@ export function fixUpNoteContent(s) {
     return blockHdrMarkdown;
   }
   if (!s.startsWith("\n∞∞∞")) {
+    // console.log("fixUpNote: added header to content", s.substring(0, 80));
     s = blockHdrMarkdown + s;
-    console.log("fixUpNote: added header to content", s.substring(0, 80));
   }
   return s;
 }
@@ -788,15 +788,13 @@ export async function preLoadAllNotes() {
   if (dh === null) {
     return;
   }
-  let noteNames = await loadNoteNames();
-  for (let name of noteNames) {
-    if (isSystemNoteName(name)) {
-      continue;
-    }
-    let path = notePathFromNameFS(name);
-    await fsReadBinaryFile(dh, path);
-  }
-  return len(noteNames);
+  let n = 0;
+  forEachNoteFileFS(dh, async (fileName, noteName, isEncr) => {
+    n++;
+    // no need to await, the read can happen whenever
+    fsReadBinaryFile(dh, fileName);
+  });
+  return n;
 }
 
 /**
