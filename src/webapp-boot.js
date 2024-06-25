@@ -25,6 +25,8 @@ import { startLoadCurrencies } from "./currency";
 
 /** @typedef {import("./settings").Settings} Settings */
 
+// window.onunhandledrejection = console.warn;
+
 startLoadCurrencies();
 
 let appSvelte;

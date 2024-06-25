@@ -5,6 +5,7 @@
     isSystemNoteName,
     reassignNoteShortcut,
     sanitizeNoteName,
+    getNotesCount,
   } from "../notes";
   import { getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
@@ -114,6 +115,16 @@
   let canCreateWithEnter = $state(false);
   let canDeleteSelected = $state(false);
   let showDelete = $state(false);
+  let noteCount = getNotesCount();
+
+  let noteCountMsg = $derived.by(() => {
+    // $state(`${noteCount} notes`);
+    let n = len(filteredItems);
+    if (n === noteCount) {
+      return `${noteCount} notes`;
+    }
+    return `${n} of ${noteCount} notes`;
+  });
 
   function selectionChanged(item, idx) {
     // console.log("selectionChanged:", item, idx);
@@ -267,12 +278,17 @@
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-2"
 >
-  <input
-    type="text"
-    use:focus
-    bind:value={filter}
-    class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
-  />
+  <div>
+    <input
+      type="text"
+      use:focus
+      bind:value={filter}
+      class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
+    />
+    <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
+      {noteCountMsg}
+    </div>
+  </div>
   <ListBox
     bind:this={listbox}
     items={filteredItems}
