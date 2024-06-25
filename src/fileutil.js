@@ -352,7 +352,7 @@ export async function fsWriteBlob(dh, fileName, content) {
  * @returns {Promise<string>}
  */
 export async function fsReadTextFile(dh, fileName) {
-  console.log("fsReadTextFile:", fileName);
+  // console.log("fsReadTextFile:", fileName);
   let fileHandle = await dh.getFileHandle(fileName, { create: false });
   const file = await fileHandle.getFile();
   // I assume this reads utf-8
@@ -366,7 +366,7 @@ export async function fsReadTextFile(dh, fileName) {
  * @returns {Promise<Uint8Array>}
  */
 export async function fsReadBinaryFile(dh, fileName) {
-  console.log("fsReadBinaryFile:", fileName);
+  // console.log("fsReadBinaryFile:", fileName);
   let fileHandle = await dh.getFileHandle(fileName, { create: false });
   const blob = await fileHandle.getFile();
   const res = await readBlobAsUint8Array(blob);

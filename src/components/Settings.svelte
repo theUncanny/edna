@@ -87,7 +87,8 @@
   }
 
   function updateSettings() {
-    saveSettings({
+    /** @type {import("../settings").Settings} */
+    let newSettings = {
       bracketClosing: bracketClosing,
       currentNoteName: currentNoteName,
       emacsMetaKey: platform.isMac ? metaKey : "alt",
@@ -96,8 +97,10 @@
       keymap: keymap,
       showFoldGutter: showFoldGutter,
       showLineNumberGutter: showLineNumberGutter,
+      backupNotes: backupNotes,
       theme: theme,
-    });
+    };
+    saveSettings(newSettings);
   }
 </script>
 

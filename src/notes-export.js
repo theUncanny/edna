@@ -6,6 +6,10 @@ import {
   readDir,
 } from "./fileutil";
 import {
+  clearModalMessage,
+  showModalMessageHTML,
+} from "./components/ModalMessage.svelte";
+import {
   forEachNoteFileFS,
   getStorageFS,
   kMetadataName,
@@ -174,9 +178,11 @@ export async function maybeBackupNotes() {
     console.log(`maybeBackupNotes: ${fileName} already exists`);
     return;
   }
+  showModalMessageHTML(`creating backup <b>${fileName}</b>`, 300);
   let zipBlob = await exportRawNotesToZipBlob();
   await fsWriteBlob(dhBackup, fileName, zipBlob);
   await deleteOldBackups(dhBackup);
+  clearModalMessage();
 }
 
 /**

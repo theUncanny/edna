@@ -1096,7 +1096,7 @@ export async function encryptAllNotes(pwd) {
       return;
     }
     let msg = `Encrypting <b>${name}</b>`;
-    showModalMessageHTML(msg);
+    showModalMessageHTML(msg, 0);
     await encryptNoteFS(dh, fileName, pwdHash);
   });
   clearModalMessage();
@@ -1113,7 +1113,7 @@ export async function decryptAllNotes() {
       return;
     }
     let msg = `Decrypting <b>${name}</b>`;
-    showModalMessageHTML(msg);
+    showModalMessageHTML(msg, 0);
     await decryptNoteFS(dh, fileName);
   });
   clearModalMessage();
