@@ -4,7 +4,7 @@ import markdownIt from "markdown-it";
 import markdownItAnchor from "markdown-it-anchor";
 import path from "node:path";
 
-console.log("Generting html-win.html and html-mac.html from note-help.md");
+console.log("Generating html-win.html and html-mac.html from note-help.md");
 
 /**
  * @param {string} platform
@@ -36,22 +36,67 @@ function fixUpShortcuts(s, platform) {
 }
 
 /**
- * @param {string} s
- * @returns {string}
- */
-function removeMathBlock(s) {
-  // remove text between "∞∞∞math" and "∞∞∞"
-  // that part is not appropriate for HTML
-  return s.replace(/(\n)(∞∞∞math[\s\S]*)(∞∞∞markdown\n# Privacy)/gm, "$1$3");
-}
-
-/**
  * @param {string[]} lines
  * @param {string} s
  * @returns {string[]}
  */
 function removeLineStartingWith(lines, s) {
   return lines.filter((line) => !line.startsWith(s));
+}
+
+/**
+ * @param {string[]} lines
+ * @returns {string[]}
+ */
+function replaceJSBlock(lines) {
+  let res = [];
+  let inJS = false;
+  for (let s of lines) {
+    if (!inJS) {
+      if (s.startsWith("∞∞∞javascript")) {
+        inJS = true;
+        console.log(s);
+        res.push("```js");
+      } else {
+        res.push(s);
+      }
+      continue;
+    }
+
+    // inJS
+    console.log(s);
+    if (s.startsWith("∞∞∞")) {
+      inJS = false;
+      res.push("```");
+      continue;
+    }
+    res.push(s);
+  }
+  return res;
+}
+
+/**
+ * @param {string[]} lines
+ * @returns {string[]}
+ */
+function removeMathBlock(lines) {
+  let res = [];
+  let inMath = false;
+  for (let s of lines) {
+    if (inMath) {
+      if (s.startsWith("∞∞∞")) {
+        inMath = false;
+        res.push(s);
+      }
+    } else {
+      if (s.startsWith("∞∞∞math")) {
+        inMath = true;
+      } else {
+        res.push(s);
+      }
+    }
+  }
+  return res;
 }
 
 /**
@@ -82,9 +127,10 @@ function collapseMultipleEmptyLines(lines) {
 function getHelp(platform) {
   let path = "./src/note-help.md";
   let helpRaw = fs.readFileSync(path, "utf8");
-  helpRaw = removeMathBlock(helpRaw);
 
   let lines = helpRaw.split("\n");
+  lines = removeMathBlock(lines);
+  lines = replaceJSBlock(lines);
   lines = removeLineStartingWith(lines, "This is a help note");
   lines = removeLineStartingWith(lines, "To see help in HTML");
   lines = collapseMultipleEmptyLines(lines);
@@ -97,19 +143,18 @@ function getHelp(platform) {
   help = help.replace("{{keyHelp}}", keyHelp);
   // link Edna to website
   // help = help.replace(/Edna/g, "[Edna](https://edna.arslexis.io)");
-
   return help;
 }
 
 /**
- * @param {string} str
+ * @param {string} s
  * @returns {string}
  */
-function cleanMd(str) {
-  return str
-    .split("\n")
-    .filter((line) => !line.startsWith("∞∞∞"))
-    .join("\n");
+function cleanMd(s) {
+  let lines = s.split("\n");
+  lines = lines.filter((line) => !line.startsWith("∞∞∞"));
+  let res = lines.join("\n");
+  return res;
 }
 
 let htmlStart = `

@@ -20,10 +20,8 @@ function getKeyHelp(platform = platformName) {
     [`${modChar} + L`, "Change block language"],
     [`${modChar} + Down`, "Goto next block"],
     [`${modChar} + Up`, "Goto previous block"],
-    [
-      `${modChar} + A`,
-      "Select all text in a note block. Press again to select the whole buffer",
-    ],
+    [`${modChar} + A`, "Select all text in a note block"],
+    [``, "Press again to select the whole buffer"],
     [`${modChar} + ${altChar} + Up/Down`, "Add additional cursor above/below"],
     [`${altChar} + Shift + F`, "Format block content"],
     [``, "Supports Go, JSON, JavaScript, HTML, CSS and Markdown"],

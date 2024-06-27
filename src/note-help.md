@@ -1,6 +1,6 @@
 # Welcome to Edna
 
-[Edna](https://edna.arslexis.io) is a scratchpad and note taker for developers and power users.
+[Edna](https://edna.arslexis.io) is a note taking app for developers and power users. A cross between Obsidian and Notational Velocity.
 
 This is a help note. To switch to a different note, press `Mod + P`.
 
@@ -16,31 +16,64 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 
 # Why Edna?
 
+## Blocks and notes
+
+Unique feature of Edna is that notes can be split into blocks.
+
+Each block has a type: markdown, plain text, JavaScript code, Go code etc. used for syntax highlighting.
+
+Use `Mod + L` to assign a type for current block, `Mod + B` to navigate between blocks.
+
+You can move between blocks, create new blocks with keyboard shortcuts.
+
+To delete a block: `Ctrl + A` to select block text and `Delete`.
+
+## No installation required
+
+Edna is a web-based application but can store notes on disk, like a desktop app (when using Chrome or Edge).
+
+## Miminalist UI, lots of functionality
+
+UI is optimized for writing. Almost all of it is taken by editor.
+
+To acess more functionality:
+
+- right-click for context menu
+- use keyboard shortcuts
+
 ## Speed
 
-[Edna](https://edna.arslexis.io) is optimized for speed of note taking.
+[Edna](https://edna.arslexis.io) is optimized for speed of note taking, creating new notes, switching between notes.
 
-Press `Mod + P` to show note selector and:
+Like in Notational Velocity, you can switch between notes, create and delete notes in the same note switcher UI.
+
+Press `Mod + P` for note switcher and:
 
 - switch between notes
 - create new note
 - delete a note
-- assign a quick access `Alt + N` shortcut
+- assign a quick access `Alt + <n>` shortcut
+
+## Context menu
+
+Right-click for context menu.
+
+For native context menu do `Ctrl + right-click`. This is especially useful when spell checking to correct mis-spellings.
 
 ## Switch to recently opened note
 
 Press `Mod + E` to switch to a note from list of recently opened notes.
 
-First 10 recently opened notes get `0` ... `9` shortcut.
+Last 10 recently opened notes can be opened with `0` ... `9` shortcut.
 
-To switch to previous note: press `Esc` and `Enter`.
+To switch to previous note: press `Mod + E` and `Enter`.
 
 ## Quick access shortcut
 
 You can assign `Alt + 0` to `Alt + 9` for quickly accessing notes:
 
 - `Mod + P` for note selector dialog
-- select a note
+- select a note in the list
 - press `Alt + 0` to `Alt + 9` to assign it as quick access shortcut
 
 Default shortcuts are:
@@ -50,14 +83,6 @@ Default shortcuts are:
 - `Alt + 3` : inbox
 
 Notes with quick access shortcut are shown at the top of note selector (`Mod + P`).
-
-## Blocks and notes
-
-Notes consists of blocks.
-
-Each block has a type: plain text, markdown, JavaScript code, Go code etc.
-
-Use `Mod + L` to assign a type for current block.
 
 ## Features for developers
 
@@ -92,46 +117,43 @@ The code block must be a valid Go program.
 
 # Multiple notes
 
+## Open another note
+
+- `Mod + P` for note switcher
+- click on note to open
+
+or:
+
+- enter text to narrow down list of notes
+- `up` / `down` arrow keys to select a note
+- `Enter` to open selected note
+
 ## Create a new note
 
-- `Mod + P` to open note selector
+- `Mod + P` to open note switcher
 - type name of the note to create
 - `Enter` to create if the name doesn't match any existing note
 - `Mod + Enter` to create if the name partially matches an existing note
 
+Or: right-click for context menu and `Create New note`.
+
 ## Create a new scratch note
 
-`Alt + N` if you just want a temporary scratch note.
-
-We'll auto-create a unique name `scratch-N`
+`Alt + N` to create temporary scratch note. We'll pick a unique name `scratch-<n>`
 
 ## Delete a note
 
-Right-click for context menu, `Note / Delete current note`, or:
+Right-click for context menu, `This Note / Delete` or:
 
-- `Mod + P`
+- `Mod + P` for note switcher
 - select a note with arrow key or by typing a partial name match
 - `Mod + Delete` or `Mod + Backspace` to delete selected note
 
-A `scratch` note is always available. If you delete it, we'll re-create an empty note.
+A `scratch` note cannot be deleted.
 
 ## Rename a note
 
-Right-click for context menu, `Note / Rename current note`
-
-Each note consists of multiple blocks. They are like sub-notes so that you can divide your scratchpad into logical parts.
-
-Each block has its own type for syntax highlighting.
-
-You can efficiently move between blocks, create new blocks and delete them with keyboard shortcuts.
-
-## Open a different note
-
-- `Mod + P`
-- click on note to open or
-- enter text to narrow down list of notes
-- `up` / `down` arrow keys to select a note
-- `Enter` to open selected note
+Right-click for context menu, `This Note / Rename`
 
 ## Quick access shortcut
 
@@ -139,23 +161,31 @@ You can assign `Alt + 0` to `Alt + 9` keyboard shortcuts for quickly opening up 
 
 - `Mod + P`
 - select a note
-- press `Alt + N` shortcut to re-assign it to selected note
+- press `Alt + <n>` shortcut to re-assign it to selected note
 
-Notes with assigned shortcut show up at the top of note selector (`Mod + P`).
+Notes with assigned shortcut show up at the top of note switcher.
 
 ## Open recent note
 
-Press `Mod + E`.
+Press `Mod + E` to open a note from history. You can press `0` to `9` to open one of the last 10 notes.
 
 ∞∞∞markdown
 
 # Default notes
 
-We create 3 default notes for you:
+At first run we create 3 default notes:
 
 - `scratch`, `Alt + 1`
 - `daily journal`, `Alt + 2`
 - `inbox`, `Alt + 3`
+
+You can delete them (except the `scratch` note).
+
+`scratch` note is meant for temporary notes.
+
+`inbox` for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.
+
+`daily journal` is for daily notes. We auto-create a block for each day.
 
 ∞∞∞markdown
 
@@ -253,14 +283,6 @@ You can then e.g. restore the notes by unzipping it to a directory and opening t
 
 ∞∞∞markdown
 
-# Context menu
-
-Right-click for context menu.
-
-For native context menu do `Ctrl + right-click`. This is especially useful when spell checking to correct mis-spellings.
-
-∞∞∞markdown
-
 # Lists with TODO items
 
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
@@ -269,6 +291,7 @@ In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 - [ ] Do laundry
 
 ∞∞∞math
+
 This is a Math block. Here, rows are evaluated as math expressions.
 
 radius = 5
@@ -283,6 +306,10 @@ time \* 2
 
 1 EUR in USD
 
+∞∞∞markdown
+
+## code blocks
+
 ∞∞∞javascript
 // Edna is great for storing code snippets
 // this is a javascript block
@@ -290,14 +317,15 @@ time \* 2
 // you can format it with `Alt + Shift + F`
 let x = 5
 console.log("x is", x)
-
 ∞∞∞markdown
 
 # Privacy and security
 
 Your notes are private and secure.
 
-Your notes are stored in the browser or on your computer.
+Notes are stored in the browser or on disk.
+
+You can encrypt notes for additional security.
 
 The code is [open source](https:/github.com/kjk/edna) so you can audit it.
 

@@ -16,7 +16,9 @@
    * @property {string} nameLC
    * @property {HTMLElement} ref
    */
+
   let history = getHistory();
+
   /**
    * @returns {HistoryItem[]}
    */

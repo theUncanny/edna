@@ -181,7 +181,7 @@ func main() {
 
 	if flgGen {
 		if hasBun() {
-			path := filepath.Join("src", "gen.msj")
+			path := filepath.Join("src", "gen.mjs")
 			u.RunLoggedInDirMust(".", "bun", "run", path)
 		} else {
 			runLoggedInDir(".", "yarn", "run", "gen")
