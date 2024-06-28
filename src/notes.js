@@ -871,7 +871,7 @@ export function getNotesMetadata() {
  * @returns {NoteMetadata}
  */
 export function getMetadataForNote(noteName) {
-  console.log("getMetadataForNote:", noteName);
+  // console.log("getMetadataForNote:", noteName);
   let meta = notesMetadata;
   for (let m of meta) {
     if (m.name === noteName) {
