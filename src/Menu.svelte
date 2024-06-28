@@ -407,10 +407,10 @@
     }
   }
 
-  function initialStyle() {
+  function initialPositionStyle() {
     let st = "";
     if (ev) {
-      st = `position: absolute; left: ${ev.x}px; top: ${ev.y}px`;
+      st = `left: ${ev.x}px; top: ${ev.y}px`;
       // console.log("initialStyle:", st);
     }
     return st;
@@ -531,8 +531,8 @@
   tabindex="-1"
   use:focus
   use:ensurevisible
-  class="z-20 mt-1 rounded-md border border-neutral-50 bg-white dark:bg-gray-700 dark:text-gray-300 py-1 shadow-lg focus:outline-none cursor-pointer select-none"
-  style={initialStyle()}
+  class="absolute z-20 mt-1 rounded-md border border-neutral-50 bg-white dark:bg-gray-700 dark:text-gray-300 py-1 shadow-lg focus:outline-none cursor-pointer select-none"
+  style={initialPositionStyle()}
   onclick={handleClicked}
   onmouseover={handleMouseOver}
   onkeydown={handleKeydown}
