@@ -310,10 +310,7 @@
   }
 
   function isSelectable(mi) {
-    if (mi.isDisabled) {
-      return false;
-    }
-    if (mi.isSeparator) {
+    if (mi.isRemoved || mi.isDisabled || mi.isSeparator) {
       return false;
     }
     return true;
