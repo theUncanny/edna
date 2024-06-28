@@ -18,13 +18,13 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 
 ## Blocks and notes
 
-Unique feature of Edna is that notes can be split into blocks.
+Unique feature of Edna is that a note can be divided into blocks.
 
-Each block has a type: markdown, plain text, JavaScript code, Go code etc. used for syntax highlighting.
+Each block has a type: markdown, plain text, JavaScript code, Go code etc.
 
 Use `Mod + L` to assign a type for current block, `Mod + B` to navigate between blocks.
 
-You can move between blocks, create new blocks with keyboard shortcuts.
+Use [keyboard shortcuts](#keyboard-shortcuts) to create blocks, move between blocks.
 
 To delete a block: `Ctrl + A` to select block text and `Delete`.
 
@@ -34,16 +34,17 @@ Edna is a web-based application but can store notes on disk, like a desktop app 
 
 ## Miminalist UI, lots of functionality
 
-UI is optimized for writing. Almost all of it is taken by editor.
+UI is optimized for writing with editor at the center of it.
 
 To acess more functionality:
 
-- right-click for context menu
 - use keyboard shortcuts
+- right-click for context menu
+- click on top or bottom navigation bars
 
 ## Speed
 
-[Edna](https://edna.arslexis.io) is optimized for speed of note taking, creating new notes, switching between notes.
+[Edna](https://edna.arslexis.io) is optimized for speed of writing, creating new notes, switching between notes.
 
 Like in Notational Velocity, you can switch between notes, create and delete notes in the same note switcher UI.
 
@@ -325,9 +326,9 @@ console.log("x is", x)
 
 Your notes are private and secure.
 
-Notes are stored in the browser or on disk.
+Notes are stored on your computer: in the browser (local storage) or on disk.
 
-You can encrypt notes for additional security.
+For additional security, you can [encrypt notes](#encryption) with a password.
 
 The code is [open source](https://github.com/kjk/edna) so you can audit it.
 
