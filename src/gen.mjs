@@ -55,7 +55,7 @@ function replaceJSBlock(lines) {
     if (!inJS) {
       if (s.startsWith("∞∞∞javascript")) {
         inJS = true;
-        console.log(s);
+        // console.log(s);
         res.push("```js");
       } else {
         res.push(s);
@@ -64,7 +64,7 @@ function replaceJSBlock(lines) {
     }
 
     // inJS
-    console.log(s);
+    // console.log(s);
     if (s.startsWith("∞∞∞")) {
       inJS = false;
       res.push("```");

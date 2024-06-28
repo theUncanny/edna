@@ -32,6 +32,8 @@ To delete a block: `Ctrl + A` to select block text and `Delete`.
 
 Edna is a web-based application but can store notes on disk, like a desktop app (when using Chrome or Edge).
 
+You can use it offline (without network connection) and for desktop-like experince you can install a desktop shortcut.
+
 ## Miminalist UI, lots of functionality
 
 UI is optimized for writing with editor at the center of it.
