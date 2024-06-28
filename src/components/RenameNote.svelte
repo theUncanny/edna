@@ -31,7 +31,7 @@
     }
     let noteNames = getLatestNoteNames();
     if (noteNames.includes(name)) {
-      return "name already exists";
+      return `note <span class="font-bold">${name}</span> already exists`;
     }
     return "";
   });
@@ -61,16 +61,19 @@
   {onkeydown}
   class="selector z-20 absolute center-x-with-translate top-[4rem] flex flex-col max-w-full p-3"
 >
-  <div>Rename <span class="font-bold">{oldName}</span> to:</div>
+  <div class="text-lg font-semibold">
+    Rename <span class="font-bold">{oldName}</span> to:
+  </div>
   <input
     bind:value={newName}
     use:focus
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <div class=" text-sm mt-2">
-    New name: <span class="font-bold">{sanitizedNewName}</span>
-    {#if !canRename}
-      <span class="text-red-500 font-bold">{renameError}</span>
+    {#if canRename}
+      New name: <span class="font-bold">{sanitizedNewName}</span>
+    {:else}
+      <span class="text-red-500">{@html renameError}</span>
     {/if}
   </div>
   <div class="flex justify-end mt-2">
@@ -82,7 +85,7 @@
     <button
       onclick={() => emitRename()}
       disabled={!canRename}
-      class="px-4 py-1 border border-black hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-400 default:bg-slate-700"
+      class="px-4 py-1 border border-black hover:bg-gray-50 disabled:text-gray-400 disabled:border-gray-400 disabled:bg-white default:bg-slate-700"
       >Rename</button
     >
   </div>
