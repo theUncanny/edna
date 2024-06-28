@@ -235,7 +235,9 @@ The password is only stored in your browser (in local storage). It never leaves 
 
 Encryption and decryption takes place on your computer.
 
-If you loose the password, you'll loose the access the to your notes. **Don't loose the password**.
+If you lose the password, you'll lose access to your notes.
+
+**Don't lose the password**.
 
 Notes are encrypted with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) algorithm via [kiss-crypto](https://github.com/team-reflect/kiss-crypto) library.
 

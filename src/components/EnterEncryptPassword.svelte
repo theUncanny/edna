@@ -70,7 +70,7 @@
     <div class="text-red-500 mt-2 ml-1">{pwdError}</div>
   {:else}
     <div class="mt-2 ml-1 font-bold">
-      Note: if you loose the password, you'll lose access to notes.
+      Note: if you lose the password, you'll lose access to notes.
     </div>
   {/if}
   <div class="flex items-baseline mt-2">
