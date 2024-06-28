@@ -543,10 +543,7 @@
 
 <style>
   .is-selected {
-    @apply bg-gray-100;
-  }
-  :global(html.dark) .is-selected {
-    @apply bg-gray-600;
+    @apply bg-gray-100 dark:bg-gray-600;
   }
 
   .sub-menu-wrapper {
