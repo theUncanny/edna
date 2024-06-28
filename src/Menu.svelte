@@ -109,20 +109,15 @@
 <script>
   import { parseShortcut, serializeShortuct } from "./keys.js";
   import { len, splitMax } from "./util.js";
-  import { ensurevisible, focus, trapFocusEvent } from "./actions.js";
+  import { ensurevisible, focus } from "./actions.js";
 
   /** @type {{
    menuDef: MenuDef,
-   ev?: MouseEvent,
+   pos: {x: number, y: number},
    menuItemStatus?: (mi: MenuItemDef) => number,
    onmenucmd: (cmd: number, ev: Event) => void,
 }}*/
-  let {
-    menuDef: menuDef,
-    ev = null,
-    menuItemStatus = null,
-    onmenucmd,
-  } = $props();
+  let { menuDef: menuDef, pos, menuItemStatus = null, onmenucmd } = $props();
 
   /**
    * @param {MenuItemDef} mid
@@ -409,11 +404,8 @@
   }
 
   function initialPositionStyle() {
-    let st = "";
-    if (ev) {
-      st = `left: ${ev.x}px; top: ${ev.y}px`;
-      // console.log("initialStyle:", st);
-    }
+    let st = `left: ${pos.x}px; top: ${pos.y}px`;
+    // console.log("initialStyle:", st);
     return st;
   }
 

@@ -5,13 +5,13 @@
   openNoteSelector: () => void,
   openHistorySelector: () => void,
   createScratchNote: () => void,
-  openContextMenu: (ev: MouseEvent) => void,
+  openContextMenu: (ev: MouseEvent, pos?: {x: number, y: number}) => void,
   openBlockSelector: () => void,
   getPassword: (msg: string) => Promise<string>,
 }} GlobalFuncs
 */
 
-import { formatDuration, formatDurationShort } from "./util";
+import { formatDurationShort } from "./util";
 
 // it's easier to make some functions from App.vue available this way
 // then elaborate scheme of throwing and catching events
@@ -28,9 +28,10 @@ export function setGlobalFuncs(gf) {
 
 /**
  * @param {MouseEvent} ev
+ * @param {{x: number, y: number}} [pos]
  */
-export function openContextMenu(ev) {
-  globalFunctions.openContextMenu(ev);
+export function openContextMenu(ev, pos = null) {
+  globalFunctions.openContextMenu(ev, pos);
 }
 
 export function openSettings() {

@@ -91,7 +91,7 @@
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
 
-  let contextMenuEv = $state(null);
+  let contextMenuPos = $state({ x: 0, y: 0 });
 
   // /** @type {import("../editor/editor").EdnaEditor} */
   // let ednaEditor = $state(null);
@@ -696,14 +696,15 @@
 
   /**
    * @param {MouseEvent} ev
+   * @param {{x: number, y: number}} pos
    */
-  function openContextMenu(ev) {
+  function openContextMenu(ev, pos = null) {
     console.log("openContextMenu:", ev);
     ev.preventDefault();
     ev.stopPropagation();
     ev.stopImmediatePropagation();
     contextMenuDef = buildMenuDef();
-    contextMenuEv = ev;
+    contextMenuPos = pos || { x: ev.x, y: ev.y };
     showingMenu = true;
   }
 
@@ -996,7 +997,7 @@
       {menuItemStatus}
       {onmenucmd}
       menuDef={contextMenuDef}
-      ev={contextMenuEv}
+      pos={contextMenuPos}
     />
   </Overlay>
 {/if}

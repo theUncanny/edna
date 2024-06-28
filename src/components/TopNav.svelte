@@ -84,7 +84,8 @@
 
     <button
       onclick={(ev) => {
-        openContextMenu(ev);
+        let pos = { x: ev.x - 180, y: ev.y + 8 };
+        openContextMenu(ev, pos);
       }}
       class="clickable-icon"
       title="Menu"
