@@ -385,7 +385,11 @@
     }
 
     if (key === "Tab") {
-      selectSibling(1);
+      let dir = 1;
+      if (ev.shiftKey) {
+        dir = -1;
+      }
+      selectSibling(dir);
       ev.preventDefault();
       return;
     }
