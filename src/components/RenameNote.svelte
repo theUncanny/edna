@@ -68,7 +68,7 @@
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <div class=" text-sm mt-2">
-    New name: <span class="font-bold">"{sanitizedNewName}"</span>
+    New name: <span class="font-bold">{sanitizedNewName}</span>
     {#if !canRename}
       <span class="text-red-500 font-bold">{renameError}</span>
     {/if}
