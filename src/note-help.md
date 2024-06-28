@@ -329,7 +329,7 @@ Notes are stored in the browser or on disk.
 
 You can encrypt notes for additional security.
 
-The code is [open source](https:/github.com/kjk/edna) so you can audit it.
+The code is [open source](https://github.com/kjk/edna) so you can audit it.
 
 ∞∞∞markdown
 
