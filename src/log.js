@@ -1,4 +1,4 @@
-import { getLatestNoteNames, loadNoteNames } from "./notes";
+import { getLatestNoteNames, getNotesCount, loadNoteNames } from "./notes";
 import { getSessionDurationInMs, getStats } from "./state";
 import { len, throwIf } from "./util";
 
@@ -26,14 +26,13 @@ export function logEvent(o) {
 }
 
 export function logAppOpen() {
-  loadNoteNames().then((noteNames) => {
-    let e = {
-      name: "appOpen",
-      notesCount: len(noteNames),
-      stats: getStats(),
-    };
-    logEvent(e);
-  });
+  let notesCount = getNotesCount();
+  let e = {
+    name: "appOpen",
+    notesCount: notesCount,
+    stats: getStats(),
+  };
+  logEvent(e);
 }
 
 export function logAppExit() {

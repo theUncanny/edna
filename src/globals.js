@@ -3,6 +3,7 @@
   openLanguageSelector: () => void,
   openCreateNewNote: () => void,
   openNoteSelector: () => void,
+  openCommandPalette: () => void,
   openHistorySelector: () => void,
   createScratchNote: () => void,
   openContextMenu: (ev: MouseEvent, pos?: {x: number, y: number}) => void,
@@ -48,6 +49,10 @@ export function openCreateNewNote() {
 
 export function openNoteSelector() {
   globalFunctions.openNoteSelector();
+}
+
+export function openCommandPalette() {
+  globalFunctions.openCommandPalette();
 }
 
 export function openHistorySelector() {

@@ -43,7 +43,7 @@
   $effect(() => {
     let n = len(items);
     if (n > len(refs)) {
-      console.log("expanding refs to:", n);
+      // console.log("expanding refs to:", n);
       refs.length = n;
     }
 
@@ -52,7 +52,7 @@
     if (n === prevItemsLen) {
       return;
     }
-    console.log("re-runinng effect:", len(items));
+    // console.log(`re-runinng effect: ${len(items)} items`);
     prevItemsLen = n;
     // reset selection if changing items
     if (n > 0) {
@@ -100,7 +100,7 @@
 
   export function down() {
     let nItems = len(items);
-    console.log("donw: selectedIdx:", selectedIdx, "nItems:", nItems);
+    // console.log("down: selectedIdx:", selectedIdx, "nItems:", nItems);
     let lastIdx = nItems - 1;
     if (nItems <= 0 || selectedIdx >= lastIdx) {
       return;

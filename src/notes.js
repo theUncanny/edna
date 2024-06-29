@@ -385,6 +385,7 @@ async function loadNoteNamesFS(dh) {
  * @returns {Promise<string[]>}
  */
 export async function loadNoteNames() {
+  console.log("loadNoteNames");
   let dh = getStorageFS();
   /** @type {string[][]} */
   let res = [];

@@ -69,6 +69,7 @@
   } from "../editor/languages";
   import { exportNotesToZip, maybeBackupNotes } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
+  import CommandPalette from "./CommandPalette.svelte";
 
   let initialSettings = getSettings();
 
@@ -83,6 +84,7 @@
   let showingMenu = $state(false);
   let showingLanguageSelector = $state(false);
   let showingNoteSelector = $state(false);
+  let showingCommandPalette = $state(false);
   let showingCreateNewNote = $state(false);
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
@@ -106,6 +108,7 @@
       showingMenu ||
       showingRenameNote ||
       showingNoteSelector ||
+      showingCommandPalette ||
       showingCreateNewNote ||
       showingBlockSelector ||
       showingDecryptPassword ||
@@ -119,6 +122,7 @@
     openLanguageSelector: openLanguageSelector,
     openCreateNewNote: openCreateNewNote,
     openNoteSelector: openNoteSelector,
+    openCommandPalette: openCommandPalette,
     openHistorySelector: openHistorySelector,
     createScratchNote: createScratchNote,
     openContextMenu: openContextMenu,
@@ -442,12 +446,17 @@
     return nextMenuID;
   }
 
+  export const kCmdCommandPalette = nmid();
   export const kCmdOpenNote = nmid();
   export const kCmdCreateNewNote = nmid();
   export const kCmdRenameCurrentNote = nmid();
   export const kCmdDeleteCurrentNote = nmid();
   export const kCmdCreateScratchNote = nmid();
+
   export const kCmdNewBlockAfterCurrent = nmid();
+  const kCmdBlockFirst = kCmdNewBlockAfterCurrent;
+  export const kCmdGoToBlock = nmid();
+  console.log("kCmdGoToBlock:", kCmdGoToBlock);
   export const kCmdNewBlockBeforeCurrent = nmid();
   export const kCmdNewBlockAtEnd = nmid();
   export const kCmdNewBlockAtStart = nmid();
@@ -458,6 +467,8 @@
   export const kCmdBlockSelectAll = nmid();
   export const kCmdFormatBlock = nmid();
   export const kCmdRunBlock = nmid();
+  const kCmdBlockLast = kCmdRunBlock;
+
   export const kCmdShowHelp = nmid();
   export const kCmdShowHelpAsNote = nmid();
   export const kCmdShowReleaseNotes = nmid();
@@ -471,6 +482,7 @@
   export const kCmdToggleSpellChecking = nmid();
   export const kCmdShowExportHelp = nmid();
   export const kCmdSettings = nmid();
+  export const kCmdOpenRecent = nmid();
 
   function buildMenuDef() {
     const menuNote = [
@@ -479,7 +491,8 @@
     ];
 
     const menuBlock = [
-      ["And after current\tMod + Enter", kCmdNewBlockAfterCurrent],
+      ["Go To\tMod + B", kCmdGoToBlock],
+      ["Add after current\tMod + Enter", kCmdNewBlockAfterCurrent],
       ["Add before current\tAlt + Enter", kCmdNewBlockBeforeCurrent],
       ["Add at end\tMod + Shift + Enter", kCmdNewBlockAtEnd],
       ["Add at start\tAlt + Shift + Enter", kCmdNewBlockAtStart],
@@ -523,6 +536,7 @@
     let spelling = (isSpellChecking ? "Disable" : "Enable") + " spell checking";
 
     const contextMenu = [
+      ["Command Palette\tMod + Shift + P", kCmdCommandPalette],
       ["Open note\tMod + P", kCmdOpenNote],
       ["Create new note", kCmdCreateNewNote],
       ["Create new scratch note\tAlt + N", kCmdCreateScratchNote],
@@ -603,15 +617,12 @@
    * @param {number} cmdId
    * @param ev
    */
-  async function onmenucmd(cmdId, ev) {
+  async function onmenucmd(cmdId) {
     // console.log("cmd:", cmdId);
-    if (ev) {
-      ev.preventDefault();
-      ev.stopImmediatePropagation();
-      ev.stopPropagation();
-    }
     showingMenu = false;
-    if (cmdId === kCmdOpenNote) {
+    if (cmdId === kCmdCommandPalette) {
+      openCommandPalette();
+    } else if (cmdId === kCmdOpenNote) {
       openNoteSelector();
     } else if (cmdId === kCmdCreateNewNote) {
       openCreateNewNote();
@@ -631,6 +642,8 @@
       getEditor().addNewBlockBeforeFirst();
     } else if (cmdId === kCmdSplitBlockAtCursor) {
       getEditor().insertNewBlockAtCursor();
+    } else if (cmdId === kCmdGoToBlock) {
+      openBlockSelector();
     } else if (cmdId === kCmdGoToNextBlock) {
       getEditor().gotoNextBlock();
     } else if (cmdId === kCmdGoToPreviousBlock) {
@@ -669,11 +682,14 @@
       decryptAllNotes();
     } else if (cmdId === kCmdEncryptionHelp) {
       showHelp("#encryption");
+    } else if (cmdId == kCmdOpenRecent) {
+      openHistorySelector();
     } else {
       console.log("unknown menu cmd id");
     }
   }
 
+  let contextMenuDef = $state(null);
   /**
    * @param {MouseEvent} ev
    */
@@ -692,8 +708,6 @@
     openContextMenu(ev);
   }
 
-  let contextMenuDef = $state(null);
-
   /**
    * @param {MouseEvent} ev
    * @param {{x: number, y: number}} pos
@@ -711,6 +725,81 @@
   function closeMenu() {
     showingMenu = false;
     getEditor().focus();
+  }
+
+  let commandsDef = $state(null);
+
+  const commandNameOverrides = [
+    kCmdRenameCurrentNote,
+    "Rename Current Note",
+    kCmdDeleteCurrentNote,
+    "Delete Current Note",
+  ];
+
+  function commandNameOverride(id, name) {
+    let n = len(commandNameOverrides);
+    for (let i = 0; i < n; i += 2) {
+      if (id == commandNameOverrides[i]) {
+        return commandNameOverrides[i + 1];
+      }
+    }
+    if (id >= kCmdBlockFirst && id <= kCmdBlockLast) {
+      return "Block: " + name;
+    }
+    return name;
+  }
+
+  function buildCommandsDef() {
+    let a = [];
+    function addMenuItems(items) {
+      for (let mi of items) {
+        // console.log(mi);
+        let name = mi[0];
+        let idOrSubMenu = mi[1];
+        if (Array.isArray(idOrSubMenu)) {
+          addMenuItems(idOrSubMenu);
+          continue;
+        }
+        let id = idOrSubMenu;
+        if (id <= 0) {
+          // separator and static items
+          continue;
+        }
+        if (id === kCmdCommandPalette) {
+          continue;
+        }
+        const miStatus = menuItemStatus(mi);
+        if (miStatus != kMenuStatusNormal) {
+          // filter out disabled and removed
+          continue;
+        }
+        name = commandNameOverride(id, name);
+        let el = [name, id];
+        a.push(el);
+      }
+    }
+    let mdef = buildMenuDef();
+    addMenuItems(mdef);
+    return a;
+  }
+
+  const commandPaletteAdditions = [["Open Recent Note", kCmdOpenRecent]];
+  function openCommandPalette() {
+    console.log("openCommandPalette");
+    commandsDef = buildCommandsDef();
+    commandsDef.push(...commandPaletteAdditions);
+    showingCommandPalette = true;
+  }
+
+  function closeCommandPalette() {
+    showingCommandPalette = false;
+    getEditor().focus();
+  }
+
+  async function executeCommand(cmdId) {
+    showingCommandPalette = false;
+    // closeCommandPalette();
+    onmenucmd(cmdId);
   }
 
   /**
@@ -990,6 +1079,12 @@
   </Overlay>
 {/if}
 <Toaster></Toaster>
+
+{#if showingCommandPalette}
+  <Overlay onclose={closeCommandPalette} blur={true}>
+    <CommandPalette commands={commandsDef} {executeCommand} />
+  </Overlay>
+{/if}
 
 {#if showingMenu}
   <Overlay onclose={closeMenu}>

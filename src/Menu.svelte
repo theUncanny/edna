@@ -27,15 +27,6 @@
     return parts[0];
   }
 
-  function sanitizeShortcut(txt) {
-    const s = parseShortcut(txt);
-    if (s === null) {
-      return txt;
-    }
-    const res = serializeShortuct(s);
-    return res;
-  }
-
   /**
    * @param {MenuItemDef} mi
    * @returns {string}
@@ -44,7 +35,7 @@
     let s = mi[0];
     let parts = splitMax(s, "\t", 2);
     if (len(parts) > 1) {
-      return sanitizeShortcut(parts[1]);
+      return extractShortcut(parts[1]);
     }
     return "";
   }
@@ -107,7 +98,7 @@
 </script>
 
 <script>
-  import { parseShortcut, serializeShortuct } from "./keys.js";
+  import { extractShortcut } from "./keys.js";
   import { len, splitMax } from "./util.js";
   import { ensurevisible, focus } from "./actions.js";
 
@@ -115,7 +106,7 @@
    menuDef: MenuDef,
    pos: {x: number, y: number},
    menuItemStatus?: (mi: MenuItemDef) => number,
-   onmenucmd: (cmd: number, ev: Event) => void,
+   onmenucmd: (cmd: number) => void,
 }}*/
   let { menuDef: menuDef, pos, menuItemStatus = null, onmenucmd } = $props();
 
@@ -246,7 +237,7 @@
     if (!mi || mi.cmdId <= 0) {
       return;
     }
-    onmenucmd(mi.cmdId, null);
+    onmenucmd(mi.cmdId);
     ev.stopPropagation();
   }
 
@@ -371,7 +362,9 @@
         return true;
       });
       if (found) {
-        onmenucmd(found.cmdId, ev);
+        ev.preventDefault();
+        ev.stopPropagation();
+        onmenucmd(found.cmdId);
       }
       return;
     }

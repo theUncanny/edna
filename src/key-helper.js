@@ -1,11 +1,11 @@
 import { getAltChar, getModChar, platformName } from "./util.js";
 
-// TODO: duplicated in gen.mjs
 function getKeyHelp(platform = platformName) {
   const modChar = getModChar(platform);
   const altChar = getAltChar(platform);
   return [
     [`${modChar} + P`, "Open, create or delete a note"],
+    [`${modChar} + Shift + P`, "Command Palette"],
     [`${modChar} + B`, "Navigate to a block"],
     [`${modChar} + E`, "Open recent note"],
     [`${altChar} + N`, "Create a new scratch note"],

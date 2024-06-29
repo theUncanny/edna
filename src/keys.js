@@ -231,3 +231,12 @@ export function parseShortcut(s) {
   res.key = key;
   return res;
 }
+
+export function extractShortcut(txt) {
+  const s = parseShortcut(txt);
+  if (s === null) {
+    return txt;
+  }
+  const res = serializeShortuct(s);
+  return res;
+}
