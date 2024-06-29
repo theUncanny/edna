@@ -907,7 +907,7 @@ function renameLS(oldName, newName) {
     // doesn't exist
     return;
   }
-  localStorage.setTime(newName, s);
+  localStorage.setItem(newName, s);
   localStorage.removeItem(oldName);
 }
 
