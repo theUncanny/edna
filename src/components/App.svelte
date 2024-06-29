@@ -417,6 +417,18 @@
     getEditor().focus();
   }
 
+  function switchToNoteSelector() {
+    console.log("switch to note selector");
+    showingCommandPalette = false;
+    openNoteSelector();
+  }
+
+  function switchToCommandPalette() {
+    console.log("Switch to command palette");
+    showingNoteSelector = false;
+    openCommandPalette();
+  }
+
   function openNoteSelector() {
     showingNoteSelector = true;
   }
@@ -1044,6 +1056,7 @@
 {#if showingNoteSelector}
   <Overlay onclose={closeNoteSelector} blur={true}>
     <NoteSelector
+      {switchToCommandPalette}
       openNote={onOpenNote}
       createNote={onCreateNote}
       deleteNote={onDeleteNote}
@@ -1082,7 +1095,7 @@
 
 {#if showingCommandPalette}
   <Overlay onclose={closeCommandPalette} blur={true}>
-    <CommandPalette commands={commandsDef} {executeCommand} />
+    <CommandPalette {commandsDef} {executeCommand} {switchToNoteSelector} />
   </Overlay>
 {/if}
 

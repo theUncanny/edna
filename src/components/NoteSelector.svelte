@@ -15,8 +15,9 @@
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => void,
+    switchToCommandPalette: () => void,
 }}*/
-  let { openNote, createNote, deleteNote } = $props();
+  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
 
   /**
    * @typedef {Object} Item
@@ -91,6 +92,10 @@
     // we split the search term by space, the name of the note
     // must match all parts
     let lc = sanitizedFilter.toLowerCase();
+    if (lc.startsWith(">")) {
+      switchToCommandPalette();
+      return;
+    }
     let parts = lc.split(" ");
     let n = len(parts);
     for (let i = 0; i < n; i++) {

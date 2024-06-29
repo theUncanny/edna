@@ -296,6 +296,11 @@ export function splitMax(s, sep, max) {
   return parts.slice(0, max);
 }
 
+/**
+ * @param {string} s
+ * @param {string} prefix
+ * @returns
+ */
 export function trimPrefix(s, prefix) {
   if (!s.startsWith(prefix)) {
     return s;

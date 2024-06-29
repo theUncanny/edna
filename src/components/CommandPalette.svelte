@@ -1,5 +1,5 @@
 <script>
-  import { len, splitMax } from "../util";
+  import { len, splitMax, trimPrefix } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
   import { extractShortcut } from "../keys";
@@ -8,9 +8,10 @@
 
   /** @type {{
     executeCommand: (id: number) => void,
-    commands: CmdDef[],
+    switchToNoteSelector: () => void,
+    commandsDef: CmdDef[],
 }}*/
-  let { executeCommand, commands } = $props();
+  let { executeCommand, switchToNoteSelector, commandsDef } = $props();
 
   /**
    * @typedef {Object} Item
@@ -27,13 +28,10 @@
   function rebuildCommands() {
     // console.log("rebuildCommands:", commands);
     /** @type {Item[]} */
-    let res = Array(len(commands));
-    for (let i = 0; i < len(commands); i++) {
-      let s = commands[i][0];
-      let id = commands[i][1];
-      if (id == 1007) {
-        console.log("id:", id, "s:", s);
-      }
+    let res = Array(len(commandsDef));
+    for (let i = 0; i < len(commandsDef); i++) {
+      let s = commandsDef[i][0];
+      let id = commandsDef[i][1];
       let parts = splitMax(s, "\t", 2);
       let name = parts[0];
       let shortcut = null;
@@ -59,12 +57,18 @@
     return res;
   }
   let itemsInitial = $state(rebuildCommands());
-  let filter = $state("");
+  let filter = $state(">");
 
   let filteredItems = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
     let lc = filter.toLowerCase();
+    if (lc === "") {
+      switchToNoteSelector();
+      return;
+    }
+    lc = trimPrefix(lc, ">");
+    lc = lc.trim();
     let parts = lc.split(" ");
     let n = len(parts);
     for (let i = 0; i < n; i++) {
@@ -85,8 +89,10 @@
   let selectedCommand = $state(null);
 
   function selectionChanged(item, idx) {
-    // console.log("selectionChanged:", item, idx);
-    selectedCommand = item;
+    console.log("selectionChanged:", item, idx);
+    if (idx != 1) {
+      selectedCommand = item;
+    }
   }
 
   /**

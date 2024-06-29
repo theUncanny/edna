@@ -1,5 +1,9 @@
 # Release notes for Edna
 
+## 1.8
+
+- added Command Palette (Ctrl + Shift + P)
+
 ## 1.7
 
 - added backup of notes
