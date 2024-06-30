@@ -9,6 +9,7 @@
 
 <script>
   import { focus } from "../actions";
+  import { len } from "../util";
   import ListBox from "./ListBox.svelte";
 
   /** @type {{
@@ -19,6 +20,11 @@
   let { items, selectBlock, initialSelection = 0 } = $props();
 
   let filter = $state("");
+
+  let blockCountMsg = $state(`${len(items)} blocks`);
+  if (len(items) == 1) {
+    blockCountMsg = `1 block`;
+  }
 
   /** @typedef {{item: Item, textLC: string, key: number }} BlockItem */
 
@@ -82,12 +88,18 @@
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-2"
 >
-  <input
-    use:focus
-    type="text"
-    bind:value={filter}
-    class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
-  />
+  <div>
+    <input
+      use:focus
+      type="text"
+      bind:value={filter}
+      class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
+    />
+
+    <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
+      {blockCountMsg}
+    </div>
+  </div>
   <ListBox
     items={filteredItems}
     onclick={(item) => selectBlock(item.item)}
