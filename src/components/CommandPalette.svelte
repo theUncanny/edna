@@ -89,7 +89,7 @@
   let selectedCommand = $state(null);
 
   function selectionChanged(item, idx) {
-    console.log("selectionChanged:", item, idx);
+    // console.log("selectionChanged:", item, idx);
     if (idx != 1) {
       selectedCommand = item;
     }
