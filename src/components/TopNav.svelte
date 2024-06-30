@@ -1,17 +1,9 @@
 <script>
   import { getScrollbarWidth } from "../util.js";
   import { dirtyState } from "../state.svelte.js";
-  import IconSettings from "./IconSettings.svelte";
   import { getModChar } from "../util.js";
-  import {
-    openCommandPalette,
-    openContextMenu,
-    openNoteSelector,
-    openSettings,
-  } from "../globals.js";
+  import { openCommandPalette, openNoteSelector } from "../globals.js";
   import IconCommandPalette from "./IconCommandPalette.svelte";
-  import IconMenu from "./IconMenu.svelte";
-  import IconGitHub from "./IconGitHub.svelte";
 
   /** @type {{ 
     noteName: string,

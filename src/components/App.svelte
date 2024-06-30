@@ -70,6 +70,7 @@
   import { exportNotesToZip, maybeBackupNotes } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
   import CommandPalette from "./CommandPalette.svelte";
+  import Find from "./Find.svelte";
 
   let initialSettings = getSettings();
 
@@ -90,6 +91,7 @@
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
   let showingBlockSelector = $state(false);
+  let showingFind = $state(false);
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
 
@@ -113,6 +115,7 @@
       showingBlockSelector ||
       showingDecryptPassword ||
       showingEncryptPassword ||
+      showingFind ||
       showingSettings
     );
   });
@@ -444,6 +447,15 @@
 
   function closeLanguageSelector() {
     showingLanguageSelector = false;
+    getEditor().focus();
+  }
+
+  function openFind() {
+    showingFind = true;
+  }
+
+  function closeFind() {
+    showingFind = false;
     getEditor().focus();
   }
 
@@ -1097,6 +1109,10 @@
   <Overlay onclose={closeCommandPalette} blur={true}>
     <CommandPalette {commandsDef} {executeCommand} {switchToNoteSelector} />
   </Overlay>
+{/if}
+
+{#if showingFind}
+  <Find></Find>
 {/if}
 
 {#if showingMenu}
