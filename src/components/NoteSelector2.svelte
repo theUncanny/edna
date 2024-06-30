@@ -141,7 +141,7 @@
 
     canDeleteSelected = false;
     if (item && canOpenSelected) {
-      if (item.name !== "scratch" && !isSystemNoteName(item.name)) {
+      if (item.name !== kScratchNoteName && !isSystemNoteName(item.name)) {
         // can't delete scratch note or system notes
         canDeleteSelected = true;
       }

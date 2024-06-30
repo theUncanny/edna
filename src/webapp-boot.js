@@ -95,7 +95,7 @@ export async function boot() {
     console.log("will open note from url #hash:", nameFromURLHash);
   }
   if (!isValidNote(nameFromSettings)) {
-    toOpenAtStartup = "scratch";
+    toOpenAtStartup = kScratchNoteName;
   }
 
   // will open this note in Editor.vue on mounted()

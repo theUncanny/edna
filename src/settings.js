@@ -1,6 +1,7 @@
 import { cloneObjectDeep, objectEqualDeep, platform, throwIf } from "./util";
 
 import { ipcRenderer } from "./ipcrenderer";
+import { kScratchNoteName } from "./notes";
 
 /**
  * @typedef {Object} Settings
@@ -107,14 +108,14 @@ export function loadInitialSettings() {
   let settings = loadSettings();
   console.log("settings loaded:", settings);
   if (!settings.currentNoteName) {
-    settings.currentNoteName = "scratch";
+    settings.currentNoteName = kScratchNoteName;
   }
 
   // ensure all possible settings are present. Start with defaults and overwrite with persisted settings
   /** @type {Settings} */
   let initialSettings = {
     bracketClosing: false,
-    currentNoteName: "scratch",
+    currentNoteName: kScratchNoteName,
     emacsMetaKey: "alt",
     keymap: "default",
     showFoldGutter: true,
