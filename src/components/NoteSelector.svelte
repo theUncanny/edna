@@ -303,11 +303,13 @@
       <div class="mr-2">{noteShortcut(item)}</div>
     {/snippet}
   </ListBox>
+
   {#if canOpenSelected || canDeleteSelected || filter.length > 0}
-    <hr class="mt-1 mb-1 border-gray-400" />
+    <hr class="mt-0.5 mb-0.5 border-gray-300 dark:border-gray-600" />
   {/if}
+
   <div
-    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
+    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-2 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
   >
     {#if canOpenSelected}
       <div><span class="kbd">Enter</span></div>
@@ -350,11 +352,12 @@
       </div>
     {/if}
 
-    <div><span class="kbd">{altChar} + 0...9</span></div>
-    <div>assign quick access shortcut</div>
-
-    <div><span class="kbd">Esc</span></div>
-    <div>dismiss</div>
+    {#if canOpenSelected}
+      <div><span class="kbd">{altChar} + 0...9</span></div>
+      <div>assign quick access shortcut</div>
+    {/if}
+    <!-- <div><span class="kbd">Esc</span></div>
+    <div>dismiss</div> -->
   </div>
 </form>
 
