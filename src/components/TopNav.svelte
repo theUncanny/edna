@@ -1,13 +1,17 @@
 <script>
   import { getScrollbarWidth } from "../util.js";
   import { dirtyState } from "../state.svelte.js";
-  import SettingsIcon from "./SettingsIcon.svelte";
+  import IconSettings from "./IconSettings.svelte";
   import { getModChar } from "../util.js";
   import {
+    openCommandPalette,
     openContextMenu,
     openNoteSelector,
     openSettings,
   } from "../globals.js";
+  import IconCommandPalette from "./IconCommandPalette.svelte";
+  import IconMenu from "./IconMenu.svelte";
+  import IconGitHub from "./IconGitHub.svelte";
 
   /** @type {{ 
     noteName: string,
@@ -21,45 +25,6 @@
     style = `right: ${dx}px`;
   });
 </script>
-
-{#snippet gitHubIcon()}
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    viewBox="0 0 24 24"
-    stroke-width="2"
-    stroke="currentColor"
-    fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-    <path
-      d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"
-    >
-    </path>
-  </svg>
-{/snippet}
-
-{#snippet menuIcon()}
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    viewBox="0 0 24 24"
-    stroke-width="1.5"
-    stroke="currentColor"
-    fill="none"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <path d="M4 6l16 0" />
-    <path d="M4 12l16 0" />
-    <path d="M4 18l16 0" />
-  </svg>
-{/snippet}
 
 {#if !dirtyState.isDirtyFast}
   <div
@@ -83,6 +48,14 @@
     {/if}
 
     <button
+      onclick={openCommandPalette}
+      class="clickable-icon"
+      title="Command Palette"
+    >
+      <IconCommandPalette></IconCommandPalette>
+    </button>
+
+    <!-- <button
       onclick={(ev) => {
         let pos = { x: ev.x - 180, y: ev.y + 8 };
         openContextMenu(ev, pos);
@@ -90,24 +63,15 @@
       class="clickable-icon"
       title="Menu"
     >
-      {@render menuIcon()}
-    </button>
+      <IconMenu></IconMenu>
+    </button> -->
 
-    <button onclick={openSettings} class="clickable-icon" title="Settings">
-      <SettingsIcon></SettingsIcon>
-    </button>
+    <!-- <button onclick={openSettings} class="clickable-icon" title="Settings">
+      <IconSettings></IconSettings>
+    </button> -->
 
-    <a class="clickable" href="/help" title="Documentation" target="_blank"
-      >Help</a
+    <a class="clickable" href="/help" title="Documentation" target="_blank">?</a
     >
-    <a
-      class="clickable-icon mt-[1px]"
-      href="https://github.com/kjk/edna"
-      target="_blank"
-      title="Source code on GitHub"
-    >
-      {@render gitHubIcon()}
-    </a>
   </div>
 {/if}
 

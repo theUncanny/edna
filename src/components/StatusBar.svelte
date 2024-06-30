@@ -7,7 +7,8 @@
   } from "../editor/languages.js";
   import { fmtSize, getScrollbarWidth, platform } from "../util";
   import { dirtyState } from "../state.svelte";
-  import SettingsIcon from "./SettingsIcon.svelte";
+  import IconSettings from "./IconSettings.svelte";
+  import IconGitHub from "./IconGitHub.svelte";
   import {
     openLanguageSelector,
     openNoteSelector,
@@ -137,11 +138,19 @@
   {/if}
 
   <button onclick={openSettings} class="clickable-icon" title="Settings">
-    <SettingsIcon></SettingsIcon>
+    <IconSettings></IconSettings>
   </button>
   <a href="/help" title="Documentation" target="_blank" class="clickable"
     >Help</a
   >
+  <a
+    class="clickable-icon mt-[1px]"
+    href="https://github.com/kjk/edna"
+    target="_blank"
+    title="Source code on GitHub"
+  >
+    <IconGitHub></IconGitHub>
+  </a>
 </div>
 
 <style scoped>
