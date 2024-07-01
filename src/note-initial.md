@@ -4,7 +4,7 @@ To learn more: https://edna.arslexis.io/help (or right-click for context menu an
 
 This is a scratch note. Feel free to delete the content and use it for temporary notes.
 ∞∞∞markdown
-# Keyboard shortcuts:
+# Keyboard shortcuts
 
 {{keyHelp}}
 ∞∞∞markdown

@@ -37,7 +37,7 @@ The variable `prev` can be used to access the previous result. For example:
 prev * 2 # 256
 ```
 
-### Changing how the results of Math blocks are formatted?
+### Changing how the results of Math blocks are formatted
 
 You can define a custom `format` function within the Math block like this:
 
@@ -48,7 +48,7 @@ format(x) = _format(x, {notation:"exponential"})
 
 See the [Math.js format()](https://mathjs.org/docs/reference/functions/format.html) function for more info on what's supported.
 
-### Default keyboard shortcuts?
+### Default keyboard shortcuts
 
 **On Mac**
 

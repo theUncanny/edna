@@ -1,5 +1,13 @@
 import { getAltChar, getModChar, platformName } from "./util.js";
 
+export function fixUpShortcuts(s, platform = platformName) {
+  let modChar = getModChar(platform);
+  let altChar = getAltChar(platform);
+  s = s.replace(/Alt/g, altChar);
+  s = s.replace(/Mod/g, modChar);
+  return s;
+}
+
 function getKeyHelp(platform = platformName) {
   const modChar = getModChar(platform);
   const altChar = getAltChar(platform);

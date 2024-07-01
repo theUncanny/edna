@@ -6,16 +6,8 @@ import helpRaw from "./note-help.md?raw";
 import inboxRaw from "./note-inbox.md?raw";
 import initialDevRaw from "./note-initial-dev.md?raw";
 import initialRaw from "./note-initial.md?raw";
-import { keyHelpStr } from "./key-helper.js";
+import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
 import releaseNotesRaw from "./note-release-notes.md?raw";
-
-function fixUpShortcuts(s, platform = platformName) {
-  let modChar = getModChar(platform);
-  let altChar = getAltChar(platform);
-  s = s.replace(/Alt/g, altChar);
-  s = s.replace(/Mod/g, modChar);
-  return s;
-}
 
 export function getHelp(platform = platformName) {
   let keyHelp = keyHelpStr(platform);

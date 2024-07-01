@@ -4,6 +4,7 @@
   import { getModChar } from "../util.js";
   import { openCommandPalette, openNoteSelector } from "../globals.js";
   import IconCommandPalette from "./IconCommandPalette.svelte";
+  import { fixUpShortcuts } from "../key-helper.js";
 
   /** @type {{ 
     noteName: string,
@@ -26,14 +27,14 @@
     <button
       class="cursor-pointer pl-[6px] pr-[2px] py-[4px] hover:bg-gray-100 dark:hover:bg-gray-500"
       onclick={openNoteSelector}
-      title="click or {getModChar()} + P to open another note"
+      title={fixUpShortcuts("Open Another Note (Mod + P)")}
     >
       <span class="max-w-32 truncate">{noteName}</span> ⏷</button
     >
     {#if shortcut}
       <div
         class="text-gray-500 dark:text-gray-400 text-xs mx-0.5"
-        title="quick access shortcut: {shortcut}"
+        title="This Note Quick Access Shortcut ({shortcut})"
       >
         {shortcut}
       </div>
@@ -42,7 +43,7 @@
     <button
       onclick={openCommandPalette}
       class="clickable-icon"
-      title="Command Palette"
+      title={fixUpShortcuts("Command Palette (Mod + Shift + P)")}
     >
       <IconCommandPalette></IconCommandPalette>
     </button>

@@ -106,6 +106,10 @@
   /** @type {Editor} */
   let editor;
 
+  $effect(() => {
+    console.log("showingNoteSelector changed to:", showingNoteSelector);
+  });
+
   let isShowingDialog = $derived.by(() => {
     return (
       showingHistorySelector ||
