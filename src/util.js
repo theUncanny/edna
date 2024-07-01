@@ -1,5 +1,8 @@
 let host = globalThis.window ? window.location.host : "";
-export const isDev = host.startsWith("localhost");
+
+export function isDev() {
+  return host.startsWith("localhost");
+}
 
 export function len(o) {
   return o ? o.length : 0;

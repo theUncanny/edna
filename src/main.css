@@ -118,3 +118,9 @@ html.dark .selector .red {
   height: 100px;
   overflow: scroll;
 }
+
+/* without this the space between checkbox and text is really large
+   I have no idea why this helps */
+.cm-taskmarker-toggle {
+  font-family: ui-monospace;
+}

@@ -16,17 +16,18 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 
 # Why Edna?
 
-## Blocks and notes
+## Notes and blocks
 
 Unique feature of Edna is that a note can be divided into blocks.
 
-Each block has a type: markdown, plain text, JavaScript code, Go code etc.
+Each block has a type: markdown, plain text, math block, JavaScript code, Go code etc.
 
-Use `Mod + L` to assign a type for current block, `Mod + B` to navigate between blocks.
+Use:
+* `Mod + L` to assign a type for current block
+* `Mod + B` to navigate between blocks
+* `Mod + A` and `Delete` to delete block (select block test and delete)
 
 Use [keyboard shortcuts](#keyboard-shortcuts) to create blocks, move between blocks.
-
-To delete a block: `Ctrl + A` to select block text and `Delete`.
 
 ## No installation required
 
@@ -36,13 +37,14 @@ You can use it offline (without network connection) and for desktop-like experin
 
 ## Miminalist UI, lots of functionality
 
-UI is optimized for writing with editor at the center of it.
+UI is optimized for writing. Editor uses most of the space.
 
 To acess more functionality:
 
-- use keyboard shortcuts
-- right-click for context menu
-- click on top or bottom navigation bars
+- `Mod + Shift + P` for command pallete
+- use [keyboard shortcuts](#keyboard-shortcuts))
+- context menu (right-click)
+- top bar and status bar
 
 ## Speed
 

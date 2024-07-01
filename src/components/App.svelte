@@ -49,10 +49,13 @@
     isUsingEncryption,
     encryptAllNotes,
     decryptAllNotes,
+    kWelcomeSystemNoteName,
+    kWelcomeDevSystemNoteName,
   } from "../notes";
   import {
     getAltChar,
     isAltNumEvent,
+    isDev,
     len,
     setURLHashNoReload,
     stringSizeInUtf8Bytes,
@@ -504,9 +507,11 @@
   export const kCmdDecryptNotes = nmid();
   export const kCmdEncryptionHelp = nmid();
   export const kCmdToggleSpellChecking = nmid();
-  export const kCmdShowExportHelp = nmid();
+  export const kCmdShowStorageHelp = nmid();
   export const kCmdSettings = nmid();
   export const kCmdOpenRecent = nmid();
+  export const kCmdShowWelcomeNote = nmid();
+  export const kCmdShowWelcomeDevNote = nmid();
 
   function buildMenuDef() {
     const menuNote = [
@@ -542,20 +547,25 @@
       kMenuSeparator,
       ["Export notes to .zip file", kCmdExportNotes],
       kMenuSeparator,
-      ["Show help", kCmdShowExportHelp],
+      ["Help: storage", kCmdShowStorageHelp],
     ];
 
     const menuEncrypt = [
       ["Encrypt all notes", kCmdEncryptNotes],
       ["Decrypt all notes", kCmdDecryptNotes],
-      ["Help", kCmdEncryptionHelp],
+      ["Help: encryption", kCmdEncryptionHelp],
     ];
 
     const menuHelp = [
       ["Show help", kCmdShowHelp],
       ["Show help as note", kCmdShowHelpAsNote],
       ["Release notes", kCmdShowReleaseNotes],
+      ["Show Welcome Note", kCmdShowWelcomeNote],
     ];
+
+    if (isDev()) {
+      menuHelp.push(["Show Welcome Dev Note", kCmdShowWelcomeDevNote]);
+    }
 
     let spelling = (isSpellChecking ? "Disable" : "Enable") + " spell checking";
 
@@ -688,6 +698,10 @@
       showHelpAsNote();
     } else if (cmdId === kCmdShowReleaseNotes) {
       showReleaseNotes();
+    } else if (cmdId == kCmdShowWelcomeNote) {
+      showWelcomeNote();
+    } else if (cmdId == kCmdShowWelcomeDevNote) {
+      showWelcomeDevNote();
     } else if (cmdId === kCmdMoveNotesToDirectory) {
       storeNotesOnDisk();
     } else if (cmdId === kCmdSwitchToNotesInDir) {
@@ -696,7 +710,7 @@
       await switchToBrowserStorage();
     } else if (cmdId === kCmdExportNotes) {
       exportNotesToZipFile();
-    } else if (cmdId === kCmdShowExportHelp) {
+    } else if (cmdId === kCmdShowStorageHelp) {
       showHelp("#storing-notes-on-disk");
     } else if (cmdId === kCmdSettings) {
       openSettings();
@@ -758,6 +772,8 @@
     "Rename Current Note",
     kCmdDeleteCurrentNote,
     "Delete Current Note",
+    kCmdShowStorageHelp,
+    "Help: Storage",
   ];
 
   function commandNameOverride(id, name) {
@@ -978,6 +994,14 @@
 
   function showReleaseNotes() {
     openNote(kReleaseNotesSystemNoteName);
+  }
+
+  function showWelcomeNote() {
+    openNote(kWelcomeSystemNoteName);
+  }
+
+  function showWelcomeDevNote() {
+    openNote(kWelcomeDevSystemNoteName);
   }
 
   function updateDocSize() {

@@ -33,20 +33,21 @@ export function getReleaseNotes() {
 
 export function getInitialContent(platform = platformName) {
   let keyHelp = keyHelpStr(platform);
-  let initial = fixUpShortcuts(initialRaw);
+
+  let initial = fixUpNoteContent(initialRaw);
+  initial = fixUpShortcuts(initial);
   initial = initial.replace("{{keyHelp}}", keyHelp);
 
-  let initialDev = fixUpShortcuts(initialDevRaw);
+  let initialDev = initialDevRaw;
+  initialDev = fixUpShortcuts(initialDev);
   let initialDevContent = initial + initialDev;
   initialDevContent = fixUpNoteContent(initialDevContent);
 
-  let initialJournal = fixUpShortcuts(dailyJournalRaw);
-  initialJournal = fixUpNoteContent(initialJournal);
+  let initialJournal = fixUpNoteContent(dailyJournalRaw);
+  initialJournal = fixUpShortcuts(initialJournal);
 
-  let initialInbox = fixUpShortcuts(inboxRaw);
-  initialInbox = fixUpNoteContent(initialInbox);
-
-  initial = fixUpNoteContent(initial);
+  let initialInbox = fixUpNoteContent(inboxRaw);
+  initialInbox = fixUpShortcuts(initialInbox);
 
   return {
     initialContent: initial,

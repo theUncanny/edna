@@ -196,8 +196,16 @@ export const kInboxNoteName = "inbox";
 
 export const kHelpSystemNoteName = "system:help";
 export const kReleaseNotesSystemNoteName = "system:Release Notes";
+export const kWelcomeSystemNoteName = "system:welcome";
+export const kWelcomeDevSystemNoteName = "system:welcome dev";
 
-const systemNotes = [kHelpSystemNoteName, kReleaseNotesSystemNoteName];
+const systemNotes = [
+  kHelpSystemNoteName,
+  kReleaseNotesSystemNoteName,
+  kWelcomeSystemNoteName,
+  kWelcomeDevSystemNoteName,
+];
+
 /**
  * @param {string} name
  * @returns {boolean}
@@ -231,11 +239,9 @@ export async function createDefaultNotes(existingNotes) {
   let isFirstRun = getStats().appOpenCount < 2;
   console.log("isFirstRun:", isFirstRun);
 
-  const { initialContent, initialDevContent, initialJournal, initialInbox } =
-    getInitialContent();
+  const { initialContent, initialJournal, initialInbox } = getInitialContent();
 
-  const s = false && isDev ? initialDevContent : initialContent;
-  let nCreated = await createIfNotExists(kScratchNoteName, s);
+  let nCreated = await createIfNotExists(kScratchNoteName, initialContent);
   // scratch note must always exist but the user can delete inbox / daily journal notes
   if (isFirstRun) {
     // re-create those notes if the user hasn't deleted them
@@ -428,11 +434,18 @@ export function fixUpNoteContent(s) {
  */
 function getSystemNoteContent(name) {
   console.log("getSystemNoteContent:", name);
+  let i;
   switch (name) {
     case kHelpSystemNoteName:
       return getHelp();
     case kReleaseNotesSystemNoteName:
       return getReleaseNotes();
+    case kWelcomeSystemNoteName:
+      i = getInitialContent();
+      return i.initialContent;
+    case kWelcomeDevSystemNoteName:
+      i = getInitialContent();
+      return i.initialDevContent;
   }
   throw new Error("unknown system note:" + name);
 }

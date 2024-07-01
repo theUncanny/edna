@@ -1,23 +1,37 @@
 Welcome to Edna - a note taking app for developers and power users.
 
-To learn more right-click for context menu and use `Help` / `Show help` menu.
+To learn more: https://edna.arslexis.io/help (or right-click for context menu and use `Help` / `Show help`).
 
-Keyboard shortcuts:
+This is a scratch note. Feel free to delete the content and use it for temporary notes.
+∞∞∞markdown
+# Keyboard shortcuts:
 
 {{keyHelp}}
+∞∞∞markdown
+# Blocks
 
+Unique feature of Edna is that notes consist of blocks. Each block has a type:
+* markdown
+* plain text
+* code block (JavaScript, Go etc.)
+* math block
+
+Mod + L to change the type of block
+Mod + B to navigate between blocks
+
+Blocks have alternate background color.
 ∞∞∞math
-This is a Math block. Here, rows are evaluated as math expressions.
+This is a Math block. Lines are evaluated as math expressions with result rendered at end of line right.
 
 radius = 5
-area = radius^2 \* PI
+area = radius^2 * PI
 sqrt(9)
 
-It also supports some basic unit conversions, including currencies:
+We support basic unit conversions and currencies:
 
 13 inches in cm
 time = 3900 seconds to minutes
-time \* 2
+time * 2
 
 1 EUR in USD
 
