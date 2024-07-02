@@ -7,7 +7,13 @@
     sanitizeNoteName,
     getNotesCount,
   } from "../notes";
-  import { getAltChar, isAltNumEvent, len } from "../util";
+  import {
+    getAltChar,
+    isAltNumEvent,
+    len,
+    splitFilterLC,
+    stringMatchesParts,
+  } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
 
@@ -91,25 +97,24 @@
   let filteredItems = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
-    let lc = sanitizedFilter.toLowerCase();
-    if (lc.startsWith(">")) {
+    if (sanitizedFilter.startsWith(">")) {
       switchToCommandPalette();
       return;
     }
-    let parts = lc.split(" ");
-    let n = len(parts);
-    for (let i = 0; i < n; i++) {
-      let s = parts[i];
-      parts[i] = s.trim();
-    }
-    return initialItems.filter((noteInfo) => {
-      let s = noteInfo.nameLC;
-      for (let p of parts) {
-        if (s.indexOf(p) === -1) {
-          return false;
-        }
+    let filterParts = splitFilterLC(sanitizedFilter);
+    let res = Array(len(initialItems));
+    let nRes = 0;
+    for (let fdef of initialItems) {
+      if (!stringMatchesParts(fdef.nameLC, filterParts)) {
+        continue;
       }
-      return true;
+      res[nRes++] = fdef;
+    }
+    res.length = nRes;
+
+    return initialItems.filter((item) => {
+      let s = item.nameLC;
+      return stringMatchesParts(s, filterParts);
     });
   });
 

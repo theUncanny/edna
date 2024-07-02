@@ -2,7 +2,7 @@
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
   import { blockFunctions } from "../functions";
-  import { len } from "../util";
+  import { len, splitFilterLC, stringMatchesParts } from "../util";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -16,6 +16,7 @@
     fdef: BlockFunction,
     key: number,
     name: string,
+    nameLC: string,
     ref: HTMLElement,
    }} Item
   */
@@ -26,12 +27,12 @@
   function buildItems() {
     let n = len(blockFunctions);
     let res = Array(n);
-    for (let i = 0; i < n; i++) {
-      let fdef = blockFunctions[i];
+    for (let [i, fdef] of blockFunctions.entries()) {
       let item = {
         fdef: fdef,
         key: i,
         name: fdef.name,
+        nameLC: fdef.name.toLowerCase(),
         ref: null,
       };
       res[i] = item;
@@ -39,17 +40,34 @@
     return res;
   }
 
-  let initialItems = $state(buildItems());
+  let initialItems = buildItems();
   let filter = $state("");
+
+  /**
+   * @returns {Item[]}
+   */
   let filteredItems = $derived.by(() => {
-    let res = initialItems;
+    let filterParts = splitFilterLC(filter);
+    /**
+     * @returns {Item[]}
+     */
+    let res = Array(len(initialItems));
+    let nRes = 0;
+    for (let fdef of initialItems) {
+      if (!stringMatchesParts(fdef.nameLC, filterParts)) {
+        continue;
+      }
+      res[nRes++] = fdef;
+    }
+    res.length = nRes;
     return res;
   });
 
+  /** @type {Item} */
   let selectedItem = $state(null);
 
   function selectionChanged(item, idx) {
-    // console.log("selectionChanged:", item, idx);
+    console.log("selectionChanged:", item, idx);
     selectedItem = item;
   }
 
@@ -58,6 +76,7 @@
    * @param {boolean} replace
    */
   function emitRunFunction(item, replace) {
+    console.log("emitRunFunction:", item);
     runFunction(item.fdef, replace);
   }
 
@@ -119,18 +138,23 @@
       </div>
     {/snippet}
   </ListBox>
-  <div
-    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50"
-  >
-    <div>
-      <span class="kbd">Enter</span>
+  {#if selectedItem}
+    <div class="px-2 py-1 mt-2 mb-2 text-sm text-gray-800 bg-yellow-50">
+      {selectedItem.fdef.description}
     </div>
-    <div>Run code, output in new block</div>
-    <div>
-      <span class="kbd">Ctrl + Enter</span>
+    <div
+      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50"
+    >
+      <div>
+        <span class="kbd">Enter</span>
+      </div>
+      <div>Run code, output in new block</div>
+      <div>
+        <span class="kbd">Ctrl + Enter</span>
+      </div>
+      <div>Run code, output replaces block content</div>
     </div>
-    <div>Run code, output replaces block content</div>
-  </div>
+  {/if}
 </form>
 
 <style>

@@ -335,3 +335,30 @@ export function removeDuplicates(a) {
   res.length = n;
   return res;
 }
+
+/**
+ * @param {string} s
+ * @param {string[]} parts
+ * @returns {boolean}
+ */
+export function stringMatchesParts(s, parts) {
+  for (let p of parts) {
+    if (s.indexOf(p) === -1) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * @param {string} s
+ * @returns {string[]}
+ */
+export function splitFilterLC(s) {
+  s = s.toLowerCase();
+  let parts = s.split(" ");
+  for (let [i, part] of parts.entries()) {
+    parts[i] = part.trim();
+  }
+  return parts;
+}
