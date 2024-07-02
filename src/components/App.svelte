@@ -679,10 +679,7 @@
       if (noteName === kScratchNoteName) {
         return kMenuStatusDisabled;
       }
-    } else if (
-      mid === kCmdRunFunctionWithBlockContent ||
-      mid === kCmdRunFunctionWithBlockContent
-    ) {
+    } else if (mid === kCmdRunFunctionWithBlockContent) {
       if (getEditor().isReadOnly()) {
         return kMenuStatusRemoved;
       }

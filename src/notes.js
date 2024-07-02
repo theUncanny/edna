@@ -216,6 +216,7 @@ export function isSystemNoteName(name) {
 
 export const blockHdrPlainText = "\n∞∞∞text-a\n";
 export const blockHdrMarkdown = "\n∞∞∞markdown\n";
+export const blockHdrJSON = "\n∞∞∞json\n";
 
 /**
  * @param {string[]} existingNotes

@@ -1,8 +1,13 @@
 # Release notes for Edna
 
+## 1.9
+
+- add `Mod + E` for running a JavaScript function with content of current block
+- changed `Mod + E` to `Mod + H`
+
 ## 1.8
 
-- added Command Palette (Ctrl + Shift + P)
+- added Command Palette (`Mod + Shift + P`)
 
 ## 1.7
 
@@ -14,7 +19,7 @@
 
 ## 1.5
 
-- added Ctrl + B for quickly navigating between blocks
+- added `Mod + B` for quickly navigating between blocks
 
 ## 1.4
 

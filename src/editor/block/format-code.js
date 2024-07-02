@@ -83,7 +83,10 @@ export async function runBlockFunction(view, fdef, replace) {
     view.dispatch(tr);
   } else {
     // TODO: be more intelligent
-    const text = "\n∞∞∞text-a\n" + res;
+    let text = res;
+    if (!res.startsWith("\n∞∞∞")) {
+      text = "\n∞∞∞text-a\n" + res;
+    }
     insertAfterActiveBlock(view, text);
   }
 }

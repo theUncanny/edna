@@ -27,16 +27,20 @@
   function buildItems() {
     let n = len(blockFunctions);
     let res = Array(n);
-    for (let [i, fdef] of blockFunctions.entries()) {
+    let key = 0;
+    for (let fdef of blockFunctions) {
       let item = {
         fdef: fdef,
-        key: i,
+        key: key,
         name: fdef.name,
         nameLC: fdef.name.toLowerCase(),
         ref: null,
       };
-      res[i] = item;
+      res[key++] = item;
     }
+    res.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
     return res;
   }
 
