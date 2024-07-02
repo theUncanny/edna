@@ -73,11 +73,11 @@ To switch to previous note: press `Mod + E` and `Enter`.
 
 ## Quick access shortcut
 
-You can assign `Alt + 0` to `Alt + 9` for quickly accessing notes:
+You can assign `Alt + 1` to `Alt + 9` for quickly accessing notes:
 
 - `Mod + P` for note selector dialog
 - select a note in the list
-- press `Alt + 0` to `Alt + 9` to assign it as quick access shortcut
+- press `Alt + 1` to `Alt + 9` to assign it as quick access shortcut
 
 Default shortcuts are:
 
@@ -159,7 +159,7 @@ Right-click for context menu, `This Note / Rename`
 
 ## Quick access shortcut
 
-You can assign `Alt + 0` to `Alt + 9` keyboard shortcuts for quickly opening up to 10 notes.
+You can assign `Alt + 1` to `Alt + 9` keyboard shortcuts for quickly opening up to 10 notes.
 
 - `Mod + P`
 - select a note

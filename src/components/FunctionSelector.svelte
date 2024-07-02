@@ -8,10 +8,9 @@
 
   /** @type {{
    runFunction: (fn: BlockFunction, replace: boolean) => void,
-   defaultReplace: boolean,
   }}*/
 
-  let { runFunction, defaultReplace } = $props();
+  let { runFunction } = $props();
 
   /** @typedef {{
     fdef: BlockFunction,
@@ -72,10 +71,7 @@
     if (key === "Enter") {
       ev.preventDefault();
       if (selectedItem) {
-        let replace = defaultReplace;
-        if (ev.ctrlKey) {
-          replace = true;
-        }
+        let replace = ev.ctrlKey;
         emitRunFunction(selectedItem, replace);
       }
     }
@@ -115,7 +111,7 @@
     bind:this={listbox}
     items={filteredItems}
     {selectionChanged}
-    onclick={(item) => emitRunFunction(item, defaultReplace)}
+    onclick={(item) => emitRunFunction(item, false)}
   >
     {#snippet renderItem(item)}
       <div class="truncate">
@@ -123,4 +119,29 @@
       </div>
     {/snippet}
   </ListBox>
+  <div
+    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50"
+  >
+    <div>
+      <span class="kbd">Enter</span>
+    </div>
+    <div>Run code, output in new block</div>
+    <div>
+      <span class="kbd">Ctrl + Enter</span>
+    </div>
+    <div>Run code, output replaces block content</div>
+  </div>
 </form>
+
+<style>
+  .kbd {
+    font-size: 10px;
+    /* @apply text-xs; */
+    @apply font-mono;
+    @apply text-nowrap whitespace-nowrap;
+    @apply px-[6px] py-[3px];
+    @apply border  rounded-md;
+    @apply border-gray-400 dark:border-gray-500;
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+</style>

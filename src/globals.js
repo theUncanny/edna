@@ -8,6 +8,7 @@
   createScratchNote: () => void,
   openContextMenu: (ev: MouseEvent, pos?: {x: number, y: number}) => void,
   openBlockSelector: () => void,
+  openFunctionSelector: () => void,
   getPassword: (msg: string) => Promise<string>,
 }} GlobalFuncs
 */
@@ -65,6 +66,10 @@ export function createScratchNote() {
 
 export function openBlockSelector() {
   globalFunctions.openBlockSelector();
+}
+
+export function openFunctionSelector() {
+  globalFunctions.openFunctionSelector();
 }
 
 /**

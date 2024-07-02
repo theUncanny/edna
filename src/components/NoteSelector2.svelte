@@ -293,7 +293,7 @@
     <hr class="mt-1 mb-1 border-gray-400" />
   {/if}
   <div
-    class="grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 text-size-[11px] leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
+    class="grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
   >
     {#if canOpenSelected}
       <div><span class="kbd">Enter</span></div>
@@ -338,7 +338,7 @@
       </div>
     {/if}
 
-    <div><span class="kbd">{altChar} + 0...9</span></div>
+    <div><span class="kbd">{altChar} 1...9</span></div>
     <div class="col-span-2">assign quick access shortcut</div>
 
     <div><span class="kbd">Esc</span></div>

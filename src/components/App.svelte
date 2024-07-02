@@ -142,6 +142,7 @@
     createScratchNote: createScratchNote,
     openContextMenu: openContextMenu,
     openBlockSelector: openBlockSelector,
+    openFunctionSelector: openFunctionSelector,
     getPassword: getPassword,
   };
   setGlobalFuncs(gf);
@@ -453,9 +454,7 @@
     getEditor().focus();
   }
 
-  let functionDefaultReplace = $state(false);
-  function openFunctionSelector(defaultReplace = false) {
-    functionDefaultReplace = defaultReplace;
+  function openFunctionSelector() {
     showingFunctionSelector = true;
   }
 
@@ -464,9 +463,19 @@
     getEditor().focus();
   }
 
-  function runFunctionWithActiveBlock(fn, replace) {
+  /**
+   * @param {BlockFunction} fdef
+   * @param {boolean} replace
+   */
+  async function runFunctionWithActiveBlock(fdef, replace) {
     console.log("runFunctionWithActiveBlock");
     showingFunctionSelector = false;
+    let name = fdef.name;
+    let msg = `Running <span class="font-bold">${name}</span>...`;
+    showModalMessageHTML(msg, 300);
+    await getEditor().runBlockFunction(fdef, replace);
+    clearModalMessage();
+    getEditor().focus();
   }
 
   function openLanguageSelector() {
@@ -538,7 +547,6 @@
   export const kCmdShowWelcomeNote = nmid();
   export const kCmdShowWelcomeDevNote = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
-  export const kCmdRunFunctionWithBlockContentReplace = nmid;
 
   function buildMenuDef() {
     const menuNote = [
@@ -556,10 +564,6 @@
       ["Goto next\tMod + Down", kCmdGoToNextBlock],
       ["Goto previous\tMod + Up", kCmdGoToPreviousBlock],
       ["Run function with block content", kCmdRunFunctionWithBlockContent],
-      [
-        "Run function with block content and replace",
-        kCmdRunFunctionWithBlockContentReplace,
-      ],
       ["Change language\tMod + L", kCmdChangeBlockLanguage],
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
@@ -759,8 +763,10 @@
       decryptAllNotes();
     } else if (cmdId === kCmdEncryptionHelp) {
       showHelp("#encryption");
-    } else if (cmdId == kCmdOpenRecent) {
+    } else if (cmdId === kCmdOpenRecent) {
       openHistorySelector();
+    } else if (cmdId === kCmdRunFunctionWithBlockContent) {
+      openFunctionSelector();
     } else {
       console.log("unknown menu cmd id");
     }
@@ -969,7 +975,7 @@
     await editor.openNote(name, skipSave);
     // await sleep(400);
     clearModalMessage();
-    editor.focus();
+    getEditor().focus();
   }
 
   /**
@@ -1131,9 +1137,7 @@
 
 {#if showingFunctionSelector}
   <Overlay onclose={closeFunctionSelector} blur={true}>
-    <FunctionSelector
-      defaultReplace={functionDefaultReplace}
-      runFunction={runFunctionWithActiveBlock}
+    <FunctionSelector runFunction={runFunctionWithActiveBlock}
     ></FunctionSelector>
   </Overlay>
 {/if}

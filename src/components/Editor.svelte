@@ -304,6 +304,10 @@
     editor.focus();
   }
 
+  export async function runBlockFunction(fdef, replace) {
+    await editor.runBlockFunction(fdef, replace);
+  }
+
   export function onCurrenciesLoaded() {
     editor.currenciesLoaded();
   }

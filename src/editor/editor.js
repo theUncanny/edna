@@ -21,7 +21,11 @@ import {
   noteBlockExtension,
 } from "./block/block.js";
 import { foldGutter, indentUnit } from "@codemirror/language";
-import { formatBlockContent, runBlockContent } from "./block/format-code.js";
+import {
+  formatBlockContent,
+  runBlockContent,
+  runBlockFunction,
+} from "./block/format-code.js";
 
 import { autoSaveContent } from "./save.js";
 import { closeBrackets } from "@codemirror/autocomplete";
@@ -281,6 +285,10 @@ export class EdnaEditor {
 
   formatCurrentBlock() {
     formatBlockContent(this.view);
+  }
+
+  async runBlockFunction(fdef, replace) {
+    await runBlockFunction(this.view, fdef, replace);
   }
 
   runCurrentBlock() {

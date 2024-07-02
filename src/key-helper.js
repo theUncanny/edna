@@ -28,6 +28,7 @@ function getKeyHelp(platform = platformName) {
       "Split the current block at cursor position",
     ],
     [`${modChar} + L`, "Change block language"],
+    [`$(modChar} + Y`, "Run function with block content"],
     [`${modChar} + Down`, "Goto next block"],
     [`${modChar} + Up`, "Goto previous block"],
     [`${modChar} + A`, "Select all text in a note block"],

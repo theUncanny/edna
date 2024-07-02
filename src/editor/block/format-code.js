@@ -9,6 +9,10 @@ import { EditorSelection } from "@codemirror/state";
 import { findEditorByView } from "../../state.js";
 import { getActiveNoteBlock } from "./block.js";
 
+/**
+ * @param {string} s
+ * @returns {Promise<string>}
+ */
 async function formatGo(s) {
   // setProcessingMessage("Formatting code...");
   // const uri = "play.golang.org/fmt";
@@ -33,8 +37,63 @@ async function formatGo(s) {
   return res.Body;
 }
 
+/** @typedef {import("../../functions").BlockFunction} BlockFunction */
+
+/** @typedef {import("@codemirror/view").EditorView} EditorView */
+/**
+ * @param {EditorView} view
+ * @param {BlockFunction} fdef
+ * @param {boolean} replace
+ * @returns {Promise<boolean>}
+ */
+export async function runBlockFunction(view, fdef, replace) {
+  const { state } = view;
+  if (state.readOnly) return false;
+  const block = getActiveNoteBlock(state);
+  console.log("runBlockFunction:", block);
+  const cursorPos = state.selection.asSingle().ranges[0].head;
+  const content = state.sliceDoc(block.content.from, block.content.to);
+  let res = "";
+  try {
+    res = await fdef.fn(content);
+    console.log("res:", res);
+  } catch (e) {
+    console.log(e);
+    res = `error running ${fdef.name}: ${e}`;
+  }
+
+  if (replace) {
+    let cursorOffset = cursorPos - block.content.from;
+    const tr = view.state.update(
+      {
+        changes: {
+          from: block.content.from,
+          to: block.content.to,
+          insert: res,
+        },
+        selection: EditorSelection.cursor(
+          block.content.from + Math.min(cursorOffset, res.length),
+        ),
+      },
+      {
+        userEvent: "input",
+        scrollIntoView: true,
+      },
+    );
+    view.dispatch(tr);
+  } else {
+    // TODO: be more intelligent
+    const text = "\n∞∞∞text-a\n" + res;
+    insertAfterActiveBlock(view, text);
+  }
+}
+
+/**
+ * @param {EditorView} view
+ * @returns {Promise<boolean>}
+ */
 export async function formatBlockContent(view) {
-  const { state, dispatch } = view;
+  const { state } = view;
   if (state.readOnly) return false;
   const block = getActiveNoteBlock(state);
   console.log("formatBlockContent:", block);
@@ -43,9 +102,7 @@ export async function formatBlockContent(view) {
     return false;
   }
 
-  // get current cursor position
   const cursorPos = state.selection.asSingle().ranges[0].head;
-  // get block content
   const content = state.sliceDoc(block.content.from, block.content.to);
 
   // console.log("prettier supports:", getSupportInfo());
@@ -206,6 +263,11 @@ async function runGo(code) {
   return s;
 }
 
+/**
+ * @param {EditorView} view
+ * @param {string} text
+ * @returns {boolean}
+ */
 export function insertAfterActiveBlock(view, text) {
   const { state } = view;
   if (state.readOnly) {
@@ -228,6 +290,10 @@ export function insertAfterActiveBlock(view, text) {
   view.dispatch(tr);
 }
 
+/**
+ * @param {EditorView} view
+ * @returns {Promise<boolean>}
+ */
 export async function runBlockContent(view) {
   const { state } = view;
   if (state.readOnly) {

@@ -57,5 +57,5 @@ function toggleCamelHyphen(str) {
 // https://github.com/IvanMathy/Boop/blob/main/Scripts/JoinLines.js
 
 function joinLines(input) {
-  input = input.replace(/\n/g, "");
+  return input.replace(/\n/g, "");
 }
