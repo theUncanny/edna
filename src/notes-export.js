@@ -189,7 +189,7 @@ export async function maybeBackupNotes() {
  * @param {Blob} blob
  * @param {string} name
  */
-function browserDownloadBlob(blob, name) {
+export function browserDownloadBlob(blob, name) {
   let url = URL.createObjectURL(blob);
   let a = document.createElement("a");
   a.href = url;

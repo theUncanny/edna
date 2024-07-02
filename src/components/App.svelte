@@ -51,6 +51,7 @@
     decryptAllNotes,
     kWelcomeSystemNoteName,
     kWelcomeDevSystemNoteName,
+    saveCurrentNote,
   } from "../notes";
   import {
     getAltChar,
@@ -70,7 +71,11 @@
     langSupportsFormat,
     langSupportsRun,
   } from "../editor/languages";
-  import { exportNotesToZip, maybeBackupNotes } from "../notes-export";
+  import {
+    browserDownloadBlob,
+    exportNotesToZip,
+    maybeBackupNotes,
+  } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
   import CommandPalette from "./CommandPalette.svelte";
   import Find from "./Find.svelte";
@@ -301,6 +306,15 @@
 
   function exportNotesToZipFile() {
     exportNotesToZip();
+  }
+
+  async function exportCurrentNote() {
+    let settings = getSettings();
+    let name = settings.currentNoteName;
+    let s = getEditor().getContent();
+    console.log("exportCurrentNote:", name);
+    const blob = new Blob([s], { type: "text/plain" });
+    browserDownloadBlob(blob, name);
   }
 
   function openSettings() {
@@ -537,6 +551,7 @@
   export const kCmdSwitchToNotesInDir = nmid();
   export const kCmdSwitchToLocalStorage = nmid();
   export const kCmdExportNotes = nmid();
+  export const kCmdExportCurrentNote = nmid();
   export const kCmdEncryptNotes = nmid();
   export const kCmdDecryptNotes = nmid();
   export const kCmdEncryptionHelp = nmid();
@@ -750,6 +765,8 @@
       await switchToBrowserStorage();
     } else if (cmdId === kCmdExportNotes) {
       exportNotesToZipFile();
+    } else if (cmdId === kCmdExportCurrentNote) {
+      exportCurrentNote();
     } else if (cmdId === kCmdShowStorageHelp) {
       showHelp("#storing-notes-on-disk");
     } else if (cmdId === kCmdSettings) {
@@ -865,7 +882,10 @@
     return a;
   }
 
-  const commandPaletteAdditions = [["Open Recent Note", kCmdOpenRecent]];
+  const commandPaletteAdditions = [
+    ["Open recent note", kCmdOpenRecent],
+    ["Export current note", kCmdExportCurrentNote],
+  ];
   function openCommandPalette() {
     console.log("openCommandPalette");
     commandsDef = buildCommandsDef();

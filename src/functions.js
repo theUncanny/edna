@@ -1,6 +1,6 @@
 // based mostly on https://github.com/IvanMathy/Boop/tree/main/Scripts
 
-import { blockHdrJSON, blockHdrMarkdown } from "./notes";
+import { blockHdrJSON, blockHdrMarkdown, blockHdrPHP } from "./notes";
 
 /** @typedef {{
   api: number,
@@ -108,6 +108,73 @@ export const blockFunctions = [
     icon: "metamorphose",
     tags: "hashtag,word",
     fn: fnGenHashtag,
+  },
+  {
+    api: 1,
+    name: "Join Lines With Comma",
+    description: "Joins all lines with a comma.",
+    author: "riesentoaster",
+    icon: "collapse",
+    tags: "join, comma",
+    bias: -0.1,
+    fn: fsJoinLinesComma,
+  },
+  {
+    api: 1,
+    name: "Join Lines With Space",
+    description: "Joins all lines with a space",
+    author: "riesentoaster",
+    icon: "collapse",
+    tags: "join, space",
+    bias: -0.1,
+    fn: fsJoinLinesSpace,
+  },
+  {
+    api: 1,
+    name: "JS Object to JSON",
+    description: "Converts a javascript object to JSON format",
+    author: "luisfontes19",
+    icon: "HTML",
+    tags: "json,js,object,convert",
+    bias: -0.1,
+    fn: fnJsObjToJSON,
+  },
+  {
+    api: 1,
+    name: "JS To PHP",
+    description: "Convert JS Object or Array to PHP.",
+    author: "jtolj",
+    icon: "elephant",
+    tags: "js,php,convert",
+    fn: fnJSToPHP,
+  },
+  {
+    api: 1,
+    name: "Line compare",
+    description: "Check if existing lines have all the same content",
+    author: "Luis Fontes",
+    icon: "type",
+    tags: "string,match,text,compare,line",
+    bias: -0.1,
+    fn: fnLineCompare,
+  },
+  {
+    api: 1,
+    name: "List to HTML list",
+    description: "Turns comma separated list to HTML Lists",
+    author: "Christian Heilmann",
+    icon: "table",
+    tags: "HTML,Lists",
+    fn: fnListToHTML,
+  },
+  {
+    api: 1,
+    name: "RGB to Hex",
+    description: "Convert color in RGB to hexadecimal",
+    author: "luisfontes19",
+    icon: "color-wheel",
+    tags: "rgb,hex,convert,color",
+    fn: fnRgbToHex,
   },
 ];
 
@@ -413,4 +480,147 @@ function fnGenHashtag(text) {
     res = `Error: ${e.message}`;
   }
   return res;
+}
+
+// ----------------
+
+function fsJoinLinesComma(text) {
+  return text.replace(/\n/g, ",");
+}
+
+// ----------------
+
+function fsJoinLinesSpace(text) {
+  return text.replace(/\n/g, " ");
+}
+
+// ----------------
+
+function fnJsObjToJSON(text) {
+  let res = "";
+  try {
+    const data = text;
+    eval("window.parsed = " + data);
+    // @ts-ignore
+    res = JSON.stringify(window.parsed);
+  } catch (e) {
+    res = `Error: ${e.message}`;
+  }
+  return res;
+}
+
+// ----------------
+
+function fnJSToPHP(text) {
+  const js = text.replace(/\n\n\/\/ Result:[\s\S]*$/, "");
+  let res = "";
+  try {
+    const result = new Function(`return ${js}`)();
+    res = convert(result) + ";";
+  } catch (e) {
+    res = `Error: ${e.message}`;
+  }
+  return blockHdrPHP + res;
+}
+
+const toPHP = function (value, indentation) {
+  switch (typeof value) {
+    case "undefined":
+      value = null;
+      break;
+    case "object":
+      if (value !== null) {
+        value = convert(value, indentation + 1);
+      }
+      break;
+    case "string":
+      value = value.replace(/"/g, '\\"');
+      value = `"${value}"`;
+      break;
+  }
+
+  return value;
+};
+
+const convert = function (result, indentation = 1) {
+  const isArray = Array.isArray(result);
+  let str = Object.keys(result).reduce((acc, key) => {
+    const value = toPHP(result[key], indentation);
+    acc += " ".repeat(indentation * 4);
+    acc += isArray ? value : `'${key}' => ${value}`;
+    acc += ",\n";
+    return acc;
+  }, "");
+  const endingIndentation = " ".repeat((indentation - 1) * 4);
+  return `[\n${str}${endingIndentation}]`;
+};
+
+// ----------------
+
+function fnLineCompare(text) {
+  const lines = text.split(/\n/);
+  const first = lines[0];
+  const differentLines = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (first !== line) {
+      differentLines.push(i + 1);
+    }
+  }
+
+  let res = "";
+  if (differentLines.length === 0) {
+    res = "Lines are equal";
+  } else if (differentLines.length === 1) {
+    res = `Line ${differentLines[0]} is not equal to the line 1`;
+  } else {
+    res = `Lines [${differentLines.join(", ")}] are not equal to line 1`;
+  }
+}
+
+// ----------------
+
+function listToHTML(str) {
+  if (str.indexOf("<ul>") === -1) {
+    let chunks = str.split(",");
+    let out = `<ul>
+  <li>${chunks.join("</li>\n  <li>")}`;
+    return out + "</li>\n</ul>";
+  } else {
+    let chunks = str.split("<li>");
+    let out = [];
+    chunks.forEach((c) => {
+      out.push(c.match(/[^<]*/));
+    });
+    out.shift();
+    return out.join(",");
+  }
+}
+
+function fnListToHTML(text) {
+  return listToHTML(text);
+}
+
+// ----------------
+
+function fnRgbToHex(text) {
+  const rgb = text;
+  const rgbArray = rgb.includes(",") ? rgb.split(",") : rgb.split(" ");
+
+  if (rgbArray.length !== 3) {
+    return "Invalid RGB format";
+  }
+
+  let hex = "#";
+
+  try {
+    rgbArray.forEach((c) => {
+      hex += parseInt(c).toString(16);
+    });
+  } catch (error) {
+    return "Invalid RGB value";
+  }
+
+  return hex.toUpperCase();
 }
