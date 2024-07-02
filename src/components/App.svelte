@@ -836,6 +836,7 @@
   }
 
   function closeCommandPalette() {
+    console.log("closeCommandPalette");
     showingCommandPalette = false;
     getEditor().focus();
   }
