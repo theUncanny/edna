@@ -74,6 +74,9 @@
   import { setGlobalFuncs } from "../globals";
   import CommandPalette from "./CommandPalette.svelte";
   import Find from "./Find.svelte";
+  import FunctionSelector from "./FunctionSelector.svelte";
+
+  /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
   let initialSettings = getSettings();
 
@@ -90,6 +93,7 @@
   let showingNoteSelector = $state(false);
   let showingCommandPalette = $state(false);
   let showingCreateNewNote = $state(false);
+  let showingFunctionSelector = $state(false);
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
@@ -107,7 +111,7 @@
   let editor;
 
   $effect(() => {
-    console.log("showingNoteSelector changed to:", showingNoteSelector);
+    console.log("showingCreateNewNote changed to:", showingCreateNewNote);
   });
 
   let isShowingDialog = $derived.by(() => {
@@ -117,6 +121,7 @@
       showingMenu ||
       showingRenameNote ||
       showingNoteSelector ||
+      showingCreateNewNote ||
       showingCommandPalette ||
       showingCreateNewNote ||
       showingBlockSelector ||
@@ -448,6 +453,22 @@
     getEditor().focus();
   }
 
+  let functionDefaultReplace = $state(false);
+  function openFunctionSelector(defaultReplace = false) {
+    functionDefaultReplace = defaultReplace;
+    showingFunctionSelector = true;
+  }
+
+  function closeFunctionSelector() {
+    showingFunctionSelector = false;
+    getEditor().focus();
+  }
+
+  function runFunctionWithActiveBlock(fn, replace) {
+    console.log("runFunctionWithActiveBlock");
+    showingFunctionSelector = false;
+  }
+
   function openLanguageSelector() {
     showingLanguageSelector = true;
   }
@@ -516,6 +537,8 @@
   export const kCmdOpenRecent = nmid();
   export const kCmdShowWelcomeNote = nmid();
   export const kCmdShowWelcomeDevNote = nmid();
+  export const kCmdRunFunctionWithBlockContent = nmid();
+  export const kCmdRunFunctionWithBlockContentReplace = nmid;
 
   function buildMenuDef() {
     const menuNote = [
@@ -532,6 +555,11 @@
       ["Split at cursor position\tMod + Alt + Enter", kCmdSplitBlockAtCursor],
       ["Goto next\tMod + Down", kCmdGoToNextBlock],
       ["Goto previous\tMod + Up", kCmdGoToPreviousBlock],
+      ["Run function with block content", kCmdRunFunctionWithBlockContent],
+      [
+        "Run function with block content and replace",
+        kCmdRunFunctionWithBlockContentReplace,
+      ],
       ["Change language\tMod + L", kCmdChangeBlockLanguage],
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
@@ -646,6 +674,13 @@
     } else if (mid === kCmdRenameCurrentNote) {
       if (noteName === kScratchNoteName) {
         return kMenuStatusDisabled;
+      }
+    } else if (
+      mid === kCmdRunFunctionWithBlockContent ||
+      mid === kCmdRunFunctionWithBlockContent
+    ) {
+      if (getEditor().isReadOnly()) {
+        return kMenuStatusRemoved;
       }
     }
     return kMenuStatusNormal;
@@ -1091,6 +1126,15 @@
       {selectBlock}
       initialSelection={initialBlockSelection}
     ></BlockSelector>
+  </Overlay>
+{/if}
+
+{#if showingFunctionSelector}
+  <Overlay onclose={closeFunctionSelector} blur={true}>
+    <FunctionSelector
+      defaultReplace={functionDefaultReplace}
+      runFunction={runFunctionWithActiveBlock}
+    ></FunctionSelector>
   </Overlay>
 {/if}
 

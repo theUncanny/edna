@@ -258,6 +258,10 @@
     editor.setReadOnly(value);
   }
 
+  export function isReadOnly() {
+    return editor.isReadOnly();
+  }
+
   export function setSpellChecking(value) {
     // console.log("setSpellChecking:", value)
     let ce = document.querySelector('[contenteditable="true"]');

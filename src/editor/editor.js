@@ -214,6 +214,11 @@ export class EdnaEditor {
     //this.view.focus()
   }
 
+  isReadOnly() {
+    const { state } = this.view;
+    return state.readOnly;
+  }
+
   setReadOnly(readOnly) {
     this.view.dispatch({
       effects: this.readOnlyCompartment.reconfigure(

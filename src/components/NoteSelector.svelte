@@ -31,7 +31,7 @@
   /**
    * @returns {Item[]}
    */
-  function rebuildNotesInfo() {
+  function buildItems() {
     const noteNames = getLatestNoteNames();
     // console.log("rebuildNotesInfo, notes", noteInfos)
     /** @type {Item[]} */
@@ -80,7 +80,7 @@
     });
     return res;
   }
-  let itemsInitial = $state(rebuildNotesInfo());
+  let initialItems = $state(buildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -102,7 +102,7 @@
       let s = parts[i];
       parts[i] = s.trim();
     }
-    return itemsInitial.filter((noteInfo) => {
+    return initialItems.filter((noteInfo) => {
       let s = noteInfo.nameLC;
       for (let p of parts) {
         if (s.indexOf(p) === -1) {
@@ -113,7 +113,7 @@
     });
   });
 
-  let selectedNote = $state(null);
+  let selectedItem = $state(null);
   let selectedName = $state("");
   let canOpenSelected = $state(false);
   let canCreate = $state(false);
@@ -136,9 +136,9 @@
 
   function selectionChanged(item, idx) {
     // console.log("selectionChanged:", item, idx);
-    selectedNote = item;
-    selectedName = item ? selectedNote.name : "";
-    canOpenSelected = !!selectedNote;
+    selectedItem = item;
+    selectedName = item ? selectedItem.name : "";
+    canOpenSelected = !!selectedItem;
 
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
@@ -200,10 +200,10 @@
     let altN = isAltNumEvent(ev);
     if (altN !== null) {
       ev.preventDefault();
-      let note = selectedNote;
+      let note = selectedItem;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          itemsInitial = rebuildNotesInfo();
+          initialItems = buildItems();
         });
         return;
       }
@@ -221,16 +221,16 @@
         emitCreateNote(sanitizedFilter);
         return;
       }
-      if (selectedNote) {
-        emitOpenNote(selectedNote);
+      if (selectedItem) {
+        emitOpenNote(selectedItem);
       }
     } else if (isCtrlDelete(ev)) {
       ev.preventDefault();
       if (!canDeleteSelected) {
         return;
       }
-      if (selectedNote) {
-        emitDeleteNote(selectedNote.name);
+      if (selectedItem) {
+        emitDeleteNote(selectedItem.name);
       }
       return;
     }

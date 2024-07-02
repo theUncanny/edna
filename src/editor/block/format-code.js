@@ -84,13 +84,13 @@ export async function formatBlockContent(view) {
           insert: s,
         },
         selection: EditorSelection.cursor(
-          block.content.from + Math.min(cursorOffset, s.length)
+          block.content.from + Math.min(cursorOffset, s.length),
         ),
       },
       {
         userEvent: "input",
         scrollIntoView: true,
-      }
+      },
     );
     console.log("state == view.state:", state == view.state);
     console.log("state == tr.startState:", state == tr.startState);
@@ -137,7 +137,7 @@ export async function formatBlockContent(view) {
     const hyphens =
       "----------------------------------------------------------------------------";
     console.log(
-      `Error when trying to format block:\n${hyphens}\n${e.message}\n${hyphens}`
+      `Error when trying to format block:\n${hyphens}\n${e.message}\n${hyphens}`,
     );
     return false;
   }
@@ -153,14 +153,14 @@ export async function formatBlockContent(view) {
         block.content.from +
           Math.min(
             formattedContent.cursorOffset,
-            formattedContent.formatted.length
-          )
+            formattedContent.formatted.length,
+          ),
       ),
     },
     {
       userEvent: "input",
       scrollIntoView: true,
-    }
+    },
   );
   view.dispatch(tr);
   return true;
@@ -206,6 +206,28 @@ async function runGo(code) {
   return s;
 }
 
+export function insertAfterActiveBlock(view, text) {
+  const { state } = view;
+  if (state.readOnly) {
+    return false;
+  }
+  const block = getActiveNoteBlock(state);
+  let tr = view.state.update(
+    {
+      changes: {
+        from: block.content.to,
+        insert: text,
+      },
+      selection: EditorSelection.cursor(block.content.to + text.length),
+    },
+    {
+      scrollIntoView: true,
+      userEvent: "input",
+    },
+  );
+  view.dispatch(tr);
+}
+
 export async function runBlockContent(view) {
   const { state } = view;
   if (state.readOnly) {
@@ -247,21 +269,7 @@ export async function runBlockContent(view) {
 
   console.log("output of running go:", output);
   // const block = getActiveNoteBlock(state)
-  const delimText = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
-
-  let tr = view.state.update(
-    {
-      changes: {
-        from: block.content.to,
-        insert: delimText,
-      },
-      selection: EditorSelection.cursor(block.content.to + delimText.length),
-    },
-    {
-      scrollIntoView: true,
-      userEvent: "input",
-    }
-  );
-  view.dispatch(tr);
+  const text = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
+  insertAfterActiveBlock(view, text);
   return true;
 }
