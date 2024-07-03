@@ -13,6 +13,7 @@
   import { dirtyState } from "../state.svelte.js";
   import debounce from "debounce";
   import { throwIf } from "../util.js";
+  import { EditorView } from "@codemirror/view";
 
   let enableDiskRefresh = false;
 
@@ -294,9 +295,11 @@
     editor.focus();
   }
 
-  export function formatCurrentBlock() {
-    editor.formatCurrentBlock();
-    editor.focus();
+  /**
+   * @returns {EditorView}
+   */
+  export function getEditorView() {
+    return editor.view;
   }
 
   export function runCurrentBlock() {

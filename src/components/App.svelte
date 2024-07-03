@@ -81,6 +81,7 @@
   import Find from "./Find.svelte";
   import FunctionSelector from "./FunctionSelector.svelte";
   import { dirtyState } from "../state.svelte";
+  import { formatBlockContent } from "../editor/block/format-code";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -768,7 +769,7 @@
     } else if (cmdId === kCmdBlockSelectAll) {
       getEditor().selectAll();
     } else if (cmdId === kCmdFormatBlock) {
-      getEditor().formatCurrentBlock();
+      formatCurrentBlock();
     } else if (cmdId === kCmdRunBlock) {
       getEditor().runCurrentBlock();
     } else if (cmdId === kCmdToggleSpellChecking) {
@@ -938,8 +939,21 @@
     return editor;
   }
 
+  /**
+   * @returns {import("@codemirror/view").EditorView}
+   */
+  function getEditorView() {
+    if (!editor) {
+      return null;
+    }
+    let view = editor.getEditorView();
+    return view;
+  }
+
   function formatCurrentBlock() {
-    getEditor().formatCurrentBlock();
+    let view = getEditorView();
+    formatBlockContent(view);
+    view.focus();
     logNoteOp("noteFormatBlock");
   }
 

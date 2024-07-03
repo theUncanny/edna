@@ -284,10 +284,6 @@ export class EdnaEditor {
     });
   }
 
-  formatCurrentBlock() {
-    formatBlockContent(this.view);
-  }
-
   async runBlockFunction(fdef, replace) {
     await runBlockFunction(this.view, fdef, replace);
   }
