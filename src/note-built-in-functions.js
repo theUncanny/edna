@@ -1,5 +1,4 @@
-
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -12,23 +11,23 @@
 **/
 
 function main(input) {
-	//  discuss at: http://locutus.io/php/addslashes/
-	// original by: Kevin van Zonneveld (http://kvz.io)
-	// improved by: Ates Goral (http://magnetiq.com)
-	// improved by: marrtins
-	// improved by: Nate
-	// improved by: Onno Marsman (https://twitter.com/onnomarsman)
-	// improved by: Brett Zamir (http://brett-zamir.me)
-	// improved by: Oskar Larsson Högfeldt (http://oskar-lh.name/)
-	//    input by: Denny Wardhana
-	//   example 1: addslashes("kevin's birthday")
-	//   returns 1: "kevin\\'s birthday"
-	
-	input.text = (input.text + '')
-		.replace(/[\\"']/g, '\\$&')
-		.replace(/\u0000/g, '\\0')
+  //  discuss at: http://locutus.io/php/addslashes/
+  // original by: Kevin van Zonneveld (http://kvz.io)
+  // improved by: Ates Goral (http://magnetiq.com)
+  // improved by: marrtins
+  // improved by: Nate
+  // improved by: Onno Marsman (https://twitter.com/onnomarsman)
+  // improved by: Brett Zamir (http://brett-zamir.me)
+  // improved by: Oskar Larsson Högfeldt (http://oskar-lh.name/)
+  //    input by: Denny Wardhana
+  //   example 1: addslashes("kevin's birthday")
+  //   returns 1: "kevin\\'s birthday"
+
+  input.text = (input.text + "")
+    .replace(/[\\"']/g, "\\$&")
+    .replace(/\u0000/g, "\\0");
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -41,20 +40,20 @@ function main(input) {
 **/
 
 function main(input) {
-    let lines = input.fullText.split('\n')
-    var result = []
-    lines.forEach(element => {
-      var temp = element
-      temp = temp.replace("<string name=", "")
-      temp = temp.replace("</string>", "\";")
-      temp = temp.replace(">", " = \"")
-      result.push(temp)      
-    })
-  
-    input.fullText = result.join('\n')
+  let lines = input.fullText.split("\n");
+  var result = [];
+  lines.forEach((element) => {
+    var temp = element;
+    temp = temp.replace("<string name=", "");
+    temp = temp.replace("</string>", '";');
+    temp = temp.replace(">", ' = "');
+    result.push(temp);
+  });
+
+  input.fullText = result.join("\n");
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -67,15 +66,15 @@ function main(input) {
 **/
 
 function main(state) {
-	buf = "";
-	for(i = 0; i < state.fullText.length; i ++) {
-		code = state.fullText.charCodeAt(i).toString(16);
-		if(code.length < 2) buf += "0";
-		buf += code;
-	}
-	state.fullText = buf.toUpperCase();
+  let buf = "";
+  for (i = 0; i < state.fullText.length; i++) {
+    let code = state.fullText.charCodeAt(i).toString(16);
+    if (code.length < 2) buf += "0";
+    buf += code;
+  }
+  state.fullText = buf.toUpperCase();
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -87,12 +86,12 @@ function main(state) {
 	}
 **/
 
-const { decode } = require('@boop/base64')
+const { decode } = require("@boop/base64");
 
 function main(input) {
-    input.text = decode(input.text)
+  input.text = decode(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -104,12 +103,12 @@ function main(input) {
 	}
 **/
 
-const { encode } = require('@boop/base64')
+const { encode } = require("@boop/base64");
 
 function main(input) {
-  input.text = encode(input.text)
+  input.text = encode(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
  {
    "api": 1,
@@ -142,7 +141,7 @@ function main(state) {
   state.text = result.trim();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -154,15 +153,13 @@ function main(state) {
 	}
 **/
 
-const { camelCase } = require('@boop/lodash.boop')
+const { camelCase } = require("@boop/lodash.boop");
 
 function main(input) {
-	
-    input.text = camelCase(input.text)
-	
+  input.text = camelCase(input.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -175,12 +172,12 @@ function main(input) {
 **/
 
 function main(input) {
-    let split = input.text.split(/\r\n|\r|\n/)
-    input.postInfo(`${split.length} lines collapsed`)
-    input.fullText = split.join()
+  let split = input.text.split(/\r\n|\r|\n/);
+  input.postInfo(`${split.length} lines collapsed`);
+  input.fullText = split.join();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -192,15 +189,12 @@ function main(input) {
 	}
 **/
 
-
-const { size } = require('@boop/lodash.boop')
+const { size } = require("@boop/lodash.boop");
 
 function main(input) {
-	
-	input.postInfo(`${size(input.text)} characters`)
-	
+  input.postInfo(`${size(input.text)} characters`);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -213,9 +207,9 @@ function main(input) {
 **/
 
 function main(input) {
-	input.postInfo(`${input.text.split('\n').length} lines`)
+  input.postInfo(`${input.text.split("\n").length} lines`);
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -227,10 +221,10 @@ function main(input) {
   }
 **/
 function main(input) {
-    let words = input.text.trim().match(/\S+/g)
-    input.postInfo(`${words && words.length || 0} words`)
+  let words = input.text.trim().match(/\S+/g);
+  input.postInfo(`${(words && words.length) || 0} words`);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":2,
@@ -242,19 +236,18 @@ function main(input) {
         	"bias": -0.2
 	}
 **/
-const Papa = require('@boop/papaparse.js');
+const Papa = require("@boop/papaparse.js");
 
 function main(state) {
-    try {
-        const { data } = Papa.parse(state.text, { header:true });
-        state.text = JSON.stringify(data, null, 2);
-    }
-    catch(error) {
-        state.postError("Invalid CSV")
-    }
+  try {
+    const { data } = Papa.parse(state.text, { header: true });
+    state.text = JSON.stringify(data, null, 2);
+  } catch (error) {
+    state.postError("Invalid CSV");
+  }
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -267,17 +260,16 @@ function main(state) {
 **/
 
 function main(input) {
+  let parsedDate = Date.parse(input.text);
 
-    let parsedDate = Date.parse(input.text)
-
-    if (isNaN(parsedDate)) {
-        input.postError("Invalid Date")
-    } else {
-        input.text = parsedDate / 1000
-    }
+  if (isNaN(parsedDate)) {
+    input.postError("Invalid Date");
+  } else {
+    input.text = parsedDate / 1000;
+  }
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -290,28 +282,27 @@ function main(input) {
 **/
 
 function main(input) {
+  let str = input.text;
 
-    let string = input.text
-    
-    let parsedDate = Date.parse(string)
-    
-    if (isNaN(parsedDate)) {
-        parsedDate = new Date(parseInt(string * 1000))
-    } else {
-        parsedDate = new Date(parsedDate)
-    }
-    
-    let out = parsedDate.toUTCString()
-    
-    if (out === "Invalid Date") {
-        input.postError(out)
-        return
-    }
-    
-    input.text = out
+  let parsedDate = Date.parse(str);
+
+  if (isNaN(parsedDate)) {
+    parsedDate = new Date(parseInt(str * 1000));
+  } else {
+    parsedDate = new Date(parsedDate);
+  }
+
+  let out = parsedDate.toUTCString();
+
+  if (out === "Invalid Date") {
+    input.postError(out);
+    return;
+  }
+
+  input.text = out;
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -323,15 +314,13 @@ function main(input) {
 	}
 **/
 
-const { deburr } = require('@boop/lodash.boop')
+const { deburr } = require("@boop/lodash.boop");
 
 function main(input) {
-	
-    input.text = deburr(input.text)
-	
+  input.text = deburr(input.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
  {
    "api": 1,
@@ -364,7 +353,7 @@ function main(state) {
   state.text = result.trim();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
  {
    "api": 1,
@@ -396,7 +385,7 @@ function main(state) {
   state.text = result.trim();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -409,12 +398,10 @@ function main(state) {
 **/
 
 function main(input) {
-    
-    input.text = input.text.toLowerCase();
-    
+  input.text = input.text.toLowerCase();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
      {
          "api":1,
@@ -427,22 +414,22 @@ function main(input) {
  **/
 
 function main(input) {
-    const script = input.text.replace(/\n\n\/\/ Result:[\s\S]*$/, '');
+  const script = input.text.replace(/\n\n\/\/ Result:[\s\S]*$/, "");
 
-    let output = '';
-    try {
-        output = eval(script);
-        if (typeof output !== 'string') {
-            output = JSON.stringify(output, null, 2);
-        }
-    } catch (e) {
-        input.postError(e.toString());
+  let output = "";
+  try {
+    output = eval(script);
+    if (typeof output !== "string") {
+      output = JSON.stringify(output, null, 2);
     }
+  } catch (e) {
+    input.postError(e.toString());
+  }
 
-    input.text = script + "\n\n// Result:\n\n" + output;
+  input.text = script + "\n\n// Result:\n\n" + output;
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 {
   "api": 1,
@@ -454,37 +441,37 @@ function main(input) {
 }
 **/
 function convert(string) {
-	var chars = string.split("");
-	var dict = {
-		" ": ":",
-		"%": "25",
-		"&": "26",
-		"+": "2b",
-		"-": "2d",
-		".": "2e",
-		"*": "2a",
-		":": "3a",
-		"@": "40",
-		";": "3b"
-	};
+  var chars = string.split("");
+  var dict = {
+    " ": ":",
+    "%": "25",
+    "&": "26",
+    "+": "2b",
+    "-": "2d",
+    ".": "2e",
+    "*": "2a",
+    ":": "3a",
+    "@": "40",
+    ";": "3b",
+  };
 
-	for (var i = chars.length - 1; i >= 0; i--) {
-		var char = chars[i];
-		var hex = dict[char];
+  for (var i = chars.length - 1; i >= 0; i--) {
+    var char = chars[i];
+    var hex = dict[char];
 
-		if (hex !== undefined) {
-			var slash_x = '\\x';
-			chars[i] = slash_x.concat(hex);
-		}
-	}
+    if (hex !== undefined) {
+      var slash_x = "\\x";
+      chars[i] = slash_x.concat(hex);
+    }
+  }
 
-	return chars.join("");
+  return chars.join("");
 }
 
 function main(input) {
-	input.text = convert(input.text);
+  input.text = convert(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -497,13 +484,12 @@ function main(input) {
 	}
 **/
 
-const { css } = require('@boop/vkBeautify')
-
+const { css } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = css(state.text)	
+  state.text = css(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -516,16 +502,15 @@ function main(state) {
 **/
 
 function main(state) {
-	try {
-		// I feel like this should have a real parser/formatter
-		// but hey, it works so who am I to judge?
-		state.text = JSON.stringify(JSON.parse(state.text), null, 2);
-	}
-	catch(error) {
-		state.postError("Invalid JSON")
-	}
+  try {
+    // I feel like this should have a real parser/formatter
+    // but hey, it works so who am I to judge?
+    state.text = JSON.stringify(JSON.parse(state.text), null, 2);
+  } catch (error) {
+    state.postError("Invalid JSON");
+  }
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -538,13 +523,12 @@ function main(state) {
 	}
 **/
 
-const { sql } = require('@boop/vkBeautify')
-
+const { sql } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = sql(state.text)	
+  state.text = sql(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -557,14 +541,13 @@ function main(state) {
 	}
 **/
 
-const { xml } = require('@boop/vkBeautify')
-
+const { xml } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = xml(state.text)	
+  state.text = xml(state.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
      {
          "api":1,
@@ -577,20 +560,30 @@ function main(state) {
  **/
 
 function main(input) {
-    R = hexToR(input.text);
-    G = hexToG(input.text);
-    B = hexToB(input.text);
+  R = hexToR(input.text);
+  G = hexToG(input.text);
+  B = hexToB(input.text);
 
-    input.text = R.toString().concat(',').
-                   concat(G.toString()).concat(',').
-                   concat(B.toString());
+  input.text = R.toString()
+    .concat(",")
+    .concat(G.toString())
+    .concat(",")
+    .concat(B.toString());
 }
 
-function hexToR(h) { return parseInt((cutHex(h)).substring(0,2),16) }
-function hexToG(h) { return parseInt((cutHex(h)).substring(2,4),16) }
-function hexToB(h) { return parseInt((cutHex(h)).substring(4,6),16) }
-function cutHex(h) { return (h.charAt(0)=="#") ? h.substring(1,7) : h}
-∞∞∞javascript
+function hexToR(h) {
+  return parseInt(cutHex(h).substring(0, 2), 16);
+}
+function hexToG(h) {
+  return parseInt(cutHex(h).substring(2, 4), 16);
+}
+function hexToB(h) {
+  return parseInt(cutHex(h).substring(4, 6), 16);
+}
+function cutHex(h) {
+  return h.charAt(0) == "#" ? h.substring(1, 7) : h;
+}
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -603,26 +596,26 @@ function cutHex(h) { return (h.charAt(0)=="#") ? h.substring(1,7) : h}
 **/
 
 function main(state) {
-	input = state.fullText.toUpperCase();
-	buf = "";
-	hexBuf = "";
-	for(i = 0; i < input.length; i ++) {
-		c = input.charAt(i);
-		if("0123456789ABCDEF".includes(c)) {
- 			hexBuf += c;
- 			if(hexBuf.length >= 2) {
-				buf += String.fromCharCode(parseInt(hexBuf, 16));
-				hexBuf = "";
- 			}
-        } else if(c != ' ' && c != '\t' && c != '\n' && c != '\r') {
-            state.postError("Text is not hex")
-            throw "Not hex";
-        }
-	}
-	state.fullText = buf;
+  let input = state.fullText.toUpperCase();
+  let buf = "";
+  let hexBuf = "";
+  for (i = 0; i < input.length; i++) {
+    c = input.charAt(i);
+    if ("0123456789ABCDEF".includes(c)) {
+      hexBuf += c;
+      if (hexBuf.length >= 2) {
+        buf += String.fromCharCode(parseInt(hexBuf, 16));
+        hexBuf = "";
+      }
+    } else if (c != " " && c != "\t" && c != "\n" && c != "\r") {
+      state.postError("Text is not hex");
+      throw "Not hex";
+    }
+  }
+  state.fullText = buf;
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
  {
    "api": 1,
@@ -655,7 +648,7 @@ function main(state) {
   state.text = result.trim();
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -667,13 +660,13 @@ function main(state) {
 	}
 **/
 
-const { decode } = require('@boop/he')
+const { decode } = require("@boop/he");
 
 function main(input) {
-	input.text = decode(input.text)
+  input.text = decode(input.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -685,13 +678,13 @@ function main(input) {
 	}
 **/
 
-const { encode } = require('@boop/he')
+const { encode } = require("@boop/he");
 
 function main(input) {
-	input.text = encode(input.text)
+  input.text = encode(input.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -705,15 +698,15 @@ function main(input) {
 **/
 
 function main(input) {
-    let str = input.text;
-    var out = "";
-    for (var i = 0; i < str.length; i++) {
-         out += `&#${str.charCodeAt(i)};`;
-    }
-    input.text = out;
+  let str = input.text;
+  var out = "";
+  for (var i = 0; i < str.length; i++) {
+    out += `&#${str.charCodeAt(i)};`;
+  }
+  input.text = out;
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -726,24 +719,26 @@ function main(input) {
 **/
 
 function main(input) {
-    let lines = input.fullText.split('\n')
-    var result = []
-    lines.forEach(element => {
-      if(element !== "") {
-        var regex = /"(.*?)"/g
-        var matches = [];
-        var match = regex.exec(element);
-        while (match != null) {
-            matches.push(match[1]);
-            match = regex.exec(element);
-        }
-        result.push("<string name=\"" + matches[0] + "\">" + matches[1] + "</string>")
-      }      
-    })   
-    input.fullText = result.join('\n')
+  let lines = input.fullText.split("\n");
+  var result = [];
+  lines.forEach((element) => {
+    if (element !== "") {
+      var regex = /"(.*?)"/g;
+      var matches = [];
+      var match = regex.exec(element);
+      while (match != null) {
+        matches.push(match[1]);
+        match = regex.exec(element);
+      }
+      result.push(
+        '<string name="' + matches[0] + '">' + matches[1] + "</string>",
+      );
+    }
+  });
+  input.fullText = result.join("\n");
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -760,20 +755,24 @@ function main(input) {
 // Note: it would be good to escape commas, and maybe not just get keys from the first object.
 
 function main(state) {
-	try {
-		const delimiter = ',';
-		const data = JSON.parse(state.text);
-		const replacer = (_, value) => value === null ? '' : value
-		const header = Object.keys(data[0])
-		let csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(delimiter))
-		csv.unshift(header.join(delimiter))
-		state.text = csv.join('\r\n')
-	} catch (error) {
-		state.postError("Invalid JSON.")
-	}
+  try {
+    const delimiter = ",";
+    const data = JSON.parse(state.text);
+    const replacer = (_, value) => (value === null ? "" : value);
+    const header = Object.keys(data[0]);
+    let csv = data.map((row) =>
+      header
+        .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+        .join(delimiter),
+    );
+    csv.unshift(header.join(delimiter));
+    state.text = csv.join("\r\n");
+  } catch (error) {
+    state.postError("Invalid JSON.");
+  }
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -789,35 +788,33 @@ function main(state) {
  * Credit goes to https://stackoverflow.com/a/1714899
  */
 function convertToQuery(obj, prefix) {
-	let queryParts = []
+  let queryParts = [];
 
-	for (param in obj) {
-		if (obj.hasOwnProperty(param)) {
-			let key = prefix ? prefix + "[]" : param;
-			let value = obj[param];
+  for (param in obj) {
+    if (obj.hasOwnProperty(param)) {
+      let key = prefix ? prefix + "[]" : param;
+      let value = obj[param];
 
-			queryParts.push(
-				(value !== null && typeof value === "object") ?
-				convertToQuery(value, key) :
-					key + "=" + value
-			);
-		}
-	}
-
-	return queryParts.join("&");
-}
-
-function main(input)
-{
-    try {
-		input.text = convertToQuery(JSON.parse(input.text));
-    } catch (error) {
-        input.postError("Unable to convert JSON to URL params")
+      queryParts.push(
+        value !== null && typeof value === "object"
+          ? convertToQuery(value, key)
+          : key + "=" + value,
+      );
     }
+  }
 
+  return queryParts.join("&");
 }
 
-∞∞∞javascript
+function main(input) {
+  try {
+    input.text = convertToQuery(JSON.parse(input.text));
+  } catch (error) {
+    input.postError("Unable to convert JSON to URL params");
+  }
+}
+
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -829,17 +826,16 @@ function main(input)
 	}
 **/
 
-const yaml = require('@boop/js-yaml')
+const yaml = require("@boop/js-yaml");
 
 function main(input) {
-	try {
-		input.text = yaml.safeDump(JSON.parse(input.text))
-	}
-	catch(error) {
-		input.postError("Invalid JSON")
-	}
+  try {
+    input.text = yaml.safeDump(JSON.parse(input.text));
+  } catch (error) {
+    input.postError("Invalid JSON");
+  }
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -851,36 +847,35 @@ function main(input) {
   }
 **/
 
-
-const { decode } = require('@boop/base64');
+const { decode } = require("@boop/base64");
 
 function main(input) {
-    var t = input.text;
-    var jwtParts = t.split(".");
-    if (jwtParts.length != 3) {
-        input.postError("Invalid Token");
-        return;
-    }
+  var t = input.text;
+  var jwtParts = t.split(".");
+  if (jwtParts.length != 3) {
+    input.postError("Invalid Token");
+    return;
+  }
 
-    var header = decode(jwtParts[0]);
-    var payload = decode(jwtParts[1]);
-    var signature = jwtParts[2];
+  var header = decode(jwtParts[0]);
+  var payload = decode(jwtParts[1]);
+  var signature = jwtParts[2];
 
-    try {
-        var fullJson = {
-            "header": JSON.parse(header),
-            "payload": JSON.parse(payload),
-            "signature": signature
-        };
+  try {
+    var fullJson = {
+      header: JSON.parse(header),
+      payload: JSON.parse(payload),
+      signature: signature,
+    };
 
-        // Prettyprint the JSOM
-        input.text = JSON.stringify(fullJson, null, 2);
-    } catch(err) {
-        input.postError("Error while parsing JSON");
-    }
+    // Prettyprint the JSOM
+    input.text = JSON.stringify(fullJson, null, 2);
+  } catch (err) {
+    input.postError("Error while parsing JSON");
+  }
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -892,15 +887,13 @@ function main(input) {
 	}
 **/
 
-const { kebabCase } = require('@boop/lodash.boop')
+const { kebabCase } = require("@boop/lodash.boop");
 
 function main(input) {
-	
-    input.text = kebabCase(input.text)
-	
+  input.text = kebabCase(input.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -913,22 +906,84 @@ function main(input) {
     }
 **/
 
-
 function main(state) {
-    const words = ["ad", "adipisicing", "aliqua", "aliquip", "amet", "anim", "aute", "cillum", "commodo", "consectetur", "consequat", "culpa", "cupidatat", "deserunt", "do", "dolor", "dolore", "duis", "ea", "eiusmod", "elit", "enim", "esse", "est", "et", "eu", "ex", "excepteur", "exercitation", "fugiat", "id", "in", "incididunt", "ipsum", "irure", "labore", "laboris", "laborum", "Lorem", "magna", "minim", "mollit", "nisi", "non", "nostrud", "nulla", "occaecat", "officia", "pariatur", "proident", "qui", "quis", "reprehenderit", "sint", "sit", "sunt", "tempor", "ullamco", "ut", "velit", "veniam", "voluptate"];
-    let sentence = "";
+  const words = [
+    "ad",
+    "adipisicing",
+    "aliqua",
+    "aliquip",
+    "amet",
+    "anim",
+    "aute",
+    "cillum",
+    "commodo",
+    "consectetur",
+    "consequat",
+    "culpa",
+    "cupidatat",
+    "deserunt",
+    "do",
+    "dolor",
+    "dolore",
+    "duis",
+    "ea",
+    "eiusmod",
+    "elit",
+    "enim",
+    "esse",
+    "est",
+    "et",
+    "eu",
+    "ex",
+    "excepteur",
+    "exercitation",
+    "fugiat",
+    "id",
+    "in",
+    "incididunt",
+    "ipsum",
+    "irure",
+    "labore",
+    "laboris",
+    "laborum",
+    "Lorem",
+    "magna",
+    "minim",
+    "mollit",
+    "nisi",
+    "non",
+    "nostrud",
+    "nulla",
+    "occaecat",
+    "officia",
+    "pariatur",
+    "proident",
+    "qui",
+    "quis",
+    "reprehenderit",
+    "sint",
+    "sit",
+    "sunt",
+    "tempor",
+    "ullamco",
+    "ut",
+    "velit",
+    "veniam",
+    "voluptate",
+  ];
+  let sentence = "";
 
-    for (let i = 0; i < 100; i++) {
-        const pos = Math.floor(Math.random() * (words.length - 1));
-        sentence += words[pos] + " ";
-    }
+  for (let i = 0; i < 100; i++) {
+    const pos = Math.floor(Math.random() * (words.length - 1));
+    sentence += words[pos] + " ";
+  }
 
-    sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1).trim() + ".";
+  sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1).trim() + ".";
 
-    state.text = sentence;
+  state.text = sentence;
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -941,10 +996,13 @@ function main(state) {
 **/
 
 function main(input) {
-    input.text = input.text.split("\n").map(line => "> " + line).join("\n");
+  input.text = input.text
+    .split("\n")
+    .map((line) => "> " + line)
+    .join("\n");
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -956,14 +1014,14 @@ function main(input) {
 	}
 **/
 
-const Hashes = require('@boop/hashes')
+const Hashes = require("@boop/hashes");
 
 function main(state) {
-  var MD5 = new Hashes.MD5;
-  state.text = MD5.hex(state.text)
+  var MD5 = new Hashes.MD5();
+  state.text = MD5.hex(state.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -976,14 +1034,13 @@ function main(state) {
 	}
 **/
 
-const { cssmin } = require('@boop/vkBeautify')
-
+const { cssmin } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = cssmin(state.text)	
+  state.text = cssmin(state.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -997,10 +1054,10 @@ function main(state) {
 **/
 
 function main(input) {
-    input.text = JSON.stringify(JSON.parse(input.text));
+  input.text = JSON.stringify(JSON.parse(input.text));
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1013,14 +1070,13 @@ function main(input) {
 	}
 **/
 
-const { sqlmin } = require('@boop/vkBeautify')
-
+const { sqlmin } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = sqlmin(state.text)	
+  state.text = sqlmin(state.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1033,14 +1089,13 @@ function main(state) {
 	}
 **/
 
-const { xmlmin } = require('@boop/vkBeautify')
-
+const { xmlmin } = require("@boop/vkBeautify");
 
 function main(state) {
-	state.text = xmlmin(state.text)	
+  state.text = xmlmin(state.text);
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
      {
          "api":1,
@@ -1053,16 +1108,20 @@ function main(state) {
  **/
 
 function main(input) {
-    let sorted = input.text.replace(/\n$/, '').split('\n')
-        .sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}))
-        .join('\n');
+  let sorted = input.text
+    .replace(/\n$/, "")
+    .split("\n")
+    .sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+    )
+    .join("\n");
 
-    if (sorted === input.text) {
-        sorted = sorted.split('\n').reverse().join('\n');
-    }
-    input.text = sorted;
+  if (sorted === input.text) {
+    sorted = sorted.split("\n").reverse().join("\n");
+  }
+  input.text = sorted;
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -1075,164 +1134,173 @@ function main(input) {
 **/
 
 function main(state) {
-    try {
-        const input = state.text
-        const unserialized = unserialize(input)
-        const data = unserialized[0]
+  try {
+    const input = state.text;
+    const unserialized = unserialize(input);
+    const data = unserialized[0];
 
-        if(unserialized[1] != input.length) {
-            throw new Error("Invalid serialized string")
-        }
-
-        if(data === null || data === undefined) {
-            state.text = null
-        } else if(typeof data === 'object') {
-            state.text = JSON.stringify(data, null, 2)
-        } else {
-            state.text = data.toString()
-        }
-    } catch (e) {
-        state.postError(e.message)
+    if (unserialized[1] != input.length) {
+      throw new Error("Invalid serialized string");
     }
+
+    if (data === null || data === undefined) {
+      state.text = null;
+    } else if (typeof data === "object") {
+      state.text = JSON.stringify(data, null, 2);
+    } else {
+      state.text = data.toString();
+    }
+  } catch (e) {
+    state.postError(e.message);
+  }
 }
 
 function decodeInt(text, startPos) {
-    const lastChar = text.indexOf(';', startPos)
-    if(lastChar <= 0) {
-        throw new Error("decodeInt: unexpected end of string")
-    }
-    return [Number.parseInt(text.slice(startPos, lastChar)), lastChar + 1]
+  const lastChar = text.indexOf(";", startPos);
+  if (lastChar <= 0) {
+    throw new Error("decodeInt: unexpected end of string");
+  }
+  return [Number.parseInt(text.slice(startPos, lastChar)), lastChar + 1];
 }
 
 function decodeBool(text, startPos) {
-    const lastChar = text.indexOf(';', startPos)
-    if(lastChar != startPos + 1) {
-        throw new Error("decodeBool: unexpected data length")
-    }
-    switch (text.charAt(startPos)) {
-        case '0':
-            return [false, startPos + 2]
-        case '1':
-            return [true, startPos + 2]
-        default:
-            throw new Error("decodeBool: found unexpected data")
-    }
+  const lastChar = text.indexOf(";", startPos);
+  if (lastChar != startPos + 1) {
+    throw new Error("decodeBool: unexpected data length");
+  }
+  switch (text.charAt(startPos)) {
+    case "0":
+      return [false, startPos + 2];
+    case "1":
+      return [true, startPos + 2];
+    default:
+      throw new Error("decodeBool: found unexpected data");
+  }
 }
 
 function decodeFloat(text, startPos) {
-    const lastChar = text.indexOf(';', startPos)
-    if(lastChar <= 0) {
-        throw new Error("decodeFloat: unexpected end of string")
-    }
-    return [Number.parseFloat(text.slice(startPos, lastChar)), lastChar + 1]
+  const lastChar = text.indexOf(";", startPos);
+  if (lastChar <= 0) {
+    throw new Error("decodeFloat: unexpected end of string");
+  }
+  return [Number.parseFloat(text.slice(startPos, lastChar)), lastChar + 1];
 }
 
 function decodeString(text, startPos) {
-    const lengthEnd = text.indexOf(':', startPos)
-    if(lengthEnd <= 0) {
-        throw new Error("decodeString: no string length found")
-    }
-    const byteLength = Number.parseInt(text.slice(startPos, lengthEnd))
+  const lengthEnd = text.indexOf(":", startPos);
+  if (lengthEnd <= 0) {
+    throw new Error("decodeString: no string length found");
+  }
+  const byteLength = Number.parseInt(text.slice(startPos, lengthEnd));
 
-    startPos = lengthEnd + 2
-    let currentStrLength = 0
-    let numBytes = 0;
-    while((currentStrLength + startPos) < text.length && numBytes < byteLength) {
-        const nextPos = text.indexOf('";', startPos+currentStrLength+1)-startPos
-        if(nextPos > currentStrLength) {
-            currentStrLength = nextPos
-        } else {
-            // No end will be found anymore, exit and do our safety checks as if we reached the end
-            break
-        }
-
-        const subStr = text.slice(startPos, startPos + currentStrLength)
-        try {
-            const encodedStr = encodeURI(subStr)
-            numBytes = encodedStr.split(/%..|./).length - 1
-        } catch(e) {
-            // encodeURI will fail when an invalid UTF16 character is found, which happens with 4 byte characters (e.g. emoji)
-            // We will simply try again on the next position
-        }
+  startPos = lengthEnd + 2;
+  let currentStrLength = 0;
+  let numBytes = 0;
+  while (currentStrLength + startPos < text.length && numBytes < byteLength) {
+    const nextPos =
+      text.indexOf('";', startPos + currentStrLength + 1) - startPos;
+    if (nextPos > currentStrLength) {
+      currentStrLength = nextPos;
+    } else {
+      // No end will be found anymore, exit and do our safety checks as if we reached the end
+      break;
     }
 
-    if(numBytes != byteLength) {
-        throw new Error("Could not decode string: field length mismatch")
+    const subStr = text.slice(startPos, startPos + currentStrLength);
+    try {
+      const encodedStr = encodeURI(subStr);
+      numBytes = encodedStr.split(/%..|./).length - 1;
+    } catch (e) {
+      // encodeURI will fail when an invalid UTF16 character is found, which happens with 4 byte characters (e.g. emoji)
+      // We will simply try again on the next position
     }
+  }
 
-    return [text.slice(startPos, startPos + currentStrLength), startPos + currentStrLength + 2]
+  if (numBytes != byteLength) {
+    throw new Error("Could not decode string: field length mismatch");
+  }
+
+  return [
+    text.slice(startPos, startPos + currentStrLength),
+    startPos + currentStrLength + 2,
+  ];
 }
 
 function decodeArray(text, startPos) {
-    const lengthEnd = text.indexOf(':', startPos)
-    if(lengthEnd <= 0) {
-        throw new Error("decodeArray: no arraylength found")
-    }
-    const numItems = Number.parseInt(text.slice(startPos, lengthEnd))
-    let data = {}
-    startPos = lengthEnd + 2
-    let continuous = true
-    for(let i = 0; i < numItems; i++) {
-        const keyData = unserialize(text, startPos)
-        const valueData = unserialize(text, keyData[1])
-        startPos = valueData[1]
+  const lengthEnd = text.indexOf(":", startPos);
+  if (lengthEnd <= 0) {
+    throw new Error("decodeArray: no arraylength found");
+  }
+  const numItems = Number.parseInt(text.slice(startPos, lengthEnd));
+  let data = {};
+  startPos = lengthEnd + 2;
+  let continuous = true;
+  for (let i = 0; i < numItems; i++) {
+    const keyData = unserialize(text, startPos);
+    const valueData = unserialize(text, keyData[1]);
+    startPos = valueData[1];
 
-        if(keyData[0] !== i) {
-            continuous = false
-        }
-
-        data[keyData[0]] = valueData[0]
+    if (keyData[0] !== i) {
+      continuous = false;
     }
 
-    if(continuous) {
-        // Convert non key-value maps to array
-        const array = new Array(numItems)
-        for(let i = 0; i < numItems; i++) {
-            array[i] = data[i]
-        }
-        data = array
+    data[keyData[0]] = valueData[0];
+  }
+
+  if (continuous) {
+    // Convert non key-value maps to array
+    const array = new Array(numItems);
+    for (let i = 0; i < numItems; i++) {
+      array[i] = data[i];
     }
-    return [data, startPos+1]
+    data = array;
+  }
+  return [data, startPos + 1];
 }
 
 function decodeObject(text, startPos) {
-    const classNameLengthEnd = text.indexOf(':', startPos)
-    if(classNameLengthEnd <= 0) {
-        throw new Error("decodeObject: no arraylength found")
-    }
-    const classNameLength = Number.parseInt(text.slice(startPos, classNameLengthEnd))
-    startPos = classNameLengthEnd + 2
-    if(classNameLength !== 8 || text.slice(startPos, startPos + 8) !== 'stdClass') {
-        throw new Error("decodeObject: object type not supported")
-    }
+  const classNameLengthEnd = text.indexOf(":", startPos);
+  if (classNameLengthEnd <= 0) {
+    throw new Error("decodeObject: no arraylength found");
+  }
+  const classNameLength = Number.parseInt(
+    text.slice(startPos, classNameLengthEnd),
+  );
+  startPos = classNameLengthEnd + 2;
+  if (
+    classNameLength !== 8 ||
+    text.slice(startPos, startPos + 8) !== "stdClass"
+  ) {
+    throw new Error("decodeObject: object type not supported");
+  }
 
-    startPos += 10
+  startPos += 10;
 
-    return decodeArray(text, startPos)
+  return decodeArray(text, startPos);
 }
 
 function unserialize(text, startPos = 0) {
-    const type = text[startPos]
-    switch(type) {
-        case 'i':
-            return decodeInt(text, startPos + 2)
-        case 'b':
-            return decodeBool(text, startPos + 2)
-        case 'N':
-            return [null, startPos + 2]
-        case 'd':
-            return decodeFloat(text, startPos + 2)
-        case 's':
-            return decodeString(text, startPos + 2)
-        case 'a':
-            return decodeArray(text, startPos + 2)
-        case 'O':
-            return decodeObject(text, startPos + 2)
-        default:
-            throw new Error("unknown type found: " + type + " at "+startPos)
-    }
+  const type = text[startPos];
+  switch (type) {
+    case "i":
+      return decodeInt(text, startPos + 2);
+    case "b":
+      return decodeBool(text, startPos + 2);
+    case "N":
+      return [null, startPos + 2];
+    case "d":
+      return decodeFloat(text, startPos + 2);
+    case "s":
+      return decodeString(text, startPos + 2);
+    case "a":
+      return decodeArray(text, startPos + 2);
+    case "O":
+      return decodeObject(text, startPos + 2);
+    default:
+      throw new Error("unknown type found: " + type + " at " + startPos);
+  }
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1245,35 +1313,33 @@ function unserialize(text, startPos = 0) {
 **/
 
 function convertToJson(urlParams) {
+  return urlParams
+    .replace(/\[\d?\]=/gi, "=")
+    .split("&")
+    .reduce((result, param) => {
+      var [key, value] = param.split("=");
+      value = decodeURIComponent(value || "");
 
-    return urlParams
-        .replace(/\[\d?\]=/gi, '=')
-        .split('&')
-        .reduce((result, param) => {
-            var [key, value] = param.split('=');
-            value = decodeURIComponent(value || '');
+      if (!result.hasOwnProperty(key)) {
+        result[key] = value;
 
-            if (!result.hasOwnProperty(key)) {
-                result[key] = value;
+        return result;
+      }
 
-                return result;
-            }
+      result[key] = [...[].concat(result[key]), value];
 
-            result[key] = [...[].concat(result[key]), value]
-
-            return result
-        }, {});
+      return result;
+    }, {});
 }
 
-function main(input)
-{
-    try {
-        input.text = JSON.stringify(convertToJson(input.text));
-    } catch (error) {
-        input.postError("Unable to parse given string")
-    }
+function main(input) {
+  try {
+    input.text = JSON.stringify(convertToJson(input.text));
+  } catch (error) {
+    input.postError("Unable to parse given string");
+  }
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1286,19 +1352,18 @@ function main(input)
 **/
 
 function main(input) {
-    let lines = input.text.split('\n')
-    let out = unique(lines)
+  let lines = input.text.split("\n");
+  let out = unique(lines);
 
-    input.text = out.join('\n')
-    
-    input.postInfo(`${lines.length - out.length} lines removed`)
+  input.text = out.join("\n");
 
+  input.postInfo(`${lines.length - out.length} lines removed`);
 }
 
 function unique(array) {
-	return [...new Set(array)]
+  return [...new Set(array)];
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1310,39 +1375,37 @@ function unique(array) {
 	}
 **/
 
-function main(input){
-	
-	//       discuss at: http://locutus.io/php/stripslashes/
-	//      original by: Kevin van Zonneveld (http://kvz.io)
-	//      improved by: Ates Goral (http://magnetiq.com)
-	//      improved by: marrtins
-	//      improved by: rezna
-	//         fixed by: Mick@el
-	//      bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
-	//      bugfixed by: Brett Zamir (http://brett-zamir.me)
-	//         input by: Rick Waldron
-	//         input by: Brant Messenger (http://www.brantmessenger.com/)
-	// reimplemented by: Brett Zamir (http://brett-zamir.me)
-	//        example 1: stripslashes('Kevin\'s code')
-	//        returns 1: "Kevin's code"
-	//        example 2: stripslashes('Kevin\\\'s code')
-	//        returns 2: "Kevin\'s code"
+function main(input) {
+  //       discuss at: http://locutus.io/php/stripslashes/
+  //      original by: Kevin van Zonneveld (http://kvz.io)
+  //      improved by: Ates Goral (http://magnetiq.com)
+  //      improved by: marrtins
+  //      improved by: rezna
+  //         fixed by: Mick@el
+  //      bugfixed by: Onno Marsman (https://twitter.com/onnomarsman)
+  //      bugfixed by: Brett Zamir (http://brett-zamir.me)
+  //         input by: Rick Waldron
+  //         input by: Brant Messenger (http://www.brantmessenger.com/)
+  // reimplemented by: Brett Zamir (http://brett-zamir.me)
+  //        example 1: stripslashes('Kevin\'s code')
+  //        returns 1: "Kevin's code"
+  //        example 2: stripslashes('Kevin\\\'s code')
+  //        returns 2: "Kevin\'s code"
 
-	input.text = (input.text + '')
-	    .replace(/\\(.?)/g, function (s, n1) {
-	      switch (n1) {
-	        case '\\':
-	          return '\\'
-	        case '0':
-	          return '\u0000'
-	        case '':
-	          return ''
-	        default:
-	          return n1
-	    	}
-    });
+  input.text = (input.text + "").replace(/\\(.?)/g, function (s, n1) {
+    switch (n1) {
+      case "\\":
+        return "\\";
+      case "0":
+        return "\u0000";
+      case "":
+        return "";
+      default:
+        return n1;
+    }
+  });
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1361,7 +1424,7 @@ function main(input) {
     .replace(/“”/g, '"');
 }
 
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1374,9 +1437,9 @@ function main(input) {
 **/
 
 function main(input) {
-	input.text = input.text.split('\n').reverse().join('\n')
+  input.text = input.text.split("\n").reverse().join("\n");
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1389,9 +1452,7 @@ function main(input) {
 **/
 
 function main(input) {
-	
-	input.text = reverse(input.text)
-	
+  input.text = reverse(input.text);
 }
 
 /* 
@@ -1421,29 +1482,30 @@ function main(input) {
 
 */
 
-var regexSymbolWithCombiningMarks = /([\0-\u02FF\u0370-\u1AAF\u1B00-\u1DBF\u1E00-\u20CF\u2100-\uD7FF\uE000-\uFE1F\uFE30-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])([\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+)/g;
+var regexSymbolWithCombiningMarks =
+  /([\0-\u02FF\u0370-\u1AAF\u1B00-\u1DBF\u1E00-\u20CF\u2100-\uD7FF\uE000-\uFE1F\uFE30-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])([\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+)/g;
 var regexSurrogatePair = /([\uD800-\uDBFF])([\uDC00-\uDFFF])/g;
 
-var reverse = function(string) {
-	// Step 1: deal with combining marks and astral symbols (surrogate pairs)
-	string = string
-		// Swap symbols with their combining marks so the combining marks go first
-		.replace(regexSymbolWithCombiningMarks, function($0, $1, $2) {
-			// Reverse the combining marks so they will end up in the same order
-			// later on (after another round of reversing)
-			return reverse($2) + $1;
-		})
-		// Swap high and low surrogates so the low surrogates go first
-		.replace(regexSurrogatePair, '$2$1');
-	// Step 2: reverse the code units in the string
-	var result = [];
-	var index = string.length;
-	while (index--) {
-		result.push(string.charAt(index));
-	}
-	return result.join('');
+var reverse = function (string) {
+  // Step 1: deal with combining marks and astral symbols (surrogate pairs)
+  string = string
+    // Swap symbols with their combining marks so the combining marks go first
+    .replace(regexSymbolWithCombiningMarks, function ($0, $1, $2) {
+      // Reverse the combining marks so they will end up in the same order
+      // later on (after another round of reversing)
+      return reverse($2) + $1;
+    })
+    // Swap high and low surrogates so the low surrogates go first
+    .replace(regexSurrogatePair, "$2$1");
+  // Step 2: reverse the code units in the string
+  var result = [];
+  var index = string.length;
+  while (index--) {
+    result.push(string.charAt(index));
+  }
+  return result.join("");
 };
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -1456,16 +1518,16 @@ var reverse = function(string) {
 **/
 
 function main(state) {
-	let myText = state.text
-	// adapted from Sophie Alpert's solution: https://stackoverflow.com/questions/617647/where-is-my-implementation-of-rot13-in-javascript-going-wrong
-	state.text = myText.replace(/[a-z]/gi, function (c) {
- 		return String.fromCharCode(	
- 				(c <= "Z" ? 90 : 122) >= (c=c.charCodeAt(0)+13) ?  c :  c - 26
- 			);
- 		});
- 	return state;
+  let myText = state.text;
+  // adapted from Sophie Alpert's solution: https://stackoverflow.com/questions/617647/where-is-my-implementation-of-rot13-in-javascript-going-wrong
+  state.text = myText.replace(/[a-z]/gi, function (c) {
+    return String.fromCharCode(
+      (c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26,
+    );
+  });
+  return state;
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1476,13 +1538,13 @@ function main(state) {
     }
 **/
 
-const Hashes = require('@boop/hashes')
+const Hashes = require("@boop/hashes");
 
 function main(state) {
-  var SHA1 = new Hashes.SHA1;
-  state.text = SHA1.hex(state.text)
+  var SHA1 = new Hashes.SHA1();
+  state.text = SHA1.hex(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1492,13 +1554,13 @@ function main(state) {
         "tags":"strip,slashes,remove"
     }
 **/
-const Hashes = require('@boop/hashes')
+const Hashes = require("@boop/hashes");
 
 function main(state) {
-  var SHA256 = new Hashes.SHA256;
-  state.text = SHA256.hex(state.text)
+  var SHA256 = new Hashes.SHA256();
+  state.text = SHA256.hex(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1509,13 +1571,13 @@ function main(state) {
     }
 **/
 
-const Hashes = require('@boop/hashes')
+const Hashes = require("@boop/hashes");
 
 function main(state) {
-  var SHA512 = new Hashes.SHA512;
-  state.text = SHA512.hex(state.text)
+  var SHA512 = new Hashes.SHA512();
+  state.text = SHA512.hex(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1528,20 +1590,20 @@ function main(state) {
 **/
 
 function main(input) {
-	let lines = input.text.split('\n');
-	let j = lines.length;
+  let lines = input.text.split("\n");
+  let j = lines.length;
 
-	// Fisher-Yates Shuffle
-	while (j) {
-		i = Math.floor(Math.random() * j--);
-		temp = lines[j];
-		lines[j] = lines[i];
-		lines[i] = temp;
-	}
-	
-	input.text = lines.join('\n');
+  // Fisher-Yates Shuffle
+  while (j) {
+    i = Math.floor(Math.random() * j--);
+    temp = lines[j];
+    lines[j] = lines[i];
+    lines[i] = temp;
+  }
+
+  input.text = lines.join("\n");
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1553,12 +1615,12 @@ function main(input) {
 	}
 **/
 
-const { snakeCase } = require('@boop/lodash.boop')
+const { snakeCase } = require("@boop/lodash.boop");
 
 function main(input) {
-    input.text = snakeCase(input.text);
+  input.text = snakeCase(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
      {
          "api":1,
@@ -1571,16 +1633,18 @@ function main(input) {
  **/
 
 function main(input) {
-    let sorted = input.text.replace(/\n$/, '').split('\n')
-        .sort((a, b) => a.localeCompare(b))
-        .join('\n');
+  let sorted = input.text
+    .replace(/\n$/, "")
+    .split("\n")
+    .sort((a, b) => a.localeCompare(b))
+    .join("\n");
 
-    if (sorted === input.text) {
-        sorted = sorted.split('\n').reverse().join('\n');
-    }
-    input.text = sorted;
+  if (sorted === input.text) {
+    sorted = sorted.split("\n").reverse().join("\n");
+  }
+  input.text = sorted;
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -1609,41 +1673,41 @@ function main(state) {
 
 function sort(obj) {
   if (obj instanceof Array) {
-    let out = obj.map(item => sort(item));
+    let out = obj.map((item) => sort(item));
     out.sort((a, b) => {
-        let fa = JSON.stringify(a),
-            fb = JSON.stringify(b);
+      let fa = JSON.stringify(a),
+        fb = JSON.stringify(b);
 
-        if (fa < fb) {
-            return -1;
-        }
-        if (fa > fb) {
-            return 1;
-        }
-        return 0;
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
     });
     return out;
   }
 
   if (!isPlainObject(obj)) {
-    return obj
+    return obj;
   }
 
   const result = {};
   const keys = Object.keys(obj);
 
   keys.sort();
-  keys.forEach(key => {
-    result[key] = sort(obj[key])
+  keys.forEach((key) => {
+    result[key] = sort(obj[key]);
   });
 
   return result;
 }
 
 function isPlainObject(value) {
-  return Object.prototype.toString.call(value) === '[object Object]'
+  return Object.prototype.toString.call(value) === "[object Object]";
 }
-∞∞∞javascript
+// ----------------------------
 /**
 {
   "api": 1,
@@ -1659,9 +1723,9 @@ function spongeText(string) {
   for (let i = chars.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * Math.floor(2));
     if (j == 0) {
-        chars[i] = chars[i].toLowerCase();
+      chars[i] = chars[i].toLowerCase();
     } else {
-        chars[i] = chars[i].toUpperCase();
+      chars[i] = chars[i].toUpperCase();
     }
   }
 
@@ -1671,7 +1735,7 @@ function spongeText(string) {
 function main(input) {
   input.text = spongeText(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1683,14 +1747,12 @@ function main(input) {
 	}
 **/
 
-const { startCase } = require('@boop/lodash.boop')
+const { startCase } = require("@boop/lodash.boop");
 
 function main(input) {
-	
-    input.text = startCase(input.text)
-	
+  input.text = startCase(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1704,59 +1766,63 @@ function main(input) {
 
 function main(input) {
   if (!input.text) {
-    input.postError('')
+    input.postError("");
   } else {
-    input.text = calculate(input.text)
+    input.text = calculate(input.text);
   }
 }
 
 function looksLikeFraction(s) {
-  return /^[\d\.]+\/[\d\.]+$/.test(s)
+  return /^[\d\.]+\/[\d\.]+$/.test(s);
 }
 
 function getFraction(s) {
-  const frac = s.split('/')
-  return frac[0] / frac[1]
+  const frac = s.split("/");
+  return frac[0] / frac[1];
 }
 
 function getNumber(s) {
   if (looksLikeFraction(s)) {
-    return getFraction(s)
+    return getFraction(s);
   }
-  return isNaN(Number(s)) ? '' : Number(s)
+  return isNaN(Number(s)) ? "" : Number(s);
 }
 
 function numStringToArray(s) {
   return s
-    .replace(/\/\/.*/g, '')
+    .replace(/\/\/.*/g, "")
     .split(/[\n\s,;=]/g)
-    .map((e) => (getNumber(e) ? getNumber(e) : ''))
-    .filter(Boolean)
+    .map((e) => (getNumber(e) ? getNumber(e) : ""))
+    .filter(Boolean);
 }
 
 function calculate(s) {
-  const comment = '\t// '
-  const numbers = numStringToArray(s)
+  const comment = "\t// ";
+  const numbers = numStringToArray(s);
 
-  var sumOutput = numbers.reduce((a, b) => a + b)
+  var sumOutput = numbers.reduce((a, b) => a + b);
 
   if (numbers.length > 1) {
-    sumOutput += comment + numbers.join(' + ')
+    sumOutput += comment + numbers.join(" + ");
   }
 
   return s
     .split(/[\n,;]/g)
     .map((e) => {
-      e = e.trim()
-      if (e.charAt(0) === '=' || e === '' || e.toString() === Number(e).toString()) {
-        return e
+      e = e.trim();
+      if (
+        e.charAt(0) === "=" ||
+        e === "" ||
+        e.toString() === Number(e).toString()
+      ) {
+        return e;
       }
-      return `${e}${getNumber(e) && comment + getNumber(e)}`
+      return `${e}${getNumber(e) && comment + getNumber(e)}`;
     })
-    .concat('\n= ' + sumOutput)
-    .join('\n')
+    .concat("\n= " + sumOutput)
+    .join("\n");
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1769,10 +1835,9 @@ function calculate(s) {
 **/
 
 function main(input) {
-	
-	input.postInfo("Hello this is a test!")
-	
-	input.fullText = `Hello, World! Let's try some syntax highlighting shall we?
+  input.postInfo("Hello this is a test!");
+
+  input.fullText = `Hello, World! Let's try some syntax highlighting shall we?
 
 var test: String? = "Toast"
 
@@ -1802,10 +1867,9 @@ This line was added on Fri, 19 Jun 2020 01:01:30 GMT
     
 
 "This is quote-unquote \\"escaped\\" if you will."
-`
-	
+`;
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1820,7 +1884,7 @@ This line was added on Fri, 19 Jun 2020 01:01:30 GMT
 function main(state) {
   state.text = state.text.trim();
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1833,9 +1897,9 @@ function main(state) {
 **/
 
 function main(input) {
-    input.text = input.text.toUpperCase();
+  input.text = input.text.toUpperCase();
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1848,9 +1912,9 @@ function main(input) {
 **/
 
 function main(input) {
-	input.text = decodeURIComponent(input.text);
+  input.text = decodeURIComponent(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -1863,13 +1927,13 @@ function main(input) {
 **/
 
 function main(input) {
-    url = input.text;
-    url = url.replace(/\./g, "[.]");
-    url = url.replace(/http/gi, "hXXp");
-    url = url.replace(/:\/\//g, "[://]");
-    input.text = url;
+  let url = input.text;
+  url = url.replace(/\./g, "[.]");
+  url = url.replace(/http/gi, "hXXp");
+  url = url.replace(/:\/\//g, "[://]");
+  input.text = url;
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1882,11 +1946,9 @@ function main(input) {
 **/
 
 function main(input) {
-	
-	input.text = encodeURIComponent(input.text)
-	
+  input.text = encodeURIComponent(input.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1900,20 +1962,20 @@ function main(input) {
 **/
 
 function fullUrlDecode(str) {
-	var codes = str.split("%");
-	var decoded = '';
+  var codes = str.split("%");
+  var decoded = "";
 
-	for (var i = 0; i < codes.length; i++) {
-		decoded += String.fromCharCode(parseInt(codes[i], 16));
-	}
+  for (var i = 0; i < codes.length; i++) {
+    decoded += String.fromCharCode(parseInt(codes[i], 16));
+  }
 
-	return decoded;
+  return decoded;
 }
 
 function main(state) {
-	state.text = fullUrlDecode(state.text);
+  state.text = fullUrlDecode(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
     {
         "api":1,
@@ -1927,20 +1989,20 @@ function main(state) {
 **/
 
 function fullUrlEncode(str) {
-    var encoded = '';
+  var encoded = "";
 
-    for (var i = 0; i < str.length; i++) {
-        var h = parseInt(str.charCodeAt(i)).toString(16);
-        encoded += '%' + h;
-    }
+  for (var i = 0; i < str.length; i++) {
+    var h = parseInt(str.charCodeAt(i)).toString(16);
+    encoded += "%" + h;
+  }
 
-    return encoded;
+  return encoded;
 }
 
 function main(state) {
-    state.text = fullUrlEncode(state.text);
+  state.text = fullUrlEncode(state.text);
 }
-∞∞∞javascript
+// ----------------------------
 /**
   {
     "api":1,
@@ -1953,13 +2015,13 @@ function main(state) {
 **/
 
 function main(input) {
-    url = input.text;
-    url = url.replace(/\[\.\]/g, ".");
-    url = url.replace(/hXXp/gi, "http");
-    url = url.replace(/\[:\/\/\]/g, "://");
-    input.text = url;
+  let url = input.text;
+  url = url.replace(/\[\.\]/g, ".");
+  url = url.replace(/hXXp/gi, "http");
+  url = url.replace(/\[:\/\/\]/g, "://");
+  input.text = url;
 }
-∞∞∞javascript
+// ----------------------------
 /**
 	{
 		"api":1,
@@ -1971,15 +2033,12 @@ function main(input) {
 	}
 **/
 
-const yaml = require('@boop/js-yaml')
+const yaml = require("@boop/js-yaml");
 
 function main(input) {
-
-	try {
-        input.text = JSON.stringify(yaml.safeLoad(input.text), null, 2)
-	}
-	catch(error) {
-		input.postError("Invalid YAML")
-	}
+  try {
+    input.text = JSON.stringify(yaml.safeLoad(input.text), null, 2);
+  } catch (error) {
+    input.postError("Invalid YAML");
+  }
 }
-∞∞∞text-a
