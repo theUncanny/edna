@@ -234,7 +234,7 @@ function main(input) {
 }
 **/
 
-function main(state) {
+async function main(state) {
   // @ts-ignore
   let Papa = (await import("https://esm.sh/papaparse@5.4.1")).default;
   try {
@@ -476,7 +476,7 @@ function main(input) {
 {
   "api":1,
   "name":"Format JSON",
-  "description":"Cleans and format JSON documents.",
+  "description":ns and format JSON documents.",
   "author":"Ivan",
   "icon":"broom",
   "tags":"json,prettify,clean,indent"
@@ -605,7 +605,7 @@ function main(state) {
 }
 **/
 
-function main(input) {
+async function main(input) {
   // @ts-ignore
   let he =  (await import("https://esm.sh/html-entities@2.5.2"))
   input.text = he.decode(input.text);
@@ -1437,7 +1437,7 @@ async function main(state) {
 }
 **/
 
-function main(state) {
+async function main(state) {
   // @ts-ignore
   let sha256 = (await import("https://esm.sh/js-sha256@0.11.0")).default;
   state.text = sha256.hex(state.text);
@@ -1453,7 +1453,7 @@ function main(state) {
 }
 **/
 
-function main(state) {
+async function main(state) {
   // @ts-ignore
   let sha512 = (await import("https://esm.sh/js-sha512@0.9.0")).default;
   state.text = sha512.hex(state.text);
