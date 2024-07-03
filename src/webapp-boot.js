@@ -18,13 +18,10 @@ import { mount, unmount } from "svelte";
 import App from "./components/App.svelte";
 import AskFSPermissions from "./components/AskFSPermissions.svelte";
 import { hasHandlePermission } from "./fileutil";
-import { startLoadCurrencies } from "./currency";
 
 /** @typedef {import("./settings").Settings} Settings */
 
 // window.onunhandledrejection = console.warn;
-
-startLoadCurrencies();
 
 let appSvelte;
 

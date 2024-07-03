@@ -14,6 +14,12 @@
   import debounce from "debounce";
   import { throwIf } from "../util.js";
   import { EditorView } from "@codemirror/view";
+  import { triggerCurrenciesLoaded } from "../editor/block/commands.js";
+  import {
+    kEventCurrenciesLoaded,
+    setCurrenciesLoadedCb,
+    startLoadCurrencies,
+  } from "../currency.js";
 
   let enableDiskRefresh = false;
 
@@ -125,7 +131,11 @@
         spacesPerTab: 2, // TODO: add a setting for this
       });
       rememberEditor(editor);
-      window.document.addEventListener("currenciesLoaded", onCurrenciesLoaded);
+      setCurrenciesLoadedCb(() => {
+        triggerCurrenciesLoaded(editor.view);
+      });
+      // intentially we delay it until we register a callback
+      startLoadCurrencies();
       let settings = getSettings();
       let name = settings.currentNoteName;
       throwIf(!name);
@@ -154,10 +164,7 @@
     }
 
     return () => {
-      window.document.removeEventListener(
-        "currenciesLoaded",
-        onCurrenciesLoaded,
-      );
+      setCurrenciesLoadedCb(null);
     };
   }
 
@@ -300,14 +307,6 @@
    */
   export function getEditorView() {
     return editor.view;
-  }
-
-  export async function runBlockFunction(fdef, replace) {
-    await editor.runBlockFunction(fdef, replace);
-  }
-
-  export function onCurrenciesLoaded() {
-    editor.currenciesLoaded();
   }
 
   export function focus() {

@@ -82,6 +82,7 @@
   import FunctionSelector from "./FunctionSelector.svelte";
   import { dirtyState } from "../state.svelte";
   import {
+    editorRunBlockFunction,
     formatBlockContent,
     runBlockContent,
   } from "../editor/block/format-code";
@@ -515,12 +516,17 @@
   async function runFunctionWithActiveBlock(fdef, replace) {
     console.log("runFunctionWithActiveBlock");
     showingFunctionSelector = false;
+    let view = getEditorView();
+    if (isReadOnly(view)) {
+      view.focus();
+      return;
+    }
     let name = fdef.name;
     let msg = `Running <span class="font-bold">${name}</span>...`;
     showModalMessageHTML(msg, 300);
-    await getEditor().runBlockFunction(fdef, replace);
+    await editorRunBlockFunction(view, fdef, replace);
     clearModalMessage();
-    getEditor().focus();
+    view.focus();
   }
 
   function openLanguageSelector() {

@@ -47,11 +47,11 @@ async function formatGo(s) {
  * @param {boolean} replace
  * @returns {Promise<boolean>}
  */
-export async function runBlockFunction(view, fdef, replace) {
+export async function editorRunBlockFunction(view, fdef, replace) {
   const { state } = view;
   if (state.readOnly) return false;
   const block = getActiveNoteBlock(state);
-  console.log("runBlockFunction:", block);
+  console.log("editorRunBlockFunction:", block);
   const cursorPos = state.selection.asSingle().ranges[0].head;
   const content = state.sliceDoc(block.content.from, block.content.to);
   let res = "";

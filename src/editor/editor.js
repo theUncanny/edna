@@ -12,7 +12,6 @@ import {
   gotoPreviousBlock,
   insertNewBlockAtCursor,
   selectAll,
-  triggerCurrenciesLoaded,
 } from "./block/commands.js";
 import {
   blockLineNumbers,
@@ -21,7 +20,6 @@ import {
   noteBlockExtension,
 } from "./block/block.js";
 import { foldGutter, indentUnit } from "@codemirror/language";
-import { runBlockFunction } from "./block/format-code.js";
 
 import { autoSaveContent } from "./save.js";
 import { closeBrackets } from "@codemirror/autocomplete";
@@ -40,6 +38,7 @@ import { links } from "./links.js";
 import { markdown } from "@codemirror/lang-markdown";
 import { todoCheckboxPlugin } from "./todo-checkbox";
 import { findEditorByView } from "../state.js";
+import { isReadOnly } from "./block/cmutils.js";
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
@@ -278,14 +277,6 @@ export class EdnaEditor {
         value ? [closeBrackets()] : [],
       ),
     });
-  }
-
-  async runBlockFunction(fdef, replace) {
-    await runBlockFunction(this.view, fdef, replace);
-  }
-
-  currenciesLoaded() {
-    triggerCurrenciesLoaded(this.view.state, this.view.dispatch);
   }
 
   addNewBlockAfterCurrent() {

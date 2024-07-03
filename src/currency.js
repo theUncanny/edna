@@ -1,5 +1,17 @@
 import { startTimer } from "./util";
 
+export const kEventCurrenciesLoaded = "currenciesLoaded";
+
+/** @type { () => void } */
+let currenciesLoadedCb = null;
+
+/**
+ * @param {() => void} cb
+ */
+export function setCurrenciesLoadedCb(cb) {
+  currenciesLoadedCb = cb;
+}
+
 async function getCurrencyData() {
   // currencyData = JSON.parse(cachedCurrencies)
   let durFn = startTimer();
@@ -14,15 +26,15 @@ async function getCurrencyData() {
   return res;
 }
 
-let currenciesLoaded = false;
+let didLoadCurrencies = false;
 function loadCurrencies() {
   function onCurrenciesLoaded(data) {
     // @ts-ignore
     let math = window.math;
     let base = data.base_code || data.base;
-    if (!currenciesLoaded) {
+    if (!didLoadCurrencies) {
       math.createUnit(base, {
-        override: currenciesLoaded,
+        override: didLoadCurrencies,
         aliases: [base.toLowerCase()],
       });
     }
@@ -38,11 +50,14 @@ function loadCurrencies() {
             definition: math.unit(1 / data.rates[currency], base),
             aliases: currency === "CUP" ? [] : [currency.toLowerCase()], // Lowercase CUP clashes with the measurement unit cup
           },
-          { override: currenciesLoaded }
+          { override: didLoadCurrencies },
         );
       });
-    currenciesLoaded = true;
-    window.document.dispatchEvent(new Event("currenciesLoaded"));
+    didLoadCurrencies = true;
+    console.log("currenciesLoadedCb:", currenciesLoadedCb);
+    if (currenciesLoadedCb) {
+      currenciesLoadedCb();
+    }
   }
 
   getCurrencyData()
@@ -57,5 +72,6 @@ function loadCurrencies() {
 
 export function startLoadCurrencies() {
   loadCurrencies();
+  // repeat every 4 hrs
   setInterval(loadCurrencies, 1000 * 3600 * 4);
 }
