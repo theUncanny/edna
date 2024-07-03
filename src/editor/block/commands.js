@@ -87,7 +87,7 @@ export function addNewBlockAfterCurrent({ state, dispatch }) {
   return true;
 }
 
-export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
+export function addNewBlockBeforeFirst({ state, dispatch }) {
   if (state.readOnly) return false;
 
   const block = getFirstNoteBlock(state);
@@ -110,7 +110,7 @@ export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
     ),
   );
   return true;
-};
+}
 
 export function addNewBlockAfterLast({ state, dispatch }) {
   if (state.readOnly) return false;

@@ -91,6 +91,7 @@
     addNewBlockAfterCurrent,
     addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
+    addNewBlockBeforeFirst,
   } from "../editor/block/commands";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
@@ -173,7 +174,7 @@
     return "";
   });
   $effect(() => {
-    getEditor().setSpellChecking(isSpellChecking);
+    getEditorComp().setSpellChecking(isSpellChecking);
   });
 
   $effect(() => {
@@ -333,7 +334,7 @@
   }
   function closeEncryptPassword() {
     showingEncryptPassword = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
   function onEncryptPassword(pwd) {
     console.log("got encryption password:", pwd);
@@ -348,7 +349,7 @@
   async function exportCurrentNote() {
     let settings = getSettings();
     let name = settings.currentNoteName;
-    let s = getEditor().getContent();
+    let s = getEditorComp().getContent();
     console.log("exportCurrentNote:", name);
     const blob = new Blob([s], { type: "text/plain" });
     browserDownloadBlob(blob, name);
@@ -360,7 +361,7 @@
 
   function onCloseSettings() {
     showingSettings = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   async function deleteCurrentNote() {
@@ -437,9 +438,9 @@
   let initialBlockSelection = $state(0);
 
   function openBlockSelector() {
-    let blocks = getEditor().getBlocks();
-    let activeBlock = getEditor().getActiveNoteBlock();
-    let c = getEditor().getContent();
+    let blocks = getEditorComp().getBlocks();
+    let activeBlock = getEditorComp().getActiveNoteBlock();
+    let c = getEditorComp().getContent();
     /** @type {import("./BlockSelector.svelte").Item[]} */
     let items = [];
     let blockNo = 0;
@@ -465,7 +466,7 @@
 
   function closeBlockSelector() {
     showingBlockSelector = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function openCreateNewNote() {
@@ -475,13 +476,13 @@
   function selectBlock(blockItem) {
     console.log(blockItem);
     let n = blockItem.key;
-    getEditor().gotoBlock(n);
+    getEditorComp().gotoBlock(n);
     closeBlockSelector();
   }
 
   function closeCreateNewNote() {
     showingCreateNewNote = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function switchToNoteSelector() {
@@ -502,7 +503,7 @@
 
   function closeNoteSelector() {
     showingNoteSelector = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function openFunctionSelector() {
@@ -511,7 +512,7 @@
 
   function closeFunctionSelector() {
     showingFunctionSelector = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   /**
@@ -540,7 +541,7 @@
 
   function closeLanguageSelector() {
     showingLanguageSelector = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function openFind() {
@@ -549,12 +550,12 @@
 
   function closeFind() {
     showingFind = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function onSelectLanguage(language) {
     showingLanguageSelector = false;
-    getEditor().setLanguage(language);
+    getEditorComp().setLanguage(language);
   }
 
   let nextMenuID = 1000;
@@ -774,19 +775,20 @@
       addNewBlockAfterLast(view);
       view.focus();
     } else if (cmdId === kCmdNewBlockAtStart) {
-      getEditor().addNewBlockBeforeFirst();
+      addNewBlockBeforeFirst(view);
+      view.focus();
     } else if (cmdId === kCmdSplitBlockAtCursor) {
-      getEditor().insertNewBlockAtCursor();
+      getEditorComp().insertNewBlockAtCursor();
     } else if (cmdId === kCmdGoToBlock) {
       openBlockSelector();
     } else if (cmdId === kCmdGoToNextBlock) {
-      getEditor().gotoNextBlock();
+      getEditorComp().gotoNextBlock();
     } else if (cmdId === kCmdGoToPreviousBlock) {
-      getEditor().gotoPreviousBlock();
+      getEditorComp().gotoPreviousBlock();
     } else if (cmdId === kCmdChangeBlockLanguage) {
       openLanguageSelector();
     } else if (cmdId === kCmdBlockSelectAll) {
-      getEditor().selectAll();
+      getEditorComp().selectAll();
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
     } else if (cmdId === kCmdRunBlock) {
@@ -867,7 +869,7 @@
 
   function closeMenu() {
     showingMenu = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   let commandsDef = $state(null);
@@ -942,7 +944,7 @@
   function closeCommandPalette() {
     console.log("closeCommandPalette");
     showingCommandPalette = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   async function executeCommand(cmdId) {
@@ -954,7 +956,7 @@
   /**
    * @returns {Editor}
    */
-  function getEditor() {
+  function getEditorComp() {
     return editor;
   }
 
@@ -988,7 +990,7 @@
 
   function toggleSpellCheck() {
     isSpellChecking = !isSpellChecking;
-    getEditor().setSpellChecking(isSpellChecking);
+    getEditorComp().setSpellChecking(isSpellChecking);
     if (isSpellChecking) {
       addToast(
         "Press Ctrl + right mouse click for context menu when spell checking is enabled",
@@ -1010,18 +1012,18 @@
 
   function closeRename() {
     showingRenameNote = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function closeSettings() {
     console.log("closeSettings");
     showingSettings = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   async function onRename(newName) {
     showingRenameNote = false;
-    let s = getEditor().getContent() || "";
+    let s = getEditorComp().getContent() || "";
     await renameNote(noteName, newName, s);
     await openNote(newName, true);
     console.log("onRename: newName:", newName);
@@ -1029,12 +1031,12 @@
 
   function openHistorySelector() {
     showingHistorySelector = true;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function closeHistorySelector() {
     showingHistorySelector = false;
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   function onSelectHistory(name) {
@@ -1049,14 +1051,14 @@
 
   async function openNote(name, skipSave = false) {
     console.log("App.openNote:", name);
-    let editor = getEditor();
+    let editor = getEditorComp();
     editor.setReadOnly(true);
     let msg = `Loading <span class="font-bold">${name}</span>...`;
     showModalMessageHTML(msg, 300);
     await editor.openNote(name, skipSave);
     // await sleep(400);
     clearModalMessage();
-    getEditor().focus();
+    getEditorComp().focus();
   }
 
   /**
@@ -1095,7 +1097,7 @@
     // must delete after openNote() because openNote() saves
     // current note
     await deleteNote(name);
-    getEditor().focus();
+    getEditorComp().focus();
     console.log("deleted note", name);
     // TODO: add a way to undo deletion of the note
     addToast(`Deleted note '${name}'`);
@@ -1132,7 +1134,7 @@
   }
 
   function updateDocSize() {
-    let editor = getEditor();
+    let editor = getEditorComp();
     const c = editor.getContent() || "";
     docSize = stringSizeInUtf8Bytes(c);
   }
