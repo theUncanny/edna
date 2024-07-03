@@ -313,11 +313,6 @@
     editor.focus();
   }
 
-  export function selectAll() {
-    editor.selectAll();
-    editor.focus();
-  }
-
   export function getContent() {
     return editor.getContent();
   }

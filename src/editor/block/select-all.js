@@ -63,7 +63,7 @@ function emptyBlockSelectedDecorations(view) {
   return builder.finish();
 }
 
-export const selectAll = ({ state, dispatch }) => {
+export function selectAll({ state, dispatch }) {
   const range = state.selection.asSingle().ranges[0];
   const block = getActiveNoteBlock(state);
 
@@ -98,4 +98,4 @@ export const selectAll = ({ state, dispatch }) => {
   );
 
   return true;
-};
+}

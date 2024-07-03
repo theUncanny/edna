@@ -96,6 +96,7 @@
     gotoNextBlock,
     gotoPreviousBlock,
     insertNewBlockAtCursor,
+    selectAll,
   } from "../editor/block/commands";
   import { getActiveNoteBlock } from "../editor/block/block";
 
@@ -797,11 +798,14 @@
     } else if (cmdId === kCmdChangeBlockLanguage) {
       openLanguageSelector();
     } else if (cmdId === kCmdBlockSelectAll) {
-      getEditorComp().selectAll();
+      selectAll(view);
+      view.focus();
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
+      view.focus();
     } else if (cmdId === kCmdRunBlock) {
       runCurrentBlock();
+      view.focus();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
     } else if (cmdId === kCmdShowHelp) {
@@ -983,7 +987,6 @@
   function formatCurrentBlock() {
     let view = getEditorView();
     formatBlockContent(view);
-    view.focus();
     logNoteOp("noteFormatBlock");
   }
 
@@ -993,7 +996,6 @@
       return;
     }
     runBlockContent(view);
-    view.focus();
     logNoteOp("noteRunBlock");
   }
 

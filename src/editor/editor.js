@@ -1,7 +1,7 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView, drawSelection, lineNumbers } from "@codemirror/view";
 import { SET_CONTENT, heynoteEvent } from "./annotation.js";
-import { changeCurrentBlockLanguage, selectAll } from "./block/commands.js";
+import { changeCurrentBlockLanguage } from "./block/commands.js";
 import {
   blockLineNumbers,
   blockState,
@@ -261,10 +261,6 @@ export class EdnaEditor {
         value ? [closeBrackets()] : [],
       ),
     });
-  }
-
-  selectAll() {
-    selectAll(this.view);
   }
 }
 
