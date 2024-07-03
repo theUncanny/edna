@@ -140,10 +140,14 @@
   });
 
   function selectionChanged(item, idx) {
-    // console.log("selectionChanged:", item, idx);
+    console.log("selectionChanged:", item, idx);
     selectedItem = item;
     selectedName = item ? selectedItem.name : "";
     canOpenSelected = !!selectedItem;
+
+    if (selectedItem === null) {
+      return;
+    }
 
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);

@@ -2,7 +2,6 @@ import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView, drawSelection, lineNumbers } from "@codemirror/view";
 import { SET_CONTENT, heynoteEvent } from "./annotation.js";
 import {
-  addNewBlockAfterCurrent,
   addNewBlockAfterLast,
   addNewBlockBeforeCurrent,
   addNewBlockBeforeFirst,
@@ -277,10 +276,6 @@ export class EdnaEditor {
         value ? [closeBrackets()] : [],
       ),
     });
-  }
-
-  addNewBlockAfterCurrent() {
-    addNewBlockAfterCurrent(this.view);
   }
 
   addNewBlockBeforeCurrent() {

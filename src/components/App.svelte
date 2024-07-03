@@ -87,6 +87,7 @@
     runBlockContent,
   } from "../editor/block/format-code";
   import { isReadOnly } from "../editor/block/cmutils";
+  import { addNewBlockAfterCurrent } from "../editor/block/commands";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -746,6 +747,7 @@
   async function onmenucmd(cmdId) {
     // console.log("cmd:", cmdId);
     showingMenu = false;
+    let view = getEditorView();
     if (cmdId === kCmdCommandPalette) {
       openCommandPalette();
     } else if (cmdId === kCmdOpenNote) {
@@ -759,7 +761,8 @@
     } else if (cmdId === kCmdCreateScratchNote) {
       await createScratchNote();
     } else if (cmdId === kCmdNewBlockAfterCurrent) {
-      getEditor().addNewBlockAfterCurrent();
+      addNewBlockAfterCurrent(view);
+      view.focus();
     } else if (cmdId === kCmdNewBlockBeforeCurrent) {
       getEditor().addNewBlockBeforeCurrent();
     } else if (cmdId === kCmdNewBlockAtEnd) {

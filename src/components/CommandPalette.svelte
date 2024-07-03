@@ -57,6 +57,7 @@
     return res;
   }
   let itemsInitial = $state(rebuildCommands());
+  let cmdCountMsg = `${len(itemsInitial)} commands`;
   let filter = $state(">");
 
   let filteredItems = $derived.by(() => {
@@ -145,6 +146,9 @@
       bind:value={filter}
       class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
     />
+    <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
+      {cmdCountMsg}
+    </div>
   </div>
   <ListBox
     bind:this={listbox}
