@@ -1,14 +1,18 @@
-import { getAltChar, getModChar, platformName } from "./util.js";
+import { platformName } from "./util.js";
 
 import dailyJournalRaw from "./note-daily-journal.md?raw";
 import { fixUpNoteContent } from "./notes.js";
 import helpRaw from "./note-help.md?raw";
 import inboxRaw from "./note-inbox.md?raw";
 import initialDevRaw from "./note-initial-dev.md?raw";
-import initialRaw from "./note-initial.md?raw";
+import scratchRaw from "./note-initial.md?raw";
 import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
 import releaseNotesRaw from "./note-release-notes.md?raw";
+import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
 
+/**
+ * @returns {string}
+ */
 export function getHelp(platform = platformName) {
   let keyHelp = keyHelpStr(platform);
   let help = fixUpShortcuts(helpRaw, platform);
@@ -19,32 +23,56 @@ export function getHelp(platform = platformName) {
   return fixUpNoteContent(help);
 }
 
-export function getReleaseNotes() {
-  return fixUpShortcuts(releaseNotesRaw);
+/**
+ * @returns {string}
+ */
+export function getBuiltInFunctionsNote() {
+  return builtInFunctionsRaw;
 }
 
-export function getInitialContent(platform = platformName) {
-  let keyHelp = keyHelpStr(platform);
+/**
+ * @param {string} s
+ * @returns {string}
+ */
+function fixUpNote(s) {
+  s = fixUpNoteContent(s);
+  s = fixUpShortcuts(s);
+  let keyHelp = keyHelpStr(platformName);
+  s = s.replace("{{keyHelp}}", keyHelp);
+  return s;
+}
 
-  let initial = fixUpNoteContent(initialRaw);
-  initial = fixUpShortcuts(initial);
-  initial = initial.replace("{{keyHelp}}", keyHelp);
+/**
+ * @returns {string}
+ */
+export function getReleaseNotes() {
+  return fixUpNote(releaseNotesRaw);
+}
 
-  let initialDev = initialDevRaw;
-  initialDev = fixUpShortcuts(initialDev);
-  let initialDevContent = initial + initialDev;
-  initialDevContent = fixUpNoteContent(initialDevContent);
+/**
+ * @returns {string}
+ */
+export function getInboxNote() {
+  return fixUpNote(inboxRaw);
+}
 
-  let initialJournal = fixUpNoteContent(dailyJournalRaw);
-  initialJournal = fixUpShortcuts(initialJournal);
+/**
+ * @returns {string}
+ */
+export function getJournalNote() {
+  return fixUpNote(dailyJournalRaw);
+}
 
-  let initialInbox = fixUpNoteContent(inboxRaw);
-  initialInbox = fixUpShortcuts(initialInbox);
+/**
+ * @returns {string}
+ */
+export function getWelcomeNote() {
+  return fixUpNote(scratchRaw);
+}
 
-  return {
-    initialContent: initial,
-    initialDevContent,
-    initialJournal,
-    initialInbox,
-  };
+/**
+ * @returns {string}
+ */
+export function getWelcomeNoteDev() {
+  return getWelcomeNote() + initialDevRaw;
 }

@@ -25,7 +25,7 @@
   /**
    * @returns {Item[]}
    */
-  function rebuildCommands() {
+  function buildCommands() {
     // console.log("rebuildCommands:", commands);
     /** @type {Item[]} */
     let res = Array(len(commandsDef));
@@ -56,7 +56,7 @@
     });
     return res;
   }
-  let itemsInitial = $state(rebuildCommands());
+  let itemsInitial = $state(buildCommands());
   let cmdCountMsg = `${len(itemsInitial)} commands`;
   let filter = $state(">");
 

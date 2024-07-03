@@ -52,6 +52,8 @@
     kWelcomeSystemNoteName,
     kWelcomeDevSystemNoteName,
     saveCurrentNote,
+    kInboxNoteName,
+    kBuiltInFunctionsNoteName,
   } from "../notes";
   import {
     getAltChar,
@@ -629,6 +631,8 @@
   export const kCmdShowWelcomeNote = nmid();
   export const kCmdShowWelcomeDevNote = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
+  export const kCmdRunHelp = nmid();
+  export const kCmdShowBuiltInFunctions = nmid();
 
   function buildMenuDef() {
     const menuNote = [
@@ -645,11 +649,16 @@
       ["Split at cursor position\tMod + Alt + Enter", kCmdSplitBlockAtCursor],
       ["Goto next\tMod + Down", kCmdGoToNextBlock],
       ["Goto previous\tMod + Up", kCmdGoToPreviousBlock],
-      ["Run function with block content", kCmdRunFunctionWithBlockContent],
       ["Change language\tMod + L", kCmdChangeBlockLanguage],
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
-      ["Run " + language + "\tAlt + Shift + R", kCmdRunBlock],
+    ];
+
+    const menuRun = [
+      ["Run " + language + "block\tAlt + Shift + R", kCmdRunBlock],
+      ["Function with block content", kCmdRunFunctionWithBlockContent],
+      ["Show built-in functions", kCmdShowBuiltInFunctions],
+      ["Help", kCmdRunHelp],
     ];
 
     let dh = getStorageFS();
@@ -694,6 +703,7 @@
       ["Create new scratch note\tAlt + N", kCmdCreateScratchNote],
       ["This Note", menuNote],
       ["Block", menuBlock],
+      ["Run", menuRun],
       ["Notes storage", menuStorage],
     ];
     if (dh) {
@@ -724,17 +734,15 @@
     let dh = getStorageFS();
     // console.log("dh:", dh);
     let hasFS = supportsFileSystem();
+    let view = getEditorView();
+    let ro = isReadOnly(view);
     if (mid === kCmdFormatBlock) {
-      if (!langSupportsFormat(lang)) {
-        return kMenuStatusRemoved;
-      }
-      let view = getEditorView();
-      if (isReadOnly(view)) {
+      if (ro || !langSupportsFormat(lang)) {
         return kMenuStatusRemoved;
       }
     } else if (mid === kCmdRunBlock) {
-      if (!langSupportsRun(lang)) {
-        return kMenuStatusRemoved;
+      if (ro || !langSupportsRun(lang)) {
+        return kMenuStatusDisabled;
       }
     } else if (mid === kCmdMoveNotesToDirectory) {
       if (!hasFS) {
@@ -765,6 +773,9 @@
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdRunFunctionWithBlockContent) {
+      if (ro) {
+        return kMenuStatusDisabled;
+      }
     }
     return kMenuStatusNormal;
   }
@@ -826,15 +837,17 @@
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
     } else if (cmdId === kCmdShowHelp) {
-      showHelp();
+      showHTMLHelp();
     } else if (cmdId === kCmdShowHelpAsNote) {
-      showHelpAsNote();
+      openNote(kHelpSystemNoteName);
     } else if (cmdId === kCmdShowReleaseNotes) {
-      showReleaseNotes();
-    } else if (cmdId == kCmdShowWelcomeNote) {
-      showWelcomeNote();
+      openNote(kReleaseNotesSystemNoteName);
+    } else if (cmdId === kCmdShowWelcomeNote) {
+      openNote(kWelcomeSystemNoteName);
+    } else if (cmdId === kCmdRunHelp) {
+      showHTMLHelp("#running-code");
     } else if (cmdId == kCmdShowWelcomeDevNote) {
-      showWelcomeDevNote();
+      openNote(kWelcomeDevSystemNoteName);
     } else if (cmdId === kCmdMoveNotesToDirectory) {
       storeNotesOnDisk();
     } else if (cmdId === kCmdSwitchToNotesInDir) {
@@ -846,7 +859,7 @@
     } else if (cmdId === kCmdExportCurrentNote) {
       exportCurrentNote();
     } else if (cmdId === kCmdShowStorageHelp) {
-      showHelp("#storing-notes-on-disk");
+      showHTMLHelp("#storing-notes-on-disk");
     } else if (cmdId === kCmdSettings) {
       openSettings();
     } else if (cmdId === kCmdEncryptNotes) {
@@ -854,11 +867,13 @@
     } else if (cmdId === kCmdDecryptNotes) {
       decryptAllNotes();
     } else if (cmdId === kCmdEncryptionHelp) {
-      showHelp("#encryption");
+      showHTMLHelp("#encryption");
     } else if (cmdId === kCmdOpenRecent) {
       openHistorySelector();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
       openFunctionSelector();
+    } else if (cmdId === kCmdShowBuiltInFunctions) {
+      openNote(kBuiltInFunctionsNoteName);
     } else {
       console.log("unknown menu cmd id");
     }
@@ -910,7 +925,13 @@
     kCmdDeleteCurrentNote,
     "Delete Current Note",
     kCmdShowStorageHelp,
-    "Help: Storage",
+    "Help: storage",
+    kCmdRunHelp,
+    "Help: running code",
+    kCmdShowHelp,
+    "Help",
+    kCmdShowHelpAsNote,
+    "Help as note",
   ];
 
   function commandNameOverride(id, name) {
@@ -1034,7 +1055,7 @@
   /**
    * @param {string} anchor
    */
-  function showHelp(anchor = "") {
+  function showHTMLHelp(anchor = "") {
     // let uri = window.location.origin + "/help"
     let uri = "/help";
     if (anchor != "") {
@@ -1143,22 +1164,6 @@
     selectionSize = e.selectionSize;
     language = e.language;
     languageAuto = e.languageAuto;
-  }
-
-  function showHelpAsNote() {
-    openNote(kHelpSystemNoteName);
-  }
-
-  function showReleaseNotes() {
-    openNote(kReleaseNotesSystemNoteName);
-  }
-
-  function showWelcomeNote() {
-    openNote(kWelcomeSystemNoteName);
-  }
-
-  function showWelcomeDevNote() {
-    openNote(kWelcomeDevSystemNoteName);
   }
 
   function updateDocSize() {

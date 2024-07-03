@@ -16,14 +16,21 @@ import {
 import { decryptBlobAsString, encryptStringAsBlob, hash } from "kiss-crypto";
 import {
   formatDateYYYYMMDDDay,
-  isDev,
   len,
   removeDuplicates,
   throwIf,
   trimSuffix,
 } from "./util";
 import { fromFileName, isValidFileName, toFileName } from "./filenamify";
-import { getHelp, getInitialContent, getReleaseNotes } from "./initial-content";
+import {
+  getBuiltInFunctionsNote,
+  getHelp,
+  getInboxNote,
+  getJournalNote,
+  getReleaseNotes,
+  getWelcomeNote,
+  getWelcomeNoteDev,
+} from "./initial-content";
 import { getSettings, loadSettings, saveSettings } from "./settings";
 import {
   getStats,
@@ -198,12 +205,14 @@ export const kHelpSystemNoteName = "system:help";
 export const kReleaseNotesSystemNoteName = "system:Release Notes";
 export const kWelcomeSystemNoteName = "system:welcome";
 export const kWelcomeDevSystemNoteName = "system:welcome dev";
+export const kBuiltInFunctionsNoteName = "system:built in functions";
 
 const systemNotes = [
   kHelpSystemNoteName,
   kReleaseNotesSystemNoteName,
   kWelcomeSystemNoteName,
   kWelcomeDevSystemNoteName,
+  kBuiltInFunctionsNoteName,
 ];
 
 /**
@@ -241,14 +250,16 @@ export async function createDefaultNotes(existingNotes) {
   let isFirstRun = getStats().appOpenCount < 2;
   console.log("isFirstRun:", isFirstRun);
 
-  const { initialContent, initialJournal, initialInbox } = getInitialContent();
+  let welcomeNote = getWelcomeNote();
 
-  let nCreated = await createIfNotExists(kScratchNoteName, initialContent);
+  let nCreated = await createIfNotExists(kScratchNoteName, welcomeNote);
   // scratch note must always exist but the user can delete inbox / daily journal notes
   if (isFirstRun) {
+    let inbox = getInboxNote();
+    nCreated += await createIfNotExists(kInboxNoteName, inbox);
     // re-create those notes if the user hasn't deleted them
-    nCreated += await createIfNotExists(kDailyJournalNoteName, initialJournal);
-    nCreated += await createIfNotExists(kInboxNoteName, initialInbox);
+    let journal = getJournalNote();
+    nCreated += await createIfNotExists(kDailyJournalNoteName, journal);
   }
   if (nCreated > 0) {
     await loadNoteNames();
@@ -436,20 +447,27 @@ export function fixUpNoteContent(s) {
  */
 function getSystemNoteContent(name) {
   console.log("getSystemNoteContent:", name);
-  let i;
+  let s = "";
   switch (name) {
     case kHelpSystemNoteName:
-      return getHelp();
+      s = getHelp();
+      break;
     case kReleaseNotesSystemNoteName:
-      return getReleaseNotes();
+      s = getReleaseNotes();
+      break;
     case kWelcomeSystemNoteName:
-      i = getInitialContent();
-      return i.initialContent;
+      s = getWelcomeNote();
+      break;
     case kWelcomeDevSystemNoteName:
-      i = getInitialContent();
-      return i.initialDevContent;
+      s = getWelcomeNoteDev();
+      break;
+    case kBuiltInFunctionsNoteName:
+      s = getBuiltInFunctionsNote();
+      break;
+    default:
+      throw new Error("unknown system note:" + name);
   }
-  throw new Error("unknown system note:" + name);
+  return s;
 }
 
 /**
