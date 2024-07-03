@@ -87,7 +87,10 @@
     runBlockContent,
   } from "../editor/block/format-code";
   import { isReadOnly } from "../editor/block/cmutils";
-  import { addNewBlockAfterCurrent } from "../editor/block/commands";
+  import {
+    addNewBlockAfterCurrent,
+    addNewBlockBeforeCurrent,
+  } from "../editor/block/commands";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -764,7 +767,8 @@
       addNewBlockAfterCurrent(view);
       view.focus();
     } else if (cmdId === kCmdNewBlockBeforeCurrent) {
-      getEditor().addNewBlockBeforeCurrent();
+      addNewBlockBeforeCurrent(view);
+      view.focus();
     } else if (cmdId === kCmdNewBlockAtEnd) {
       getEditor().addNewBlockAfterLast();
     } else if (cmdId === kCmdNewBlockAtStart) {

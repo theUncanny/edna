@@ -54,7 +54,6 @@ function loadCurrencies() {
         );
       });
     didLoadCurrencies = true;
-    console.log("currenciesLoadedCb:", currenciesLoadedCb);
     if (currenciesLoadedCb) {
       currenciesLoadedCb();
     }

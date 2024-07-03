@@ -36,8 +36,7 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
   return true;
 };
 
-export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
-  console.log("addNewBlockBeforeCurrent");
+export function addNewBlockBeforeCurrent({ state, dispatch }) {
   if (state.readOnly) return false;
 
   const block = getActiveNoteBlock(state);
@@ -62,7 +61,7 @@ export const addNewBlockBeforeCurrent = ({ state, dispatch }) => {
     ),
   );
   return true;
-};
+}
 
 export function addNewBlockAfterCurrent({ state, dispatch }) {
   if (state.readOnly) return false;
