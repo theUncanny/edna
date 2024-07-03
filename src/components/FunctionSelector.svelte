@@ -1,19 +1,19 @@
 <script>
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
-  import { blockFunctions } from "../functions";
   import { len, splitFilterLC, stringMatchesParts } from "../util";
+  import { getBoopFunctions } from "../functions";
 
-  /** @typedef {import("../functions").BlockFunction} BlockFunction */
+  /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
   /** @type {{
-   runFunction: (fn: BlockFunction, replace: boolean) => void,
+   runFunction: (fn: BoopFunction, replace: boolean) => void,
   }}*/
 
   let { runFunction } = $props();
 
   /** @typedef {{
-    fdef: BlockFunction,
+    fdef: BoopFunction,
     key: number,
     name: string,
     nameLC: string,
@@ -25,6 +25,7 @@
    * @returns {Item[]}
    */
   function buildItems() {
+    let blockFunctions = getBoopFunctions();
     let n = len(blockFunctions);
     let res = Array(n);
     let key = 0;

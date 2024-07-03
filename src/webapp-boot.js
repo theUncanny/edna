@@ -18,6 +18,11 @@ import { mount, unmount } from "svelte";
 import App from "./components/App.svelte";
 import AskFSPermissions from "./components/AskFSPermissions.svelte";
 import { hasHandlePermission } from "./fileutil";
+import {
+  findFunctionByName,
+  getBoopFunctions,
+  runBoopFunctionWithText,
+} from "./functions";
 
 /** @typedef {import("./settings").Settings} Settings */
 
@@ -25,8 +30,19 @@ import { hasHandlePermission } from "./fileutil";
 
 let appSvelte;
 
+async function testFuncs() {
+  let funcs = getBoopFunctions();
+  console.log("func[0]:", funcs[0]);
+  let f = findFunctionByName(funcs, "Camel Case");
+  console.log("f:", f);
+  runBoopFunctionWithText(f, "this is a test string");
+}
+
 export async function boot() {
   console.log("booting");
+
+  // await testFuncs();
+
   loadInitialSettings();
 
   let dh = await dbGetDirHandle();

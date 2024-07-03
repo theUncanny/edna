@@ -23,10 +23,21 @@ export function getHelp(platform = platformName) {
   return fixUpNoteContent(help);
 }
 
+export const blockHdrJavaScript = "\n∞∞∞javascript\n";
+
 /**
  * @returns {string}
  */
 export function getBuiltInFunctionsNote() {
+  let s = builtInFunctionsRaw;
+  let res = s.replace("// ----------------------------", blockHdrJavaScript);
+  return res;
+}
+
+/**
+ * @returns {string}
+ */
+export function getBuiltInFunctionsJS() {
   return builtInFunctionsRaw;
 }
 

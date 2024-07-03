@@ -1,13 +1,13 @@
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Add Slashes",
-		"description":"Escapes your text.",
-		"author":"Ivan",
-		"icon":"quote",
-		"tags":"add,slashes,escape"
-	}
+{
+  "api":1,
+  "name":"Add Slashes",
+  "description":"Escapes your text.",
+  "author":"Ivan",
+  "icon":"quote",
+  "tags":"add,slashes,escape"
+}
 **/
 
 function main(input) {
@@ -29,14 +29,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Android Strings to iOS Localizables",
-    "description":"Converts Android Strings to iOS localizables.",
-    "author":"Manuel Kunz (https://github.com/KunzManuel)",
-    "icon":"translation",
-    "tags":"string,android,ios"
-  }
+{
+  "api":1,
+  "name":"Android Strings to iOS Localizables",
+  "description":"Converts Android Strings to iOS localizables.",
+  "author":"Manuel Kunz (https://github.com/KunzManuel)",
+  "icon":"translation",
+  "tags":"string,android,ios"
+}
 **/
 
 function main(input) {
@@ -55,14 +55,14 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"ASCII To Hex",
-		"description":"Converts ASCII characters to hexadecimal codes.",
-		"author":"aWZHY0yQH81uOYvH",
-		"icon":"metamorphose",
-		"tags":"ascii,hex,convert"
-	}
+{
+  "api":1,
+  "name":"ASCII To Hex",
+  "description":"Converts ASCII characters to hexadecimal codes.",
+  "author":"aWZHY0yQH81uOYvH",
+  "icon":"metamorphose",
+  "tags":"ascii,hex,convert"
+}
 **/
 
 function main(state) {
@@ -76,49 +76,46 @@ function main(state) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Base64 Decode",
-		"description":"Decodes your text from Base64",
-		"author":"See Source",
-		"icon":"metamorphose",
-		"tags":"base64,btoa,decode"
-	}
+{
+  "api":1,
+  "name":"Base64 Decode",
+  "description":"Decodes your text from Base64",
+  "author":"See Source",
+  "icon":"metamorphose",
+  "tags":"base64,btoa,decode"
+}
 **/
-
-const { decode } = require("@boop/base64");
-
+  
 function main(input) {
-  input.text = decode(input.text);
+  input.text = atob(input.text);
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Base64 Encode",
-		"description":"Encodes your text to Base64",
-		"author":"See Source",
-		"icon":"metamorphose",
-		"tags":"base64,atob,encode"
-	}
+{
+  "api":1,
+  "name":"Base64 Encode",
+  "description":"Encodes your text to Base64",
+  "author":"See Source",
+  "icon":"metamorphose",
+  "tags":"base64,atob,encode"
+}
 **/
 
-const { encode } = require("@boop/base64");
 
 function main(input) {
-  input.text = encode(input.text);
+  input.text = btoa(input.text);
 }
 // ----------------------------
 /**
- {
-   "api": 1,
-   "name": "Binary to Decimal",
-   "description": "Converts binary values to decimal.",
-   "author": "Maurice",
-   "icon": "metamorphose",
-   "tags": "decimal,binary,dec,bin"
- }
- **/
+{
+  "api": 1,
+  "name": "Binary to Decimal",
+  "description": "Converts binary values to decimal.",
+  "author": "Maurice",
+  "icon": "metamorphose",
+  "tags": "decimal,binary,dec,bin"
+}
+**/
 
 function main(state) {
   var text = state.text;
@@ -143,32 +140,32 @@ function main(state) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Camel Case",
-		"description":"convertsYourTextToCamelCase",
-		"author":"Ivan",
-		"icon":"camel",
-		"tags":"camel,case,function,lodash"
-	}
+{
+  "api":1,
+  "name":"Camel Case",
+  "description":"convertsYourTextToCamelCase",
+  "author":"Ivan",
+  "icon":"camel",
+  "tags":"camel,case,function,lodash"
+}
 **/
 
-const { camelCase } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.text = camelCase(input.text);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.camelCase(input.text);
 }
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Collapse lines",
-        "description":"Removes all linebreaks from your text",
-        "author":"Dennis",
-        "icon":"collapse",
-        "tags":"strip,remove,collapse,join"
-    }
+{
+  "api":1,
+  "name":"Collapse lines",
+  "description":"Removes all linebreaks from your text",
+  "author":"Dennis",
+  "icon":"collapse",
+  "tags":"strip,remove,collapse,join"
+}
 **/
 
 function main(input) {
@@ -179,31 +176,31 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Count Characters",
-		"description":"Get the length of your text",
-		"author":"Ivan",
-		"icon":"counter",
-		"tags":"count,length,size,character"
-	}
+{
+  "api":1,
+  "name":"Count Characters",
+  "description":"Get the length of your text",
+  "author":"Ivan",
+  "icon":"counter",
+  "tags":"count,length,size,character"
+}
 **/
 
-const { size } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.postInfo(`${size(input.text)} characters`);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.postInfo(`${lodash.size(input.text)} characters`);
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Count Lines",
-		"description":"Get the line count of your text",
-		"author":"andipaetzold",
-		"icon":"counter",
-		"tags":"count,length,size,line"
-	}
+{
+  "api":1,
+  "name":"Count Lines",
+  "description":"Get the line count of your text",
+  "author":"andipaetzold",
+  "icon":"counter",
+  "tags":"count,length,size,line"
+}
 **/
 
 function main(input) {
@@ -211,14 +208,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Count Words",
-    "description":"Get the word count of your text",
-    "author":"Daniel Stone",
-    "icon":"counter",
-    "tags":"count,length,size,words"
-  }
+{
+  "api":1,
+  "name":"Count Words",
+  "description":"Get the word count of your text",
+  "author":"Daniel Stone",
+  "icon":"counter",
+  "tags":"count,length,size,words"
+}
 **/
 function main(input) {
   let words = input.text.trim().match(/\S+/g);
@@ -226,19 +223,20 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":2,
-		"name":"CSV to JSON",
-		"description":"Converts comma-separated tables to JSON.",
-		"author":"Ivan",
-		"icon":"table",
-		"tags":"table,convert",
-        	"bias": -0.2
-	}
+{
+  "api":2,
+  "name":"CSV to JSON",
+  "description":"Converts comma-separated tables to JSON.",
+  "author":"Ivan",
+  "icon":"table",
+  "tags":"table,convert",
+  "bias": -0.2
+}
 **/
-const Papa = require("@boop/papaparse.js");
 
 function main(state) {
+  // @ts-ignore
+  let Papa = (await import("https://esm.sh/papaparse@5.4.1")).default;
   try {
     const { data } = Papa.parse(state.text, { header: true });
     state.text = JSON.stringify(data, null, 2);
@@ -249,14 +247,14 @@ function main(state) {
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Date to Timestamp",
-        "description":"Converts dates to Unix timestamp.",
-        "author":"Noah Halford",
-        "icon":"watch",
-        "tags":"date,time,calendar,unix,timestamp"
-    }
+{
+  "api":1,
+  "name":"Date to Timestamp",
+  "description":"Converts dates to Unix timestamp.",
+  "author":"Noah Halford",
+  "icon":"watch",
+  "tags":"date,time,calendar,unix,timestamp"
+}
 **/
 
 function main(input) {
@@ -271,14 +269,14 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Date to UTC",
-		"description":"Converts dates and timestamps to UTC dates",
-		"author":"Ivan",
-		"icon":"watch",
-		"tags":"date,time,calendar,unix,timestamp"
-	}
+{
+  "api":1,
+  "name":"Date to UTC",
+  "description":"Converts dates and timestamps to UTC dates",
+  "author":"Ivan",
+  "icon":"watch",
+  "tags":"date,time,calendar,unix,timestamp"
+}
 **/
 
 function main(input) {
@@ -306,33 +304,33 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Deburr",
-		"description":"Converts your text to basic latin characters.",
-		"author":"Ivan",
-		"icon":"colosseum",
-		"tags":"burr,special,characters,function,lodash"
-	}
+{
+  "api":1,
+  "name":"Deburr",
+  "description":"Converts your text to basic latin characters.",
+  "author":"Ivan",
+  "icon":"colosseum",
+  "tags":"burr,special,characters,function,lodash"
+}
 **/
 
-const { deburr } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.text = deburr(input.text);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.deburr(input.text);
 }
 
 // ----------------------------
 /**
- {
-   "api": 1,
-   "name": "Decimal to Binary",
-   "description": "Converts decimal values to binary.",
-   "author": "Maurice",
-   "icon": "metamorphose",
-   "tags": "decimal,binary,dec,bin"
- }
- **/
+{
+  "api": 1,
+  "name": "Decimal to Binary",
+  "description": "Converts decimal values to binary.",
+  "author": "Maurice",
+  "icon": "metamorphose",
+  "tags": "decimal,binary,dec,bin"
+}
+**/
 
 function main(state) {
   var text = state.text;
@@ -357,15 +355,15 @@ function main(state) {
 
 // ----------------------------
 /**
- {
-   "api": 1,
-   "name": "Decimal to Hex",
-   "description": "Converts decimal values to hexadecimal.",
-   "author": "Maurice",
-   "icon": "metamorphose",
-   "tags": "decimal,hexadecimal,dec,hex"
- }
- **/
+{
+  "api": 1,
+  "name": "Decimal to Hex",
+  "description": "Converts decimal values to hexadecimal.",
+  "author": "Maurice",
+  "icon": "metamorphose",
+  "tags": "decimal,hexadecimal,dec,hex"
+}
+**/
 
 function main(state) {
   var text = state.text;
@@ -389,14 +387,14 @@ function main(state) {
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Downcase",
-        "description":"Converts your text to lowercase.",
-        "author":"Dan2552",
-        "icon":"type",
-        "tags":"downcase,lowercase"
-    }
+{
+  "api":1,
+  "name":"Downcase",
+  "description":"Converts your text to lowercase.",
+  "author":"Dan2552",
+  "icon":"type",
+  "tags":"downcase,lowercase"
+}
 **/
 
 function main(input) {
@@ -405,14 +403,14 @@ function main(input) {
 
 // ----------------------------
 /**
-     {
-         "api":1,
-         "name":"Eval Javascript",
-         "description":"Runs your text as Javascript Code.",
-         "author":"Sebastiaan Besselsen",
-         "icon":"command",
-         "tags":"js,script,run"
-     }
+{
+  "api":1,
+  "name":"Eval Javascript",
+  "description":"Runs your text as Javascript Code.",
+  "author":"Sebastiaan Besselsen",
+  "icon":"command",
+  "tags":"js,script,run"
+}
  **/
 
 function main(input) {
@@ -475,32 +473,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Format CSS",
-		"description":"Cleans and format CSS stylesheets.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"css,prettify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { css } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = css(state.text);
+{
+  "api":1,
+  "name":"Format JSON",
+  "description":"Cleans and format JSON documents.",
+  "author":"Ivan",
+  "icon":"broom",
+  "tags":"json,prettify,clean,indent"
 }
-// ----------------------------
-/**
-	{
-		"api":1,
-		"name":"Format JSON",
-		"description":"Cleans and format JSON documents.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"json,prettify,clean,indent"
-	}
 **/
 
 function main(state) {
@@ -514,51 +494,14 @@ function main(state) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Format SQL",
-		"description":"Cleans and format SQL queries.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"mysql,sql,prettify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { sql } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = sql(state.text);
+{
+  "api":1,
+  "name":"Hex to RGB",
+  "description":"Convert color in hexadecimal to RGB.",
+  "author":"Venkat",
+  "icon":"color-wheel",
+  "tags":"hex,color,rgb,convert"
 }
-// ----------------------------
-/**
-	{
-		"api":1,
-		"name":"Format XML",
-		"description":"Cleans and format XML/HTML documents.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"html,prettify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { xml } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = xml(state.text);
-}
-
-// ----------------------------
-/**
-     {
-         "api":1,
-         "name":"Hex to RGB",
-         "description":"Convert color in hexadecimal to RGB.",
-         "author":"Venkat",
-         "icon":"color-wheel",
-         "tags":"hex,color,rgb,convert"
-     }
  **/
 
 function main(input) {
@@ -587,14 +530,14 @@ function cutHex(h) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Hex To ASCII",
-		"description":"Converts hexadecimal values into ASCII characters",
-		"author":"aWZHY0yQH81uOYvH",
-		"icon":"metamorphose",
-		"tags":"hex,ascii,convert"
-	}
+{
+  "api":1,
+  "name":"Hex To ASCII",
+  "description":"Converts hexadecimal values into ASCII characters",
+  "author":"aWZHY0yQH81uOYvH",
+  "icon":"metamorphose",
+  "tags":"hex,ascii,convert"
+}
 **/
 
 function main(state) {
@@ -619,15 +562,15 @@ function main(state) {
 
 // ----------------------------
 /**
- {
-   "api": 1,
-   "name": "Hex to Dec",
-   "description": "Converts hexadecimal to decimal.",
-   "author": "Maurice",
-   "icon": "metamorphose",
-   "tags": "decimal,hexadecimal,dec,hex"
- }
- **/
+{
+  "api": 1,
+  "name": "Hex to Dec",
+  "description": "Converts hexadecimal to decimal.",
+  "author": "Maurice",
+  "icon": "metamorphose",
+  "tags": "decimal,hexadecimal,dec,hex"
+}
+**/
 
 function main(state) {
   var text = state.text;
@@ -652,51 +595,52 @@ function main(state) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"HTML Decode",
-		"description":"Decodes HTML entities in your text",
-		"author":"See Source",
-		"icon":"HTML",
-		"tags":"html,decode,web"
-	}
+{
+  "api":1,
+  "name":"HTML Decode",
+  "description":"Decodes HTML entities in your text",
+  "author":"See Source",
+  "icon":"HTML",
+  "tags":"html,decode,web"
+}
 **/
 
-const { decode } = require("@boop/he");
-
 function main(input) {
-  input.text = decode(input.text);
+  // @ts-ignore
+  let he =  (await import("https://esm.sh/html-entities@2.5.2"))
+  input.text = he.decode(input.text);
 }
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"HTML Encode",
-		"description":"Encodes HTML entities in your text",
-		"author":"See Source",
-		"icon":"HTML",
-		"tags":"html,encode,web"
-	}
+{
+  "api":1,
+  "name":"HTML Encode",
+  "description":"Encodes HTML entities in your text",
+  "author":"See Source",
+  "icon":"HTML",
+  "tags":"html,encode,web"
+}
 **/
 
-const { encode } = require("@boop/he");
 
-function main(input) {
-  input.text = encode(input.text);
+async function main(input) {
+  // @ts-ignore
+  let he =  (await import("https://esm.sh/html-entities@2.5.2"))
+  input.text = he.encode(input.text);
 }
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"HTML Encode all characters",
-        "description":"HTML Encodes every character in your text",
-        "author":"Ivan",
-        "icon":"HTML",
-        "tags":"html,encode,web,email",
-        "bias":-0.1
-    }
+{
+  "api":1,
+  "name":"HTML Encode all characters",
+  "description":"HTML Encodes every character in your text",
+  "author":"Ivan",
+  "icon":"HTML",
+  "tags":"html,encode,web,email",
+  "bias":-0.1
+}
 **/
 
 function main(input) {
@@ -710,14 +654,14 @@ function main(input) {
 
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"iOS Localizables to Android Strings",
-    "description":"Converts iOS Localizables to Android Strings",
-    "author":"Manuel Kunz (https://github.com/KunzManuel)",
-    "icon":"translation",
-    "tags":"string,android,ios"
-  }
+{
+  "api":1,
+  "name":"iOS Localizables to Android Strings",
+  "description":"Converts iOS Localizables to Android Strings",
+  "author":"Manuel Kunz (https://github.com/KunzManuel)",
+  "icon":"translation",
+  "tags":"string,android,ios"
+}
 **/
 
 function main(input) {
@@ -742,15 +686,15 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"JSON to CSV",
-		"description":"Converts JSON to comma-separated tables.",
-		"author":"Ivan",
-		"icon":"table",
-		"tags":"table,convert",
-        "bias": -0.2
-	}
+{
+  "api":1,
+  "name":"JSON to CSV",
+  "description":"Converts JSON to comma-separated tables.",
+  "author":"Ivan",
+  "icon":"table",
+  "tags":"table,convert",
+      "bias": -0.2
+}
 **/
 
 // Inspired by https://stackoverflow.com/a/31536517/2053038
@@ -776,14 +720,14 @@ function main(state) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"JSON to Query String",
-		"description":"Converts JSON to URL query string.",
-		"author":"Ota Mares <ota@mares.one>",
-		"icon":"website",
-		"tags":"url,query,params,json,convert,encode"
-	}
+{
+  "api":1,
+  "name":"JSON to Query String",
+  "description":"Converts JSON to URL query string.",
+  "author":"Ota Mares <ota@mares.one>",
+  "icon":"website",
+  "tags":"url,query,params,json,convert,encode"
+}
 **/
 
 /**
@@ -818,19 +762,19 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"JSON to YAML",
-		"description":"Converts JSON to YAML.",
-		"author":"Ivan",
-		"icon":"metamorphose",
-		"tags":"markup,convert"
-	}
+{
+  "api":1,
+  "name":"JSON to YAML",
+  "description":"Converts JSON to YAML.",
+  "author":"Ivan",
+  "icon":"metamorphose",
+  "tags":"markup,convert"
+}
 **/
 
-const yaml = require("@boop/js-yaml");
-
-function main(input) {
+async function main(input) {
+  // @ts-ignore
+  const yaml = (await import("https://esm.sh/js-yaml@4.1.0")).default
   try {
     input.text = yaml.safeDump(JSON.parse(input.text));
   } catch (error) {
@@ -839,17 +783,15 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"JWT Decode",
-    "description":"Converts JWTs to JSON",
-    "author":"Nils Sonemann",
-    "icon":"identification",
-    "tags":"decode,jwt,token"
-  }
+{
+  "api":1,
+  "name":"JWT Decode",
+  "description":"Converts JWTs to JSON",
+  "author":"Nils Sonemann",
+  "icon":"identification",
+  "tags":"decode,jwt,token"
+}
 **/
-
-const { decode } = require("@boop/base64");
 
 function main(input) {
   var t = input.text;
@@ -859,8 +801,8 @@ function main(input) {
     return;
   }
 
-  var header = decode(jwtParts[0]);
-  var payload = decode(jwtParts[1]);
+  var header = atob(jwtParts[0]);
+  var payload = atob(jwtParts[1]);
   var signature = jwtParts[2];
 
   try {
@@ -879,33 +821,33 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Kebab Case",
-		"description":"converts-your-text-to-kebab-case.",
-		"author":"Ivan",
-		"icon":"kebab",
-		"tags":"kebab,case,function,lodash"
-	}
+{
+  "api":1,
+  "name":"Kebab Case",
+  "description":"converts-your-text-to-kebab-case.",
+  "author":"Ivan",
+  "icon":"kebab",
+  "tags":"kebab,case,function,lodash"
+}
 **/
 
-const { kebabCase } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.text = kebabCase(input.text);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.kebabCase(input.text);
 }
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Lorem Ipsum",
-        "description":"Generates Lorem Ipsum placeholder text.",
-        "author":"luisfontes19",
-        "icon":"type",
-        "tags":"generate,lorem,ipsum,text",
-        "bias": -0.1
-    }
+{
+  "api":1,
+  "name":"Lorem Ipsum",
+  "description":"Generates Lorem Ipsum placeholder text.",
+  "author":"luisfontes19",
+  "icon":"type",
+  "tags":"generate,lorem,ipsum,text",
+  "bias": -0.1
+}
 **/
 
 function main(state) {
@@ -987,14 +929,14 @@ function main(state) {
 
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Markdown Quote",
-        "description":"Adds > to the start of every line of your text.",
-        "author":"Dan2552",
-        "icon":"term",
-        "tags":"quote,markdown"
-    }
+{
+  "api":1,
+  "name":"Markdown Quote",
+  "description":"Adds > to the start of every line of your text.",
+  "author":"Dan2552",
+  "icon":"term",
+  "tags":"quote,markdown"
+}
 **/
 
 function main(input) {
@@ -1006,107 +948,47 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"MD5 Checksum",
-		"description":"Computes the checksum of your text (Hex encoded).",
-		"author":"Ivan",
-		"icon":"fingerprint",
-		"tags":"strip,slashes,remove"
-	}
+{
+  "api":1,
+  "name":"MD5 Checksum",
+  "description":"Computes the checksum of your text (Hex encoded).",
+  "author":"Ivan",
+  "icon":"fingerprint",
+  "tags":"strip,slashes,remove"
+}
 **/
 
-const Hashes = require("@boop/hashes");
-
-function main(state) {
-  var MD5 = new Hashes.MD5();
-  state.text = MD5.hex(state.text);
+async function main(state) {
+  // @ts-ignore
+  let md5 = (await import("https://esm.sh/js-md5@0.8.3")).default;
+  state.text = md5.hex(state.text);
 }
-
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Minify CSS",
-		"description":"Cleans and minifies CSS stylesheets.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"css,minify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { cssmin } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = cssmin(state.text);
+{
+  "api":1,
+  "name":"Minify JSON",
+  "description":"Cleans and minifies JSON documents.",
+  "author":"riesentoaster",
+  "icon":"broom",
+  "tags":"html,minify,clean,indent",
+  "bias": -0.1
 }
-
-// ----------------------------
-/**
-	{
-		"api":1,
-		"name":"Minify JSON",
-		"description":"Cleans and minifies JSON documents.",
-		"author":"riesentoaster",
-		"icon":"broom",
-		"tags":"html,minify,clean,indent",
-        "bias": -0.1
-	}
 **/
 
 function main(input) {
   input.text = JSON.stringify(JSON.parse(input.text));
 }
-
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Minify SQL",
-		"description":"Cleans and minifies SQL queries.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"mysql,sql,minify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { sqlmin } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = sqlmin(state.text);
+{
+  "api":1,
+  "name":"Natural Sort Lines",
+  "description":"Sort lines with smart handling of numbers.",
+  "author":"Sebastiaan Besselsen",
+  "icon":"sort-numbers",
+  "tags":"sort,natural,natsort"
 }
-
-// ----------------------------
-/**
-	{
-		"api":1,
-		"name":"Minify XML",
-		"description":"Cleans and minifies XML/HTML documents.",
-		"author":"Ivan",
-		"icon":"broom",
-		"tags":"html,minify,clean,indent",
-        "bias": -0.1
-	}
-**/
-
-const { xmlmin } = require("@boop/vkBeautify");
-
-function main(state) {
-  state.text = xmlmin(state.text);
-}
-
-// ----------------------------
-/**
-     {
-         "api":1,
-         "name":"Natural Sort Lines",
-         "description":"Sort lines with smart handling of numbers.",
-         "author":"Sebastiaan Besselsen",
-         "icon":"sort-numbers",
-         "tags":"sort,natural,natsort"
-     }
  **/
 
 function main(input) {
@@ -1125,14 +1007,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"PHP Unserialize",
-    "description":"Convert PHP serialized data to JSON",
-    "author":"Rob Bogie",
-    "icon":"elephant",
-    "tags":"php,serialize,unserialize,json"
-  }
+{
+  "api":1,
+  "name":"PHP Unserialize",
+  "description":"Convert PHP serialized data to JSON",
+  "author":"Rob Bogie",
+  "icon":"elephant",
+  "tags":"php,serialize,unserialize,json"
+}
 **/
 
 function main(state) {
@@ -1304,14 +1186,14 @@ function unserialize(text, startPos = 0) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Query String to JSON",
-		"description":"Converts URL query string to JSON.",
-		"author":"Ota Mares <ota@mares.one>",
-		"icon":"website",
-		"tags":"url,query,params,json,convert,decode"
-	}
+{
+  "api":1,
+  "name":"Query String to JSON",
+  "description":"Converts URL query string to JSON.",
+  "author":"Ota Mares <ota@mares.one>",
+  "icon":"website",
+  "tags":"url,query,params,json,convert,decode"
+}
 **/
 
 function convertToJson(urlParams) {
@@ -1343,14 +1225,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Remove Duplicate Lines",
-        "description":"Ensures each line of your text is unique.",
-        "author":"andipaetzold",
-        "icon":"filtration",
-        "tags":"unique,duplicate"
-    }
+{
+  "api":1,
+  "name":"Remove Duplicate Lines",
+  "description":"Ensures each line of your text is unique.",
+  "author":"andipaetzold",
+  "icon":"filtration",
+  "tags":"unique,duplicate"
+}
 **/
 
 function main(input) {
@@ -1367,14 +1249,14 @@ function unique(array) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Remove Slashes",
-		"description":"Unescapes your text.",
-		"author":"Ivan",
-		"icon":"quote",
-		"tags":"strip,slashes,remove,unescape"
-	}
+{
+  "api":1,
+  "name":"Remove Slashes",
+  "description":"Unescapes your text.",
+  "author":"Ivan",
+  "icon":"quote",
+  "tags":"strip,slashes,remove,unescape"
+}
 **/
 
 function main(input) {
@@ -1409,14 +1291,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Replace Smart Quotes",
-		"description":"Replace Smart Quotes with their simpler values.",
-		"author":"Thomas Bauer (https://github.com/tbauer428)",
-		"icon":"broom",
-        "tags":"smart,quotes,quotations,quotation,smart-quotes,smart-quotations"
-	}
+{
+  "api":1,
+  "name":"Replace Smart Quotes",
+  "description":"Replace Smart Quotes with their simpler values.",
+  "author":"Thomas Bauer (https://github.com/tbauer428)",
+  "icon":"broom",
+      "tags":"smart,quotes,quotations,quotation,smart-quotes,smart-quotations"
+}
 **/
 
 function main(input) {
@@ -1428,14 +1310,14 @@ function main(input) {
 
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Reverse Lines",
-		"description":"Flips every line of your text.",
-		"author":"@Clarko",
-		"icon":"flip",
-		"tags":"reverse,order,invert,mirror,flip,upside,down"
-	}
+{
+  "api":1,
+  "name":"Reverse Lines",
+  "description":"Flips every line of your text.",
+  "author":"@Clarko",
+  "icon":"flip",
+  "tags":"reverse,order,invert,mirror,flip,upside,down"
+}
 **/
 
 function main(input) {
@@ -1443,14 +1325,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Reverse String",
-		"description":"!seod ti tahw sseuG",
-		"author":"See Source",
-		"icon":"flip",
-		"tags":"flip,mirror,invert"
-	}
+{
+  "api":1,
+  "name":"Reverse String",
+  "description":"!seod ti tahw sseuG",
+  "author":"See Source",
+  "icon":"flip",
+  "tags":"flip,mirror,invert"
+}
 **/
 
 function main(input) {
@@ -1458,7 +1340,6 @@ function main(input) {
 }
 
 /* 
-	
 	Snippet from https://github.com/mathiasbynens/esrever
 	
 	Copyright Mathias Bynens <https://mathiasbynens.be/>
@@ -1509,14 +1390,14 @@ var reverse = function (string) {
 };
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Rot13",
-    "description":"Applies the Rot13 cypher to your text.",
-    "author":"Paul Starr",
-    "icon":"roman",
-    "tags":"spoilers,encryption,plaintext"
-  }
+{
+  "api":1,
+  "name":"Rot13",
+  "description":"Applies the Rot13 cypher to your text.",
+  "author":"Paul Starr",
+  "icon":"roman",
+  "tags":"spoilers,encryption,plaintext"
+}
 **/
 
 function main(state) {
@@ -1531,64 +1412,62 @@ function main(state) {
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"SHA1 Hash",
-        "description":"Computes the SHA1 hash of your text (Hex encoded)",
-        "icon":"fingerprint",
-        "tags":"strip,slashes,remove"
-    }
+{
+  "api":1,
+  "name":"SHA1 Hash",
+  "description":"Computes the SHA1 hash of your text (Hex encoded)",
+  "icon":"fingerprint",
+  "tags":"strip,slashes,remove"
+}
 **/
 
-const Hashes = require("@boop/hashes");
-
-function main(state) {
-  var SHA1 = new Hashes.SHA1();
-  state.text = SHA1.hex(state.text);
+async function main(state) {
+  // @ts-ignore
+  let sha1 = (await import("https://esm.sh/js-sha1@0.7.0")).default;
+  state.text = sha1.hex(state.text);
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"SHA256 Hash",
-        "description":"Computes the SHA256 hash of your text (Hex encoded)",
-        "icon":"fingerprint",
-        "tags":"strip,slashes,remove"
-    }
+{
+  "api":1,
+  "name":"SHA256 Hash",
+  "description":"Computes the SHA256 hash of your text (Hex encoded)",
+  "icon":"fingerprint",
+  "tags":"strip,slashes,remove"
+}
 **/
-const Hashes = require("@boop/hashes");
 
 function main(state) {
-  var SHA256 = new Hashes.SHA256();
-  state.text = SHA256.hex(state.text);
+  // @ts-ignore
+  let sha256 = (await import("https://esm.sh/js-sha256@0.11.0")).default;
+  state.text = sha256.hex(state.text);
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"SHA512 Hash",
-        "description":"Computes the SHA512 hash of your text (Hex encoded)",
-        "icon":"fingerprint",
-        "tags":"strip,slashes,remove"
-    }
+{
+  "api":1,
+  "name":"SHA512 Hash",
+  "description":"Computes the SHA512 hash of your text (Hex encoded)",
+  "icon":"fingerprint",
+  "tags":"strip,slashes,remove"
+}
 **/
 
-const Hashes = require("@boop/hashes");
-
 function main(state) {
-  var SHA512 = new Hashes.SHA512();
-  state.text = SHA512.hex(state.text);
+  // @ts-ignore
+  let sha512 = (await import("https://esm.sh/js-sha512@0.9.0")).default;
+  state.text = sha512.hex(state.text);
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Shuffle Lines",
-		"description":"Randomize each line of your text.",
-		"author":"@Clarko",
-		"icon":"dice",
-		"tags":"shuffle,random"
-	}
+{
+  "api":1,
+  "name":"Shuffle Lines",
+  "description":"Randomize each line of your text.",
+  "author":"@Clarko",
+  "icon":"dice",
+  "tags":"shuffle,random"
+}
 **/
 
 function main(input) {
@@ -1607,32 +1486,32 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Snake Case",
-		"description":"converts_your_text_to_snake_case.",
-		"author":"Ivan",
-		"icon":"snake",
-		"tags":"snake,case,function,lodash"
-	}
+{
+  "api":1,
+  "name":"Snake Case",
+  "description":"converts_your_text_to_snake_case.",
+  "author":"Ivan",
+  "icon":"snake",
+  "tags":"snake,case,function,lodash"
+}
 **/
 
-const { snakeCase } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.text = snakeCase(input.text);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.snakeCase(input.text);
 }
 // ----------------------------
 /**
-     {
-         "api":1,
-         "name":"Sort lines",
-         "description":"Sort lines alphabetically.",
-         "author":"Sebastiaan Besselsen",
-         "icon":"sort-characters",
-         "tags":"sort,alphabet"
-     }
- **/
+{
+  "api":1,
+  "name":"Sort lines",
+  "description":"Sort lines alphabetically.",
+  "author":"Sebastiaan Besselsen",
+  "icon":"sort-characters",
+  "tags":"sort,alphabet"
+}
+**/
 
 function main(input) {
   let sorted = input.text
@@ -1648,14 +1527,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Sort JSON",
-    "description":"Sort JSON",
-    "author":"MaDnh",
-    "icon":"sort-characters",
-    "tags":"json,sort"
-  }
+{
+  "api":1,
+  "name":"Sort JSON",
+  "description":"Sort JSON",
+  "author":"MaDnh",
+  "icon":"sort-characters",
+  "tags":"json,sort"
+}
 **/
 
 function main(state) {
@@ -1739,31 +1618,31 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Start Case",
-		"description":"Converts Your Text To Start Case.",
-		"author":"Ivan",
-		"icon":"type",
-		"tags":"start,case,function,lodash"
-	}
+{
+  "api":1,
+  "name":"Start Case",
+  "description":"Converts Your Text To Start Case.",
+  "author":"Ivan",
+  "icon":"type",
+  "tags":"start,case,function,lodash"
+}
 **/
 
-const { startCase } = require("@boop/lodash.boop");
-
-function main(input) {
-  input.text = startCase(input.text);
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.startCase(input.text);
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Sum All",
-		"description":"Sums up a list of numbers.",
-		"author":"Annie Tran",
-		"icon":"abacus",
-		"tags":"sum,calculator,addition,add"
-	}
+{
+  "api":1,
+  "name":"Sum All",
+  "description":"Sums up a list of numbers.",
+  "author":"Annie Tran",
+  "icon":"abacus",
+  "tags":"sum,calculator,addition,add"
+}
 **/
 
 function main(input) {
@@ -1826,14 +1705,14 @@ function calculate(s) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Test Script",
-		"description":"Testing script",
-		"author":"Ivan",
-		"icon":"flask",
-		"tags":"test,test,one,two"
-	}
+{
+  "api":1,
+  "name":"Test Script",
+  "description":"Testing script",
+  "author":"Ivan",
+  "icon":"flask",
+  "tags":"test,test,one,two"
+}
 **/
 
 function main(input) {
@@ -1873,14 +1752,14 @@ This line was added on Fri, 19 Jun 2020 01:01:30 GMT
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"Trim",
-		"description":"Trims leading and trailing whitespace.",
-		"author":"Joshua Nozzi",
-		"icon":"scissors",
-		"tags":"trim,whitespace,empty,space",
-	}
+{
+  "api":1,
+  "name":"Trim",
+  "description":"Trims leading and trailing whitespace.",
+  "author":"Joshua Nozzi",
+  "icon":"scissors",
+  "tags":"trim,whitespace,empty,space",
+}
 **/
 
 function main(state) {
@@ -1888,14 +1767,14 @@ function main(state) {
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"Upcase",
-        "description":"Converts your text to uppercase.",
-        "author":"Dan2552",
-        "icon":"type",
-        "tags":"upcase,uppercase,capital,capitalize,capitalization"
-    }
+{
+  "api":1,
+  "name":"Upcase",
+  "description":"Converts your text to uppercase.",
+  "author":"Dan2552",
+  "icon":"type",
+  "tags":"upcase,uppercase,capital,capitalize,capitalization"
+}
 **/
 
 function main(input) {
@@ -1903,14 +1782,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"URL Decode",
-		"description":"Decodes URL entities in your text.",
-		"author":"Ivan",
-		"icon":"link",
-		"tags":"url,decode,convert"
-	}
+{
+  "api":1,
+  "name":"URL Decode",
+  "description":"Decodes URL entities in your text.",
+  "author":"Ivan",
+  "icon":"link",
+  "tags":"url,decode,convert"
+}
 **/
 
 function main(input) {
@@ -1918,14 +1797,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Defang",
-    "description":"Defangs dangerous URLs and other IOCs",
-    "author":"Ross",
-    "icon":"link",
-    "tags":"defang,url,ioc"
-  }
+{
+  "api":1,
+  "name":"Defang",
+  "description":"Defangs dangerous URLs and other IOCs",
+  "author":"Ross",
+  "icon":"link",
+  "tags":"defang,url,ioc"
+}
 **/
 
 function main(input) {
@@ -1937,14 +1816,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"URL Encode",
-		"description":"Encodes URL entities in your text.",
-		"author":"Ivan",
-		"icon":"link",
-		"tags":"url,encode,convert"
-	}
+{
+  "api":1,
+  "name":"URL Encode",
+  "description":"Encodes URL entities in your text.",
+  "author":"Ivan",
+  "icon":"link",
+  "tags":"url,encode,convert"
+}
 **/
 
 function main(input) {
@@ -1952,15 +1831,15 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"URL Entities Decode",
-		"description":"URL Decodes all characters in your text.",
-		"author":"luisfontes19",
-		"icon":"percentage",
-		"tags":"url,decode,full",
-        "bias": -0.1
-	}
+{
+  "api":1,
+  "name":"URL Entities Decode",
+  "description":"URL Decodes all characters in your text.",
+  "author":"luisfontes19",
+  "icon":"percentage",
+  "tags":"url,decode,full",
+  "bias": -0.1
+}
 **/
 
 function fullUrlDecode(str) {
@@ -1979,15 +1858,15 @@ function main(state) {
 }
 // ----------------------------
 /**
-    {
-        "api":1,
-        "name":"URL Entity Encode",
-        "description":"URL Encodes all characters in your text.",
-        "author":"luisfontes19",
-        "icon":"percentage",
-        "tags":"url,encode,full",
-        "bias": -0.1
-    }
+{
+  "api":1,
+  "name":"URL Entity Encode",
+  "description":"URL Encodes all characters in your text.",
+  "author":"luisfontes19",
+  "icon":"percentage",
+  "tags":"url,encode,full",
+  "bias": -0.1
+}
 **/
 
 function fullUrlEncode(str) {
@@ -2006,14 +1885,14 @@ function main(state) {
 }
 // ----------------------------
 /**
-  {
-    "api":1,
-    "name":"Refang",
-    "description":"Removes defanging from dangerous URLs and other IOCs",
-    "author":"Ross",
-    "icon":"link",
-    "tags":"refang,url,ioc"
-  }
+{
+  "api":1,
+  "name":"Refang",
+  "description":"Removes defanging from dangerous URLs and other IOCs",
+  "author":"Ross",
+  "icon":"link",
+  "tags":"refang,url,ioc"
+}
 **/
 
 function main(input) {
@@ -2025,14 +1904,14 @@ function main(input) {
 }
 // ----------------------------
 /**
-	{
-		"api":1,
-		"name":"YAML to JSON",
-		"description":"Converts YAML to JSON.",
-		"author":"Ivan",
-		"icon":"metamorphose",
-		"tags":"markup,convert"
-	}
+{
+  "api":1,
+  "name":"YAML to JSON",
+  "description":"Converts YAML to JSON.",
+  "author":"Ivan",
+  "icon":"metamorphose",
+  "tags":"markup,convert"
+}
 **/
 
 async function main(input) {

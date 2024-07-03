@@ -2,13 +2,11 @@ import {
   getLanguage,
   langGetPrettierInfo,
   langSupportsFormat,
-  langSupportsRun,
 } from "../languages.js";
 
 import { EditorSelection } from "@codemirror/state";
 import { findEditorByView } from "../../state.js";
 import { getActiveNoteBlock } from "./block.js";
-import { setReadOnly } from "../editor.js";
 
 /**
  * @param {string} s
@@ -38,12 +36,12 @@ async function formatGo(s) {
   return res.Body;
 }
 
-/** @typedef {import("../../functions").BlockFunction} BlockFunction */
+/** @typedef {import("../../functions").BoopFunction} BoopFunction */
 
 /** @typedef {import("@codemirror/view").EditorView} EditorView */
 /**
  * @param {EditorView} view
- * @param {BlockFunction} fdef
+ * @param {BoopFunction} fdef
  * @param {boolean} replace
  * @returns {Promise<boolean>}
  */

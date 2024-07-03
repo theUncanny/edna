@@ -106,7 +106,7 @@
   import { runBlockContent, runGo, runJS } from "../run";
   import { EditorView } from "@codemirror/view";
 
-  /** @typedef {import("../functions").BlockFunction} BlockFunction */
+  /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
   let initialSettings = getSettings();
 
@@ -533,7 +533,7 @@
   }
 
   /**
-   * @param {BlockFunction} fdef
+   * @param {BoopFunction} fdef
    * @param {boolean} replace
    */
   async function runFunctionWithActiveBlock(fdef, replace) {
@@ -655,7 +655,7 @@
     ];
 
     const menuRun = [
-      ["Run " + language + "block\tAlt + Shift + R", kCmdRunBlock],
+      ["Run " + language + " block\tAlt + Shift + R", kCmdRunBlock],
       ["Function with block content", kCmdRunFunctionWithBlockContent],
       ["Show built-in functions", kCmdShowBuiltInFunctions],
       ["Help", kCmdRunHelp],
