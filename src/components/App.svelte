@@ -166,6 +166,7 @@
 
   let didAppExit = false;
   async function onAppExit() {
+    console.log("onAppExit()");
     if (didAppExit) {
       return;
     }
@@ -175,6 +176,8 @@
     }
     didAppExit = true;
     logAppExit(); // TODO: not sure if this async func will complete
+    // keep us alive to allow the above async code finish
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   $effect(() => {
     console.log("App.svelte did mount");
