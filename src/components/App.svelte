@@ -80,6 +80,7 @@
   import CommandPalette from "./CommandPalette.svelte";
   import Find from "./Find.svelte";
   import FunctionSelector from "./FunctionSelector.svelte";
+  import { dirtyState } from "../state.svelte";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -164,32 +165,42 @@
     getEditor().setSpellChecking(isSpellChecking);
   });
 
-  let didAppExit = false;
-  async function onAppExit() {
-    console.log("onAppExit()");
-    if (didAppExit) {
-      return;
-    }
-    let e = getEditor();
-    if (e) {
-      await e.saveCurrentNote();
-    }
-    didAppExit = true;
-    logAppExit(); // TODO: not sure if this async func will complete
-    // keep us alive to allow the above async code finish
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
   $effect(() => {
     console.log("App.svelte did mount");
     maybeBackupNotes();
     window.addEventListener("keydown", onKeyDown);
 
-    window.addEventListener("beforeunload", async () => {
-      await onAppExit();
+    window.addEventListener("beforeunload", async (ev) => {
+      // I would prevent to just save the content but
+      // async write to disk doesn't seem to get executed
+      /*
+        let e = getEditor();
+        if (e) {
+          await e.saveCurrentNote();
+        }
+      */
+
+      if (dirtyState.isDirty) {
+        // show a dialog that the content might be lost
+        ev.preventDefault();
+        ev.returnValue = true;
+      } else {
+        logAppExit();
+      }
     });
-    window.addEventListener("onunload", async () => {
-      await onAppExit();
-    });
+
+    //    window.onbeforeunload = async (ev) => {
+    // //ev.preventDefault();
+    // try {
+    //   await onAppExit();
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    // setTimeout(() => {
+    //   console.log("yes, fnished");
+    // }, 1000); // wait for 1 second
+    // return false;
+    //  };
 
     logAppOpen();
 
