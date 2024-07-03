@@ -92,22 +92,16 @@ html.dark select {
 }
 
 .selector {
-  font-size: 13px;
+  /* font-size: 13px; */
   max-height: calc(100% - 4rem);
 
+  @apply text-sm;
   @apply bg-white;
-}
-
-html.dark .selector {
-  @apply bg-gray-900 text-gray-300;
+  @apply dark:bg-gray-900 dark:text-gray-300;
 }
 
 .selector .red {
-  color: red;
-}
-
-html.dark .selector .red {
-  color: #ff7b72;
+  @apply text-red-500 dark:text-red-400;
 }
 
 /* for getScrollbarWidth() */

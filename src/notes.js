@@ -130,7 +130,7 @@ export async function dbDelDirHandle() {
   storageFS = null;
 }
 
-const kEdnaFileExt = ".edna.txt";
+export const kEdnaFileExt = ".edna.txt";
 const kEdnaEncrFileExt = ".encr.edna.txt";
 
 function isEncryptedEdnaFile(fileName) {
@@ -160,8 +160,8 @@ function trimEdnaExt(name) {
  * @param {boolean} [isEncr]
  * @returns {string}
  */
-export function notePathFromNameFS(name, isEncr = null) {
-  if (isEncr === null) {
+export function notePathFromNameFS(name, isEncr = undefined) {
+  if (isEncr === undefined) {
     isEncr = isEncryptedNote(name);
   }
   let ext = isEncr ? kEdnaEncrFileExt : kEdnaFileExt;

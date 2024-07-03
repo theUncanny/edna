@@ -12,6 +12,7 @@ import {
 import {
   forEachNoteFileFS,
   getStorageFS,
+  kEdnaFileExt,
   kMetadataName,
   loadNote,
   loadNoteNames,
@@ -20,6 +21,7 @@ import {
 } from "./notes";
 import { formatDateYYYYMMDD, len, throwIf } from "./util";
 import { getSettings, kSettingsPath, loadSettings } from "./settings";
+import { toFileName } from "./filenamify";
 
 /**
  * @param {any} libZip
@@ -58,7 +60,8 @@ export async function exportUnencryptedNotesToZipBlob() {
   let noteNames = await loadNoteNames();
   for (let name of noteNames) {
     let s = await loadNote(name);
-    let fileName = notePathFromNameFS(name);
+    // always use un-encrypted file extension
+    let fileName = notePathFromNameFS(name, false);
     await addTextFile(libZip, zipWriter, fileName, s);
   }
   {
