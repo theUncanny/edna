@@ -1,15 +1,10 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView, drawSelection, lineNumbers } from "@codemirror/view";
 import { SET_CONTENT, heynoteEvent } from "./annotation.js";
-import {
-  changeCurrentBlockLanguage,
-  gotoBlock,
-  selectAll,
-} from "./block/commands.js";
+import { changeCurrentBlockLanguage, selectAll } from "./block/commands.js";
 import {
   blockLineNumbers,
   blockState,
-  getActiveNoteBlock,
   noteBlockExtension,
 } from "./block/block.js";
 import { foldGutter, indentUnit } from "@codemirror/language";
@@ -197,10 +192,6 @@ export class EdnaEditor {
     return this.view.state.selection.main.head;
   }
 
-  getActiveNoteBlock() {
-    return getActiveNoteBlock(this.view.state);
-  }
-
   focus() {
     // console.log("focus");
     focusEditorView(this.view);
@@ -270,10 +261,6 @@ export class EdnaEditor {
         value ? [closeBrackets()] : [],
       ),
     });
-  }
-
-  gotoBlock(n) {
-    gotoBlock(n, this.view);
   }
 
   selectAll() {

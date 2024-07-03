@@ -232,7 +232,7 @@ function nextBlockNo(index, state, range) {
   }
 }
 
-export function gotoBlock(n, view) {
+export function gotoBlock(view, n) {
   let { state, dispatch } = view;
   return moveSel(state, dispatch, (range) => nextBlockNo(n, state, range));
 }

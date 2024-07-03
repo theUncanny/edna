@@ -92,10 +92,12 @@
     addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
     addNewBlockBeforeFirst,
+    gotoBlock,
     gotoNextBlock,
     gotoPreviousBlock,
     insertNewBlockAtCursor,
   } from "../editor/block/commands";
+  import { getActiveNoteBlock } from "../editor/block/block";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -441,8 +443,9 @@
   let initialBlockSelection = $state(0);
 
   function openBlockSelector() {
+    let view = getEditorView();
     let blocks = getEditorComp().getBlocks();
-    let activeBlock = getEditorComp().getActiveNoteBlock();
+    let activeBlock = getActiveNoteBlock(view.state);
     let c = getEditorComp().getContent();
     /** @type {import("./BlockSelector.svelte").Item[]} */
     let items = [];
@@ -479,7 +482,8 @@
   function selectBlock(blockItem) {
     console.log(blockItem);
     let n = blockItem.key;
-    getEditorComp().gotoBlock(n);
+    let view = getEditorView();
+    gotoBlock(view, n);
     closeBlockSelector();
   }
 
@@ -577,7 +581,6 @@
   export const kCmdNewBlockAfterCurrent = nmid();
   const kCmdBlockFirst = kCmdNewBlockAfterCurrent;
   export const kCmdGoToBlock = nmid();
-  console.log("kCmdGoToBlock:", kCmdGoToBlock);
   export const kCmdNewBlockBeforeCurrent = nmid();
   export const kCmdNewBlockAtEnd = nmid();
   export const kCmdNewBlockAtStart = nmid();

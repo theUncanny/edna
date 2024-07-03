@@ -313,15 +313,6 @@
     editor.focus();
   }
 
-  export function getActiveNoteBlock() {
-    return editor.getActiveNoteBlock();
-  }
-
-  export function gotoBlock(n) {
-    editor.gotoBlock(n);
-    editor.focus();
-  }
-
   export function selectAll() {
     editor.selectAll();
     editor.focus();
