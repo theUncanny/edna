@@ -84,7 +84,6 @@
   import FunctionSelector from "./FunctionSelector.svelte";
   import { dirtyState } from "../state.svelte";
   import {
-    editorRunBlockFunction,
     formatBlockContent,
     insertAfterActiveBlock,
   } from "../editor/block/format-code";
@@ -102,9 +101,10 @@
     selectAll,
   } from "../editor/block/commands";
   import { getActiveNoteBlock } from "../editor/block/block";
-  import { EdnaEditor, getContent, setReadOnly } from "../editor/editor";
-  import { runBlockContent, runGo, runJS } from "../run";
-  import { EditorView } from "@codemirror/view";
+  import { EdnaEditor, getContent } from "../editor/editor";
+  import { runBlockContent } from "../run";
+  import { EditorSelection } from "@codemirror/state";
+  import { runBoopFunction } from "../functions";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -532,6 +532,91 @@
     getEditorComp().focus();
   }
 
+  /** @typedef {import("../functions").BoopFunctionArg} BoopFunctionArg*/
+
+  /**
+   * @param {BoopFunction} f
+   * @param {string} txt
+   * @returns {Promise<BoopFunctionArg>}
+   */
+  export async function runBoopFunctionWithText(f, txt) {
+    let input = {
+      text: txt,
+      fullText: txt,
+      postInfo: (s) => {
+        console.log("postInfo:", s);
+        addToast(s);
+      },
+      postError: (s) => {
+        console.log("postError:", s);
+        addToast("Error:" + s);
+      },
+    };
+    let res = await runBoopFunction(f, input);
+    console.log("res:", res);
+    return input;
+  }
+
+  /** @typedef {import("@codemirror/view").EditorView} EditorView */
+  /**
+   * @param {EditorView} view
+   * @param {BoopFunction} fdef
+   * @param {boolean} replace
+   * @returns {Promise<boolean>}
+   */
+  async function runBoopFunctionWithBlockContent(view, fdef, replace) {
+    const { state } = view;
+    if (state.readOnly) return false;
+    const block = getActiveNoteBlock(state);
+    console.log("editorRunBlockFunction:", block);
+    const cursorPos = state.selection.asSingle().ranges[0].head;
+    const content = state.sliceDoc(block.content.from, block.content.to);
+    let res = "";
+    let input = null;
+    try {
+      input = await runBoopFunctionWithText(fdef, content);
+      res = content;
+      if (input.text != content) {
+        res = input.text;
+      }
+      if (input.fullText != content) {
+        res = input.fullText;
+      }
+      console.log("res:", res);
+    } catch (e) {
+      console.log(e);
+      res = `error running ${fdef.name}: ${e}`;
+    }
+
+    if (replace) {
+      let cursorOffset = cursorPos - block.content.from;
+      const tr = view.state.update(
+        {
+          changes: {
+            from: block.content.from,
+            to: block.content.to,
+            insert: res,
+          },
+          selection: EditorSelection.cursor(
+            block.content.from + Math.min(cursorOffset, res.length),
+          ),
+        },
+        {
+          userEvent: "input",
+          scrollIntoView: true,
+        },
+      );
+      view.dispatch(tr);
+    } else {
+      // TODO: be more intelligent
+      let text = res;
+      if (!res.startsWith("\n∞∞∞")) {
+        text = "\n∞∞∞text-a\n" + res;
+      }
+      insertAfterActiveBlock(view, text);
+    }
+  }
+
   /**
    * @param {BoopFunction} fdef
    * @param {boolean} replace
@@ -547,7 +632,7 @@
     let name = fdef.name;
     let msg = `Running <span class="font-bold">${name}</span>...`;
     showModalMessageHTML(msg, 300);
-    await editorRunBlockFunction(view, fdef, replace);
+    await runBoopFunctionWithBlockContent(view, fdef, replace);
     clearModalMessage();
     view.focus();
   }
@@ -932,6 +1017,8 @@
     "Help",
     kCmdShowHelpAsNote,
     "Help as note",
+    kCmdRunFunctionWithBlockContent,
+    "Run function with block content",
   ];
 
   function commandNameOverride(id, name) {

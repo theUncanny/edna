@@ -13,13 +13,13 @@
 }}*/
   let { executeCommand, switchToNoteSelector, commandsDef } = $props();
 
-  /**
-   * @typedef {Object} Item
-   * @property {number} key
-   * @property {string} name
-   * @property {string} nameLC
-   * @property {string} shortcut
-   * @property {HTMLElement} ref
+  /** @typedef {{
+   key: number,
+   name: string,
+   nameLC: string,
+   shortcut: string,
+   ref: HTMLElement,
+  }} Item 
    */
 
   /**
@@ -87,10 +87,19 @@
     });
   });
 
+  /** @type {Item} */
   let selectedCommand = $state(null);
 
+  $effect(() => {
+    console.log("selectedCommand:", selectedCommand.name);
+  });
+
+  /**
+   * @param {Item} item
+   * @param {number} idx
+   */
   function selectionChanged(item, idx) {
-    // console.log("selectionChanged:", item, idx);
+    console.log("selectionChanged:", item.name, idx);
     if (idx != 1) {
       selectedCommand = item;
     }
@@ -106,6 +115,7 @@
     if (key === "Enter") {
       ev.preventDefault();
       if (selectedCommand) {
+        console.log("onKeyDown: selectedCommand:", selectedCommand.name);
         executeCommand(selectedCommand.key);
       }
     }

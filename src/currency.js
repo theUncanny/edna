@@ -30,12 +30,10 @@ function loadCurrencies() {
     // @ts-ignore
     let math = window.math;
     let base = data.base_code || data.base;
-    if (!didLoadCurrencies) {
-      math.createUnit(base, {
-        override: didLoadCurrencies,
-        aliases: [base.toLowerCase()],
-      });
-    }
+    math.createUnit(base, {
+      override: didLoadCurrencies,
+      aliases: [base.toLowerCase()],
+    });
 
     Object.keys(data.rates)
       .filter(function (currency) {

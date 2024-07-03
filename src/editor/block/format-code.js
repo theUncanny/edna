@@ -7,6 +7,7 @@ import {
 import { EditorSelection } from "@codemirror/state";
 import { findEditorByView } from "../../state.js";
 import { getActiveNoteBlock } from "./block.js";
+import { EditorView } from "@codemirror/view";
 
 /**
  * @param {string} s
@@ -34,60 +35,6 @@ async function formatGo(s) {
     return null;
   }
   return res.Body;
-}
-
-/** @typedef {import("../../functions").BoopFunction} BoopFunction */
-
-/** @typedef {import("@codemirror/view").EditorView} EditorView */
-/**
- * @param {EditorView} view
- * @param {BoopFunction} fdef
- * @param {boolean} replace
- * @returns {Promise<boolean>}
- */
-export async function editorRunBlockFunction(view, fdef, replace) {
-  const { state } = view;
-  if (state.readOnly) return false;
-  const block = getActiveNoteBlock(state);
-  console.log("editorRunBlockFunction:", block);
-  const cursorPos = state.selection.asSingle().ranges[0].head;
-  const content = state.sliceDoc(block.content.from, block.content.to);
-  let res = "";
-  try {
-    res = await fdef.fn(content);
-    console.log("res:", res);
-  } catch (e) {
-    console.log(e);
-    res = `error running ${fdef.name}: ${e}`;
-  }
-
-  if (replace) {
-    let cursorOffset = cursorPos - block.content.from;
-    const tr = view.state.update(
-      {
-        changes: {
-          from: block.content.from,
-          to: block.content.to,
-          insert: res,
-        },
-        selection: EditorSelection.cursor(
-          block.content.from + Math.min(cursorOffset, res.length),
-        ),
-      },
-      {
-        userEvent: "input",
-        scrollIntoView: true,
-      },
-    );
-    view.dispatch(tr);
-  } else {
-    // TODO: be more intelligent
-    let text = res;
-    if (!res.startsWith("\n∞∞∞")) {
-      text = "\n∞∞∞text-a\n" + res;
-    }
-    insertAfterActiveBlock(view, text);
-  }
 }
 
 /**

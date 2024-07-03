@@ -91,66 +91,11 @@ export function getBoopFunctions() {
 }
 
 /**
- * @param {string} js
- * @param {BoopFunctionArg} arg
- * @returns {Promise<any>}
- */
-async function evalWithBoopArg(js, arg) {
-  console.log("js:\n", js);
-  // @ts-ignore
-  globalThis.__boop_input = arg;
-  // const originalConsole = console;
-  // const capturedLogs = [];
-  // console.log = function (message) {
-  //   capturedLogs.push(message);
-  // };
-  let res = await eval(js);
-  return res;
-}
-
-/**
- * @param {string} code
- * @returns {{code:string, modURL?: string, modPromise?: Promise<any>, modPromiseName?: string}}
- */
-function rewriteImport(code) {
-  const startStr = `import("`;
-  let start = code.indexOf(startStr);
-  if (start < 0) {
-    return {
-      code: code,
-    };
-  }
-  let endStr = `")`;
-  let end = code.indexOf(endStr, start);
-  if (end < 0) {
-    return {
-      code: code,
-    };
-  }
-  let modURL = code.substring(start + len(startStr), end);
-  let modPromiseName = "modulePromise";
-  code = code.replace(startStr + modURL + endStr, modPromiseName);
-  return {
-    code: code,
-    modURL: modURL,
-    modPromiseName: modPromiseName,
-  };
-}
-
-/**
  * @param {BoopFunction} f
  * @param {BoopFunctionArg} arg
  * @return {Promise<void>}
  */
 export async function runBoopFunction(f, arg) {
-  // let maybeRewritten = rewriteImport(f.code);
-  // console.log("maybeRewritten:", maybeRewritten);
-  // if (maybeRewritten.modURL) {
-  //   let m = import(maybeRewritten.modURL);
-  //   console.log("m:", m);
-  //   console.log("await m:", await m);
-  //   globalThis[maybeRewritten.modPromiseName] = m;
-  // }
   let jsCode =
     f.code +
     `
