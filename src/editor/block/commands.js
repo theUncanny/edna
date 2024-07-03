@@ -170,9 +170,11 @@ export function changeCurrentBlockLanguage(state, dispatch, language, auto) {
 function updateSel(sel, by) {
   return EditorSelection.create(sel.ranges.map(by), sel.mainIndex);
 }
+
 function setSel(state, selection) {
   return state.update({ selection, scrollIntoView: true, userEvent: "select" });
 }
+
 function extendSel(state, dispatch, how) {
   let selection = updateSel(state.selection, (range) => {
     let head = how(range);
@@ -187,6 +189,7 @@ function extendSel(state, dispatch, how) {
   dispatch(setSel(state, selection));
   return true;
 }
+
 function moveSel(state, dispatch, how) {
   let selection = updateSel(state.selection, how);
   if (selection.eq(state.selection)) return false;
@@ -237,12 +240,15 @@ export function gotoBlock(n, view) {
 export function gotoNextBlock({ state, dispatch }) {
   return moveSel(state, dispatch, (range) => nextBlock(state, range));
 }
+
 export function selectNextBlock({ state, dispatch }) {
   return extendSel(state, dispatch, (range) => nextBlock(state, range));
 }
+
 export function gotoPreviousBlock({ state, dispatch }) {
   return moveSel(state, dispatch, (range) => previousBlock(state, range));
 }
+
 export function selectPreviousBlock({ state, dispatch }) {
   return extendSel(state, dispatch, (range) => previousBlock(state, range));
 }

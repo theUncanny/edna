@@ -92,6 +92,8 @@
     addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
     addNewBlockBeforeFirst,
+    gotoNextBlock,
+    gotoPreviousBlock,
     insertNewBlockAtCursor,
   } from "../editor/block/commands";
 
@@ -784,9 +786,11 @@
     } else if (cmdId === kCmdGoToBlock) {
       openBlockSelector();
     } else if (cmdId === kCmdGoToNextBlock) {
-      getEditorComp().gotoNextBlock();
+      gotoNextBlock(view);
+      view.focus();
     } else if (cmdId === kCmdGoToPreviousBlock) {
-      getEditorComp().gotoPreviousBlock();
+      gotoPreviousBlock(view);
+      view.focus();
     } else if (cmdId === kCmdChangeBlockLanguage) {
       openLanguageSelector();
     } else if (cmdId === kCmdBlockSelectAll) {

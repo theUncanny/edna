@@ -313,22 +313,12 @@
     editor.focus();
   }
 
-  export function gotoNextBlock() {
-    editor.gotoNextBlock();
-    editor.focus();
-  }
-
   export function getActiveNoteBlock() {
     return editor.getActiveNoteBlock();
   }
 
   export function gotoBlock(n) {
     editor.gotoBlock(n);
-    editor.focus();
-  }
-
-  export function gotoPreviousBlock() {
-    editor.gotoPreviousBlock();
     editor.focus();
   }
 

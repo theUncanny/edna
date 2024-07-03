@@ -4,8 +4,6 @@ import { SET_CONTENT, heynoteEvent } from "./annotation.js";
 import {
   changeCurrentBlockLanguage,
   gotoBlock,
-  gotoNextBlock,
-  gotoPreviousBlock,
   selectAll,
 } from "./block/commands.js";
 import {
@@ -276,14 +274,6 @@ export class EdnaEditor {
 
   gotoBlock(n) {
     gotoBlock(n, this.view);
-  }
-
-  gotoNextBlock() {
-    gotoNextBlock(this.view);
-  }
-
-  gotoPreviousBlock() {
-    gotoPreviousBlock(this.view);
   }
 
   selectAll() {
