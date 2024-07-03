@@ -21,11 +21,7 @@ import {
   noteBlockExtension,
 } from "./block/block.js";
 import { foldGutter, indentUnit } from "@codemirror/language";
-import {
-  formatBlockContent,
-  runBlockContent,
-  runBlockFunction,
-} from "./block/format-code.js";
+import { runBlockFunction } from "./block/format-code.js";
 
 import { autoSaveContent } from "./save.js";
 import { closeBrackets } from "@codemirror/autocomplete";
@@ -43,6 +39,7 @@ import { languageDetection } from "./language-detection/autodetect.js";
 import { links } from "./links.js";
 import { markdown } from "@codemirror/lang-markdown";
 import { todoCheckboxPlugin } from "./todo-checkbox";
+import { findEditorByView } from "../state.js";
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
@@ -219,8 +216,7 @@ export class EdnaEditor {
   }
 
   isReadOnly() {
-    const { state } = this.view;
-    return state.readOnly;
+    return isReadOnly(this.view);
   }
 
   setReadOnly(readOnly) {
@@ -288,10 +284,6 @@ export class EdnaEditor {
     await runBlockFunction(this.view, fdef, replace);
   }
 
-  runCurrentBlock() {
-    runBlockContent(this.view);
-  }
-
   currenciesLoaded() {
     triggerCurrenciesLoaded(this.view.state, this.view.dispatch);
   }
@@ -344,3 +336,14 @@ editor.update([
         annotations: heynoteEvent.of(INITIAL_DATA),
     })
 ])*/
+
+/**
+ * @param {EditorView} view
+ * @param {boolean} ro
+ */
+export function setReadOnly(view, ro) {
+  let editor = findEditorByView(view);
+  if (editor) {
+    editor.setReadOnly(ro);
+  }
+}

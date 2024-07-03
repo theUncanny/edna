@@ -81,7 +81,11 @@
   import Find from "./Find.svelte";
   import FunctionSelector from "./FunctionSelector.svelte";
   import { dirtyState } from "../state.svelte";
-  import { formatBlockContent } from "../editor/block/format-code";
+  import {
+    formatBlockContent,
+    runBlockContent,
+  } from "../editor/block/format-code";
+  import { isReadOnly } from "../editor/block/cmutils";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -674,7 +678,6 @@
    * @param {import("../Menu.svelte").MenuItemDef} mi
    */
   function menuItemStatus(mi) {
-    let s = mi[0];
     let mid = mi[1];
     if (mid === kMenuIdJustText) {
       return kMenuStatusDisabled;
@@ -687,6 +690,10 @@
     let hasFS = supportsFileSystem();
     if (mid === kCmdFormatBlock) {
       if (!langSupportsFormat(lang)) {
+        return kMenuStatusRemoved;
+      }
+      let view = getEditorView();
+      if (isReadOnly(view)) {
         return kMenuStatusRemoved;
       }
     } else if (mid === kCmdRunBlock) {
@@ -722,9 +729,6 @@
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdRunFunctionWithBlockContent) {
-      if (getEditor().isReadOnly()) {
-        return kMenuStatusRemoved;
-      }
     }
     return kMenuStatusNormal;
   }
@@ -771,7 +775,7 @@
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
     } else if (cmdId === kCmdRunBlock) {
-      getEditor().runCurrentBlock();
+      runCurrentBlock();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
     } else if (cmdId === kCmdShowHelp) {
@@ -958,7 +962,12 @@
   }
 
   function runCurrentBlock() {
-    getEditor().runCurrentBlock();
+    let view = getEditorView();
+    if (isReadOnly(view)) {
+      return;
+    }
+    runBlockContent(view);
+    view.focus();
     logNoteOp("noteRunBlock");
   }
 
@@ -1160,8 +1169,6 @@
     {docDidChange}
   />
   <StatusBar
-    shortcut={noteShortcut}
-    {noteName}
     {line}
     {column}
     {docSize}

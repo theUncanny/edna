@@ -302,11 +302,6 @@
     return editor.view;
   }
 
-  export function runCurrentBlock() {
-    editor.runCurrentBlock();
-    editor.focus();
-  }
-
   export async function runBlockFunction(fdef, replace) {
     await editor.runBlockFunction(fdef, replace);
   }

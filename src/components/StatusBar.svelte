@@ -16,8 +16,6 @@
   } from "../globals.js";
 
   /** @type { {
-    noteName: string,
-    shortcut: string,
     line: number,
     column: number,
     docSize: number,
@@ -30,8 +28,6 @@
     formatCurrentBlock: (ev) => void,
 } } */
   let {
-    noteName = "",
-    shortcut = "",
     line = 0,
     column = 0,
     docSize = 0,
