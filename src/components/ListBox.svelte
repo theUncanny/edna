@@ -10,6 +10,7 @@
     renderItem: any,
     selectionChanged?: (any, number) => void,
     initialSelection?: number,
+    selectedItem?: any,
   }}*/
   let {
     items,
@@ -18,6 +19,7 @@
     selectionChanged = (el, idx) => {
       /* no op */
     },
+    selectedItem = $bindable(null),
     initialSelection = 0,
   } = $props();
 
@@ -31,6 +33,7 @@
   // selection, so if there's state calcualted based on that,
   // it gets properly initalized
   setTimeout(() => {
+    console.log("initialSelection:", initialSelection, "n:", n);
     if (initialSelection > n - 1) {
       initialSelection = n - 1;
     }
@@ -57,8 +60,10 @@
     // reset selection if changing items
     if (n > 0) {
       select(0);
+      selectedItem = items[0];
     } else {
       select(-1);
+      selectedItem = null;
     }
   });
 
@@ -71,6 +76,7 @@
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;
+        selectedItem = null;
         selectionChanged(null, -1);
       }
       return;
@@ -85,6 +91,7 @@
       ref.scrollIntoView({ block: "nearest" });
     }
     let item = items[selectedIdx];
+    selectedItem = item;
     selectionChanged(item, selectedIdx);
   }
 

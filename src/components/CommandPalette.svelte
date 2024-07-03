@@ -91,19 +91,11 @@
   let selectedCommand = $state(null);
 
   $effect(() => {
-    console.log("selectedCommand:", selectedCommand.name);
+    console.log(
+      "selectedCommand:",
+      selectedCommand ? selectedCommand.name : "null",
+    );
   });
-
-  /**
-   * @param {Item} item
-   * @param {number} idx
-   */
-  function selectionChanged(item, idx) {
-    console.log("selectionChanged:", item.name, idx);
-    if (idx != 1) {
-      selectedCommand = item;
-    }
-  }
 
   /**
    * @param {KeyboardEvent} ev
@@ -163,7 +155,7 @@
   <ListBox
     bind:this={listbox}
     items={filteredItems}
-    {selectionChanged}
+    bind:selectedItem={selectedCommand}
     onclick={(item) => emitExecuteCommand(item)}
   >
     {#snippet renderItem(item)}
