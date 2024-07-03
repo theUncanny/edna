@@ -313,11 +313,6 @@
     editor.focus();
   }
 
-  export function insertNewBlockAtCursor() {
-    editor.insertNewBlockAtCursor();
-    editor.focus();
-  }
-
   export function gotoNextBlock() {
     editor.gotoNextBlock();
     editor.focus();

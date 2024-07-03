@@ -6,7 +6,6 @@ import {
   gotoBlock,
   gotoNextBlock,
   gotoPreviousBlock,
-  insertNewBlockAtCursor,
   selectAll,
 } from "./block/commands.js";
 import {
@@ -273,10 +272,6 @@ export class EdnaEditor {
         value ? [closeBrackets()] : [],
       ),
     });
-  }
-
-  insertNewBlockAtCursor() {
-    insertNewBlockAtCursor(this.view);
   }
 
   gotoBlock(n) {

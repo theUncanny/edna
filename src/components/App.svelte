@@ -92,6 +92,7 @@
     addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
     addNewBlockBeforeFirst,
+    insertNewBlockAtCursor,
   } from "../editor/block/commands";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
@@ -778,7 +779,8 @@
       addNewBlockBeforeFirst(view);
       view.focus();
     } else if (cmdId === kCmdSplitBlockAtCursor) {
-      getEditorComp().insertNewBlockAtCursor();
+      insertNewBlockAtCursor(view);
+      view.focus();
     } else if (cmdId === kCmdGoToBlock) {
       openBlockSelector();
     } else if (cmdId === kCmdGoToNextBlock) {

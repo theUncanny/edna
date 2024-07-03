@@ -18,7 +18,7 @@ import { selectAll } from "./select-all.js";
 
 export { moveLineDown, moveLineUp, selectAll };
 
-export const insertNewBlockAtCursor = ({ state, dispatch }) => {
+export function insertNewBlockAtCursor({ state, dispatch }) {
   if (state.readOnly) return false;
 
   const currentBlock = getActiveNoteBlock(state);
@@ -34,7 +34,7 @@ export const insertNewBlockAtCursor = ({ state, dispatch }) => {
   });
 
   return true;
-};
+}
 
 export function addNewBlockBeforeCurrent({ state, dispatch }) {
   if (state.readOnly) return false;
