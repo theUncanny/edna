@@ -67,7 +67,7 @@ function main(input) {
 
 function main(state) {
   let buf = "";
-  for (i = 0; i < state.fullText.length; i++) {
+  for (let i = 0; i < state.fullText.length; i++) {
     let code = state.fullText.charCodeAt(i).toString(16);
     if (code.length < 2) buf += "0";
     buf += code;
@@ -285,14 +285,16 @@ function main(input) {
   let str = input.text;
 
   let parsedDate = Date.parse(str);
+  let date;
 
   if (isNaN(parsedDate)) {
-    parsedDate = new Date(parseInt(str * 1000));
+    let n = parseInt(str) * 1000;
+    date = new Date(n);
   } else {
-    parsedDate = new Date(parsedDate);
+    date = new Date(parsedDate);
   }
 
-  let out = parsedDate.toUTCString();
+  let out = date.toUTCString();
 
   if (out === "Invalid Date") {
     input.postError(out);
@@ -339,12 +341,12 @@ function main(state) {
 
   for (const index in lines) {
     var text = lines[index].trim();
-    var bin = parseInt(text).toString(2).toUpperCase();
+    var bin = parseInt(text);
 
     if (isNaN(bin)) {
       result += text;
     } else {
-      result += bin;
+      result += bin.toString(2).toUpperCase();
     }
 
     result += "\n";
@@ -560,9 +562,9 @@ function main(state) {
  **/
 
 function main(input) {
-  R = hexToR(input.text);
-  G = hexToG(input.text);
-  B = hexToB(input.text);
+  let R = hexToR(input.text);
+  let G = hexToG(input.text);
+  let B = hexToB(input.text);
 
   input.text = R.toString()
     .concat(",")
@@ -599,8 +601,8 @@ function main(state) {
   let input = state.fullText.toUpperCase();
   let buf = "";
   let hexBuf = "";
-  for (i = 0; i < input.length; i++) {
-    c = input.charAt(i);
+  for (let i = 0; i < input.length; i++) {
+    let c = input.charAt(i);
     if ("0123456789ABCDEF".includes(c)) {
       hexBuf += c;
       if (hexBuf.length >= 2) {
@@ -790,7 +792,7 @@ function main(state) {
 function convertToQuery(obj, prefix) {
   let queryParts = [];
 
-  for (param in obj) {
+  for (let param in obj) {
     if (obj.hasOwnProperty(param)) {
       let key = prefix ? prefix + "[]" : param;
       let value = obj[param];
@@ -1595,8 +1597,8 @@ function main(input) {
 
   // Fisher-Yates Shuffle
   while (j) {
-    i = Math.floor(Math.random() * j--);
-    temp = lines[j];
+    let i = Math.floor(Math.random() * j--);
+    let temp = lines[j];
     lines[j] = lines[i];
     lines[i] = temp;
   }
@@ -2033,9 +2035,9 @@ function main(input) {
 	}
 **/
 
-const yaml = require("@boop/js-yaml");
-
-function main(input) {
+async function main(input) {
+  // @ts-ignore
+  let yaml = (await import("https://esm.sh/js-yaml@4.1.0")).default;
   try {
     input.text = JSON.stringify(yaml.safeLoad(input.text), null, 2);
   } catch (error) {
