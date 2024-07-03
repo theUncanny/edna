@@ -4,6 +4,7 @@ import { setReadOnly } from "./editor/editor";
 import { getLanguage, langSupportsRun } from "./editor/languages";
 import { insertAfterActiveBlock } from "./editor/block/format-code";
 import { isReadOnly } from "./editor/block/cmutils";
+import { ensureStringEndsWithNL, len } from "./util";
 
 function getError(res) {
   // TODO: don't get why there are Error and Errors
@@ -45,12 +46,32 @@ export async function runGo(code) {
   return s;
 }
 
-/**
+async function evalWithConsoleCapture(js) {
+  const originalConsole = console;
+  const capturedLogs = [];
+  console.log = function (message) {
+    capturedLogs.push(message);
+  };
+  let res = await eval(js);
+  console.log = originalConsole.log;
+  return [res, capturedLogs];
+}
+
+/*
  * @param {string} js
  */
 export async function runJS(js) {
-  let res = eval(js);
-  return res;
+  // let res = await eval(js);
+  let [res, logs] = await evalWithConsoleCapture(js);
+  // this returns last returned javascript value or undefined
+  let resTxt = `${res}`;
+  if (len(logs) > 0) {
+    resTxt = ensureStringEndsWithNL(resTxt);
+    resTxt += "console.log() output:\n";
+    resTxt += logs.join("\n");
+  }
+  console.log(logs);
+  return resTxt;
 }
 
 /**
@@ -64,7 +85,7 @@ export async function runBlockContent(view) {
   }
   const block = getActiveNoteBlock(state);
   const lang = getLanguage(block.language.name);
-  console.log("runBlockContent: lang:", lang);
+  // console.log("runBlockContent: lang:", lang);
   if (!langSupportsRun(lang)) {
     return false;
   }

@@ -362,3 +362,14 @@ export function splitFilterLC(s) {
   }
   return parts;
 }
+
+/**
+ * @param {string} s
+ * @returns {string}
+ */
+export function ensureStringEndsWithNL(s) {
+  if (!s.endsWith("\n")) {
+    return s + "\n";
+  }
+  return s;
+}
