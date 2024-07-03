@@ -232,8 +232,9 @@ export class EdnaEditor {
   }
 
   setFont(fontFamily, fontSize) {
+    let ff = getFontTheme(fontFamily, fontSize);
     this.view.dispatch({
-      effects: this.fontTheme.reconfigure(getFontTheme(fontFamily, fontSize)),
+      effects: this.fontTheme.reconfigure(ff),
     });
   }
 
