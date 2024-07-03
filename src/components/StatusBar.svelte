@@ -6,14 +6,9 @@
     langSupportsRun,
   } from "../editor/languages.js";
   import { fmtSize, getScrollbarWidth, platform } from "../util";
-  import { dirtyState } from "../state.svelte";
   import IconSettings from "./IconSettings.svelte";
   import IconGitHub from "./IconGitHub.svelte";
-  import {
-    openLanguageSelector,
-    openNoteSelector,
-    openSettings,
-  } from "../globals.js";
+  import { openLanguageSelector, openSettings } from "../globals.js";
 
   /** @type { {
     line: number,

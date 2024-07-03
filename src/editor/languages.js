@@ -226,11 +226,12 @@ export function getLanguageNameFromToken(token) {
  * @returns {boolean}
  */
 export function langSupportsRun(lang) {
-  if (!lang) {
-    return false;
-  }
-  if (lang.token === "golang") {
-    return true;
+  console.log("langSupportsRun:", lang);
+  let token = lang ? lang.token : "";
+  switch (token) {
+    case "golang":
+    case "javascript":
+      return true;
   }
   return false;
 }

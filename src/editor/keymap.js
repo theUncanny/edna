@@ -28,13 +28,14 @@ import {
   openLanguageSelector,
   openNoteSelector,
 } from "../globals.js";
-import { formatBlockContent, runBlockContent } from "./block/format-code.js";
+import { formatBlockContent } from "./block/format-code.js";
 //import { EditorSelection, EditorState } from "@codemirror/state"
 import { indentLess, indentMore, redo } from "@codemirror/commands";
 
 import { deleteLine } from "./block/delete-line.js";
 import { keymap } from "@codemirror/view";
 import { platform } from "../util.js";
+import { runBlockContent } from "../run.js";
 
 export function keymapFromSpec(specs) {
   return keymap.of(

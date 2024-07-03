@@ -84,7 +84,7 @@
   import {
     editorRunBlockFunction,
     formatBlockContent,
-    runBlockContent,
+    insertAfterActiveBlock,
   } from "../editor/block/format-code";
   import { isReadOnly } from "../editor/block/cmutils";
   import {
@@ -100,7 +100,9 @@
     selectAll,
   } from "../editor/block/commands";
   import { getActiveNoteBlock } from "../editor/block/block";
-  import { EdnaEditor, getContent } from "../editor/editor";
+  import { EdnaEditor, getContent, setReadOnly } from "../editor/editor";
+  import { runBlockContent, runGo, runJS } from "../run";
+  import { EditorView } from "@codemirror/view";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -1014,9 +1016,7 @@
 
   function runCurrentBlock() {
     let view = getEditorView();
-    if (isReadOnly(view)) {
-      return;
-    }
+
     runBlockContent(view);
     logNoteOp("noteRunBlock");
   }

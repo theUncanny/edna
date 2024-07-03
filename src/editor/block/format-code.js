@@ -227,46 +227,6 @@ export async function formatBlockContent(view) {
   return true;
 }
 
-function getError(res) {
-  // TODO: don't get why there are Error and Errors
-  // maybe can improve backend code?
-  if (res.Error && res.Error !== "") {
-    return res.Error;
-  }
-  if (res.Errors && res.Errors !== "") {
-    return res.Errors;
-  }
-  return "";
-}
-
-async function runGo(code) {
-  const uri = "/api/goplay/compile";
-  const rsp = await fetch(uri, {
-    method: "POST",
-    body: code,
-  });
-  if (!rsp.ok) {
-    return `Error: ${rsp.status} ${rsp.statusText}`;
-  }
-  const res = await rsp.json();
-  //console.log("res:", res);
-  const err = getError(res);
-  if (err != "") {
-    return err;
-  }
-  let s = "";
-  for (const ev of res.Events) {
-    if (s !== "") {
-      s += "\n";
-    }
-    if (ev.Kind === "stderr") {
-      s += "Stderr:\n";
-    }
-    s += ev.Message;
-  }
-  return s;
-}
-
 /**
  * @param {EditorView} view
  * @param {string} text
@@ -292,48 +252,4 @@ export function insertAfterActiveBlock(view, text) {
     },
   );
   view.dispatch(tr);
-}
-
-/**
- * @param {EditorView} view
- * @returns {Promise<boolean>}
- */
-export async function runBlockContent(view) {
-  const { state } = view;
-  const block = getActiveNoteBlock(state);
-  console.log("runBlockContent:", block);
-  const lang = getLanguage(block.language.name);
-  if (!langSupportsRun(lang)) {
-    return false;
-  }
-
-  const content = state.sliceDoc(block.content.from, block.content.to);
-
-  setReadOnly(view, true);
-  let output = "";
-  if (lang.token == "golang") {
-    // formatGo() is async so we need to prevent changes to the state of the editor
-    // we make it read-only
-    // TODO: maybe show some indication that we're doing an operation
-    let s;
-    try {
-      s = await runGo(content);
-    } catch (e) {
-      console.log("error formatting go:", e);
-      return false;
-    }
-    setReadOnly(view, false);
-
-    if (!s) {
-      console.log("failed to run go");
-      return false;
-    }
-    output = s;
-  }
-
-  console.log("output of running go:", output);
-  // const block = getActiveNoteBlock(state)
-  const text = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
-  insertAfterActiveBlock(view, text);
-  return true;
 }
