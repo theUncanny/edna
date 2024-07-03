@@ -89,6 +89,7 @@
   import { isReadOnly } from "../editor/block/cmutils";
   import {
     addNewBlockAfterCurrent,
+    addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
   } from "../editor/block/commands";
 
@@ -770,7 +771,8 @@
       addNewBlockBeforeCurrent(view);
       view.focus();
     } else if (cmdId === kCmdNewBlockAtEnd) {
-      getEditor().addNewBlockAfterLast();
+      addNewBlockAfterLast(view);
+      view.focus();
     } else if (cmdId === kCmdNewBlockAtStart) {
       getEditor().addNewBlockBeforeFirst();
     } else if (cmdId === kCmdSplitBlockAtCursor) {

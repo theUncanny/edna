@@ -112,7 +112,7 @@ export const addNewBlockBeforeFirst = ({ state, dispatch }) => {
   return true;
 };
 
-export const addNewBlockAfterLast = ({ state, dispatch }) => {
+export function addNewBlockAfterLast({ state, dispatch }) {
   if (state.readOnly) return false;
   const block = getLastNoteBlock(state);
   const delimText = "\n∞∞∞text-a\n";
@@ -133,7 +133,7 @@ export const addNewBlockAfterLast = ({ state, dispatch }) => {
     ),
   );
   return true;
-};
+}
 
 export function changeLanguageTo(state, dispatch, block, language, auto) {
   if (state.readOnly) return false;

@@ -313,11 +313,6 @@
     editor.focus();
   }
 
-  export function addNewBlockAfterLast() {
-    editor.addNewBlockAfterLast();
-    editor.focus();
-  }
-
   export function addNewBlockBeforeFirst() {
     editor.addNewBlockBeforeFirst();
     editor.focus();
