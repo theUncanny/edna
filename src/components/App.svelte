@@ -164,18 +164,30 @@
     getEditor().setSpellChecking(isSpellChecking);
   });
 
+  let didAppExit = false;
+  async function onAppExit() {
+    if (didAppExit) {
+      return;
+    }
+    let e = getEditor();
+    if (e) {
+      await e.saveCurrentNote();
+    }
+    didAppExit = true;
+    logAppExit(); // TODO: not sure if this async func will complete
+  }
   $effect(() => {
     console.log("App.svelte did mount");
     maybeBackupNotes();
     window.addEventListener("keydown", onKeyDown);
 
     window.addEventListener("beforeunload", async () => {
-      logAppExit(); // TODO: not sure if this async func will complete
-      let e = getEditor();
-      if (e) {
-        await e.saveCurrentNote();
-      }
+      await onAppExit();
     });
+    window.addEventListener("onunload", async () => {
+      await onAppExit();
+    });
+
     logAppOpen();
 
     return () => {
