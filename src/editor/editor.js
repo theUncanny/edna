@@ -1,7 +1,6 @@
 import { Compartment, EditorState } from "@codemirror/state";
 import { EditorView, drawSelection, lineNumbers } from "@codemirror/view";
 import { SET_CONTENT, heynoteEvent } from "./annotation.js";
-import { changeCurrentBlockLanguage } from "./block/commands.js";
 import {
   blockLineNumbers,
   blockState,
@@ -162,7 +161,7 @@ export class EdnaEditor {
   }
 
   getContent() {
-    return this.view.state.sliceDoc();
+    return getContent(this.view);
   }
 
   setContent(content) {
@@ -193,9 +192,7 @@ export class EdnaEditor {
   }
 
   focus() {
-    // console.log("focus");
     focusEditorView(this.view);
-    //this.view.focus()
   }
 
   isReadOnly() {
@@ -233,10 +230,6 @@ export class EdnaEditor {
         getKeymapExtensions(this, keymap),
       ),
     });
-  }
-
-  setCurrentLanguage(lang, auto = false) {
-    changeCurrentBlockLanguage(this.view.state, this.view.dispatch, lang, auto);
   }
 
   setLineNumberGutter(show) {
@@ -285,4 +278,12 @@ export function setReadOnly(view, ro) {
   if (editor) {
     editor.setReadOnly(ro);
   }
+}
+
+/**
+ * @param {EditorView} view
+ * @return {string}
+ */
+export function getContent(view) {
+  return view.state.sliceDoc();
 }

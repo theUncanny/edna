@@ -40,8 +40,6 @@ import {
   selectPreviousParagraph,
 } from "./block/commands.js";
 
-import { Direction } from "@codemirror/view";
-
 // if set to true, all keybindings for moving around is changed to their corresponding select commands
 let emacsMarkMode = false;
 

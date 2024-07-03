@@ -15,11 +15,7 @@
   import { throwIf } from "../util.js";
   import { EditorView } from "@codemirror/view";
   import { triggerCurrenciesLoaded } from "../editor/block/commands.js";
-  import {
-    kEventCurrenciesLoaded,
-    setCurrenciesLoadedCb,
-    startLoadCurrencies,
-  } from "../currency.js";
+  import { setCurrenciesLoadedCb, startLoadCurrencies } from "../currency.js";
 
   let enableDiskRefresh = false;
 
@@ -210,7 +206,7 @@
         scheduleRefreshFromDisk();
         return;
       }
-      let currContent = getContent();
+      let currContent = editor.getContent();
       if (latestContentOnDisk != currContent) {
         console.log("the content was modified on disk");
         // TODO: maybe restore cursor position
@@ -255,7 +251,7 @@
 
   function saveForce() {
     console.log("saveForce");
-    saveFunction(getContent());
+    saveFunction(editor.getContent());
   }
 
   export function getBlocks() {
@@ -293,15 +289,6 @@
     return ce.getAttribute("spellcheck") === "true";
   }
 
-  export function setLanguage(language) {
-    if (language === "auto") {
-      editor.setCurrentLanguage("text", true);
-    } else {
-      editor.setCurrentLanguage(language, false);
-    }
-    editor.focus();
-  }
-
   /**
    * @returns {EditorView}
    */
@@ -309,19 +296,23 @@
     return editor.view;
   }
 
-  export function focus() {
-    editor.focus();
+  /**
+   * @returns {EdnaEditor}
+   */
+  export function getEditor() {
+    return editor;
   }
 
-  export function getContent() {
-    return editor.getContent();
+  export function focus() {
+    editor.focus();
   }
 
   // saving is debounced so ensure we save before opening a new note
   // TODO: we'll have a spurious save if there was a debounce, because
   // the debounce is still in progress, I think
   export async function saveCurrentNote() {
-    await editor.saveFunction(editor.getContent());
+    let s = editor.getContent();
+    await editor.saveFunction(s);
   }
 
   export function setEditorContent(content) {

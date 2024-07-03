@@ -1,7 +1,5 @@
 import { startTimer } from "./util";
 
-export const kEventCurrenciesLoaded = "currenciesLoaded";
-
 /** @type { () => void } */
 let currenciesLoadedCb = null;
 

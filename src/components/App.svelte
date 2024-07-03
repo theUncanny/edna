@@ -92,6 +92,7 @@
     addNewBlockAfterLast,
     addNewBlockBeforeCurrent,
     addNewBlockBeforeFirst,
+    changeCurrentBlockLanguage,
     gotoBlock,
     gotoNextBlock,
     gotoPreviousBlock,
@@ -99,6 +100,7 @@
     selectAll,
   } from "../editor/block/commands";
   import { getActiveNoteBlock } from "../editor/block/block";
+  import { EdnaEditor, getContent } from "../editor/editor";
 
   /** @typedef {import("../functions").BlockFunction} BlockFunction */
 
@@ -338,10 +340,13 @@
   function openEncryptPassword() {
     showingEncryptPassword = true;
   }
+
   function closeEncryptPassword() {
     showingEncryptPassword = false;
-    getEditorComp().focus();
+    let view = getEditorView();
+    view.focus();
   }
+
   function onEncryptPassword(pwd) {
     console.log("got encryption password:", pwd);
     closeEncryptPassword();
@@ -355,7 +360,8 @@
   async function exportCurrentNote() {
     let settings = getSettings();
     let name = settings.currentNoteName;
-    let s = getEditorComp().getContent();
+    let view = getEditorView();
+    let s = getContent(view);
     console.log("exportCurrentNote:", name);
     const blob = new Blob([s], { type: "text/plain" });
     browserDownloadBlob(blob, name);
@@ -365,9 +371,9 @@
     showingSettings = true;
   }
 
-  function onCloseSettings() {
+  function closeSettings() {
     showingSettings = false;
-    getEditorComp().focus();
+    getEditorView().focus();
   }
 
   async function deleteCurrentNote() {
@@ -445,16 +451,15 @@
 
   function openBlockSelector() {
     let view = getEditorView();
-    let blocks = getEditorComp().getBlocks();
+    let blocks = getEditor().getBlocks();
     let activeBlock = getActiveNoteBlock(view.state);
-    let c = getEditorComp().getContent();
+    let content = getContent(view);
     /** @type {import("./BlockSelector.svelte").Item[]} */
     let items = [];
     let blockNo = 0;
     let currBlockNo = 0;
     for (let b of blocks) {
-      let title = extractBlockTitle(c, b.content.from, b.content.to);
-      console.log("block title:", title);
+      let title = extractBlockTitle(content, b.content.from, b.content.to);
       let bi = {
         block: b,
         text: title,
@@ -561,9 +566,19 @@
     getEditorComp().focus();
   }
 
-  function onSelectLanguage(language) {
+  /**
+   * @param {string} lang
+   */
+  function onSelectLanguage(lang) {
     showingLanguageSelector = false;
-    getEditorComp().setLanguage(language);
+    let view = getEditorView();
+    let auto = false;
+    if (lang === "auto") {
+      lang = "text";
+      auto = true;
+    }
+    changeCurrentBlockLanguage(view, lang, auto);
+    view.focus();
   }
 
   let nextMenuID = 1000;
@@ -974,6 +989,13 @@
   }
 
   /**
+   * @returns {EdnaEditor}
+   */
+  function getEditor() {
+    return editor.getEditor();
+  }
+
+  /**
    * @returns {import("@codemirror/view").EditorView}
    */
   function getEditorView() {
@@ -1002,11 +1024,11 @@
   function toggleSpellCheck() {
     isSpellChecking = !isSpellChecking;
     getEditorComp().setSpellChecking(isSpellChecking);
-    if (isSpellChecking) {
-      addToast(
-        "Press Ctrl + right mouse click for context menu when spell checking is enabled",
-      );
-    }
+    // if (isSpellChecking) {
+    //   addToast(
+    //     "Press Ctrl + right mouse click for context menu when spell checking is enabled",
+    //   );
+    // }
   }
 
   /**
@@ -1026,18 +1048,13 @@
     getEditorComp().focus();
   }
 
-  function closeSettings() {
-    console.log("closeSettings");
-    showingSettings = false;
-    getEditorComp().focus();
-  }
-
   async function onRename(newName) {
     showingRenameNote = false;
-    let s = getEditorComp().getContent() || "";
+    let view = getEditorView();
+    let s = getContent(view) || "";
     await renameNote(noteName, newName, s);
     await openNote(newName, true);
-    console.log("onRename: newName:", newName);
+    // console.log("onRename: newName:", newName);
   }
 
   function openHistorySelector() {
@@ -1145,8 +1162,8 @@
   }
 
   function updateDocSize() {
-    let editor = getEditorComp();
-    const c = editor.getContent() || "";
+    let view = getEditorView();
+    const c = getContent(view) || "";
     docSize = stringSizeInUtf8Bytes(c);
   }
 
