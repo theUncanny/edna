@@ -93,12 +93,11 @@ func loadSecrets() {
 		}
 	}
 	// those we need always
-	must := true
+	must := false
 	// // getEnv("COOKIE_AUTH_KEY", &cookieAuthKeyHex, 64, must)
 	// // getEnv("COOKIE_ENCR_KEY", &cookieEncrKeyHex, 64, must)
 
 	// // those are only required in prod
-	must = flgRunProd
 	getEnv("LOGTASTIC_API_KEY", &logtastic.ApiKey, 30, must)
 	// getEnv("PIRSCH_SECRET", &pirschClientSecret, 64, must)
 	// getEnv("GITHUB_SECRET_ONLINETOOL", &secretGitHubOnlineTool, 40, must)
