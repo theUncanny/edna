@@ -200,6 +200,7 @@ export function notePathFromName(name) {
 export const kScratchNoteName = "scratch";
 export const kDailyJournalNoteName = "daily journal";
 export const kInboxNoteName = "inbox";
+export const kMyFunctionsNoteName = "edna: my functions";
 
 export const kHelpSystemNoteName = "system:help";
 export const kReleaseNotesSystemNoteName = "system:Release Notes";
@@ -228,38 +229,42 @@ export const blockHdrMarkdown = "\n∞∞∞markdown\n";
 export const blockHdrJSON = "\n∞∞∞json\n";
 export const blockHdrPHP = "\n∞∞∞php\n";
 
+
+/**
+ * @param {string} name
+ * @param {string} content
+ * @returns {Promise<number>}
+*/
+export async function createIfNotExists(name, content, existingNotes) {
+  if (!existingNotes) {
+    existingNotes = getLatestNoteNames();
+  }
+  if (existingNotes.includes(name)) {
+    console.log(`note ${name} already exists`);
+    return 0;
+  }
+  await createNoteWithName(name, content);
+  return 1;
+}
+
 /**
  * @param {string[]} existingNotes
  * @returns {Promise<number>}
  */
 export async function createDefaultNotes(existingNotes) {
-  /**
-   * @param {string} name
-   * @param {string} md - markdown content
-   * @returns {Promise<number>}
-   */
-  async function createIfNotExists(name, md) {
-    if (existingNotes.includes(name)) {
-      console.log("skipping creating note", name);
-      return 0;
-    }
-    let content = blockHdrMarkdown + md;
-    await createNoteWithName(name, content);
-    return 1;
-  }
   let isFirstRun = getStats().appOpenCount < 2;
   console.log("isFirstRun:", isFirstRun);
 
   let welcomeNote = getWelcomeNote();
 
-  let nCreated = await createIfNotExists(kScratchNoteName, welcomeNote);
+  let nCreated = await createIfNotExists(kScratchNoteName, welcomeNote, existingNotes);
   // scratch note must always exist but the user can delete inbox / daily journal notes
   if (isFirstRun) {
     let inbox = getInboxNote();
-    nCreated += await createIfNotExists(kInboxNoteName, inbox);
+    nCreated += await createIfNotExists(kInboxNoteName, inbox, existingNotes);
     // re-create those notes if the user hasn't deleted them
     let journal = getJournalNote();
-    nCreated += await createIfNotExists(kDailyJournalNoteName, journal);
+    nCreated += await createIfNotExists(kDailyJournalNoteName, journal, existingNotes);
   }
   if (nCreated > 0) {
     await loadNoteNames();

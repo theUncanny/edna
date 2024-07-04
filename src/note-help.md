@@ -367,7 +367,7 @@ This functionality is inspired by https://boop.okat.best/ so our built-in functi
 
 The real power is in implementing your own functions.
 
-To do it create `edna.my.functions` note:
+To do it create `edna: my functions` note:
 - context menu: `Run`, `Create your own functions`
 - or command palette: `Create your own functions`
 

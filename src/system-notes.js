@@ -9,6 +9,8 @@ import scratchRaw from "./note-scratch.md?raw";
 import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
 import releaseNotesRaw from "./note-release-notes.md?raw";
 import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
+import myFunctionsRaw from "./note-custom-functions.md?raw";
+
 import { parseBoopFunctions } from "./functions.js";
 
 /**
@@ -96,6 +98,13 @@ export function getWelcomeNote() {
  */
 export function getWelcomeNoteDev() {
   return getWelcomeNote() + scratchDevRaw;
+}
+
+/**
+ * @returns {string}
+ */
+export function getMyFunctionsNote() {
+  return fixUpNote(myFunctionsRaw);
 }
 
 // this logically belongs in functions.js but I use bun test

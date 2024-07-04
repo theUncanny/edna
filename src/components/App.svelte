@@ -54,6 +54,8 @@
     saveCurrentNote,
     kInboxNoteName,
     kBuiltInFunctionsNoteName,
+    createIfNotExists,
+    kMyFunctionsNoteName,
   } from "../notes";
   import {
     getAltChar,
@@ -105,6 +107,7 @@
   import { runBlockContent } from "../run";
   import { EditorSelection } from "@codemirror/state";
   import { runBoopFunction } from "../functions";
+  import { getMyFunctionsNote } from "../system-notes";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -968,13 +971,18 @@
       showError("Running with selection not yet implemented!");
       //openFunctinSelector();
     } else if (cmdId === kCmdCreateYourOwnFunctions) {
-      showError("This is not yet implemented!");
-      //openFunctinSelector();
+      openCustomFunctionsNote();
     } else if (cmdId === kCmdShowBuiltInFunctions) {
       openNote(kBuiltInFunctionsNoteName);
     } else {
       console.log("unknown menu cmd id");
     }
+  }
+
+  async function openCustomFunctionsNote() {
+    let content = getMyFunctionsNote();
+    await createIfNotExists(kMyFunctionsNoteName, content);
+    await openNote(kMyFunctionsNoteName);
   }
 
   let contextMenuDef = $state(null);

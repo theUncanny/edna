@@ -109,11 +109,11 @@
       "bg-white dark:bg-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-500";
     if (type === kToastWarning) {
       res =
-        "bg-yellow-300 dark:bg-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-500";
+        "bg-yellow-100 dark:bg-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-500";
     }
     if (type === kToastError) {
       res =
-        "bg-yellow-300 dark:bg-gray-700 text-red-500 dark:text-red-300 border-gray-300 dark:border-gray-500";
+        "bg-yellow-100 dark:bg-gray-700 text-red-500 dark:text-red-300 border-gray-300 dark:border-gray-500 font-semibold";
     }
     return res;
   }
