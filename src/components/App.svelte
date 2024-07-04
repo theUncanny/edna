@@ -56,6 +56,8 @@
     kBuiltInFunctionsNoteName,
     createIfNotExists,
     kMyFunctionsNoteName,
+    loadNote,
+    loadNoteIfExists,
   } from "../notes";
   import {
     getAltChar,
@@ -106,7 +108,7 @@
   import { EdnaEditor, getContent } from "../editor/editor";
   import { runBlockContent } from "../run";
   import { EditorSelection } from "@codemirror/state";
-  import { runBoopFunction } from "../functions";
+  import { parseUserFunctions, runBoopFunction } from "../functions";
   import { getMyFunctionsNote } from "../system-notes";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
@@ -127,6 +129,7 @@
   let showingCommandPalette = $state(false);
   let showingCreateNewNote = $state(false);
   let showingFunctionSelector = $state(false);
+  let userFunctions = $state([]); // note: $state() not needed
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
   let showingHistorySelector = $state(false);
@@ -526,7 +529,13 @@
     getEditorComp().focus();
   }
 
-  function openFunctionSelector() {
+  async function openFunctionSelector() {
+    let userFunctionsStr = await loadNoteIfExists(kMyFunctionsNoteName);
+    if (!userFunctionsStr) {
+      userFunctions = [];
+    } else {
+      userFunctions = parseUserFunctions(userFunctionsStr);
+    }
     showingFunctionSelector = true;
   }
 
@@ -746,8 +755,8 @@
 
     const menuRun = [
       ["Run " + language + " block\tAlt + Shift + R", kCmdRunBlock],
-      ["Function with block content", kCmdRunFunctionWithBlockContent],
-      ["Function with selection", kCmdRunFunctionWithSelection],
+      ["Run function with block content", kCmdRunFunctionWithBlockContent],
+      ["Run function with selection", kCmdRunFunctionWithSelection],
       ["Show built-in functions", kCmdShowBuiltInFunctions],
       ["Create your own functions", kCmdCreateYourOwnFunctions],
       ["Help", kCmdRunHelp],
@@ -1361,7 +1370,7 @@
 
 {#if showingFunctionSelector}
   <Overlay onclose={closeFunctionSelector} blur={true}>
-    <FunctionSelector runFunction={runFunctionWithActiveBlock}
+    <FunctionSelector {userFunctions} runFunction={runFunctionWithActiveBlock}
     ></FunctionSelector>
   </Overlay>
 {/if}

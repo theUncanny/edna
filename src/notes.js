@@ -595,6 +595,18 @@ function loadNoteLS(name) {
  * @param {string} name
  * @returns {Promise<string>}
  */
+export async function loadNoteIfExists(name) {
+  let notes = getLatestNoteNames();
+  if (!notes.includes(name)) {
+    return null;
+  }
+  return await loadNote(name);
+}
+
+/**
+ * @param {string} name
+ * @returns {Promise<string>}
+ */
 export async function loadNote(name) {
   console.log("loadNote:", name);
   let res;

@@ -346,13 +346,13 @@ The function gets the content as argument, can traform it, and we show the outpu
 For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.
 
 To run a JavasScript function with content of block:
-- context menu: `Run`, `Function with block content`
+- context menu: `Run` / `Run function with block content`
 - command palette: `Run function with block content`
 - pick a function from the list
 
 To run a JavasScript function with selection:
-- context menu: `Run`, `Function with selection`
-- command palette: `Run function with block content`
+- context menu: `Run` / `Run function with selection`
+- command palette: `Run function with selection`
 - pick a function from the list
 
 If you want to see all built-in functions use:

@@ -7,10 +7,11 @@
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
   /** @type {{
+   userFunctions: BoopFunction[],
    runFunction: (fn: BoopFunction, replace: boolean) => void,
   }}*/
 
-  let { runFunction } = $props();
+  let { userFunctions, runFunction } = $props();
 
   /** @typedef {{
     fdef: BoopFunction,
@@ -22,6 +23,20 @@
   */
 
   /**
+   * @param {BoopFunction} fdef
+   * @param {number} key
+   * @returns {Item}
+   */
+  function mkItem(fdef, key) {
+    return {
+      fdef: fdef,
+      key: key,
+      name: fdef.name,
+      nameLC: fdef.name.toLowerCase(),
+      ref: null,
+    };
+  }
+  /**
    * @returns {Item[]}
    */
   function buildItems() {
@@ -30,14 +45,10 @@
     let res = Array(n);
     let key = 0;
     for (let fdef of blockFunctions) {
-      let item = {
-        fdef: fdef,
-        key: key,
-        name: fdef.name,
-        nameLC: fdef.name.toLowerCase(),
-        ref: null,
-      };
-      res[key++] = item;
+      res[key++] = mkItem(fdef, key);
+    }
+    for (let fdef of userFunctions) {
+      res[key++] = mkItem(fdef, key);
     }
     res.sort((a, b) => {
       return a.name.localeCompare(b.name);
