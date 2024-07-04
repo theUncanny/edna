@@ -210,6 +210,43 @@ export const LANGUAGES = [
   },
 ];
 
+// token, name, guesslang
+const langs = [
+  "text", "Plain Text", null,
+  "math", "Math", null,
+  "json", "JSON", "json",
+  "python", "Python", "py",
+  "html", "HTML", "html",
+  "sql", "SQL", "sql",
+  "markdown", "Markdown", "md",
+  "java", "Java", "java",
+  "lezer", "Lezer", null,
+  "php", "PHP", "php",
+  "css", "CSS", "css",
+  "xml", "XML", "xml",
+  "vue", "Vue", null,
+  "cpp", "C++", "cpp",
+  "rust", "Rust", "rs",
+  "csharp", "C#", "cs",
+  "svelte", "Svelte", null,
+  "ruby", "Ruby", "rb",
+  "shell", "Shell", "sh",
+  "yaml", "YAML", "yaml",
+  "toml", "TOML", "toml",
+  "golang", "Go", "go",
+  "clojure", "Clojure", "clj",
+  "erlang", "Erlang", "erl",
+  "javascript", "JavaScript", "js",
+  "jsx", "JSX", null,
+  "typescript", "TypeScript", "ts",
+  "tsx", "TSX", null,
+  "swift", "Swift", "swift",
+  "kotlin", "Kotlin", "kt",
+  "groovy", "Groovy", "groovy",
+  "diff", "Diff", null,
+  "powershell", "PowerShell", "ps1"
+];
+
 const tokenToLanguage = Object.fromEntries(LANGUAGES.map((l) => [l.token, l]));
 
 export function getLanguage(token) {

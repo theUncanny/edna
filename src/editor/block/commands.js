@@ -135,8 +135,8 @@ export function addNewBlockAfterLast({ state, dispatch }) {
   return true;
 }
 
-export function changeLanguageTo(view, block, language, auto) {
-  let { state, dispatch } = view;
+// note: using state, dispatch because note all callers have view
+export function changeLanguageTo(state, dispatch, block, language, auto) {
   if (state.readOnly) return false;
   const delimRegex = /^\n∞∞∞[a-z]+?(-a)?\n/g;
   if (
@@ -165,7 +165,7 @@ export function changeLanguageTo(view, block, language, auto) {
 
 export function changeCurrentBlockLanguage(view, language, auto) {
   const block = getActiveNoteBlock(view.state);
-  changeLanguageTo(view, block, language, auto);
+  changeLanguageTo(view.state, view.dispatch, block, language, auto);
 }
 
 function updateSel(sel, by) {
