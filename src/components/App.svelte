@@ -561,7 +561,7 @@
       },
       postError: (s) => {
         console.log("postError:", s);
-        showToast("Error:" + s);
+        showError("Error:" + s);
       },
     };
     let res = await runBoopFunction(f, input);

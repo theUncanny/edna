@@ -363,17 +363,19 @@ This functionality is inspired by https://boop.okat.best/ so our built-in functi
 
 ## Write your own functions
 
-The real power is in implementing your own functions.
+You can write custom JavaScript functions that operate on text (content of the block or a selection), transform it in some way to create an output block.
 
-To do it create `edna: my functions` note:
+For example you can write a function that sorts lines of text.
+
+To write custom functions create a special `edna: my functions` note:
 - context menu: `Run`, `Create your own functions`
-- or command palette: `Create your own functions`
+- command palette: `Create your own functions`
 
 Each JavaScript block is a function.
 
 The code must be implemented as `function main(input) { ... your code }`.
 
-We use the same format at https://boop.okat.best/.
+We use the same format as https://boop.okat.best/.
 
 `input` is an object:
 
@@ -386,11 +388,11 @@ We use the same format at https://boop.okat.best/.
 }
 ```
 
-To return value you assign it to `input.text` and `input.fullText`. `postInfo()` and `postError()` functions show a toast message.
+To return value you assign it to `input.text` and `input.fullText`. `postInfo()` and `postError()` functions show a notification message.
 
-We show `input.text` or `input.fullText` as output block if, after execution, it differs from the original values.
+We show `input.text` or `input.fullText` as output block if, after execution, it differs from the original value.
 
-Why `text` and `fullText`? I have no idea, I just copied Boop and that's how their API works.
+Why `text` and `fullText`? I have no idea, I just copied [Boop](https://boop.okat.best/) and that's how their API works.
 
 In my implementation `text` and `fullText` are the same.
 
@@ -408,13 +410,13 @@ You also need to provide metadata at the top in the format:
 **/
 ```
 
-Don't get cute and reformat it any way or change `/**` and `**/` to something else. For your own code start by copying this.
+Don't get cute and reformat it any way or change `/**` and `**/` to something else. Best to copy it and change values.
 
 Currently the important fields are `name`, and `description` because they are shown in function selection dialog.
 
 In future I might add more `api` versions, but at the moment there's just 1.
 
-Here's the simplest function that simply returns `foo` as a result:
+Here's the simplest function that returns `foo` as a result:
 ```javascript
 /**
 {
@@ -442,23 +444,22 @@ Here's an example function that uses `camelCase` functio from `lodash` package i
 
 ```javascript
 async function main(input) {
-  // @ts-ignore
   let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
   input.text = lodash.camelCase(input.text);
 }
 ```
 
-Debugging tip: sometimes module exports functions direct, sometimes as `default` prorperty.
+Debugging tip: sometimes module exports functions direct, sometimes as `default`.
 
 To figure this out for a library, in browser's dev tools console do:
 ```
 let m = (await import("https://esm.sh/lodash@4.17.21"))
 ```
-then inspect the `m` object in console.
+then inspect the `m` object in console to see available functions.
 
 ## Share your JavaScript functions with others
 
-Help others and post your functions to https://github.com/kjk/edna/discussions/categories/share-javascript-functions
+Share your functions with other via https://github.com/kjk/edna/discussions/categories/share-javascript-functions
 
 ∞∞∞markdown
 # Backing up notes
