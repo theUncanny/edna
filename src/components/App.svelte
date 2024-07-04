@@ -92,7 +92,7 @@
     formatBlockContent,
     insertAfterActiveBlock,
   } from "../editor/block/format-code";
-  import { isReadOnly } from "../editor/cmutils";
+  import { getCurrentSelection, isReadOnly } from "../editor/cmutils";
   import {
     addNewBlockAfterCurrent,
     addNewBlockAfterLast,
@@ -546,15 +546,6 @@
     getEditorComp().focus();
   }
 
-  // debug functions to be called from dev tools console as:
-  // window.edna.debug.clearLocalStorage etc.
-  // @ts-ignore
-  window.edna = {
-    debug: {
-      removeLocalStorageNotes: debugRemoveLocalStorageNotes,
-    },
-  };
-
   /** @typedef {import("../functions").BoopFunctionArg} BoopFunctionArg*/
 
   /**
@@ -568,16 +559,62 @@
       fullText: txt,
       postInfo: (s) => {
         console.log("postInfo:", s);
-        showToast(s);
+        showToast(s, 0);
       },
       postError: (s) => {
         console.log("postError:", s);
-        showError("Error:" + s);
+        showError("Error:" + s, 0);
       },
     };
     let res = await runBoopFunction(f, input);
     console.log("res:", res);
     return input;
+  }
+
+  /**
+   * @param {EditorView} view
+   * @param {BoopFunction} fdef
+   * @param {boolean} replace
+   * @returns {Promise<boolean>}
+   */
+  async function runBoopFunctionWithSelection(view, fdef, replace) {
+    // TOOD: selection can cross blocks so for now not implementing replace
+    replace = false;
+
+    const { state } = view;
+    if (state.readOnly) return false;
+    let { selectedText } = getCurrentSelection(view);
+    const content = selectedText;
+    let res = "";
+    let input = null;
+    try {
+      input = await runBoopFunctionWithText(fdef, content);
+      res = "";
+      if (input.text != content) {
+        res = input.text;
+      }
+      if (input.fullText != content) {
+        res = input.fullText;
+      }
+      console.log("res:", res);
+    } catch (e) {
+      console.log(e);
+      res = `error running ${fdef.name}: ${e}`;
+    }
+
+    if (replace) {
+      throwIf(true, "not yet implemented");
+    } else {
+      // TODO: be more intelligent
+      if (res === "") {
+        return;
+      }
+      let text = res;
+      if (!res.startsWith("\n∞∞∞")) {
+        text = "\n∞∞∞text-a\n" + res;
+      }
+      insertAfterActiveBlock(view, text);
+    }
   }
 
   /** @typedef {import("@codemirror/view").EditorView} EditorView */
@@ -655,7 +692,11 @@
     let name = fdef.name;
     let msg = `Running <span class="font-bold">${name}</span>...`;
     showModalMessageHTML(msg, 300);
-    await runBoopFunctionWithBlockContent(view, fdef, replace);
+    if (runFunctionOnSelection) {
+      await runBoopFunctionWithSelection(view, fdef, replace);
+    } else {
+      await runBoopFunctionWithBlockContent(view, fdef, replace);
+    }
     clearModalMessage();
     view.focus();
   }
@@ -881,13 +922,27 @@
       }
     } else if (
       mid === kCmdRunFunctionWithBlockContent ||
-      mid == kCmdRunFunctionWithSelection
+      mid === kCmdRunFunctionWithSelection
     ) {
       if (ro) {
         return kMenuStatusDisabled;
       }
+      if (!hasSelection()) {
+        if (mid === kCmdRunFunctionWithSelection) {
+          return kMenuStatusRemoved;
+        }
+      }
     }
     return kMenuStatusNormal;
+  }
+
+  /**
+   * @returns {boolean} hasSelection
+   */
+  function hasSelection() {
+    let view = getEditorView();
+    let { selectedText } = getCurrentSelection(view);
+    return selectedText != "";
   }
 
   /**
@@ -981,10 +1036,11 @@
     } else if (cmdId === kCmdOpenRecent) {
       openHistorySelector();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
+      runFunctionOnSelection = false;
       openFunctionSelector();
     } else if (cmdId === kCmdRunFunctionWithSelection) {
-      showError("Running with selection not yet implemented!");
-      //openFunctinSelector();
+      runFunctionOnSelection = true;
+      openFunctionSelector();
     } else if (cmdId === kCmdCreateYourOwnFunctions) {
       openCustomFunctionsNote();
     } else if (cmdId === kCmdShowBuiltInFunctions) {
@@ -993,6 +1049,8 @@
       console.log("unknown menu cmd id");
     }
   }
+
+  let runFunctionOnSelection = false;
 
   async function openCustomFunctionsNote() {
     let content = getMyFunctionsNote();
@@ -1321,6 +1379,15 @@
   function docDidChange() {
     updateDocSize();
   }
+
+  // debug functions to be called from dev tools console as:
+  // window.edna.debug.clearLocalStorage etc.
+  // @ts-ignore
+  window.edna = {
+    debug: {
+      removeLocalStorageNotes: debugRemoveLocalStorageNotes,
+    },
+  };
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
