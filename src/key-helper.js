@@ -11,35 +11,42 @@ export function fixUpShortcuts(s, platform = platformName) {
 function getKeyHelp(platform = platformName) {
   const modChar = getModChar(platform);
   const altChar = getAltChar(platform);
-  return [
-    [`${modChar} + P`, "Open, create or delete a note"],
-    [``, `or: ${modChar} + K, ${modChar} + O, ${altChar} + 0`],
-    [`${modChar} + Shift + P`, "Command Palette"],
-    [``, `or: ${modChar} + Shift + K, ${modChar} + Shift + O`],
-    [`${modChar} + B`, "Navigate to a block"],
-    [`${modChar} + H`, "Open recent note (from history)"],
-    [`${altChar} + N`, "Create a new scratch note"],
-    [`${modChar} + Enter`, "Add new block below the current block"],
-    [`${altChar} + Enter`, "Add new block before the current block"],
-    [`${modChar} + Shift + Enter`, "Add new block at the end of the buffer"],
-    [`${altChar} + Shift + Enter`, "Add new block at the start of the buffer"],
+  let res = [
+    [`Mod + P`, "Open, create or delete a note"],
+    [``, `or: Mod + K, Mod + O, Alt + 0`],
+    [`Mod + Shift + P`, "Command Palette"],
+    [``, `or: Mod + Shift + K, Mod + Shift + O`],
+    [`Mod + B`, "Navigate to a block"],
+    [`Mod + H`, "Open recent note (from history)"],
+    [`Alt + N`, "Create a new scratch note"],
+    [`Mod + Enter`, "Add new block below the current block"],
+    [`Alt + Enter`, "Add new block before the current block"],
+    [`Mod + Shift + Enter`, "Add new block at the end of the buffer"],
+    [`Alt + Shift + Enter`, "Add new block at the start of the buffer"],
     [
-      `${modChar} + ${altChar} + Enter`,
+      `Mod + Alt + Enter`,
       "Split the current block at cursor position",
     ],
-    [`${modChar} + L`, "Change block language"],
-    [`$(modChar} + E`, "Run function with block content"],
-    [`${modChar} + Down`, "Goto next block"],
-    [`${modChar} + Up`, "Goto previous block"],
-    [`${modChar} + A`, "Select all text in a note block"],
+    [`Mod + L`, "Change block language"],
+    [`Mod + E`, "Run function with block content"],
+    [`Mod + Down`, "Goto next block"],
+    [`Mod + Up`, "Goto previous block"],
+    [`Mod + A`, "Select all text in a note block"],
     [``, "Press again to select the whole buffer"],
-    [`${modChar} + ${altChar} + Up/Down`, "Add additional cursor above/below"],
-    [`${altChar} + Shift + F`, "Format block content"],
+    [`Mod + Alt + Up/Down`, "Add additional cursor above/below"],
+    [`Alt + Shift + F`, "Format block content"],
     [``, "Supports Go, JSON, JavaScript, HTML, CSS and Markdown"],
-    [`${altChar} + Shift + R`, "Execute block code"],
+    [`Alt + Shift + R`, "Execute block code"],
     [``, "Supports Go"],
-    [`${modChar} + F`, "Search / replace within a note"],
+    [`Mod + F`, "Search / replace within a note"],
   ];
+  for (let el of res) {
+    el[0] = el[0].replaceAll("Mod", modChar)
+    el[1] = el[1].replaceAll("Mod", modChar)
+    el[0] = el[0].replaceAll("Alt", altChar)
+    el[1] = el[1].replaceAll("Alt", altChar)
+  }
+  return res;
 }
 
 /**

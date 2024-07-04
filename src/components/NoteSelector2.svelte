@@ -29,7 +29,7 @@
   /**
    * @returns {Item[]}
    */
-  function rebuildNotesInfo() {
+  function rebuildItems() {
     const noteNames = getLatestNoteNames();
     // console.log("rebuildNotesInfo, notes", noteInfos)
     /** @type {Item[]} */
@@ -79,7 +79,7 @@
     });
     return res;
   }
-  let itemsInitial = $state(rebuildNotesInfo());
+  let itemsInitial = $state(rebuildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -87,7 +87,7 @@
     return sanitizeNoteName(filter);
   });
 
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
     let lc = sanitizedFilter.toLowerCase();
@@ -125,7 +125,7 @@
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
     canCreate = len(name) > 0;
-    for (let i of filteredItems) {
+    for (let i of itemsFiltered) {
       if (i.name === name) {
         canCreate = false;
         break;
@@ -193,7 +193,7 @@
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          itemsInitial = rebuildNotesInfo();
+          itemsInitial = rebuildItems();
         });
         return;
       }
@@ -276,7 +276,7 @@
   />
   <ListBox
     bind:this={listbox}
-    items={filteredItems}
+    items={itemsFiltered}
     {selectionChanged}
     onclick={(item) => emitOpenNote(item)}
   >

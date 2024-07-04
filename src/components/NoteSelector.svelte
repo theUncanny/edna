@@ -86,7 +86,7 @@
     });
     return res;
   }
-  let initialItems = $state(buildItems());
+  let itemsInitial = $state(buildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -94,7 +94,7 @@
     return sanitizeNoteName(filter);
   });
 
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
     if (sanitizedFilter.startsWith(">")) {
@@ -102,9 +102,9 @@
       return;
     }
     let filterParts = splitFilterLC(sanitizedFilter);
-    let res = Array(len(initialItems));
+    let res = Array(len(itemsInitial));
     let nRes = 0;
-    for (let fdef of initialItems) {
+    for (let fdef of itemsInitial) {
       if (!stringMatchesParts(fdef.nameLC, filterParts)) {
         continue;
       }
@@ -112,7 +112,7 @@
     }
     res.length = nRes;
 
-    return initialItems.filter((item) => {
+    return itemsInitial.filter((item) => {
       let s = item.nameLC;
       return stringMatchesParts(s, filterParts);
     });
@@ -129,7 +129,7 @@
 
   let noteCountMsg = $derived.by(() => {
     // $state(`${noteCount} notes`);
-    let n = len(filteredItems);
+    let n = len(itemsFiltered);
     if (n === 0) {
       return ""; // don't obscure user entering new, long note name
     }
@@ -148,7 +148,7 @@
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
     canCreate = len(name) > 0;
-    for (let i of filteredItems) {
+    for (let i of itemsFiltered) {
       if (i.name === name) {
         canCreate = false;
         break;
@@ -208,7 +208,7 @@
       let note = selectedItem;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          initialItems = buildItems();
+          itemsInitial = buildItems();
         });
         return;
       }
@@ -296,7 +296,7 @@
   </div>
   <ListBox
     bind:this={listbox}
-    items={filteredItems}
+    items={itemsFiltered}
     {selectionChanged}
     onclick={(item) => emitOpenNote(item)}
   >

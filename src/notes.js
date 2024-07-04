@@ -305,6 +305,7 @@ export function debugRemoveLocalStorageNotes() {
       console.log(`removed ${key}`)
     }
   }
+  localStorage.removeItem(kMetadataName)
 }
 
 /**
@@ -948,7 +949,6 @@ export async function pickAnotherDirectory() {
 
 // meta-data about notes
 export const kMetadataName = "__metadata.edna.json";
-export const kMetadataOldName = "notes.metadata.edna.json";
 
 /**
  * @typedef {Object} NoteMetadata
@@ -1013,10 +1013,8 @@ export async function loadNotesMetadata() {
   let dh = getStorageFS();
   let s;
   if (!dh) {
-    renameLS(kMetadataOldName, kMetadataName);
     s = localStorage.getItem(kMetadataName);
   } else {
-    await fsRenameFile(dh, kMetadataOldName, kMetadataName);
     try {
       s = await fsReadTextFile(dh, kMetadataName);
     } catch (e) {
@@ -1074,12 +1072,11 @@ export async function reassignNoteShortcut(name, altShortcut) {
     if (o.altShortcut === altShortcut) {
       if (o.name === name) {
         // same note: just remove shortcut
-        o.altShortcut = undefined;
-        m = m.filter((o) => o.altShortcut);
+        delete o.altShortcut;
         return await saveNotesMetadata(m);
       } else {
         // a different note: remove shortcut and then assign to the new note
-        o.altShortcut = undefined;
+        delete o.altShortcut;
         break;
       }
     }
@@ -1100,7 +1097,6 @@ export async function reassignNoteShortcut(name, altShortcut) {
     console.log("reassignNoteShortcut: created for note", name);
   }
   found.altShortcut = altShortcut;
-  m = m.filter((o) => o.altShortcut);
   return await saveNotesMetadata(m);
 }
 
