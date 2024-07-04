@@ -44,6 +44,13 @@
   function onchange(ev) {
     input.focus();
   }
+
+  $effect(() => {
+    console.log("EnterDecryptPassword did mount, input:", input);
+    if (input) {
+      input.focus();
+    }
+  });
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -61,7 +68,6 @@
     bind:this={input}
     bind:value={password}
     type={hidePassword ? "password" : "text"}
-    use:focus
     class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
   />
   <label class="mt-2 ml-1.5">

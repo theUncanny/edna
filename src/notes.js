@@ -690,7 +690,12 @@ async function readEncryptedFS(dh, fileName) {
     if (s !== null) {
       return s;
     }
-    msg = "Entered password was invalid";
+    let pwd = localStorage.getItem(kLSPassowrdKey);
+    if (!pwd) {
+      msg = "Please enter password to decrypt files";
+    } else {
+      msg = `Password '${pwd}' is not correct. Please enter valid password.`;
+    }
     // password was likely incorrect so remove it so that getPasswordHashMust()
     // asks the user
     removePassword();
