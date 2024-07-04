@@ -92,7 +92,7 @@
     formatBlockContent,
     insertAfterActiveBlock,
   } from "../editor/block/format-code";
-  import { isReadOnly } from "../editor/block/cmutils";
+  import { isReadOnly } from "../editor/cmutils";
   import {
     addNewBlockAfterCurrent,
     addNewBlockAfterLast,

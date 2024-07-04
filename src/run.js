@@ -3,7 +3,7 @@ import { getActiveNoteBlock } from "./editor/block/block";
 import { setReadOnly } from "./editor/editor";
 import { getLanguage, langSupportsRun } from "./editor/languages";
 import { insertAfterActiveBlock } from "./editor/block/format-code";
-import { isReadOnly } from "./editor/block/cmutils";
+import { isReadOnly } from "./editor/cmutils";
 import { ensureStringEndsWithNL, len } from "./util";
 
 function getError(res) {

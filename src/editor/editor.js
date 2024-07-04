@@ -13,7 +13,7 @@ import { closeBrackets } from "@codemirror/autocomplete";
 import { customSetup } from "./setup.js";
 import { ednaKeymap } from "./keymap.js";
 import { emacsKeymap } from "./emacs.js";
-import { focusEditorView } from "../cmutils.js";
+import { focusEditorView } from "./cmutils.js";
 import { getFontTheme } from "./theme/font-theme.js";
 import { heynoteBase } from "./theme/base.js";
 import { heynoteCopyCut } from "./copy-paste";
@@ -25,7 +25,7 @@ import { links } from "./links.js";
 import { markdown } from "@codemirror/lang-markdown";
 import { todoCheckboxPlugin } from "./todo-checkbox";
 import { findEditorByView } from "../state.js";
-import { isReadOnly } from "./block/cmutils.js";
+import { isReadOnly } from "./cmutils.js"
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
