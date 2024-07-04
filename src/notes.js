@@ -877,6 +877,21 @@ export async function preLoadAllNotes() {
 }
 
 /**
+ * @param {string} lsKeyName
+ * @param {FileSystemDirectoryHandle} dh
+ * @param {string} fileName
+ */
+async function moveLSToFS(lsKeyName, dh, fileName) {
+  console.log("moveLSToFS:", lsKeyName, fileName, dh.name);
+  let s = localStorage.getItem(lsKeyName);
+  if (s === null) {
+    return;
+  }
+  await fsWriteTextFile(dh, fileName, s);
+  localStorage.removeItem(lsKeyName);
+}
+
+/**
  * @param {FileSystemDirectoryHandle} dh
  */
 export async function switchToStoringNotesOnDisk(dh) {
@@ -899,6 +914,8 @@ export async function switchToStoringNotesOnDisk(dh) {
     let key = notePathFromNameLS(name);
     localStorage.removeItem(key);
   }
+
+  await moveLSToFS(kMetadataName, dh, kMetadataName);
 
   storageFS = dh;
   // save in indexedDb so that it persists across sessions
