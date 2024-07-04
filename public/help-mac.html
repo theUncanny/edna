@@ -75,7 +75,7 @@ $(modChar} + E      Run function with block content
 </ul>
 <h2 id="context-menu" tabindex="-1"><a class="header-anchor" href="#context-menu">Context menu</a></h2>
 <p>Right-click for context menu.</p>
-<p>For native context menu do <code>Ctrl + right-click</code>. This is especially useful when spell checking to correct mis-spellings.</p>
+<p>For native context menu do <code>Ctrl + right-click</code>. This is useful when spell checking to correct mis-spellings.</p>
 <h2 id="switch-to-recently-opened-note" tabindex="-1"><a class="header-anchor" href="#switch-to-recently-opened-note">Switch to recently opened note</a></h2>
 <p>Press <code>⌘ + E</code> to switch to a note from list of recently opened notes.</p>
 <p>Last 10 recently opened notes can be opened with <code>0</code> ... <code>9</code> shortcut.</p>
@@ -94,10 +94,9 @@ $(modChar} + E      Run function with block content
 <li><code>⌥ + 3</code> : inbox</li>
 </ul>
 <p>Notes with quick access shortcut are shown at the top of note selector (<code>⌘ + P</code>).</p>
-<h2 id="features-for-developers" tabindex="-1"><a class="header-anchor" href="#features-for-developers">Features for developers</a></h2>
-<h3 id="syntax-highlighting-of-blocks" tabindex="-1"><a class="header-anchor" href="#syntax-highlighting-of-blocks">Syntax highlighting of blocks</a></h3>
+<h2 id="syntax-highlighting-of-blocks" tabindex="-1"><a class="header-anchor" href="#syntax-highlighting-of-blocks">Syntax highlighting of blocks</a></h2>
 <p>Blocks are syntax highlighted based on their type.</p>
-<h3 id="formatting-of-blocks" tabindex="-1"><a class="header-anchor" href="#formatting-of-blocks">Formatting of blocks</a></h3>
+<h2 id="formatting-of-blocks" tabindex="-1"><a class="header-anchor" href="#formatting-of-blocks">Formatting of blocks</a></h2>
 <p>You can format current block using:</p>
 <ul>
 <li><code>⌥ + Shift + F</code> keyboard shortcut</li>
@@ -105,13 +104,108 @@ $(modChar} + E      Run function with block content
 <li>press format icon in status bar (bottom right)</li>
 </ul>
 <p>We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.</p>
-<h3 id="running-code" tabindex="-1"><a class="header-anchor" href="#running-code">Running code</a></h3>
-<h4 id="executing-code-blocks" tabindex="-1"><a class="header-anchor" href="#executing-code-blocks">Executing code blocks</a></h4>
+<h1 id="multiple-notes" tabindex="-1"><a class="header-anchor" href="#multiple-notes">Multiple notes</a></h1>
+<h2 id="open-another-note" tabindex="-1"><a class="header-anchor" href="#open-another-note">Open another note</a></h2>
+<ul>
+<li><code>⌘ + P</code> for note switcher</li>
+<li>click on note to open</li>
+</ul>
+<p>or:</p>
+<ul>
+<li>enter text to narrow down list of notes</li>
+<li><code>up</code> / <code>down</code> arrow keys to select a note</li>
+<li><code>Enter</code> to open selected note</li>
+</ul>
+<h2 id="create-a-new-note" tabindex="-1"><a class="header-anchor" href="#create-a-new-note">Create a new note</a></h2>
+<ul>
+<li><code>⌘ + P</code> to open note switcher</li>
+<li>type name of the note to create</li>
+<li><code>Enter</code> to create if the name doesn't match any existing note</li>
+<li><code>⌘ + Enter</code> to create if the name partially matches an existing note</li>
+</ul>
+<p>Or: context menu: <code>Create New note</code>.</p>
+<h2 id="create-a-new-scratch-note" tabindex="-1"><a class="header-anchor" href="#create-a-new-scratch-note">Create a new scratch note</a></h2>
+<p><code>⌥ + N</code> to create temporary scratch note. We'll pick a unique name <code>scratch-&lt;n&gt;</code></p>
+<h2 id="delete-a-note" tabindex="-1"><a class="header-anchor" href="#delete-a-note">Delete a note</a></h2>
+<p>Context menu: <code>This Note / Delete</code> or:</p>
+<ul>
+<li><code>⌘ + P</code> for note switcher</li>
+<li>select a note with arrow key or by typing a partial name match</li>
+<li><code>⌘ + Delete</code> or <code>⌘ + Backspace</code> to delete selected note</li>
+</ul>
+<p>A <code>scratch</code> note cannot be deleted.</p>
+<h2 id="rename-a-note" tabindex="-1"><a class="header-anchor" href="#rename-a-note">Rename a note</a></h2>
+<p>context menu: <code>This Note / Rename</code></p>
+<h2 id="quick-access-shortcut-1" tabindex="-1"><a class="header-anchor" href="#quick-access-shortcut-1">Quick access shortcut</a></h2>
+<p>You can assign <code>⌥ + 1</code> to <code>⌥ + 9</code> keyboard shortcuts for quickly opening up to 10 notes.</p>
+<ul>
+<li><code>⌘ + P</code></li>
+<li>select a note</li>
+<li>press <code>⌥ + &lt;n&gt;</code> shortcut to re-assign it to selected note</li>
+</ul>
+<p>Notes with assigned shortcut show up at the top of note switcher.</p>
+<h2 id="open-recent-note" tabindex="-1"><a class="header-anchor" href="#open-recent-note">Open recent note</a></h2>
+<p>Press <code>⌘ + E</code> to open a note from history. You can press <code>0</code> to <code>9</code> to open one of the last 10 notes.</p>
+<h1 id="default-notes" tabindex="-1"><a class="header-anchor" href="#default-notes">Default notes</a></h1>
+<p>At first run we create 3 default notes:</p>
+<ul>
+<li><code>scratch</code>, <code>⌥ + 1</code></li>
+<li><code>daily journal</code>, <code>⌥ + 2</code></li>
+<li><code>inbox</code>, <code>⌥ + 3</code></li>
+</ul>
+<p>You can delete them (except the <code>scratch</code> note).</p>
+<p><code>scratch</code> note is meant for temporary notes.</p>
+<p><code>inbox</code> for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.</p>
+<p><code>daily journal</code> is for daily notes. We auto-create a block for each day.</p>
+<h1 id="storing-notes-on-disk" tabindex="-1"><a class="header-anchor" href="#storing-notes-on-disk">Storing notes on disk</a></h1>
+<p>By default notes are stored in the browser (localStorage).</p>
+<p>If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.</p>
+<p>You can do one time export from localStorage to a directory on disk:</p>
+<ul>
+<li>context menu: <code>Notes storage / Move notes from browser to directory</code></li>
+<li>pick a directory on disk</li>
+<li>we save notes on disk as <code>${name}.edna.txt</code> files in chosen directory and delete notes in localStorage</li>
+</ul>
+<p>You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.</p>
+<p>Use context menu <code>Notes storage / Open notes in directory</code> to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default <code>scratch</code> note.</p>
+<p>You can go back to storing notes in the browser with context menu <code>Notes storage / Open notes in browser (localStorage)</code>. Unlike going from browser =&gt; directory, it doesn't import the notes from directory.</p>
+<h1 id="accessing-notes-on-multiple-computers" tabindex="-1"><a class="header-anchor" href="#accessing-notes-on-multiple-computers">Accessing notes on multiple computers</a></h1>
+<p>If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.</p>
+<p>On the first computer export notes from browser to disk:</p>
+<ul>
+<li>context menu: <code>Notes storage / Move notes from browser to directory</code></li>
+<li>pick a directory shared by Dropbox / One Drive / Google Drive etc.</li>
+</ul>
+<p>On other computers:</p>
+<ul>
+<li>context menu: <code>Notes storage / Open notes in directory</code></li>
+<li>pick the same directory</li>
+</ul>
+<p>Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.</p>
+<h1 id="encryption" tabindex="-1"><a class="header-anchor" href="#encryption">Encryption</a></h1>
+<p>When storing notes on disk, you can encrypt them with a password.</p>
+<p>The password is only stored in your browser (in local storage). It never leaves your computer.</p>
+<p>Encryption and decryption takes place on your computer.</p>
+<p>If you lose the password, you'll lose access to your notes.</p>
+<p><strong>Don't lose the password</strong>.</p>
+<p>Notes are encrypted with <a href="https://en.wikipedia.org/wiki/ChaCha20-Poly1305" target="_blank">ChaCha20-Poly1305</a> algorithm via <a href="https://github.com/team-reflect/kiss-crypto" target="_blank">kiss-crypto</a> library.</p>
+<h2 id="picking-good-password" tabindex="-1"><a class="header-anchor" href="#picking-good-password">Picking good password</a></h2>
+<p>Good password is:</p>
+<ul>
+<li>long (short passwords can be cracked via brute force; long passwords cannot)</li>
+<li>easy to type</li>
+<li>easy to remember</li>
+</ul>
+<p>We recommend passwords that are long, memorable phrases.</p>
+<p>Example: <code>Blue bear attacked a tiny dog</code>.</p>
+<p>Such passwords are easier to type and remember than typical &quot;8a$7y!glo&quot; passwords.</p>
+<h1 id="running-code" tabindex="-1"><a class="header-anchor" href="#running-code">Running code</a></h1>
+<h2 id="run-code-blocks" tabindex="-1"><a class="header-anchor" href="#run-code-blocks">Run code blocks</a></h2>
 <p>If current block is Go or JavaScript block, you can run it:</p>
 <ul>
 <li><code>⌥ + Shift + R</code> keyboard shortcut</li>
-<li>right-click and use context menu <code>Run / Run &lt;javascript&gt; block</code></li>
-<li>use command palette and <code>Block: Run &lt;language&gt; block</code></li>
+<li>context menu: <code>Run / Run &lt;javascript&gt; block</code></li>
+<li>command palette: <code>Block: Run &lt;language&gt; block</code></li>
 </ul>
 <p>The output of execution will be shown in a new block created below the executed block.</p>
 <p>For Go:</p>
@@ -175,30 +269,30 @@ main();
 </code></pre>
 <p>The last expression is return value of <code>main()</code> function, so output is <code>foo</code>.</p>
 <p>We handle async functions.</p>
-<h4 id="running-javascript-functions-over-content" tabindex="-1"><a class="header-anchor" href="#running-javascript-functions-over-content">Running JavaScript functions over content</a></h4>
+<h2 id="run-javascript-functions-over-content" tabindex="-1"><a class="header-anchor" href="#run-javascript-functions-over-content">Run JavaScript functions over content</a></h2>
 <p>You can run JavaScript functions with the content of a current block or a selection.</p>
 <p>The function gets the content as argument, can traform it, and we show the output in a block below.</p>
 <p>For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.</p>
 <p>To run a JavasScript function with content of block:</p>
 <ul>
-<li>context menu, <code>Run</code>, <code>Function with block content</code></li>
-<li>or command palette <code>Run function with block content</code></li>
+<li>context menu: <code>Run</code>, <code>Function with block content</code></li>
+<li>command palette: <code>Run function with block content</code></li>
 <li>pick a function from the list</li>
 </ul>
 <p>To run a JavasScript function with selection:</p>
 <ul>
-<li>context menu, <code>Run</code>, <code>Function with selection</code></li>
-<li>or command palette <code>Run function with block content</code></li>
+<li>context menu: <code>Run</code>, <code>Function with selection</code></li>
+<li>command palette: <code>Run function with block content</code></li>
 <li>pick a function from the list</li>
 </ul>
 <p>If you want to see all built-in functions use:</p>
 <ul>
-<li>context menu, <code>Run</code>, <code>Show built-in functions</code></li>
-<li>or command palette <code> </code>Shw built-in functions`</li>
+<li>context menu: <code>Run</code>, <code>Show built-in functions</code></li>
+<li>command palette: <code>Shw built-in functions</code></li>
 </ul>
 <p>You can see what built-in functions are available, how they are implemented and use them as an example of how to write your own functions.</p>
 <p>This functionality is inspired by <a href="https://boop.okat.best/" target="_blank">https://boop.okat.best/</a> so our built-in functions come from Boop.</p>
-<h4 id="writing-your-own-functions" tabindex="-1"><a class="header-anchor" href="#writing-your-own-functions">Writing your own functions</a></h4>
+<h2 id="write-your-own-functions" tabindex="-1"><a class="header-anchor" href="#write-your-own-functions">Write your own functions</a></h2>
 <p>The real power is in implementing your own functions.</p>
 <p>To do it create <code>edna.my.functions</code> note:</p>
 <ul>
@@ -252,7 +346,7 @@ async function main(input) {
 }
 </code></pre>
 <p>As you can see, we support <code>async</code> functions.</p>
-<h4 id="using-external-libraries" tabindex="-1"><a class="header-anchor" href="#using-external-libraries">Using external libraries</a></h4>
+<h3 id="using-external-libraries" tabindex="-1"><a class="header-anchor" href="#using-external-libraries">Using external libraries</a></h3>
 <p>You can use any JavaScript library available via <a href="https://esm.sh" target="_blank">https://esm.sh</a> or <a href="https://www.jsdelivr.com/" target="_blank">https://www.jsdelivr.com/</a> (or similar).</p>
 <p>Here's an example function that uses <code>camelCase</code> functio from <code>lodash</code> package imported from <a href="https://esm.sh" target="_blank">https://esm.sh</a></p>
 <pre><code class="language-javascript">async function main(input) {
@@ -266,103 +360,8 @@ async function main(input) {
 <pre><code>let m = (await import(&quot;https://esm.sh/lodash@4.17.21&quot;))
 </code></pre>
 <p>then inspect the <code>m</code> object in console.</p>
-<h4 id="share-your-javascript-functions-with-others" tabindex="-1"><a class="header-anchor" href="#share-your-javascript-functions-with-others">Share your JavaScript functions with others</a></h4>
+<h2 id="share-your-javascript-functions-with-others" tabindex="-1"><a class="header-anchor" href="#share-your-javascript-functions-with-others">Share your JavaScript functions with others</a></h2>
 <p>Help others and post your functions to <a href="https://github.com/kjk/edna/discussions/categories/share-javascript-functions" target="_blank">https://github.com/kjk/edna/discussions/categories/share-javascript-functions</a></p>
-<h1 id="multiple-notes" tabindex="-1"><a class="header-anchor" href="#multiple-notes">Multiple notes</a></h1>
-<h2 id="open-another-note" tabindex="-1"><a class="header-anchor" href="#open-another-note">Open another note</a></h2>
-<ul>
-<li><code>⌘ + P</code> for note switcher</li>
-<li>click on note to open</li>
-</ul>
-<p>or:</p>
-<ul>
-<li>enter text to narrow down list of notes</li>
-<li><code>up</code> / <code>down</code> arrow keys to select a note</li>
-<li><code>Enter</code> to open selected note</li>
-</ul>
-<h2 id="create-a-new-note" tabindex="-1"><a class="header-anchor" href="#create-a-new-note">Create a new note</a></h2>
-<ul>
-<li><code>⌘ + P</code> to open note switcher</li>
-<li>type name of the note to create</li>
-<li><code>Enter</code> to create if the name doesn't match any existing note</li>
-<li><code>⌘ + Enter</code> to create if the name partially matches an existing note</li>
-</ul>
-<p>Or: right-click for context menu and <code>Create New note</code>.</p>
-<h2 id="create-a-new-scratch-note" tabindex="-1"><a class="header-anchor" href="#create-a-new-scratch-note">Create a new scratch note</a></h2>
-<p><code>⌥ + N</code> to create temporary scratch note. We'll pick a unique name <code>scratch-&lt;n&gt;</code></p>
-<h2 id="delete-a-note" tabindex="-1"><a class="header-anchor" href="#delete-a-note">Delete a note</a></h2>
-<p>Right-click for context menu, <code>This Note / Delete</code> or:</p>
-<ul>
-<li><code>⌘ + P</code> for note switcher</li>
-<li>select a note with arrow key or by typing a partial name match</li>
-<li><code>⌘ + Delete</code> or <code>⌘ + Backspace</code> to delete selected note</li>
-</ul>
-<p>A <code>scratch</code> note cannot be deleted.</p>
-<h2 id="rename-a-note" tabindex="-1"><a class="header-anchor" href="#rename-a-note">Rename a note</a></h2>
-<p>Right-click for context menu, <code>This Note / Rename</code></p>
-<h2 id="quick-access-shortcut-1" tabindex="-1"><a class="header-anchor" href="#quick-access-shortcut-1">Quick access shortcut</a></h2>
-<p>You can assign <code>⌥ + 1</code> to <code>⌥ + 9</code> keyboard shortcuts for quickly opening up to 10 notes.</p>
-<ul>
-<li><code>⌘ + P</code></li>
-<li>select a note</li>
-<li>press <code>⌥ + &lt;n&gt;</code> shortcut to re-assign it to selected note</li>
-</ul>
-<p>Notes with assigned shortcut show up at the top of note switcher.</p>
-<h2 id="open-recent-note" tabindex="-1"><a class="header-anchor" href="#open-recent-note">Open recent note</a></h2>
-<p>Press <code>⌘ + E</code> to open a note from history. You can press <code>0</code> to <code>9</code> to open one of the last 10 notes.</p>
-<h1 id="default-notes" tabindex="-1"><a class="header-anchor" href="#default-notes">Default notes</a></h1>
-<p>At first run we create 3 default notes:</p>
-<ul>
-<li><code>scratch</code>, <code>⌥ + 1</code></li>
-<li><code>daily journal</code>, <code>⌥ + 2</code></li>
-<li><code>inbox</code>, <code>⌥ + 3</code></li>
-</ul>
-<p>You can delete them (except the <code>scratch</code> note).</p>
-<p><code>scratch</code> note is meant for temporary notes.</p>
-<p><code>inbox</code> for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.</p>
-<p><code>daily journal</code> is for daily notes. We auto-create a block for each day.</p>
-<h1 id="storing-notes-on-disk" tabindex="-1"><a class="header-anchor" href="#storing-notes-on-disk">Storing notes on disk</a></h1>
-<p>By default notes are stored in the browser (localStorage).</p>
-<p>If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.</p>
-<p>You can do one time export from localStorage to a directory on disk:</p>
-<ul>
-<li>right click for context menu, <code>Notes storage / Move notes from browser to directory</code></li>
-<li>pick a directory on disk</li>
-<li>we save notes on disk as <code>${name}.edna.txt</code> files in chosen directory and delete notes in localStorage</li>
-</ul>
-<p>You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.</p>
-<p>Use context menu <code>Notes storage / Open notes in directory</code> to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default <code>scratch</code> note.</p>
-<p>You can go back to storing notes in the browser with context menu <code>Notes storage / Open notes in browser (localStorage)</code>. Unlike going from browser =&gt; directory, it doesn't import the notes from directory.</p>
-<h1 id="accessing-notes-on-multiple-computers" tabindex="-1"><a class="header-anchor" href="#accessing-notes-on-multiple-computers">Accessing notes on multiple computers</a></h1>
-<p>If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.</p>
-<p>On the first computer export notes from browser to disk:</p>
-<ul>
-<li>right click for context menu, <code>Notes storage / Move notes from browser to directory</code></li>
-<li>pick a directory shared by Dropbox / One Drive / Google Drive etc.</li>
-</ul>
-<p>On other computers:</p>
-<ul>
-<li>right click for context menu, <code>Notes storage / Open notes in directory</code></li>
-<li>pick the same directory</li>
-</ul>
-<p>Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.</p>
-<h1 id="encryption" tabindex="-1"><a class="header-anchor" href="#encryption">Encryption</a></h1>
-<p>When storing notes on disk, you can encrypt them with a password.</p>
-<p>The password is only stored in your browser (in local storage). It never leaves your computer.</p>
-<p>Encryption and decryption takes place on your computer.</p>
-<p>If you lose the password, you'll lose access to your notes.</p>
-<p><strong>Don't lose the password</strong>.</p>
-<p>Notes are encrypted with <a href="https://en.wikipedia.org/wiki/ChaCha20-Poly1305" target="_blank">ChaCha20-Poly1305</a> algorithm via <a href="https://github.com/team-reflect/kiss-crypto" target="_blank">kiss-crypto</a> library.</p>
-<h2 id="picking-good-password" tabindex="-1"><a class="header-anchor" href="#picking-good-password">Picking good password</a></h2>
-<p>Good password is:</p>
-<ul>
-<li>long (short passwords can be cracked via brute force; long passwords cannot)</li>
-<li>easy to type</li>
-<li>easy to remember</li>
-</ul>
-<p>We recommend passwords that are long, memorable phrases.</p>
-<p>Example: <code>Blue bear attacked a tiny dog</code>.</p>
-<p>Such passwords are easier to type and remember than typical &quot;8a$7y!glo&quot; passwords.</p>
 <h1 id="backing-up-notes" tabindex="-1"><a class="header-anchor" href="#backing-up-notes">Backing up notes</a></h1>
 <p>For notes stored in file system, you can enable notes backup via Settings.</p>
 <p>Once a day notes will be packed into a .zip file and saved in <code>backup</code> folder as <code>edna.backup.&lt;YYYY-MM-DD&gt;.zip</code> file.</p>
@@ -372,7 +371,7 @@ async function main(input) {
 <h1 id="exporting-notes-to-a-.zip-file" tabindex="-1"><a class="header-anchor" href="#exporting-notes-to-a-.zip-file">Exporting notes to a .zip file</a></h1>
 <p>Edna files are just text files with <code>.edna.txt</code> extension.</p>
 <p>You can export all the notes to a .zip file.</p>
-<p>Use right-click context menu and <code>Export notes to zip file</code> menu.</p>
+<p>Context menu: <code>Export notes to zip file</code> menu.</p>
 <p>We pack all the notes into a .zip file and initiate auto-download as <code>edna.notes.export-YYYY-MM-DD.zip</code> file to browser's downloads directory.</p>
 <p>You can then e.g. restore the notes by unzipping it to a directory and opening that directory in Edna with <code>Notes storage</code> / <code>Switch to notes in a directory</code> context menu.</p>
 <h1 id="lists-with-todo-items" tabindex="-1"><a class="header-anchor" href="#lists-with-todo-items">Lists with TODO items</a></h1>

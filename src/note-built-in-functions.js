@@ -1,5 +1,5 @@
 // ----------------------------
-// those are all built in JavaScript functions
+// those are JavaScript functions included with Edna
 // you can run them on current block content with
 // "Run function with block content" command
 // You can write your own functions

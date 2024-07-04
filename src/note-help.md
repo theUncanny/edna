@@ -61,7 +61,7 @@ Press `Mod + P` for note switcher and:
 
 Right-click for context menu.
 
-For native context menu do `Ctrl + right-click`. This is especially useful when spell checking to correct mis-spellings.
+For native context menu do `Ctrl + right-click`. This is useful when spell checking to correct mis-spellings.
 
 ## Switch to recently opened note
 
@@ -87,13 +87,11 @@ Default shortcuts are:
 
 Notes with quick access shortcut are shown at the top of note selector (`Mod + P`).
 
-## Features for developers
-
-### Syntax highlighting of blocks
+## Syntax highlighting of blocks
 
 Blocks are syntax highlighted based on their type.
 
-### Formatting of blocks
+## Formatting of blocks
 
 You can format current block using:
 
@@ -103,15 +101,152 @@ You can format current block using:
 
 We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
 
-### Running code
+∞∞∞markdown
+# Multiple notes
 
-#### Executing code blocks
+## Open another note
+
+- `Mod + P` for note switcher
+- click on note to open
+
+or:
+
+- enter text to narrow down list of notes
+- `up` / `down` arrow keys to select a note
+- `Enter` to open selected note
+
+## Create a new note
+
+- `Mod + P` to open note switcher
+- type name of the note to create
+- `Enter` to create if the name doesn't match any existing note
+- `Mod + Enter` to create if the name partially matches an existing note
+
+Or: context menu: `Create New note`.
+
+## Create a new scratch note
+
+`Alt + N` to create temporary scratch note. We'll pick a unique name `scratch-<n>`
+
+## Delete a note
+
+Context menu: `This Note / Delete` or:
+
+- `Mod + P` for note switcher
+- select a note with arrow key or by typing a partial name match
+- `Mod + Delete` or `Mod + Backspace` to delete selected note
+
+A `scratch` note cannot be deleted.
+
+## Rename a note
+
+context menu: `This Note / Rename`
+
+## Quick access shortcut
+
+You can assign `Alt + 1` to `Alt + 9` keyboard shortcuts for quickly opening up to 10 notes.
+
+- `Mod + P`
+- select a note
+- press `Alt + <n>` shortcut to re-assign it to selected note
+
+Notes with assigned shortcut show up at the top of note switcher.
+
+## Open recent note
+
+Press `Mod + E` to open a note from history. You can press `0` to `9` to open one of the last 10 notes.
+
+∞∞∞markdown
+# Default notes
+
+At first run we create 3 default notes:
+
+- `scratch`, `Alt + 1`
+- `daily journal`, `Alt + 2`
+- `inbox`, `Alt + 3`
+
+You can delete them (except the `scratch` note).
+
+`scratch` note is meant for temporary notes.
+
+`inbox` for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.
+
+`daily journal` is for daily notes. We auto-create a block for each day.
+
+∞∞∞markdown
+# Storing notes on disk
+
+By default notes are stored in the browser (localStorage).
+
+If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.
+
+You can do one time export from localStorage to a directory on disk:
+
+- context menu: `Notes storage / Move notes from browser to directory`
+- pick a directory on disk
+- we save notes on disk as `${name}.edna.txt` files in chosen directory and delete notes in localStorage
+
+You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.
+
+Use context menu `Notes storage / Open notes in directory` to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default `scratch` note.
+
+You can go back to storing notes in the browser with context menu `Notes storage / Open notes in browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
+
+∞∞∞markdown
+# Accessing notes on multiple computers
+
+If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.
+
+On the first computer export notes from browser to disk:
+
+- context menu: `Notes storage / Move notes from browser to directory`
+- pick a directory shared by Dropbox / One Drive / Google Drive etc.
+
+On other computers:
+
+- context menu: `Notes storage / Open notes in directory`
+- pick the same directory
+
+Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
+
+∞∞∞markdown
+# Encryption
+
+When storing notes on disk, you can encrypt them with a password.
+
+The password is only stored in your browser (in local storage). It never leaves your computer.
+
+Encryption and decryption takes place on your computer.
+
+If you lose the password, you'll lose access to your notes.
+
+**Don't lose the password**.
+
+Notes are encrypted with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) algorithm via [kiss-crypto](https://github.com/team-reflect/kiss-crypto) library.
+
+## Picking good password
+Good password is:
+
+- long (short passwords can be cracked via brute force; long passwords cannot)
+- easy to type
+- easy to remember
+
+We recommend passwords that are long, memorable phrases.
+
+Example: `Blue bear attacked a tiny dog`.
+
+Such passwords are easier to type and remember than typical "8a$7y!glo" passwords.
+
+∞∞∞markdown
+# Running code
+
+## Run code blocks
 
 If current block is Go or JavaScript block, you can run it:
 
 - `Alt + Shift + R` keyboard shortcut
-- right-click and use context menu `Run / Run <javascript> block`
-- use command palette and `Block: Run <language> block`
+- context menu: `Run / Run <javascript> block`
+- command palette: `Block: Run <language> block`
 
 The output of execution will be shown in a new block created below the executed block.
 
@@ -202,7 +337,7 @@ The last expression is return value of `main()` function, so output is `foo`.
 
 We handle async functions.
 
-#### Running JavaScript functions over content 
+## Run JavaScript functions over content 
 
 You can run JavaScript functions with the content of a current block or a selection.
 
@@ -211,24 +346,24 @@ The function gets the content as argument, can traform it, and we show the outpu
 For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.
 
 To run a JavasScript function with content of block:
-- context menu, `Run`, `Function with block content`
-- or command palette `Run function with block content`
+- context menu: `Run`, `Function with block content`
+- command palette: `Run function with block content`
 - pick a function from the list
 
 To run a JavasScript function with selection:
-- context menu, `Run`, `Function with selection`
-- or command palette `Run function with block content`
+- context menu: `Run`, `Function with selection`
+- command palette: `Run function with block content`
 - pick a function from the list
 
 If you want to see all built-in functions use:
-- context menu, `Run`, `Show built-in functions`
-- or command palette ` `Shw built-in functions`
+- context menu: `Run`, `Show built-in functions`
+- command palette: `Shw built-in functions`
 
 You can see what built-in functions are available, how they are implemented and use them as an example of how to write your own functions.
 
 This functionality is inspired by https://boop.okat.best/ so our built-in functions come from Boop.
 
-#### Writing your own functions
+## Write your own functions
 
 The real power is in implementing your own functions.
 
@@ -301,7 +436,7 @@ async function main(input) {
 
 As you can see, we support `async` functions.
 
-#### Using external libraries
+### Using external libraries
 
 You can use any JavaScript library available via https://esm.sh or https://www.jsdelivr.com/ (or similar).
 
@@ -323,145 +458,9 @@ let m = (await import("https://esm.sh/lodash@4.17.21"))
 ```
 then inspect the `m` object in console.
 
-#### Share your JavaScript functions with others
+## Share your JavaScript functions with others
 
 Help others and post your functions to https://github.com/kjk/edna/discussions/categories/share-javascript-functions
-
-∞∞∞markdown
-# Multiple notes
-
-## Open another note
-
-- `Mod + P` for note switcher
-- click on note to open
-
-or:
-
-- enter text to narrow down list of notes
-- `up` / `down` arrow keys to select a note
-- `Enter` to open selected note
-
-## Create a new note
-
-- `Mod + P` to open note switcher
-- type name of the note to create
-- `Enter` to create if the name doesn't match any existing note
-- `Mod + Enter` to create if the name partially matches an existing note
-
-Or: right-click for context menu and `Create New note`.
-
-## Create a new scratch note
-
-`Alt + N` to create temporary scratch note. We'll pick a unique name `scratch-<n>`
-
-## Delete a note
-
-Right-click for context menu, `This Note / Delete` or:
-
-- `Mod + P` for note switcher
-- select a note with arrow key or by typing a partial name match
-- `Mod + Delete` or `Mod + Backspace` to delete selected note
-
-A `scratch` note cannot be deleted.
-
-## Rename a note
-
-Right-click for context menu, `This Note / Rename`
-
-## Quick access shortcut
-
-You can assign `Alt + 1` to `Alt + 9` keyboard shortcuts for quickly opening up to 10 notes.
-
-- `Mod + P`
-- select a note
-- press `Alt + <n>` shortcut to re-assign it to selected note
-
-Notes with assigned shortcut show up at the top of note switcher.
-
-## Open recent note
-
-Press `Mod + E` to open a note from history. You can press `0` to `9` to open one of the last 10 notes.
-
-∞∞∞markdown
-# Default notes
-
-At first run we create 3 default notes:
-
-- `scratch`, `Alt + 1`
-- `daily journal`, `Alt + 2`
-- `inbox`, `Alt + 3`
-
-You can delete them (except the `scratch` note).
-
-`scratch` note is meant for temporary notes.
-
-`inbox` for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.
-
-`daily journal` is for daily notes. We auto-create a block for each day.
-
-∞∞∞markdown
-# Storing notes on disk
-
-By default notes are stored in the browser (localStorage).
-
-If your browser supports file system access (currently Chrome and Edge) you can store notes on disk.
-
-You can do one time export from localStorage to a directory on disk:
-
-- right click for context menu, `Notes storage / Move notes from browser to directory`
-- pick a directory on disk
-- we save notes on disk as `${name}.edna.txt` files in chosen directory and delete notes in localStorage
-
-You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.
-
-Use context menu `Notes storage / Open notes in directory` to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default `scratch` note.
-
-You can go back to storing notes in the browser with context menu `Notes storage / Open notes in browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
-
-∞∞∞markdown
-# Accessing notes on multiple computers
-
-If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.
-
-On the first computer export notes from browser to disk:
-
-- right click for context menu, `Notes storage / Move notes from browser to directory`
-- pick a directory shared by Dropbox / One Drive / Google Drive etc.
-
-On other computers:
-
-- right click for context menu, `Notes storage / Open notes in directory`
-- pick the same directory
-
-Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
-
-∞∞∞markdown
-# Encryption
-
-When storing notes on disk, you can encrypt them with a password.
-
-The password is only stored in your browser (in local storage). It never leaves your computer.
-
-Encryption and decryption takes place on your computer.
-
-If you lose the password, you'll lose access to your notes.
-
-**Don't lose the password**.
-
-Notes are encrypted with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) algorithm via [kiss-crypto](https://github.com/team-reflect/kiss-crypto) library.
-
-## Picking good password
-Good password is:
-
-- long (short passwords can be cracked via brute force; long passwords cannot)
-- easy to type
-- easy to remember
-
-We recommend passwords that are long, memorable phrases.
-
-Example: `Blue bear attacked a tiny dog`.
-
-Such passwords are easier to type and remember than typical "8a$7y!glo" passwords.
 
 ∞∞∞markdown
 # Backing up notes
@@ -483,7 +482,7 @@ Edna files are just text files with `.edna.txt` extension.
 
 You can export all the notes to a .zip file.
 
-Use right-click context menu and `Export notes to zip file` menu.
+Context menu: `Export notes to zip file` menu.
 
 We pack all the notes into a .zip file and initiate auto-download as `edna.notes.export-YYYY-MM-DD.zip` file to browser's downloads directory.
 
