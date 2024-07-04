@@ -145,10 +145,6 @@
     selectedName = item ? selectedItem.name : "";
     canOpenSelected = !!selectedItem;
 
-    if (selectedItem === null) {
-      return;
-    }
-
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
     canCreate = len(name) > 0;
