@@ -9,7 +9,7 @@ import {
 import { foldGutter, indentUnit } from "@codemirror/language";
 
 import { autoSaveContent } from "./save.js";
-import { closeBrackets } from "@codemirror/autocomplete";
+import { customCloseBracketsExtension } from "./extensions.js";
 import { customSetup } from "./setup.js";
 import { ednaKeymap } from "./keymap.js";
 import { emacsKeymap } from "./emacs.js";
@@ -25,7 +25,7 @@ import { links } from "./links.js";
 import { markdown } from "@codemirror/lang-markdown";
 import { todoCheckboxPlugin } from "./todo-checkbox";
 import { findEditorByView } from "../state.js";
-import { isReadOnly } from "./cmutils.js"
+import { isReadOnly } from "./cmutils.js";
 
 function getKeymapExtensions(editor, keymap) {
   if (keymap === "emacs") {
@@ -93,7 +93,7 @@ export class EdnaEditor {
           this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
 
           this.closeBracketsCompartment.of(
-            bracketClosing ? [closeBrackets()] : [],
+            bracketClosing ? customCloseBracketsExtension : [],
           ),
 
           this.readOnlyCompartment.of([]),
@@ -251,7 +251,7 @@ export class EdnaEditor {
   setBracketClosing(value) {
     this.view.dispatch({
       effects: this.closeBracketsCompartment.reconfigure(
-        value ? [closeBrackets()] : [],
+        value ? customCloseBracketsExtension : [],
       ),
     });
   }
