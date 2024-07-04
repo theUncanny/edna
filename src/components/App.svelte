@@ -763,14 +763,14 @@
     ];
 
     let dh = getStorageFS();
-    let currStorage = "Current store: browser (localStorage)";
+    let currStorage = "Current store: browser (local storage)";
     if (dh) {
       currStorage = `Current store: directory ${dh.name}`;
     }
     const menuStorage = [
       [currStorage, kMenuIdJustText],
       ["Move notes from browser to directory", kCmdMoveNotesToDirectory],
-      ["Switch to browser (localStorage)", kCmdSwitchToLocalStorage],
+      ["Switch to browser (local storage)", kCmdSwitchToLocalStorage],
       ["Switch to notes in a directory", kCmdSwitchToNotesInDir],
       kMenuSeparator,
       ["Export notes to .zip file", kCmdExportNotes],
@@ -795,13 +795,9 @@
       menuHelp.push(["Show Welcome Dev Note", kCmdShowWelcomeDevNote]);
     }
 
-    let spelling = (isSpellChecking ? "Disable" : "Enable") + " spell checking";
-
     const contextMenu = [
       ["Command Palette\tMod + Shift + P", kCmdCommandPalette],
       ["Open note\tMod + P", kCmdOpenNote],
-      ["Create new note", kCmdCreateNewNote],
-      ["Create new scratch note\tAlt + N", kCmdCreateScratchNote],
       ["This Note", menuNote],
       ["Block", menuBlock],
       ["Run", menuRun],
@@ -812,7 +808,6 @@
       contextMenu.push(["Encryption", menuEncrypt]);
     }
     contextMenu.push(
-      [spelling, kCmdToggleSpellChecking],
       ["Settings", kCmdSettings],
       ["Help", menuHelp],
       ["Tip: Ctrl + click for browser's context menu", kMenuIdJustText],
