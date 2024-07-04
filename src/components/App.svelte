@@ -1345,6 +1345,7 @@
     line = e.cursorLine.line;
     column = e.cursorLine.col;
     selectionSize = e.selectionSize;
+    console.log("selectionSize:", selectionSize);
     language = e.language;
     languageAuto = e.languageAuto;
   }

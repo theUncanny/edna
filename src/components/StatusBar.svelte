@@ -81,7 +81,7 @@
     Ln <span class="num">{line}</span>
     &nbsp;Col <span class="num">{column}</span>
     {#if selectionSize > 0}
-      Sel <span class="num">{{ selectionSize }}</span>
+      Sel <span class="num">{selectionSize}</span>
     {/if}
   </div>
   <div class="doc-size px-[6px]">{formatSize}</div>
