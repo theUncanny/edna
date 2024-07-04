@@ -49,11 +49,26 @@ export async function runGo(code) {
 async function evalWithConsoleCapture(js) {
   const originalConsole = console;
   const capturedLogs = [];
-  console.log = function (message) {
-    capturedLogs.push(message);
-  };
+  function logFn(...args) {
+    let all = "";
+    for (let arg of args) {
+      let s = JSON.stringify(arg);
+      if (all != "") {
+        all += " "
+      }
+      all += s;
+    }
+    capturedLogs.push(all);
+  }
+  console.log = logFn;
+  console.debug = logFn;
+  console.warn = logFn;
+  console.error = logFn;
   let res = await eval(js);
   console.log = originalConsole.log;
+  console.debug = originalConsole.debug;
+  console.warn = originalConsole.warn;
+  console.error = originalConsole.error;
   return [res, capturedLogs];
 }
 
@@ -67,7 +82,7 @@ export async function runJS(js) {
   let resTxt = `${res}`;
   if (len(logs) > 0) {
     resTxt = ensureStringEndsWithNL(resTxt);
-    resTxt += "console.log() output:\n";
+    resTxt += "console output:\n";
     resTxt += logs.join("\n");
   }
   console.log(logs);

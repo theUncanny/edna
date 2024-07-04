@@ -305,7 +305,7 @@ Last expression is an array formatted as json so output is `[1,2,3]`.
 
 ---
 
-We also capture `console.log()` calls.
+We also capture `console.log()`, `console.warn()`, `console.debug()`, `console.error()` calls.
 
 ```javascript
 console.log("hello")
@@ -314,12 +314,12 @@ console.log("hello")
 Output is:
 ```
 undefined
-console.log() output:
+console output:
 hello
 ```
 
 - `undefined` because there was no last expression
-- `console.log() output:` to indicate those are capture console.log calls
+- `console output:` to indicate those are capture console.log calls
 - `hello` from console.log calls in your code
 
 ---
