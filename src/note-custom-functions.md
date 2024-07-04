@@ -1,12 +1,14 @@
+# Create your own functions
+
 You can write your own JavaScript functions to run with the content of block or selection.
 
 To learn more: http://edna.arslexis.io/help#write-your-own-functions
 
-This special block named `edna: my functions` contains your custom function.
+This special note named `edna: my functions` contains your custom functions.
 
-Each function is a JavaScript block
+Each function is a JavaScript block.
 
-Below is a block with a sample function to use as a template.
+Below is a block with a simple function to use as a template.
 
 Share your functions with others at https://github.com/kjk/edna/discussions/categories/share-javascript-functions
 
