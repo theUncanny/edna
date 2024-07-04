@@ -12,6 +12,9 @@
   import { len } from "../util";
   import ListBox from "./ListBox.svelte";
 
+  /** @type {BlockItem} */
+  let selectedItem = $state(null);
+
   /** @type {{
    items: Item[],
    selectBlock: (block : Item) => void,
@@ -19,6 +22,7 @@
   }}*/
   let { items, selectBlock, initialSelection = 0 } = $props();
 
+  /** @type {string} */
   let filter = $state("");
 
   let blockCountMsg = $state(`${len(items)} blocks`);
@@ -29,21 +33,21 @@
   /** @typedef {{item: Item, textLC: string, key: number }} BlockItem */
 
   /** @type {BlockItem[]} */
-  let blockItems = [];
+  let itemsInitial = [];
   for (let item of items) {
     let bi = {
       item: item,
       textLC: item.text.toLowerCase(),
       key: item.key,
     };
-    blockItems.push(bi);
+    itemsInitial.push(bi);
   }
 
   /** @type {BlockItem[]} */
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     const filterLC = filter.toLowerCase();
     let res = [];
-    for (let item of blockItems) {
+    for (let item of itemsInitial) {
       let s = item.textLC;
       if (s.indexOf(filterLC) !== -1) {
         res.push(item);
@@ -59,9 +63,8 @@
     let key = ev.key;
     if (key === "Enter") {
       ev.preventDefault();
-      const item = listbox.selected();
-      if (item) {
-        selectBlock(item);
+      if (selectedItem) {
+        selectBlock(selectedItem.item);
       }
       return;
     }
@@ -101,10 +104,11 @@
     </div>
   </div>
   <ListBox
-    items={filteredItems}
+    bind:this={listbox}
+    bind:selectedItem
+    items={itemsFiltered}
     onclick={(item) => selectBlock(item.item)}
     {initialSelection}
-    bind:this={listbox}
   >
     {#snippet renderItem(item)}
       <div>{item.item.text}</div>

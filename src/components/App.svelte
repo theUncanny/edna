@@ -12,7 +12,7 @@
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
-  import Toaster, { showError, showToast } from "./Toaster.svelte";
+  import Toaster, { showError, showToast, showWarning } from "./Toaster.svelte";
   import EnterEncryptPassword from "./EnterEncryptPassword.svelte";
   import EnterDecryptPassword from "./EnterDecryptPassword.svelte";
   import BlockSelector from "./BlockSelector.svelte";
@@ -391,6 +391,7 @@
     let name = noteName;
     console.log("deleteNote:", name);
     if (!canDeleteNote(name)) {
+      showWarning(`Can't delete special note ${name}`);
       console.log("cannot delete note:", name);
       return;
     }

@@ -60,7 +60,7 @@
   let cmdCountMsg = `${len(itemsInitial)} commands`;
   let filter = $state(">");
 
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
     let lc = filter.toLowerCase();
@@ -88,13 +88,10 @@
   });
 
   /** @type {Item} */
-  let selectedCommand = $state(null);
+  let selectedItem = $state(null);
 
   $effect(() => {
-    console.log(
-      "selectedCommand:",
-      selectedCommand ? selectedCommand.name : "null",
-    );
+    console.log("selectedCommand:", selectedItem ? selectedItem.name : "null");
   });
 
   /**
@@ -106,9 +103,9 @@
 
     if (key === "Enter") {
       ev.preventDefault();
-      if (selectedCommand) {
-        console.log("onKeyDown: selectedCommand:", selectedCommand.name);
-        executeCommand(selectedCommand.key);
+      if (selectedItem) {
+        console.log("onKeyDown: selectedCommand:", selectedItem.name);
+        executeCommand(selectedItem.key);
       }
     }
     if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
@@ -154,8 +151,8 @@
   </div>
   <ListBox
     bind:this={listbox}
-    items={filteredItems}
-    bind:selectedItem={selectedCommand}
+    bind:selectedItem
+    items={itemsFiltered}
     onclick={(item) => emitExecuteCommand(item)}
   >
     {#snippet renderItem(item)}
