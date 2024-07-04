@@ -998,7 +998,6 @@
       view.focus();
     } else if (cmdId === kCmdRunBlock) {
       runCurrentBlock();
-      view.focus();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
     } else if (cmdId === kCmdShowHelp) {
@@ -1220,8 +1219,8 @@
 
   function runCurrentBlock() {
     let view = getEditorView();
-
     runBlockContent(view);
+    view.focus();
     logNoteOp("noteRunBlock");
   }
 
@@ -1345,7 +1344,6 @@
     line = e.cursorLine.line;
     column = e.cursorLine.col;
     selectionSize = e.selectionSize;
-    console.log("selectionSize:", selectionSize);
     language = e.language;
     languageAuto = e.languageAuto;
   }
