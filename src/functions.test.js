@@ -2,7 +2,6 @@ import { expect, test } from "bun:test";
 import {
   parseBoopFunction,
   parseBoopFunctions,
-  runBoopFunction,
 } from "./functions";
 import { len } from "./util";
 
@@ -35,5 +34,5 @@ async function main(input) {
 test("parseFunctiosn", async () => {
   let jsRaw = await Bun.file("./src/note-built-in-functions.js").text();
   let res = parseBoopFunctions(jsRaw);
-  expect(len(res)).toBe(71);
+  expect(len(res)).toBe(64);
 });

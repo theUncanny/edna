@@ -2,7 +2,7 @@
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
   import { len, splitFilterLC, stringMatchesParts } from "../util";
-  import { getBoopFunctions } from "../functions";
+  import { getBoopFunctions } from "../system-notes";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 

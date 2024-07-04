@@ -1,4 +1,4 @@
-import { platformName } from "./util.js";
+import { len, platformName } from "./util.js";
 
 import dailyJournalRaw from "./note-daily-journal.md?raw";
 import { fixUpNoteContent } from "./notes.js";
@@ -9,6 +9,7 @@ import scratchRaw from "./note-initial.md?raw";
 import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
 import releaseNotesRaw from "./note-release-notes.md?raw";
 import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
+import { parseBoopFunctions } from "./functions.js";
 
 /**
  * @returns {string}
@@ -30,8 +31,17 @@ export const blockHdrJavaScript = "\n∞∞∞javascript\n";
  */
 export function getBuiltInFunctionsNote() {
   let s = builtInFunctionsRaw;
-  let res = s.replace("// ----------------------------", blockHdrJavaScript);
-  return res;
+  let parts = s.split("// ----------------------------"); 
+  let res = [];
+  for (let p of parts) {
+    p = p.trim()
+    if (len(p) === 0) {
+      continue;
+    }
+    p = blockHdrJavaScript + p;
+    res.push(p);
+  }
+  return res.join("\n")
 }
 
 /**
@@ -86,4 +96,18 @@ export function getWelcomeNote() {
  */
 export function getWelcomeNoteDev() {
   return getWelcomeNote() + initialDevRaw;
+}
+
+// this logically belongs in functions.js but I use bun test
+// to test to test functions.js and it doesn't handle
+// importing ?raw
+/** @tye {BoopFunction[]} */
+export let boopFunctions = [];
+
+export function getBoopFunctions() {
+  if (len(boopFunctions) === 0) {
+    let jsRaw = getBuiltInFunctionsJS();
+    boopFunctions = parseBoopFunctions(jsRaw);
+  }
+  return boopFunctions;
 }

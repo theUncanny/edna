@@ -30,7 +30,7 @@ import {
   getReleaseNotes,
   getWelcomeNote,
   getWelcomeNoteDev,
-} from "./initial-content";
+} from "./system-notes";
 import { getSettings, loadSettings, saveSettings } from "./settings";
 import {
   getStats,

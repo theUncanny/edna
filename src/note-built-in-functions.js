@@ -1,4 +1,11 @@
 // ----------------------------
+// those are all built in JavaScript functions
+// you can run them on current block content with
+// "Run function with block content" command
+// You can write your own functions
+// To learn more see http://edna.arslexis.io/help-win.html#running-code
+
+// ----------------------------
 /**
 {
   "api":1,

@@ -20,9 +20,9 @@ import AskFSPermissions from "./components/AskFSPermissions.svelte";
 import { hasHandlePermission } from "./fileutil";
 import {
   findFunctionByName,
-  getBoopFunctions,
   runBoopFunctionWithText,
 } from "./functions";
+import { getBoopFunctions } from "./system-notes";
 
 /** @typedef {import("./settings").Settings} Settings */
 

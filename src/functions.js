@@ -1,6 +1,5 @@
 // based mostly on https://github.com/IvanMathy/Boop/tree/main/Scripts
 
-import { getBuiltInFunctionsJS } from "./initial-content";
 import { len } from "./util";
 
 /** @typedef {{
@@ -77,17 +76,6 @@ export function parseBoopFunctions(s) {
   }
   res.length = i;
   return res;
-}
-
-/** @tye {BoopFunction[]} */
-export let boopFunctions = [];
-
-export function getBoopFunctions() {
-  if (len(boopFunctions) === 0) {
-    let jsRaw = getBuiltInFunctionsJS();
-    boopFunctions = parseBoopFunctions(jsRaw);
-  }
-  return boopFunctions;
 }
 
 /**

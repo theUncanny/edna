@@ -103,9 +103,11 @@ You can format current block using:
 
 We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
 
-### Executing of code blocks
+### Running code
 
-We support execution of Go blocks:
+#### Executing of code blocks
+
+We support execution of Go and JavaScript blocks:
 
 - `Alt + Shift + R` keyboard shortcut
 - right-click and use context menu `Block / Run`
