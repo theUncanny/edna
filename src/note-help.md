@@ -16,9 +16,7 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 
 ## Notes and blocks
 
-Unique feature of Edna is that a note can be divided into blocks.
-
-Each block has a type: markdown, plain text, math block, JavaScript code, Go code etc.
+In Edna a note is divided into blocks. Each block has a type: markdown, plain text, math block, JavaScript code, Go code etc.
 
 Use:
 * `Mod + L` to assign a type for current block

@@ -142,14 +142,21 @@ func reinstallPackages() {
 	os.Remove("package-lock.json")
 	if hasBun() {
 		u.RunLoggedInDirMust(".", "bun", "install")
-	} else if u.IsWindows() {
+	} else if hasYarn() {
 		u.RunLoggedInDirMust(".", "yarn", "install")
+	} else {
+		u.RunLoggedInDirMust(".", "npm", "install")
 	}
 }
 
 func hasBun() bool {
 	_, err := exec.LookPath("bun")
 	return err == nil
+}
+
+func hasYarn() bool {
+	_, err := exec.LookPath("yarn")
+	return err != nil
 }
 
 func rebuildFrontend() {
@@ -159,8 +166,10 @@ func rebuildFrontend() {
 	reinstallPackages()
 	if hasBun() {
 		u.RunLoggedInDirMust(".", "bun", "run", "build")
-	} else if u.IsWindows() {
+	} else if hasYarn() {
 		u.RunLoggedInDirMust(".", "yarn", "build")
+	} else {
+		u.RunLoggedInDirMust(".", "npm", "run", "build")
 	}
 	// copy files from webapp\dist => server\dist
 	copyFilesRecurMust(filepath.Join("webapp", "dist"), frontEndBuildDir)

@@ -59,7 +59,7 @@ func getSecrets() []byte {
 		logf("getSecrets(): using secrets from embedded secretsEnv of length %d\n", len(secretsEnv))
 		return secretsEnv
 	}
-	panicIf(flgRunProd, "when running in production must have secrets embedded in the binary")
+	//panicIf(flgRunProd, "when running in production must have secrets embedded in the binary")
 
 	// when running non-prod we try to read secrets from secrets repo
 	// secrets file only exists on my laptop so it's ok if read fails
@@ -146,6 +146,7 @@ func main() {
 		flgDeployHetzner  bool
 		flgSetupAndRun    bool
 		flgBuildLocalProd bool
+		flgBuildFrontend  bool
 		flgUpdateGoDeps   bool
 		flgGen            bool
 		flgAdHoc          bool
@@ -157,6 +158,7 @@ func main() {
 		flag.BoolVar(&flgRunProdLocal, "run-local-prod", false, "run server in production but locally")
 		flag.BoolVar(&flgDeployHetzner, "deploy-hetzner", false, "deploy to hetzner")
 		flag.BoolVar(&flgBuildLocalProd, "build-local-prod", false, "build for production run locally")
+		flag.BoolVar(&flgBuildFrontend, "build-frontend", false, "build frontend code")
 		flag.BoolVar(&flgSetupAndRun, "setup-and-run", false, "setup and run on the server")
 		flag.BoolVar(&flgUpdateGoDeps, "update-go-deps", false, "update go dependencies")
 		flag.BoolVar(&flgGen, "gen", false, "generate code")
@@ -200,6 +202,12 @@ func main() {
 		return
 	}
 
+	if flgBuildFrontend {
+		defer measureDuration()()
+		rebuildFrontend()
+		return
+	}
+
 	if flgBuildLocalProd {
 		defer measureDuration()()
 		buildForProdLocal()
@@ -235,16 +243,17 @@ func main() {
 	}
 	panicIf(n > 1, "can only use one of: -run-dev, -run-prod, -run-local-prod")
 
-	logtastic.BuildHash = GitCommitHash
-	logtastic.LogDir = getLogsDirMust()
-	if flgRunProd {
-		logtastic.Server = "l.arslexis.io"
-	} else {
-		logtastic.Server = "127.0.0.1:9327"
-	}
-	logf("logtatistic server: %s\n", logtastic.Server)
-
 	loadSecrets()
+	if logtastic.ApiKey != "" {
+		logtastic.BuildHash = GitCommitHash
+		logtastic.LogDir = getLogsDirMust()
+		if flgRunProd {
+			logtastic.Server = "l.arslexis.io"
+		} else {
+			logtastic.Server = "127.0.0.1:9327"
+		}
+		logf("logtatistic server: %s\n", logtastic.Server)
+	}
 
 	if flgRunDev {
 		runServerDev()
