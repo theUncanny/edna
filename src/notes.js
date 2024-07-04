@@ -253,7 +253,11 @@ export async function createIfNotExists(name, content, existingNotes) {
  */
 export async function createDefaultNotes(existingNotes) {
   let isFirstRun = getStats().appOpenCount < 2;
-  console.log("isFirstRun:", isFirstRun);
+  console.log(`isFirstRun: ${isFirstRun}, len(existingNotes): ${len(existingNotes)}`);
+  if (len(existingNotes) == 0) {
+    // scenario: moved notes to disk and switched back to local storage
+    isFirstRun = true;
+  }
 
   let welcomeNote = getWelcomeNote();
 
@@ -279,6 +283,31 @@ export async function createDefaultNotes(existingNotes) {
 }
 
 /**
+ * @returns {string[]}
+ */
+function getLSKeys() {
+  let nKeys = localStorage.length;
+  let keys = [];
+  for (let i = 0; i < nKeys; i++) {
+    const key = localStorage.key(i);
+    keys.push(key);
+  }
+  return keys;
+}
+
+export function debugRemoveLocalStorageNotes() {
+  let keys = getLSKeys();
+  for (let key of keys) {
+    let isEncr = key.startsWith(kLSKeyEncrPrefix);
+    let isRegular = key.startsWith(kLSKeyPrefix);
+    if (isEncr || isRegular) {
+      localStorage.removeItem(key);
+      console.log(`removed ${key}`)
+    }
+  }
+}
+
+/**
  * @returns {string[][]}
  */
 function loadNoteNamesLS() {
@@ -293,9 +322,8 @@ function loadNoteNamesLS() {
 
   let allNotes = [];
   let encryptedNotes = [];
-  let nKeys = localStorage.length;
-  for (let i = 0; i < nKeys; i++) {
-    const key = localStorage.key(i);
+  let keys = getLSKeys();
+  for (let key of keys) {
     let isEncr = key.startsWith(kLSKeyEncrPrefix);
     let isRegular = key.startsWith(kLSKeyPrefix);
     if (isEncr || isRegular) {
@@ -853,7 +881,8 @@ export async function preLoadAllNotes() {
  */
 export async function switchToStoringNotesOnDisk(dh) {
   console.log("switchToStoringNotesOnDisk");
-  let diskNoteNames = await loadNoteNamesFS(dh)[0];
+  let res = await loadNoteNamesFS(dh);
+  let diskNoteNames = res[0];
 
   // migrate notes
   for (let name of latestNoteNames) {
@@ -1022,7 +1051,7 @@ async function renameInMetadata(oldName, newName) {
  * @returns {Promise<NoteMetadata[]>}
  */
 export async function reassignNoteShortcut(name, altShortcut) {
-  // console.log("reassignNoteShortcut:", name, altShortcut);
+  console.log("reassignNoteShortcut:", name, altShortcut);
   let m = getNotesMetadata();
   for (let o of m) {
     if (o.altShortcut === altShortcut) {

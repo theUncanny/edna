@@ -58,6 +58,7 @@
     kMyFunctionsNoteName,
     loadNote,
     loadNoteIfExists,
+    debugRemoveLocalStorageNotes,
   } from "../notes";
   import {
     getAltChar,
@@ -543,6 +544,15 @@
     showingFunctionSelector = false;
     getEditorComp().focus();
   }
+
+  // debug functions to be called from dev tools console as:
+  // window.edna.debug.clearLocalStorage etc.
+  // @ts-ignore
+  window.edna = {
+    debug: {
+      removeLocalStorageNotes: debugRemoveLocalStorageNotes,
+    },
+  };
 
   /** @typedef {import("../functions").BoopFunctionArg} BoopFunctionArg*/
 

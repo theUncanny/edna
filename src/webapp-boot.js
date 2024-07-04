@@ -30,13 +30,13 @@ import { getBoopFunctions } from "./system-notes";
 
 let appSvelte;
 
-async function testFuncs() {
-  let funcs = getBoopFunctions();
-  console.log("func[0]:", funcs[0]);
-  let f = findFunctionByName(funcs, "Camel Case");
-  console.log("f:", f);
-  runBoopFunctionWithText(f, "this is a test string");
-}
+// async function testFuncs() {
+//   let funcs = getBoopFunctions();
+//   console.log("func[0]:", funcs[0]);
+//   let f = findFunctionByName(funcs, "Camel Case");
+//   console.log("f:", f);
+//   runBoopFunctionWithText(f, "this is a test string");
+// }
 
 export async function boot() {
   console.log("booting");
