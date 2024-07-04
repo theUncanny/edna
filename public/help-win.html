@@ -105,15 +105,169 @@ Ctrl + F               Search / replace within a note
 <li>press format icon in status bar (bottom right)</li>
 </ul>
 <p>We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.</p>
-<h3 id="executing-of-code-blocks" tabindex="-1"><a class="header-anchor" href="#executing-of-code-blocks">Executing of code blocks</a></h3>
-<p>We support execution of Go blocks:</p>
+<h3 id="running-code" tabindex="-1"><a class="header-anchor" href="#running-code">Running code</a></h3>
+<h4 id="executing-code-blocks" tabindex="-1"><a class="header-anchor" href="#executing-code-blocks">Executing code blocks</a></h4>
+<p>If current block is Go or JavaScript block, you can run it:</p>
 <ul>
 <li><code>Alt + Shift + R</code> keyboard shortcut</li>
-<li>right-click and use context menu <code>Block / Run</code></li>
+<li>right-click and use context menu <code>Run / Run &lt;javascript&gt; block</code></li>
+<li>use command palette and <code>Block: Run &lt;language&gt; block</code></li>
 </ul>
 <p>The output of execution will be shown in a new block created below the executed block.</p>
-<p>We have the same capabilities as <a href="https://tools.arslexis.io/goplayground/" target="_blank">https://tools.arslexis.io/goplayground/</a></p>
-<p>The code block must be a valid Go program.</p>
+<p>For Go:</p>
+<ul>
+<li>code block must be a valid, complete Go program with <code>main</code> function</li>
+<li>we capture and show stdout and sterr output</li>
+<li>we have the same execution capability as <a href="https://tools.arslexis.io/goplayground/" target="_blank">https://tools.arslexis.io/goplayground/</a></li>
+</ul>
+<p>A starting point:</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() {
+	fmt.Println(&quot;Hello, 世界&quot;)
+}
+</code></pre>
+<p>For JavaScript:</p>
+<ul>
+<li>code is executed in the browser with <code>eval()</code></li>
+<li>the output is the value of last expression</li>
+<li>don't run untrusted code</li>
+</ul>
+<p>Examples of JavaScript code and its output.</p>
+<pre><code class="language-javascript">&quot;foo&quot;
+</code></pre>
+<p>Last expression is string <code>&quot;foo&quot;</code> so the output will be <code>foo</code>.</p>
+<hr>
+<pre><code class="language-javascript">let a = [1, 2, 3];
+</code></pre>
+<p>There is no last expression so the output will be <code>undefined</code></p>
+<hr>
+<pre><code class="language-javascript">let a = [1, 2, 3];
+a
+</code></pre>
+<p>Last expression is an array <code>a</code> so output is <code>1,2,3</code>.</p>
+<hr>
+<pre><code class="language-javascript">let a = [1, 2, 3];
+JSON.stringify(a)
+</code></pre>
+<p>Last expression is an array formatted as json so output is <code>[1,2,3]</code>.</p>
+<hr>
+<p>We also capture <code>console.log()</code> calls.</p>
+<pre><code class="language-javascript">console.log(&quot;hello&quot;)
+</code></pre>
+<p>Output is:</p>
+<pre><code>undefined
+console.log() output:
+hello
+</code></pre>
+<ul>
+<li><code>undefined</code> because there was no last expression</li>
+<li><code>console.log() output:</code> to indicate those are capture console.log calls</li>
+<li><code>hello</code> from console.log calls in your code</li>
+</ul>
+<hr>
+<pre><code class="language-javascript">async function main() {
+  return &quot;foo&quot;
+}
+main();
+</code></pre>
+<p>The last expression is return value of <code>main()</code> function, so output is <code>foo</code>.</p>
+<p>We handle async functions.</p>
+<h4 id="running-javascript-functions-over-content" tabindex="-1"><a class="header-anchor" href="#running-javascript-functions-over-content">Running JavaScript functions over content</a></h4>
+<p>You can run JavaScript functions with the content of a current block or a selection.</p>
+<p>The function gets the content as argument, can traform it, and we show the output in a block below.</p>
+<p>For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.</p>
+<p>To run a JavasScript function with content of block:</p>
+<ul>
+<li>context menu, <code>Run</code>, <code>Function with block content</code></li>
+<li>or command palette <code>Run function with block content</code></li>
+<li>pick a function from the list</li>
+</ul>
+<p>To run a JavasScript function with selection:</p>
+<ul>
+<li>context menu, <code>Run</code>, <code>Function with selection</code></li>
+<li>or command palette <code>Run function with block content</code></li>
+<li>pick a function from the list</li>
+</ul>
+<p>If you want to see all built-in functions use:</p>
+<ul>
+<li>context menu, <code>Run</code>, <code>Show built-in functions</code></li>
+<li>or command palette <code> </code>Shw built-in functions`</li>
+</ul>
+<p>You can see what built-in functions are available, how they are implemented and use them as an example of how to write your own functions.</p>
+<p>This functionality is inspired by <a href="https://boop.okat.best/" target="_blank">https://boop.okat.best/</a> so our built-in functions come from Boop.</p>
+<h4 id="writing-your-own-functions" tabindex="-1"><a class="header-anchor" href="#writing-your-own-functions">Writing your own functions</a></h4>
+<p>The real power is in implementing your own functions.</p>
+<p>To do it create <code>edna.my.functions</code> note:</p>
+<ul>
+<li>context menu: <code>Run</code>, <code>Create your own functions</code></li>
+<li>or command palette: <code>Create your own functions</code></li>
+</ul>
+<p>Each JavaScript block is a function.</p>
+<p>The code must be implemented as <code>function main(input) { ... your code }</code>.</p>
+<p>We use the same format at <a href="https://boop.okat.best/" target="_blank">https://boop.okat.best/</a>.</p>
+<p><code>input</code> is an object:</p>
+<pre><code class="language-json">{
+  text: string,
+  fullText: string,
+  postInfo: (message: string) =&gt; void,
+  postError: (message: string) =&gt; void,
+}
+</code></pre>
+<p>To return value you assign it to <code>input.text</code> and <code>input.fullText</code>. <code>postInfo()</code> and <code>postError()</code> functions show a toast message.</p>
+<p>We show <code>input.text</code> or <code>input.fullText</code> as output block if, after execution, it differs from the original values.</p>
+<p>Why <code>text</code> and <code>fullText</code>? I have no idea, I just copied Boop and that's how their API works.</p>
+<p>In my implementation <code>text</code> and <code>fullText</code> are the same.</p>
+<p>You also need to provide metadata at the top in the format:</p>
+<pre><code>/**
+{
+  &quot;api&quot;:1,
+  &quot;name&quot;:&quot;Add Slashes&quot;,
+  &quot;description&quot;:&quot;Escapes your text.&quot;,
+  &quot;author&quot;:&quot;Ivan&quot;,
+  &quot;icon&quot;:&quot;quote&quot;,
+  &quot;tags&quot;:&quot;add,slashes,escape&quot;
+}
+**/
+</code></pre>
+<p>Don't get cute and reformat it any way or change <code>/**</code> and <code>**/</code> to something else. For your own code start by copying this.</p>
+<p>Currently the important fields are <code>name</code>, and <code>description</code> because they are shown in function selection dialog.</p>
+<p>In future I might add more <code>api</code> versions, but at the moment there's just 1.</p>
+<p>Here's the simplest function that simply returns <code>foo</code> as a result:</p>
+<pre><code class="language-javascript">/**
+{
+  &quot;api&quot;:1,
+  &quot;name&quot;:&quot;Show foo&quot;,
+  &quot;description&quot;:&quot;Returns string 'foo'&quot;,
+  &quot;author&quot;:&quot;Chris&quot;,
+  &quot;icon&quot;:&quot;quote&quot;,
+  &quot;tags&quot;:&quot;&quot;
+}
+**/
+
+async function main(input) {
+  input.text = &quot;foo&quot;
+}
+</code></pre>
+<p>As you can see, we support <code>async</code> functions.</p>
+<h4 id="using-external-libraries" tabindex="-1"><a class="header-anchor" href="#using-external-libraries">Using external libraries</a></h4>
+<p>You can use any JavaScript library available via <a href="https://esm.sh" target="_blank">https://esm.sh</a> or <a href="https://www.jsdelivr.com/" target="_blank">https://www.jsdelivr.com/</a> (or similar).</p>
+<p>Here's an example function that uses <code>camelCase</code> functio from <code>lodash</code> package imported from <a href="https://esm.sh" target="_blank">https://esm.sh</a></p>
+<pre><code class="language-javascript">async function main(input) {
+  // @ts-ignore
+  let lodash = (await import(&quot;https://esm.sh/lodash@4.17.21&quot;)).default;
+  input.text = lodash.camelCase(input.text);
+}
+</code></pre>
+<p>Debugging tip: sometimes module exports functions direct, sometimes as <code>default</code> prorperty.</p>
+<p>To figure this out for a library, in browser's dev tools console do:</p>
+<pre><code>let m = (await import(&quot;https://esm.sh/lodash@4.17.21&quot;))
+</code></pre>
+<p>then inspect the <code>m</code> object in console.</p>
+<h4 id="share-your-javascript-functions-with-others" tabindex="-1"><a class="header-anchor" href="#share-your-javascript-functions-with-others">Share your JavaScript functions with others</a></h4>
+<p>Help others and post your functions to <a href="https://github.com/kjk/edna/discussions/categories/share-javascript-functions" target="_blank">https://github.com/kjk/edna/discussions/categories/share-javascript-functions</a></p>
 <h1 id="multiple-notes" tabindex="-1"><a class="header-anchor" href="#multiple-notes">Multiple notes</a></h1>
 <h2 id="open-another-note" tabindex="-1"><a class="header-anchor" href="#open-another-note">Open another note</a></h2>
 <ul>

@@ -12,7 +12,7 @@
   import StatusBar from "./StatusBar.svelte";
   import TopNav from "./TopNav.svelte";
   import Settings from "./Settings.svelte";
-  import Toaster, { addToast } from "./Toaster.svelte";
+  import Toaster, { showError, showToast } from "./Toaster.svelte";
   import EnterEncryptPassword from "./EnterEncryptPassword.svelte";
   import EnterDecryptPassword from "./EnterDecryptPassword.svelte";
   import BlockSelector from "./BlockSelector.svelte";
@@ -390,7 +390,7 @@
     await openNote(kScratchNoteName, true);
     await deleteNote(name);
     // TODO: add a way to undo deletion of the note
-    addToast(`Deleted note '${name}'`);
+    showToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
   }
 
@@ -398,7 +398,7 @@
     let name = await createNewScratchNote();
     await onOpenNote(name);
     // TODO: add a way to undo creation of the note
-    addToast(`Created scratch note '${name}'`);
+    showToast(`Created scratch note '${name}'`);
     logNoteOp("noteCreate");
   }
 
@@ -545,11 +545,11 @@
       fullText: txt,
       postInfo: (s) => {
         console.log("postInfo:", s);
-        addToast(s);
+        showToast(s);
       },
       postError: (s) => {
         console.log("postError:", s);
-        addToast("Error:" + s);
+        showToast("Error:" + s);
       },
     };
     let res = await runBoopFunction(f, input);
@@ -716,8 +716,10 @@
   export const kCmdShowWelcomeNote = nmid();
   export const kCmdShowWelcomeDevNote = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
-  export const kCmdRunHelp = nmid();
+  export const kCmdRunFunctionWithSelection = nmid();
+  export const kCmdCreateYourOwnFunctions = nmid();
   export const kCmdShowBuiltInFunctions = nmid();
+  export const kCmdRunHelp = nmid();
 
   function buildMenuDef() {
     const menuNote = [
@@ -742,7 +744,9 @@
     const menuRun = [
       ["Run " + language + " block\tAlt + Shift + R", kCmdRunBlock],
       ["Function with block content", kCmdRunFunctionWithBlockContent],
+      ["Function with selection", kCmdRunFunctionWithSelection],
       ["Show built-in functions", kCmdShowBuiltInFunctions],
+      ["Create your own functions", kCmdCreateYourOwnFunctions],
       ["Help", kCmdRunHelp],
     ];
 
@@ -857,7 +861,10 @@
       if (noteName === kScratchNoteName) {
         return kMenuStatusDisabled;
       }
-    } else if (mid === kCmdRunFunctionWithBlockContent) {
+    } else if (
+      mid === kCmdRunFunctionWithBlockContent ||
+      mid == kCmdRunFunctionWithSelection
+    ) {
       if (ro) {
         return kMenuStatusDisabled;
       }
@@ -957,6 +964,12 @@
       openHistorySelector();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
       openFunctionSelector();
+    } else if (cmdId === kCmdRunFunctionWithSelection) {
+      showError("Running with selection not yet implemented!");
+      //openFunctinSelector();
+    } else if (cmdId === kCmdCreateYourOwnFunctions) {
+      showError("This is not yet implemented!");
+      //openFunctinSelector();
     } else if (cmdId === kCmdShowBuiltInFunctions) {
       openNote(kBuiltInFunctionsNoteName);
     } else {
@@ -1019,6 +1032,8 @@
     "Help as note",
     kCmdRunFunctionWithBlockContent,
     "Run function with block content",
+    kCmdRunFunctionWithSelection,
+    "Run function with selection",
   ];
 
   function commandNameOverride(id, name) {
@@ -1214,7 +1229,7 @@
     await createNoteWithName(name);
     openNote(name);
     // TODO: add a way to undo creation of the note
-    addToast(`Created note '${name}'`);
+    showToast(`Created note '${name}'`);
     logNoteOp("noteCreate");
   }
 
@@ -1236,7 +1251,7 @@
     getEditorComp().focus();
     console.log("deleted note", name);
     // TODO: add a way to undo deletion of the note
-    addToast(`Deleted note '${name}'`);
+    showToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
   }
 

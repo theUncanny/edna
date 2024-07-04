@@ -1,5 +1,10 @@
 # Release notes for Edna
 
+## 1.10
+
+- add ability to execute JavaScript code blocks
+- add ability to run JavaScript functions with the content of the block
+
 ## 1.9
 
 - add `Mod + E` for running a JavaScript function with content of current block

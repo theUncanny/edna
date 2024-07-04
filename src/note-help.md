@@ -105,18 +105,227 @@ We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
 
 ### Running code
 
-#### Executing of code blocks
+#### Executing code blocks
 
-We support execution of Go and JavaScript blocks:
+If current block is Go or JavaScript block, you can run it:
 
 - `Alt + Shift + R` keyboard shortcut
-- right-click and use context menu `Block / Run`
+- right-click and use context menu `Run / Run <javascript> block`
+- use command palette and `Block: Run <language> block`
 
 The output of execution will be shown in a new block created below the executed block.
 
-We have the same capabilities as https://tools.arslexis.io/goplayground/
+For Go:
+- code block must be a valid, complete Go program with `main` function
+- we capture and show stdout and sterr output
+- we have the same execution capability as https://tools.arslexis.io/goplayground/
 
-The code block must be a valid Go program.
+A starting point:
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, 世界")
+}
+```
+
+For JavaScript:
+- code is executed in the browser with `eval()`
+- the output is the value of last expression
+- don't run untrusted code
+
+Examples of JavaScript code and its output.
+
+```javascript
+"foo"
+```
+
+Last expression is string `"foo"` so the output will be `foo`.
+
+---
+
+```javascript
+let a = [1, 2, 3];
+```
+
+There is no last expression so the output will be `undefined`
+
+---
+
+```javascript
+let a = [1, 2, 3];
+a
+```
+
+Last expression is an array `a` so output is `1,2,3`.
+
+---
+
+```javascript
+let a = [1, 2, 3];
+JSON.stringify(a)
+```
+
+Last expression is an array formatted as json so output is `[1,2,3]`.
+
+---
+
+We also capture `console.log()` calls.
+
+```javascript
+console.log("hello")
+```
+
+Output is:
+```
+undefined
+console.log() output:
+hello
+```
+
+- `undefined` because there was no last expression
+- `console.log() output:` to indicate those are capture console.log calls
+- `hello` from console.log calls in your code
+
+---
+
+```javascript
+async function main() {
+  return "foo"
+}
+main();
+```
+
+The last expression is return value of `main()` function, so output is `foo`.
+
+We handle async functions.
+
+#### Running JavaScript functions over content 
+
+You can run JavaScript functions with the content of a current block or a selection.
+
+The function gets the content as argument, can traform it, and we show the output in a block below.
+
+For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.
+
+To run a JavasScript function with content of block:
+- context menu, `Run`, `Function with block content`
+- or command palette `Run function with block content`
+- pick a function from the list
+
+To run a JavasScript function with selection:
+- context menu, `Run`, `Function with selection`
+- or command palette `Run function with block content`
+- pick a function from the list
+
+If you want to see all built-in functions use:
+- context menu, `Run`, `Show built-in functions`
+- or command palette ` `Shw built-in functions`
+
+You can see what built-in functions are available, how they are implemented and use them as an example of how to write your own functions.
+
+This functionality is inspired by https://boop.okat.best/ so our built-in functions come from Boop.
+
+#### Writing your own functions
+
+The real power is in implementing your own functions.
+
+To do it create `edna.my.functions` note:
+- context menu: `Run`, `Create your own functions`
+- or command palette: `Create your own functions`
+
+Each JavaScript block is a function.
+
+The code must be implemented as `function main(input) { ... your code }`.
+
+We use the same format at https://boop.okat.best/.
+
+`input` is an object:
+
+```json
+{
+  text: string,
+  fullText: string,
+  postInfo: (message: string) => void,
+  postError: (message: string) => void,
+}
+```
+
+To return value you assign it to `input.text` and `input.fullText`. `postInfo()` and `postError()` functions show a toast message.
+
+We show `input.text` or `input.fullText` as output block if, after execution, it differs from the original values.
+
+Why `text` and `fullText`? I have no idea, I just copied Boop and that's how their API works.
+
+In my implementation `text` and `fullText` are the same.
+
+You also need to provide metadata at the top in the format:
+```
+/**
+{
+  "api":1,
+  "name":"Add Slashes",
+  "description":"Escapes your text.",
+  "author":"Ivan",
+  "icon":"quote",
+  "tags":"add,slashes,escape"
+}
+**/
+```
+
+Don't get cute and reformat it any way or change `/**` and `**/` to something else. For your own code start by copying this.
+
+Currently the important fields are `name`, and `description` because they are shown in function selection dialog.
+
+In future I might add more `api` versions, but at the moment there's just 1.
+
+Here's the simplest function that simply returns `foo` as a result:
+```javascript
+/**
+{
+  "api":1,
+  "name":"Show foo",
+  "description":"Returns string 'foo'",
+  "author":"Chris",
+  "icon":"quote",
+  "tags":""
+}
+**/
+
+async function main(input) {
+  input.text = "foo"
+}
+```
+
+As you can see, we support `async` functions.
+
+#### Using external libraries
+
+You can use any JavaScript library available via https://esm.sh or https://www.jsdelivr.com/ (or similar).
+
+Here's an example function that uses `camelCase` functio from `lodash` package imported from https://esm.sh
+
+```javascript
+async function main(input) {
+  // @ts-ignore
+  let lodash = (await import("https://esm.sh/lodash@4.17.21")).default;
+  input.text = lodash.camelCase(input.text);
+}
+```
+
+Debugging tip: sometimes module exports functions direct, sometimes as `default` prorperty.
+
+To figure this out for a library, in browser's dev tools console do:
+```
+let m = (await import("https://esm.sh/lodash@4.17.21"))
+```
+then inspect the `m` object in console.
+
+#### Share your JavaScript functions with others
+
+Help others and post your functions to https://github.com/kjk/edna/discussions/categories/share-javascript-functions
 
 ∞∞∞markdown
 # Multiple notes
