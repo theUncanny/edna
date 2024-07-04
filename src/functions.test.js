@@ -1,7 +1,8 @@
 import { expect, test } from "bun:test";
 import {
   parseBoopFunction,
-  parseBoopFunctions,
+  parseBuiltInFunctions,
+  parseUserFunctions,
 } from "./functions";
 import { len } from "./util";
 
@@ -31,8 +32,15 @@ async function main(input) {
   expect(meta.icon).toBe("snake");
 });
 
-test("parseFunctiosn", async () => {
+test("parseBuiltInFunctiosn", async () => {
   let jsRaw = await Bun.file("./src/note-built-in-functions.js").text();
-  let res = parseBoopFunctions(jsRaw);
+  let res = parseBuiltInFunctions(jsRaw);
   expect(len(res)).toBe(64);
 });
+
+test("parseCustomFunctions", async () => {
+  let jsRaw = await Bun.file("./src/note-custom-functions.md").text();
+  let res = parseUserFunctions(jsRaw);
+  expect(len(res)).toBe(1);
+  expect(res[0].name).toBe("My Camel Case")
+})

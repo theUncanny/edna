@@ -11,7 +11,7 @@ import releaseNotesRaw from "./note-release-notes.md?raw";
 import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
 import myFunctionsRaw from "./note-custom-functions.md?raw";
 
-import { parseBoopFunctions } from "./functions.js";
+import { parseBuiltInFunctions } from "./functions.js";
 
 /**
  * @returns {string}
@@ -116,7 +116,7 @@ export let boopFunctions = [];
 export function getBoopFunctions() {
   if (len(boopFunctions) === 0) {
     let jsRaw = getBuiltInFunctionsJS();
-    boopFunctions = parseBoopFunctions(jsRaw);
+    boopFunctions = parseBuiltInFunctions(jsRaw);
   }
   return boopFunctions;
 }

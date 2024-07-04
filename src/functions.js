@@ -62,13 +62,37 @@ export function findFunctionByName(funcs, name) {
  * @param {string} s
  * @returns {BoopFunction[]}
  */
-export function parseBoopFunctions(s) {
+export function parseBuiltInFunctions(s) {
   let parts = s.split("// ----------------------------");
   let n = len(parts);
   /** @type {BoopFunction[]} */
   let res = Array(n);
   let i = 0;
   for (let p of parts) {
+    let meta = parseBoopFunction(p);
+    if (meta) {
+      res[i++] = meta;
+    }
+  }
+  res.length = i;
+  return res;
+}
+
+/**
+ * @param {string} s
+ * @returns {BoopFunction[]}
+ */
+export function parseUserFunctions(s) {
+  let parts = s.split("\n∞∞∞");
+  let n = len(parts);
+  /** @type {BoopFunction[]} */
+  let res = Array(n);
+  let i = 0;
+  for (let p of parts) {
+    let lines = p.split("\n")
+    // skip the type of the block
+    lines = lines.slice(1)
+    p = lines.join("\n")
     let meta = parseBoopFunction(p);
     if (meta) {
       res[i++] = meta;
