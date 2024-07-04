@@ -1,5 +1,6 @@
 // based mostly on https://github.com/IvanMathy/Boop/tree/main/Scripts
 
+import { showError, showToast } from "./components/Toaster.svelte";
 import { len } from "./util";
 
 /** @typedef {{
@@ -132,9 +133,11 @@ export async function runBoopFunctionWithText(f, txt) {
     text: txt,
     fullText: txt,
     postInfo: (s) => {
+      showToast(s, 0);
       console.log("info:", s);
     },
     postError: (s) => {
+      showError(s, 0);
       console.log("error:", s);
     },
   };

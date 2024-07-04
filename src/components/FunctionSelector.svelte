@@ -36,6 +36,7 @@
       ref: null,
     };
   }
+
   /**
    * @returns {Item[]}
    */
@@ -56,20 +57,20 @@
     return res;
   }
 
-  let initialItems = buildItems();
+  let itemsInitial = buildItems();
   let filter = $state("");
 
   /**
    * @returns {Item[]}
    */
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     let filterParts = splitFilterLC(filter);
     /**
      * @returns {Item[]}
      */
-    let res = Array(len(initialItems));
+    let res = Array(len(itemsInitial));
     let nRes = 0;
-    for (let fdef of initialItems) {
+    for (let fdef of itemsInitial) {
       if (!stringMatchesParts(fdef.nameLC, filterParts)) {
         continue;
       }
@@ -81,11 +82,6 @@
 
   /** @type {Item} */
   let selectedItem = $state(null);
-
-  function selectionChanged(item, idx) {
-    console.log("selectionChanged:", item, idx);
-    selectedItem = item;
-  }
 
   /**
    * @param {Item} item
@@ -144,8 +140,8 @@
   </div>
   <ListBox
     bind:this={listbox}
-    items={filteredItems}
-    {selectionChanged}
+    bind:selectedItem
+    items={itemsFiltered}
     onclick={(item) => emitRunFunction(item, false)}
   >
     {#snippet renderItem(item)}
