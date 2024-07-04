@@ -186,9 +186,9 @@ You can do one time export from localStorage to a directory on disk:
 
 You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.
 
-Use context menu `Notes storage / Open notes in directory` to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default `scratch` note.
+Use context menu `Notes storage / Switch to notes in directory` to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default `scratch` note.
 
-You can go back to storing notes in the browser with context menu `Notes storage / Open notes in browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
+You can go back to storing notes in the browser with context menu `Notes storage / Switch to browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
 
 ∞∞∞markdown
 # Accessing notes on multiple computers
@@ -202,7 +202,7 @@ On the first computer export notes from browser to disk:
 
 On other computers:
 
-- context menu: `Notes storage / Open notes in directory`
+- context menu: `Notes storage / Switch to notes in directory`
 - pick the same directory
 
 Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
@@ -470,7 +470,7 @@ Once a day notes will be packed into a .zip file and saved in `backup` folder as
 
 Only last 14 backups are stored to save space.
 
-To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Open notes in directory`
+To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Switch to notes in directory`.
 
 Encrypted notes are stored in their encrypted form.
 

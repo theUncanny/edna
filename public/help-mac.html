@@ -166,8 +166,8 @@
 <li>we save notes on disk as <code>${name}.edna.txt</code> files in chosen directory and delete notes in localStorage</li>
 </ul>
 <p>You can have multiple directories with notes. Think of each directory with notes as a separate Workspace.</p>
-<p>Use context menu <code>Notes storage / Open notes in directory</code> to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default <code>scratch</code> note.</p>
-<p>You can go back to storing notes in the browser with context menu <code>Notes storage / Open notes in browser (localStorage)</code>. Unlike going from browser =&gt; directory, it doesn't import the notes from directory.</p>
+<p>Use context menu <code>Notes storage / Switch to notes in directory</code> to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default <code>scratch</code> note.</p>
+<p>You can go back to storing notes in the browser with context menu <code>Notes storage / Switch to browser (localStorage)</code>. Unlike going from browser =&gt; directory, it doesn't import the notes from directory.</p>
 <h1 id="accessing-notes-on-multiple-computers" tabindex="-1"><a class="header-anchor" href="#accessing-notes-on-multiple-computers">Accessing notes on multiple computers</a></h1>
 <p>If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.</p>
 <p>On the first computer export notes from browser to disk:</p>
@@ -177,7 +177,7 @@
 </ul>
 <p>On other computers:</p>
 <ul>
-<li>context menu: <code>Notes storage / Open notes in directory</code></li>
+<li>context menu: <code>Notes storage / Switch to notes in directory</code></li>
 <li>pick the same directory</li>
 </ul>
 <p>Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.</p>
@@ -247,17 +247,17 @@ JSON.stringify(a)
 </code></pre>
 <p>Last expression is an array formatted as json so output is <code>[1,2,3]</code>.</p>
 <hr>
-<p>We also capture <code>console.log()</code> calls.</p>
+<p>We also capture <code>console.log()</code>, <code>console.warn()</code>, <code>console.debug()</code>, <code>console.error()</code> calls.</p>
 <pre><code class="language-javascript">console.log(&quot;hello&quot;)
 </code></pre>
 <p>Output is:</p>
 <pre><code>undefined
-console.log() output:
+console output:
 hello
 </code></pre>
 <ul>
 <li><code>undefined</code> because there was no last expression</li>
-<li><code>console.log() output:</code> to indicate those are capture console.log calls</li>
+<li><code>console output:</code> to indicate those are capture console.log calls</li>
 <li><code>hello</code> from console.log calls in your code</li>
 </ul>
 <hr>
@@ -365,7 +365,7 @@ async function main(input) {
 <p>For notes stored in file system, you can enable notes backup via Settings.</p>
 <p>Once a day notes will be packed into a .zip file and saved in <code>backup</code> folder as <code>edna.backup.&lt;YYYY-MM-DD&gt;.zip</code> file.</p>
 <p>Only last 14 backups are stored to save space.</p>
-<p>To restore from a backup, unzip files to an empty folder and switch to it via context menu <code>Notes storage / Open notes in directory</code></p>
+<p>To restore from a backup, unzip files to an empty folder and switch to it via context menu <code>Notes storage / Switch to notes in directory</code>.</p>
 <p>Encrypted notes are stored in their encrypted form.</p>
 <h1 id="exporting-notes-to-a-.zip-file" tabindex="-1"><a class="header-anchor" href="#exporting-notes-to-a-.zip-file">Exporting notes to a .zip file</a></h1>
 <p>Edna files are just text files with <code>.edna.txt</code> extension.</p>
