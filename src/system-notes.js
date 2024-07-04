@@ -4,8 +4,8 @@ import dailyJournalRaw from "./note-daily-journal.md?raw";
 import { fixUpNoteContent } from "./notes.js";
 import helpRaw from "./note-help.md?raw";
 import inboxRaw from "./note-inbox.md?raw";
-import initialDevRaw from "./note-initial-dev.md?raw";
-import scratchRaw from "./note-initial.md?raw";
+import scratchDevRaw from "./note-scratch-dev.md?raw";
+import scratchRaw from "./note-scratch.md?raw";
 import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
 import releaseNotesRaw from "./note-release-notes.md?raw";
 import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
@@ -95,7 +95,7 @@ export function getWelcomeNote() {
  * @returns {string}
  */
 export function getWelcomeNoteDev() {
-  return getWelcomeNote() + initialDevRaw;
+  return getWelcomeNote() + scratchDevRaw;
 }
 
 // this logically belongs in functions.js but I use bun test
