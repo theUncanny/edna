@@ -29,19 +29,28 @@
 
   /** @typedef {{item: Item, textLC: string, key: number }} BlockItem */
 
-  /** @type {BlockItem[]} */
-  let items = [];
-  for (let item of blocks) {
-    let bi = {
-      item: item,
-      textLC: item.text.toLowerCase(),
-      key: item.key,
-    };
-    items.push(bi);
+  /**
+   * @returns {BlockItem[]}
+   */
+  function buildItems() {
+    /** @type {BlockItem[]} */
+    let res = [];
+    for (let block of blocks) {
+      let bi = {
+        item: block,
+        textLC: block.text.toLowerCase(),
+        key: block.key,
+      };
+      res.push(bi);
+    }
+    return res;
   }
 
   /** @type {BlockItem[]} */
-  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
+  let items = buildItems();
+
+  /** @type {BlockItem[]} */
+  let itemsFiltered = $derived(findMatchingItems(items, filter, "textLC"));
 
   /**
    * @param {KeyboardEvent} ev
