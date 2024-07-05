@@ -28,22 +28,35 @@ export function getHelp(platform = platformName) {
 
 export const blockHdrJavaScript = "\n∞∞∞javascript\n";
 
+const blockHdrMarkdown = "\n∞∞∞markdown\n"; // avoid circular deps
+let builtInHdr =
+  blockHdrMarkdown +
+  `# Edna bundled JavaScript function
+
+Below are JavaScript functions included with Edna.
+
+You can run them on current block content with "Run function with this block" command.
+
+You can write your own functions.
+
+To learn more see http://edna.arslexis.io/help#running-code
+`;
+
 /**
  * @returns {string}
  */
 export function getBuiltInFunctionsNote() {
   let s = builtInFunctionsRaw;
-  let parts = s.split("// ----------------------------"); 
+  let parts = s.split("// ----------------------------");
   let res = [];
   for (let p of parts) {
-    p = p.trim()
+    p = p.trim();
     if (len(p) === 0) {
       continue;
     }
-    p = blockHdrJavaScript + p;
-    res.push(p);
+    res.push(blockHdrJavaScript + p);
   }
-  return res.join("\n")
+  return builtInHdr + res.join("\n");
 }
 
 /**

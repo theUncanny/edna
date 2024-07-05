@@ -1,11 +1,4 @@
 // ----------------------------
-// those are JavaScript functions included with Edna
-// you can run them on current block content with
-// "Run function with block content" command
-// You can write your own functions
-// To learn more see http://edna.arslexis.io/help#running-code
-
-// ----------------------------
 /**
 {
   "api":1,
@@ -92,7 +85,7 @@ function main(state) {
   "tags":"base64,btoa,decode"
 }
 **/
-  
+
 function main(input) {
   input.text = atob(input.text);
 }
@@ -107,7 +100,6 @@ function main(input) {
   "tags":"base64,atob,encode"
 }
 **/
-
 
 function main(input) {
   input.text = btoa(input.text);
@@ -614,7 +606,7 @@ function main(state) {
 
 async function main(input) {
   // @ts-ignore
-  let he =  (await import("https://esm.sh/html-entities@2.5.2"))
+  let he = await import("https://esm.sh/html-entities@2.5.2");
   input.text = he.decode(input.text);
 }
 
@@ -630,10 +622,9 @@ async function main(input) {
 }
 **/
 
-
 async function main(input) {
   // @ts-ignore
-  let he =  (await import("https://esm.sh/html-entities@2.5.2"))
+  let he = await import("https://esm.sh/html-entities@2.5.2");
   input.text = he.encode(input.text);
 }
 
@@ -781,7 +772,7 @@ function main(input) {
 
 async function main(input) {
   // @ts-ignore
-  const yaml = (await import("https://esm.sh/js-yaml@4.1.0")).default
+  const yaml = (await import("https://esm.sh/js-yaml@4.1.0")).default;
   try {
     input.text = yaml.safeDump(JSON.parse(input.text));
   } catch (error) {
