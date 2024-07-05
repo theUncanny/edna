@@ -421,7 +421,7 @@ export async function getClipboardText() {
  * @param {string} newName
  * @returns
  */
-function renameLS(oldName, newName) {
+export function renameLS(oldName, newName) {
   let s = localStorage.getItem(oldName);
   if (s === null) {
     // doesn't exist
