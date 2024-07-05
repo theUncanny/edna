@@ -183,7 +183,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <ul
-  class="items overflow-y-auto"
+  class="items overflow-y-auto cursor-pointer"
   role="listbox"
   bind:this={listbox}
   data-overlayscrollbars-initialize
@@ -193,7 +193,7 @@
     <li
       role="option"
       aria-selected={idx === selectedIdx}
-      class="cursor-pointer py-0.5 px-2 leading-5 flex dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 aria-selected:text-white aria-selected:bg-gray-400 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
+      class="flex items-center py-0.5 px-2 leading-5 hover:bg-gray-100 aria-selected:bg-gray-300 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}

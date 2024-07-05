@@ -363,7 +363,19 @@ export function splitFilterLC(s) {
   return parts;
 }
 
-export  function findMatchingItems(items, filter, itemKey) {
+/**
+ * itemKey should be a string property of an item and it should
+ * be lowercased
+ * @param {any[]} items
+ * @param {string} filter
+ * @param {string} itemKey
+ * @returns {any[]}
+ */
+export function findMatchingItems(items, filter, itemKey) {
+  filter = filter.trim();
+  if (filter === "") {
+    return items;
+  }
   let filterParts = splitFilterLC(filter);
   let res = Array(len(items));
   let i = 0;

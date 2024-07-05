@@ -9,7 +9,7 @@
 
 <script>
   import { focus } from "../actions";
-  import { getKeyEventNumber, len } from "../util";
+  import { findMatchingItems, getKeyEventNumber, len } from "../util";
   import ListBox from "./ListBox.svelte";
 
   /** @type {{
@@ -42,23 +42,16 @@
 
   /** @type {BlockItem[]} */
   let itemsFiltered = $derived.by(() => {
-    const filterLC = filter.toLowerCase();
-    let res = [];
-    for (let item of itemsInitial) {
-      let s = item.textLC;
-      if (s.indexOf(filterLC) !== -1) {
-        res.push(item);
-      }
-    }
-    return res;
+    return findMatchingItems(itemsInitial, filter, "textLC");
   });
 
   /**
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
-    if (filter === "") {
-      // '0' ... '9' picks an item when typedown filter is empty
+    // Ctrl + '0' ... '9' picks an item
+    // TODO: extend it to `a` .. `z` ?
+    if (ev.ctrlKey) {
       let idx = getKeyEventNumber(ev);
       let lastIdx = len(items) - 1;
       if (idx >= 0 && idx <= lastIdx) {
@@ -106,7 +99,8 @@
       </div>
       <div class="grow"></div>
       {#if idx < 10}
-        <div class="ml-4 mr-2 font-bold">{idx}</div>
+        {@const s = `Ctrl + ${idx}`}
+        <div class="ml-4 mr-2 text-xs text-gray-400">{s}</div>
       {/if}
     {/snippet}
   </ListBox>
