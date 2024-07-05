@@ -1433,7 +1433,7 @@
 {#if showingBlockSelector}
   <Overlay onclose={closeBlockSelector} blur={true}>
     <BlockSelector
-      items={blockItems}
+      blocks={blockItems}
       {selectBlock}
       initialSelection={initialBlockSelection}
     ></BlockSelector>

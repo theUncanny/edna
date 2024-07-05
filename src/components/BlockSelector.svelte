@@ -13,36 +13,36 @@
   import ListBox from "./ListBox.svelte";
 
   /** @type {{
-   items: Item[],
+   blocks: Item[],
    selectBlock: (block : Item) => void,
    initialSelection?: number,
   }}*/
-  let { items, selectBlock, initialSelection = 0 } = $props();
+  let { blocks, selectBlock, initialSelection = 0 } = $props();
 
   /** @type {string} */
   let filter = $state("");
 
-  let blockCountMsg = $state(`${len(items)} blocks`);
-  if (len(items) == 1) {
+  let blockCountMsg = $state(`${len(blocks)} blocks`);
+  if (len(blocks) == 1) {
     blockCountMsg = `1 block`;
   }
 
   /** @typedef {{item: Item, textLC: string, key: number }} BlockItem */
 
   /** @type {BlockItem[]} */
-  let itemsInitial = [];
-  for (let item of items) {
+  let items = [];
+  for (let item of blocks) {
     let bi = {
       item: item,
       textLC: item.text.toLowerCase(),
       key: item.key,
     };
-    itemsInitial.push(bi);
+    items.push(bi);
   }
 
   /** @type {BlockItem[]} */
   let itemsFiltered = $derived.by(() => {
-    return findMatchingItems(itemsInitial, filter, "textLC");
+    return findMatchingItems(items, filter, "textLC");
   });
 
   /**
@@ -53,10 +53,10 @@
     // TODO: extend it to `a` .. `z` ?
     if (ev.ctrlKey) {
       let idx = getKeyEventNumber(ev);
-      let lastIdx = len(items) - 1;
+      let lastIdx = len(blocks) - 1;
       if (idx >= 0 && idx <= lastIdx) {
         ev.preventDefault();
-        let item = items[idx];
+        let item = blocks[idx];
         selectBlock(item);
         return;
       }

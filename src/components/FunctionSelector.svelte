@@ -1,7 +1,7 @@
 <script>
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
-  import { len, splitFilterLC, stringMatchesParts } from "../util";
+  import { findMatchingItems, len } from "../util";
   import { getBoopFunctions } from "../system-notes";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
@@ -64,20 +64,7 @@
    * @returns {Item[]}
    */
   let itemsFiltered = $derived.by(() => {
-    let filterParts = splitFilterLC(filter);
-    /**
-     * @returns {Item[]}
-     */
-    let res = Array(len(itemsInitial));
-    let nRes = 0;
-    for (let fdef of itemsInitial) {
-      if (!stringMatchesParts(fdef.nameLC, filterParts)) {
-        continue;
-      }
-      res[nRes++] = fdef;
-    }
-    res.length = nRes;
-    return res;
+    return findMatchingItems(itemsInitial, filter, "nameLC");
   });
 
   /** @type {Item} */
@@ -106,17 +93,8 @@
         emitRunFunction(selectedItem, replace);
       }
     }
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    let allowLeftRight = filter === "";
+    listbox.onkeydown(ev, allowLeftRight);
   }
   let listbox;
 </script>

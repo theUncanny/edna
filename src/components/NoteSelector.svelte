@@ -7,14 +7,7 @@
     sanitizeNoteName,
     getNotesCount,
   } from "../notes";
-  import {
-    findMatchingItems,
-    getAltChar,
-    isAltNumEvent,
-    len,
-    splitFilterLC,
-    stringMatchesParts,
-  } from "../util";
+  import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
 

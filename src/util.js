@@ -351,21 +351,12 @@ export function stringMatchesParts(s, parts) {
 }
 
 /**
- * @param {string} s
- * @returns {string[]}
- */
-export function splitFilterLC(s) {
-  s = s.toLowerCase();
-  let parts = s.split(" ");
-  for (let [i, part] of parts.entries()) {
-    parts[i] = part.trim();
-  }
-  return parts;
-}
-
-/**
- * itemKey should be a string property of an item and it should
- * be lowercased
+ * Find items whose string propety itemKey matches a filter string
+ * We lowercase filter and split it by whitespace
+ * item matches if its itemKey property contains any of the filter parts
+ * itemKey should be lowercased. for performance lowercasing should be
+ * pre-computed by the caller. We assume filtering is done multiple
+ * times over the same items so pre-computing it once saves allocations
  * @param {any[]} items
  * @param {string} filter
  * @param {string} itemKey
@@ -376,7 +367,11 @@ export function findMatchingItems(items, filter, itemKey) {
   if (filter === "") {
     return items;
   }
-  let filterParts = splitFilterLC(filter);
+  filter = filter.toLowerCase();
+  let filterParts = filter.split(" ");
+  for (let [i, part] of filterParts.entries()) {
+    filterParts[i] = part.trim();
+  }
   let res = Array(len(items));
   let i = 0;
   for (let item of items) {

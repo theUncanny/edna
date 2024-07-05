@@ -7,11 +7,13 @@ This is a help note. To switch to a different note, press `Mod + P`.
 To see help in HTML, press `Help` at the bottom right or visit https://edna.arslexis.io/help
 
 ∞∞∞markdown
+
 # Keyboard shortcuts
 
 {{keyHelp}}
 
 ∞∞∞markdown
+
 # Why Edna?
 
 ## Notes and blocks
@@ -19,9 +21,10 @@ To see help in HTML, press `Help` at the bottom right or visit https://edna.arsl
 In Edna a note is divided into blocks. Each block has a type: markdown, plain text, math block, JavaScript code, Go code etc.
 
 Use:
-* `Mod + L` to assign a type for current block
-* `Mod + B` to navigate between blocks
-* `Mod + A` and `Delete` to delete block (select block test and delete)
+
+- `Mod + L` to assign a type for current block
+- `Mod + B` to navigate between blocks
+- `Mod + A` and `Delete` to delete block (select block test and delete)
 
 Use [keyboard shortcuts](#keyboard-shortcuts) to create blocks, move between blocks.
 
@@ -100,6 +103,7 @@ You can format current block using:
 We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
 
 ∞∞∞markdown
+
 # Multiple notes
 
 ## Open another note
@@ -155,6 +159,7 @@ Notes with assigned shortcut show up at the top of note switcher.
 Press `Mod + E` to open a note from history. You can press `0` to `9` to open one of the last 10 notes.
 
 ∞∞∞markdown
+
 # Default notes
 
 At first run we create 3 default notes:
@@ -172,6 +177,7 @@ You can delete them (except the `scratch` note).
 `daily journal` is for daily notes. We auto-create a block for each day.
 
 ∞∞∞markdown
+
 # Storing notes on disk
 
 By default notes are stored in the browser (localStorage).
@@ -191,6 +197,7 @@ Use context menu `Notes storage / Switch to notes in directory` to switch to not
 You can go back to storing notes in the browser with context menu `Notes storage / Switch to browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
 
 ∞∞∞markdown
+
 # Accessing notes on multiple computers
 
 If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.
@@ -208,6 +215,7 @@ On other computers:
 Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
 
 ∞∞∞markdown
+
 # Encryption
 
 When storing notes on disk, you can encrypt them with a password.
@@ -223,6 +231,7 @@ If you lose the password, you'll lose access to your notes.
 Notes are encrypted with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) algorithm via [kiss-crypto](https://github.com/team-reflect/kiss-crypto) library.
 
 ## Picking good password
+
 Good password is:
 
 - long (short passwords can be cracked via brute force; long passwords cannot)
@@ -236,6 +245,7 @@ Example: `Blue bear attacked a tiny dog`.
 Such passwords are easier to type and remember than typical "8a$7y!glo" passwords.
 
 ∞∞∞markdown
+
 # Running code
 
 ## Run code blocks
@@ -245,15 +255,18 @@ If current block is Go or JavaScript block, you can run it:
 - `Alt + Shift + R` keyboard shortcut
 - context menu: `Run / Run <javascript> block`
 - command palette: `Block: Run <language> block`
+- `Run` button in status bar (bottom right)
 
 The output of execution will be shown in a new block created below the executed block.
 
 For Go:
+
 - code block must be a valid, complete Go program with `main` function
 - we capture and show stdout and sterr output
 - we have the same execution capability as https://tools.arslexis.io/goplayground/
 
 A starting point:
+
 ```go
 package main
 
@@ -265,6 +278,7 @@ func main() {
 ```
 
 For JavaScript:
+
 - code is executed in the browser with `eval()`
 - the output is the value of last expression
 - don't run untrusted code
@@ -272,7 +286,7 @@ For JavaScript:
 Examples of JavaScript code and its output.
 
 ```javascript
-"foo"
+"foo";
 ```
 
 Last expression is string `"foo"` so the output will be `foo`.
@@ -289,7 +303,7 @@ There is no last expression so the output will be `undefined`
 
 ```javascript
 let a = [1, 2, 3];
-a
+a;
 ```
 
 Last expression is an array `a` so output is `1,2,3`.
@@ -298,7 +312,7 @@ Last expression is an array `a` so output is `1,2,3`.
 
 ```javascript
 let a = [1, 2, 3];
-JSON.stringify(a)
+JSON.stringify(a);
 ```
 
 Last expression is an array formatted as json so output is `[1,2,3]`.
@@ -308,10 +322,11 @@ Last expression is an array formatted as json so output is `[1,2,3]`.
 We also capture `console.log()`, `console.warn()`, `console.debug()`, `console.error()` calls.
 
 ```javascript
-console.log("hello")
+console.log("hello");
 ```
 
 Output is:
+
 ```
 undefined
 console output:
@@ -326,7 +341,7 @@ hello
 
 ```javascript
 async function main() {
-  return "foo"
+  return "foo";
 }
 main();
 ```
@@ -335,7 +350,7 @@ The last expression is return value of `main()` function, so output is `foo`.
 
 We handle async functions.
 
-## Run JavaScript functions over content 
+## Run JavaScript functions over content
 
 You can run JavaScript functions with the content of a current block or a selection.
 
@@ -344,16 +359,19 @@ The function gets the content as argument, can traform it, and we show the outpu
 For example a function can sort the lines in a block, calculate md5 hash or transform it to upper case. The possibilities are literally limitless.
 
 To run a JavasScript function with content of block:
+
 - context menu: `Run` / `Run function with block content`
 - command palette: `Run function with block content`
 - pick a function from the list
 
 To run a JavasScript function with selection:
+
 - context menu: `Run` / `Run function with selection`
 - command palette: `Run function with selection`
 - pick a function from the list
 
 If you want to see all built-in functions use:
+
 - context menu: `Run`, `Show built-in functions`
 - command palette: `Shw built-in functions`
 
@@ -368,6 +386,7 @@ You can write custom JavaScript functions that operate on text (content of the b
 For example you can write a function that sorts lines of text.
 
 To write custom functions create a special `edna: my functions` note:
+
 - context menu: `Run`, `Create your own functions`
 - command palette: `Create your own functions`
 
@@ -397,6 +416,7 @@ Why `text` and `fullText`? I have no idea, I just copied [Boop](https://boop.oka
 In my implementation `text` and `fullText` are the same.
 
 You also need to provide metadata at the top in the format:
+
 ```
 /**
 {
@@ -417,6 +437,7 @@ Currently the important fields are `name`, and `description` because they are sh
 In future I might add more `api` versions, but at the moment there's just 1.
 
 Here's the simplest function that returns `foo` as a result:
+
 ```javascript
 /**
 {
@@ -430,7 +451,7 @@ Here's the simplest function that returns `foo` as a result:
 **/
 
 async function main(input) {
-  input.text = "foo"
+  input.text = "foo";
 }
 ```
 
@@ -452,9 +473,11 @@ async function main(input) {
 Debugging tip: sometimes module exports functions direct, sometimes as `default`.
 
 To figure this out for a library, in browser's dev tools console do:
+
 ```
 let m = (await import("https://esm.sh/lodash@4.17.21"))
 ```
+
 then inspect the `m` object in console to see available functions.
 
 ## Share your JavaScript functions with others
@@ -462,19 +485,21 @@ then inspect the `m` object in console to see available functions.
 Share your functions with other via https://github.com/kjk/edna/discussions/categories/share-javascript-functions
 
 ∞∞∞markdown
+
 # Backing up notes
 
 For notes stored in file system, you can enable notes backup via Settings.
 
 Once a day notes will be packed into a .zip file and saved in `backup` folder as `edna.backup.<YYYY-MM-DD>.zip` file.
 
-Only last 14 backups are stored to save space.
+To save space only last 14 backups are stored.
 
 To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Switch to notes in directory`.
 
 Encrypted notes are stored in their encrypted form.
 
 ∞∞∞markdown
+
 # Exporting notes to a .zip file
 
 Edna files are just text files with `.edna.txt` extension.
@@ -488,6 +513,7 @@ We pack all the notes into a .zip file and initiate auto-download as `edna.notes
 You can then e.g. restore the notes by unzipping it to a directory and opening that directory in Edna with `Notes storage` / `Switch to notes in a directory` context menu.
 
 ∞∞∞markdown
+
 # Lists with TODO items
 
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
@@ -499,18 +525,19 @@ In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 This is a Math block. Lines are evaluated as math expressions.
 
 radius = 5
-area = radius^2 * PI
+area = radius^2 \* PI
 sqrt(9)
 
 It also supports some basic unit conversions, including currencies:
 
 13 inches in cm
 time = 3900 seconds to minutes
-time * 2
+time \* 2
 
 1 EUR in USD
 
 ∞∞∞markdown
+
 # code blocks
 
 ∞∞∞javascript
@@ -521,6 +548,7 @@ time * 2
 let x = 5
 console.log("x is", x)
 ∞∞∞markdown
+
 # Privacy and security
 
 Your notes are private and secure.
@@ -532,6 +560,7 @@ For additional security, you can [encrypt notes](#encryption) with a password.
 The code is [open source](https://github.com/kjk/edna) so you can audit it.
 
 ∞∞∞markdown
+
 # No lock in
 
 The notes are stored in plain text files on disk (or in localStorage under `note:${name}` key)
@@ -545,6 +574,7 @@ You can back them up, store in git repositories, write scripts to process them.
 They are not locked in a proprietary Edna format.
 
 ∞∞∞markdown
+
 # How I use Edna
 
 Edna is flexible and you should find your own way of using it.
@@ -560,6 +590,7 @@ I use Edna daily::
 - I have `investing` note for keeping track of various stock investment ideas
 
 ∞∞∞markdown
+
 # Open source
 
 [Edna](https://edna.arslexis.io) is open source: https://github.com/kjk/edna
@@ -567,6 +598,7 @@ I use Edna daily::
 To report a bug or request a feature: https://github.com/kjk/edna/issues
 
 ∞∞∞markdown
+
 # Contact
 
 You can contact me via https://blog.kowalczyk.info/contactme
@@ -574,6 +606,7 @@ You can contact me via https://blog.kowalczyk.info/contactme
 You can find more software by [me](https://blog.kowalczyk.info/) on https://arslexis.io
 
 ∞∞∞markdown
+
 # Credits
 
 Edna is a fork of [Heynote](https://github.com/heyman/heynote) with the following differences:

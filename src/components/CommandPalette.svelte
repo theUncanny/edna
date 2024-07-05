@@ -1,5 +1,5 @@
 <script>
-  import { len, splitMax, trimPrefix } from "../util";
+  import { findMatchingItems, len, splitMax, trimPrefix } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
   import { extractShortcut } from "../keys";
@@ -56,69 +56,25 @@
     });
     return res;
   }
-  let itemsInitial = $state(buildCommands());
-  let cmdCountMsg = `${len(itemsInitial)} commands`;
+  let items = $state(buildCommands());
+  let cmdCountMsg = `${len(items)} commands`;
   let filter = $state(">");
 
   let itemsFiltered = $derived.by(() => {
-    // we split the search term by space, the name of the note
-    // must match all parts
     let lc = filter.toLowerCase();
     if (lc === "") {
       switchToNoteSelector();
       return;
     }
     lc = trimPrefix(lc, ">");
-    lc = lc.trim();
-    let parts = lc.split(" ");
-    let n = len(parts);
-    for (let i = 0; i < n; i++) {
-      let s = parts[i];
-      parts[i] = s.trim();
-    }
-    return itemsInitial.filter((noteInfo) => {
-      let s = noteInfo.nameLC;
-      for (let p of parts) {
-        if (s.indexOf(p) === -1) {
-          return false;
-        }
-      }
-      return true;
-    });
-  });
-
-  /** @type {Item} */
-  let selectedItem = $state(null);
-
-  $effect(() => {
-    console.log("selectedCommand:", selectedItem ? selectedItem.name : "null");
+    return findMatchingItems(items, lc, "nameLC");
   });
 
   /**
    * @param {KeyboardEvent} ev
    */
   function onKeydown(ev) {
-    // console.log("onKeyDown:", event);
-    let key = ev.key;
-
-    if (key === "Enter") {
-      ev.preventDefault();
-      if (selectedItem) {
-        console.log("onKeyDown: selectedCommand:", selectedItem.name);
-        executeCommand(selectedItem.key);
-      }
-    }
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    listbox.onkeydown(ev, filter === "");
   }
 
   /**
@@ -151,7 +107,6 @@
   </div>
   <ListBox
     bind:this={listbox}
-    bind:selectedItem
     items={itemsFiltered}
     onclick={(item) => emitExecuteCommand(item)}
   >
