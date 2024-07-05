@@ -3,10 +3,11 @@
     getLatestNoteNames,
     getMetadataForNote,
     isSystemNoteName,
+    kScratchNoteName,
     reassignNoteShortcut,
     sanitizeNoteName,
   } from "../notes";
-  import { getAltChar, isAltNumEvent, len } from "../util";
+  import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox2.svelte";
 
@@ -79,7 +80,7 @@
     });
     return res;
   }
-  let itemsInitial = $state(rebuildItems());
+  let items = $state(rebuildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -87,26 +88,7 @@
     return sanitizeNoteName(filter);
   });
 
-  let itemsFiltered = $derived.by(() => {
-    // we split the search term by space, the name of the note
-    // must match all parts
-    let lc = sanitizedFilter.toLowerCase();
-    let parts = lc.split(" ");
-    let n = len(parts);
-    for (let i = 0; i < n; i++) {
-      let s = parts[i];
-      parts[i] = s.trim();
-    }
-    return itemsInitial.filter((noteInfo) => {
-      let s = noteInfo.nameLC;
-      for (let p of parts) {
-        if (s.indexOf(p) === -1) {
-          return false;
-        }
-      }
-      return true;
-    });
-  });
+  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
 
   let selectedNote = $state(null);
   let selectedName = $state("");
@@ -193,7 +175,7 @@
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          itemsInitial = rebuildItems();
+          items = rebuildItems();
         });
         return;
       }
@@ -225,17 +207,7 @@
       return;
     }
 
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    listbox.onkeydown(ev, filter === "");
   }
 
   /**

@@ -57,15 +57,13 @@
     return res;
   }
 
-  let itemsInitial = buildItems();
+  let items = buildItems();
   let filter = $state("");
 
   /**
    * @returns {Item[]}
    */
-  let itemsFiltered = $derived.by(() => {
-    return findMatchingItems(itemsInitial, filter, "nameLC");
-  });
+  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
 
   /** @type {Item} */
   let selectedItem = $state(null);
@@ -93,8 +91,7 @@
         emitRunFunction(selectedItem, replace);
       }
     }
-    let allowLeftRight = filter === "";
-    listbox.onkeydown(ev, allowLeftRight);
+    listbox.onkeydown(ev, filter === "");
   }
   let listbox;
 </script>

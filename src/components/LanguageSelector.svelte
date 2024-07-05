@@ -2,7 +2,7 @@
   import { LANGUAGES } from "../editor/languages.js";
   import { focus } from "../actions.js";
   import ListBox from "./ListBox.svelte";
-  import { len } from "../util.js";
+  import { findMatchingItems, len } from "../util.js";
 
   /** @type {{
     selectLanguage: (name: string) => void,
@@ -38,28 +38,15 @@
     return res;
   }
   const items = buildItems();
-
-  let itemsFiltered = $derived.by(() => {
-    const filterLC = filter.toLowerCase();
-    return items.filter((lang) => {
-      return lang.nameLC.indexOf(filterLC) !== -1;
-    });
-  });
-
-  /**
-   * @param {KeyboardEvent} ev
-   */
-  function onkeydown(ev) {
-    let allowLeftRight = filter === "";
-    listbox.onkeydown(ev, allowLeftRight);
-  }
-
+  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
   let listbox;
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  {onkeydown}
+  onkeydown={(ev) => {
+    listbox.onkeydown(ev, filter === "");
+  }}
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] max-h-[94vh] flex flex-col p-2"
 >

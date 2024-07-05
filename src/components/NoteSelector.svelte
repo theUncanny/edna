@@ -80,7 +80,7 @@
     });
     return res;
   }
-  let itemsInitial = $state(buildItems());
+  let items = $state(buildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -95,7 +95,7 @@
       switchToCommandPalette();
       return null;
     }
-    return findMatchingItems(itemsInitial, sanitizedFilter, "nameLC");
+    return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
 
   let selectedItem = $state(null);
@@ -188,7 +188,7 @@
       let note = selectedItem;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          itemsInitial = buildItems();
+          items = buildItems();
         });
         return;
       }
@@ -220,17 +220,7 @@
       return;
     }
 
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    listbox.onkeydown(ev, filter === "");
   }
 
   /**
@@ -285,7 +275,7 @@
         {item.name}
       </div>
       <div class="grow"></div>
-      <div class="mr-2">{noteShortcut(item)}</div>
+      <div class="ml-4 mr-2 text-xs text-gray-400">{noteShortcut(item)}</div>
     {/snippet}
   </ListBox>
 

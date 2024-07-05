@@ -205,6 +205,7 @@
 <li><code>⌥ + Shift + R</code> keyboard shortcut</li>
 <li>context menu: <code>Run / Run &lt;javascript&gt; block</code></li>
 <li>command palette: <code>Block: Run &lt;language&gt; block</code></li>
+<li><code>Run</code> button in status bar (bottom right)</li>
 </ul>
 <p>The output of execution will be shown in a new block created below the executed block.</p>
 <p>For Go:</p>
@@ -229,7 +230,7 @@ func main() {
 <li>don't run untrusted code</li>
 </ul>
 <p>Examples of JavaScript code and its output.</p>
-<pre><code class="language-javascript">&quot;foo&quot;
+<pre><code class="language-javascript">&quot;foo&quot;;
 </code></pre>
 <p>Last expression is string <code>&quot;foo&quot;</code> so the output will be <code>foo</code>.</p>
 <hr>
@@ -238,17 +239,17 @@ func main() {
 <p>There is no last expression so the output will be <code>undefined</code></p>
 <hr>
 <pre><code class="language-javascript">let a = [1, 2, 3];
-a
+a;
 </code></pre>
 <p>Last expression is an array <code>a</code> so output is <code>1,2,3</code>.</p>
 <hr>
 <pre><code class="language-javascript">let a = [1, 2, 3];
-JSON.stringify(a)
+JSON.stringify(a);
 </code></pre>
 <p>Last expression is an array formatted as json so output is <code>[1,2,3]</code>.</p>
 <hr>
 <p>We also capture <code>console.log()</code>, <code>console.warn()</code>, <code>console.debug()</code>, <code>console.error()</code> calls.</p>
-<pre><code class="language-javascript">console.log(&quot;hello&quot;)
+<pre><code class="language-javascript">console.log(&quot;hello&quot;);
 </code></pre>
 <p>Output is:</p>
 <pre><code>undefined
@@ -262,7 +263,7 @@ hello
 </ul>
 <hr>
 <pre><code class="language-javascript">async function main() {
-  return &quot;foo&quot;
+  return &quot;foo&quot;;
 }
 main();
 </code></pre>
@@ -342,7 +343,7 @@ main();
 **/
 
 async function main(input) {
-  input.text = &quot;foo&quot;
+  input.text = &quot;foo&quot;;
 }
 </code></pre>
 <p>As you can see, we support <code>async</code> functions.</p>
@@ -364,7 +365,7 @@ async function main(input) {
 <h1 id="backing-up-notes" tabindex="-1"><a class="header-anchor" href="#backing-up-notes">Backing up notes</a></h1>
 <p>For notes stored in file system, you can enable notes backup via Settings.</p>
 <p>Once a day notes will be packed into a .zip file and saved in <code>backup</code> folder as <code>edna.backup.&lt;YYYY-MM-DD&gt;.zip</code> file.</p>
-<p>Only last 14 backups are stored to save space.</p>
+<p>To save space only last 14 backups are stored.</p>
 <p>To restore from a backup, unzip files to an empty folder and switch to it via context menu <code>Notes storage / Switch to notes in directory</code>.</p>
 <p>Encrypted notes are stored in their encrypted form.</p>
 <h1 id="exporting-notes-to-a-.zip-file" tabindex="-1"><a class="header-anchor" href="#exporting-notes-to-a-.zip-file">Exporting notes to a .zip file</a></h1>

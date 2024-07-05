@@ -41,9 +41,7 @@
   }
 
   /** @type {BlockItem[]} */
-  let itemsFiltered = $derived.by(() => {
-    return findMatchingItems(items, filter, "textLC");
-  });
+  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
 
   /**
    * @param {KeyboardEvent} ev
@@ -62,8 +60,7 @@
       }
     }
 
-    let allowLeftRight = filter === "";
-    listbox.onkeydown(ev, allowLeftRight);
+    listbox.onkeydown(ev, filter === "");
   }
 
   let listbox;

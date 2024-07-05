@@ -353,7 +353,7 @@ export function stringMatchesParts(s, parts) {
 /**
  * Find items whose string propety itemKey matches a filter string
  * We lowercase filter and split it by whitespace
- * item matches if its itemKey property contains any of the filter parts
+ * item matches if its itemKey property string includes all of the filter parts
  * itemKey should be lowercased. for performance lowercasing should be
  * pre-computed by the caller. We assume filtering is done multiple
  * times over the same items so pre-computing it once saves allocations

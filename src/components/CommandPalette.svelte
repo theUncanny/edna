@@ -71,13 +71,6 @@
   });
 
   /**
-   * @param {KeyboardEvent} ev
-   */
-  function onKeydown(ev) {
-    listbox.onkeydown(ev, filter === "");
-  }
-
-  /**
    * @param {Item} item
    */
   function emitExecuteCommand(item) {
@@ -90,7 +83,9 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  onkeydown={onKeydown}
+  onkeydown={(ev) => {
+    listbox.onkeydown(ev, filter === "");
+  }}
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-2"
 >
