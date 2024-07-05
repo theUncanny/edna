@@ -130,6 +130,8 @@
   let showingCommandPalette = $state(false);
   let showingCreateNewNote = $state(false);
   let showingFunctionSelector = $state(false);
+  let functionContext = $state("");
+  let runFunctionOnSelection = false;
   let userFunctions = $state([]); // note: $state() not needed
   let showingSettings = $state(false);
   let showingRenameNote = $state(false);
@@ -531,7 +533,14 @@
     getEditorComp().focus();
   }
 
-  async function openFunctionSelector() {
+  async function openFunctionSelector(onSelection = false) {
+    if (onSelection) {
+      runFunctionOnSelection = true;
+      functionContext = "selection";
+    } else {
+      runFunctionOnSelection = false;
+      functionContext = "current block content";
+    }
     let userFunctionsStr = await loadNoteIfExists(kMyFunctionsNoteName);
     if (!userFunctionsStr) {
       userFunctions = [];
@@ -1035,11 +1044,9 @@
     } else if (cmdId === kCmdOpenRecent) {
       openHistorySelector();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
-      runFunctionOnSelection = false;
-      openFunctionSelector();
+      openFunctionSelector(false);
     } else if (cmdId === kCmdRunFunctionWithSelection) {
-      runFunctionOnSelection = true;
-      openFunctionSelector();
+      openFunctionSelector(true);
     } else if (cmdId === kCmdCreateYourOwnFunctions) {
       openCustomFunctionsNote();
     } else if (cmdId === kCmdShowBuiltInFunctions) {
@@ -1048,8 +1055,6 @@
       console.log("unknown menu cmd id");
     }
   }
-
-  let runFunctionOnSelection = false;
 
   async function openCustomFunctionsNote() {
     let content = getMyFunctionsNote();
@@ -1442,7 +1447,10 @@
 
 {#if showingFunctionSelector}
   <Overlay onclose={closeFunctionSelector} blur={true}>
-    <FunctionSelector {userFunctions} runFunction={runFunctionWithActiveBlock}
+    <FunctionSelector
+      context={functionContext}
+      {userFunctions}
+      runFunction={runFunctionWithActiveBlock}
     ></FunctionSelector>
   </Overlay>
 {/if}

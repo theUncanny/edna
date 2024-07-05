@@ -9,9 +9,10 @@
   /** @type {{
    userFunctions: BoopFunction[],
    runFunction: (fn: BoopFunction, replace: boolean) => void,
+   context: string
   }}*/
 
-  let { userFunctions, runFunction } = $props();
+  let { userFunctions, runFunction, context } = $props();
 
   /** @typedef {{
     fdef: BoopFunction,
@@ -100,11 +101,18 @@
 <form
   onkeydown={onKeydown}
   tabindex="-1"
-  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-2"
+  class="selector absolute flex flex-col z-20 center-x-with-translate top-[2rem] max-h-[90vh] w-[32em] p-2"
 >
   <div>
-    <div class="text-center mb-2 font-semibold">
-      run function with current block content
+    <div class="flex">
+      <div class="text-center mb-2 font-semibold flex-grow">
+        run function with {context}
+      </div>
+      <a
+        href="https://edna.arslexis.io/help#running-code"
+        target="_blank"
+        class="underline ml-2">help</a
+      >
     </div>
     <input
       type="text"
