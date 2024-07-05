@@ -5,6 +5,7 @@ import { getLanguage, langSupportsRun } from "./editor/languages";
 import { insertAfterActiveBlock } from "./editor/block/format-code";
 import { isReadOnly } from "./editor/cmutils";
 import { ensureStringEndsWithNL, len } from "./util";
+import { EditorState } from "@codemirror/state";
 
 function getError(res) {
   // TODO: don't get why there are Error and Errors
@@ -54,7 +55,7 @@ async function evalWithConsoleCapture(js) {
     for (let arg of args) {
       let s = JSON.stringify(arg);
       if (all != "") {
-        all += " "
+        all += " ";
       }
       all += s;
     }
@@ -87,6 +88,17 @@ export async function runJS(js) {
   }
   console.log(logs);
   return resTxt;
+}
+
+/**
+ * @param {EditorState} state
+ * @returns {boolean}
+ */
+export function currentBlockSupportsRun(state) {
+  const block = getActiveNoteBlock(state);
+  const lang = getLanguage(block.language.name);
+  // console.log("runBlockContent: lang:", lang);
+  return langSupportsRun(lang);
 }
 
 /**

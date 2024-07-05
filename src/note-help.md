@@ -68,7 +68,7 @@ For native context menu do `Ctrl + right-click`. This is useful when spell check
 
 Press `Mod + E` to switch to a note from list of recently opened notes.
 
-Last 10 recently opened notes can be opened with `0` ... `9` shortcut.
+Last 9 recently opened notes can be opened with `0` ... `9` shortcut.
 
 To switch to previous note: press `Mod + E` and `Enter`.
 
@@ -252,8 +252,8 @@ Such passwords are easier to type and remember than typical "8a$7y!glo" password
 
 If current block is Go or JavaScript block, you can run it:
 
-- `Alt + Shift + R` keyboard shortcut
-- context menu: `Run / Run <javascript> block`
+- `Mod + E` keyboard shortcut (`Smart Run`)
+- context menu: `Run` / `Run <language> block` or [`Smart Run`](#smart-run)
 - command palette: `Block: Run <language> block`
 - `Run` button in status bar (bottom right)
 
@@ -484,6 +484,15 @@ then inspect the `m` object in console to see available functions.
 
 Share your functions with other via https://github.com/kjk/edna/discussions/categories/share-javascript-functions
 
+## Smart Run
+
+`Mod + E` is a shortcut for smart run, which has the following logic:
+
+- if there is selection, it does `Run functions with selection` command
+- if current block is runnable (JavaScript or Go) it'll run the block as code (command `Block: Run <language> block`)
+- otherwise it does `Run function with block content` command
+
+Use `Alt + Shift + R` to force `Run function with block content` command.
 ∞∞∞markdown
 
 # Backing up notes

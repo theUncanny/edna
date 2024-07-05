@@ -23,19 +23,18 @@ import {
   createScratchNote,
   openBlockSelector,
   openCommandPalette,
-  openFunctionSelector,
+  smartRun,
   openHistorySelector,
   openLanguageSelector,
   openNoteSelector,
+  openFunctionSelector,
 } from "../globals.js";
 import { formatBlockContent } from "./block/format-code.js";
-//import { EditorSelection, EditorState } from "@codemirror/state"
 import { indentLess, indentMore, redo } from "@codemirror/commands";
 
 import { deleteLine } from "./block/delete-line.js";
 import { keymap } from "@codemirror/view";
 import { platform } from "../util.js";
-import { runBlockContent } from "../run.js";
 
 export function keymapFromSpec(specs) {
   return keymap.of(
@@ -78,7 +77,13 @@ export function ednaKeymap(editor) {
     ["Alt-ArrowUp", moveLineUp],
     ["Alt-ArrowDown", moveLineDown],
     ["Mod-l", openLanguageSelector],
-    ["Mod-e", openFunctionSelector],
+    ["Mod-e", smartRun],
+    [
+      "Alt-Shift-r",
+      () => {
+        openFunctionSelector(false);
+      },
+    ],
     ["Mod-b", openBlockSelector],
     ["Mod-k", openNoteSelector],
     ["Alt-0", openNoteSelector],
@@ -89,7 +94,6 @@ export function ednaKeymap(editor) {
     ["Mod-Shift-o", openCommandPalette],
     ["Mod-h", openHistorySelector],
     ["Alt-Shift-f", formatBlockContent],
-    ["Alt-Shift-r", runBlockContent],
     ["Mod-Alt-ArrowDown", newCursorBelow],
     ["Mod-Alt-ArrowUp", newCursorAbove],
     ["Mod-Shift-k", deleteLine],

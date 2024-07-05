@@ -23,12 +23,8 @@ function getKeyHelp(platform = platformName) {
     [`Alt + Enter`, "Add new block before the current block"],
     [`Mod + Shift + Enter`, "Add new block at the end of the buffer"],
     [`Alt + Shift + Enter`, "Add new block at the start of the buffer"],
-    [
-      `Mod + Alt + Enter`,
-      "Split the current block at cursor position",
-    ],
+    [`Mod + Alt + Enter`, "Split the current block at cursor position"],
     [`Mod + L`, "Change block language"],
-    [`Mod + E`, "Run function with block content"],
     [`Mod + Down`, "Goto next block"],
     [`Mod + Up`, "Goto previous block"],
     [`Mod + A`, "Select all text in a note block"],
@@ -36,15 +32,16 @@ function getKeyHelp(platform = platformName) {
     [`Mod + Alt + Up/Down`, "Add additional cursor above/below"],
     [`Alt + Shift + F`, "Format block content"],
     [``, "Supports Go, JSON, JavaScript, HTML, CSS and Markdown"],
-    [`Alt + Shift + R`, "Execute block code"],
+    [`Mod + E`, "Smart Code Run"],
+    [`Alt + Shift + R`, "Run function with block content"],
     [``, "Supports Go"],
     [`Mod + F`, "Search / replace within a note"],
   ];
   for (let el of res) {
-    el[0] = el[0].replaceAll("Mod", modChar)
-    el[1] = el[1].replaceAll("Mod", modChar)
-    el[0] = el[0].replaceAll("Alt", altChar)
-    el[1] = el[1].replaceAll("Alt", altChar)
+    el[0] = el[0].replaceAll("Mod", modChar);
+    el[1] = el[1].replaceAll("Mod", modChar);
+    el[0] = el[0].replaceAll("Alt", altChar);
+    el[1] = el[1].replaceAll("Alt", altChar);
   }
   return res;
 }

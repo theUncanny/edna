@@ -143,11 +143,11 @@
       <div>
         <span class="kbd">Enter</span>
       </div>
-      <div>Run code, output in new block</div>
+      <div>Run function, output in new block</div>
       <div>
         <span class="kbd">Ctrl + Enter</span>
       </div>
-      <div>Run code, output replaces block content</div>
+      <div>Run function, output replaces block content</div>
     </div>
   {/if}
 </form>

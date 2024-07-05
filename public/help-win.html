@@ -28,7 +28,6 @@ Ctrl + Shift + Enter   Add new block at the end of the buffer
 Alt + Shift + Enter    Add new block at the start of the buffer
 Ctrl + Alt + Enter     Split the current block at cursor position
 Ctrl + L               Change block language
-Ctrl + E               Run function with block content
 Ctrl + Down            Goto next block
 Ctrl + Up              Goto previous block
 Ctrl + A               Select all text in a note block
@@ -36,7 +35,8 @@ Ctrl + A               Select all text in a note block
 Ctrl + Alt + Up/Down   Add additional cursor above/below
 Alt + Shift + F        Format block content
                        Supports Go, JSON, JavaScript, HTML, CSS and Markdown
-Alt + Shift + R        Execute block code
+Ctrl + E               Smart Code Run
+Alt + Shift + R        Run function with block content
                        Supports Go
 Ctrl + F               Search / replace within a note
 </code></pre>
@@ -77,7 +77,7 @@ Ctrl + F               Search / replace within a note
 <p>For native context menu do <code>Ctrl + right-click</code>. This is useful when spell checking to correct mis-spellings.</p>
 <h2 id="switch-to-recently-opened-note" tabindex="-1"><a class="header-anchor" href="#switch-to-recently-opened-note">Switch to recently opened note</a></h2>
 <p>Press <code>Ctrl + E</code> to switch to a note from list of recently opened notes.</p>
-<p>Last 10 recently opened notes can be opened with <code>0</code> ... <code>9</code> shortcut.</p>
+<p>Last 9 recently opened notes can be opened with <code>0</code> ... <code>9</code> shortcut.</p>
 <p>To switch to previous note: press <code>Ctrl + E</code> and <code>Enter</code>.</p>
 <h2 id="quick-access-shortcut" tabindex="-1"><a class="header-anchor" href="#quick-access-shortcut">Quick access shortcut</a></h2>
 <p>You can assign <code>Alt + 1</code> to <code>Alt + 9</code> for quickly accessing notes:</p>
@@ -202,8 +202,8 @@ Ctrl + F               Search / replace within a note
 <h2 id="run-code-blocks" tabindex="-1"><a class="header-anchor" href="#run-code-blocks">Run code blocks</a></h2>
 <p>If current block is Go or JavaScript block, you can run it:</p>
 <ul>
-<li><code>Alt + Shift + R</code> keyboard shortcut</li>
-<li>context menu: <code>Run / Run &lt;javascript&gt; block</code></li>
+<li><code>Ctrl + E</code> keyboard shortcut (<code>Smart Run</code>)</li>
+<li>context menu: <code>Run</code> / <code>Run &lt;language&gt; block</code> or <a href="#smart-run"><code>Smart Run</code></a></li>
 <li>command palette: <code>Block: Run &lt;language&gt; block</code></li>
 <li><code>Run</code> button in status bar (bottom right)</li>
 </ul>
@@ -362,6 +362,14 @@ async function main(input) {
 <p>then inspect the <code>m</code> object in console to see available functions.</p>
 <h2 id="share-your-javascript-functions-with-others" tabindex="-1"><a class="header-anchor" href="#share-your-javascript-functions-with-others">Share your JavaScript functions with others</a></h2>
 <p>Share your functions with other via <a href="https://github.com/kjk/edna/discussions/categories/share-javascript-functions" target="_blank">https://github.com/kjk/edna/discussions/categories/share-javascript-functions</a></p>
+<h2 id="smart-run" tabindex="-1"><a class="header-anchor" href="#smart-run">Smart Run</a></h2>
+<p><code>Ctrl + E</code> is a shortcut for smart run, which has the following logic:</p>
+<ul>
+<li>if there is selection, it does <code>Run functions with selection</code> command</li>
+<li>if current block is runnable (JavaScript or Go) it'll run the block as code (command <code>Block: Run &lt;language&gt; block</code>)</li>
+<li>otherwise it does <code>Run function with block content</code> command</li>
+</ul>
+<p>Use <code>Alt + Shift + R</code> to force <code>Run function with block content</code> command.</p>
 <h1 id="backing-up-notes" tabindex="-1"><a class="header-anchor" href="#backing-up-notes">Backing up notes</a></h1>
 <p>For notes stored in file system, you can enable notes backup via Settings.</p>
 <p>Once a day notes will be packed into a .zip file and saved in <code>backup</code> folder as <code>edna.backup.&lt;YYYY-MM-DD&gt;.zip</code> file.</p>

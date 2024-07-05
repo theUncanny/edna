@@ -51,6 +51,7 @@ const validOps = [
   "noteRename",
   "noteFormatBlock",
   "noteRunBlock",
+  "noteRunFunction",
 ];
 function validateNoteOp(op) {
   throwIf(!validOps.includes(op), `invalid op: ${op}`);

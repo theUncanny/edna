@@ -107,7 +107,7 @@
   } from "../editor/block/commands";
   import { getActiveNoteBlock } from "../editor/block/block";
   import { EdnaEditor, getContent } from "../editor/editor";
-  import { runBlockContent } from "../run";
+  import { currentBlockSupportsRun, runBlockContent } from "../run";
   import { EditorSelection } from "@codemirror/state";
   import { parseUserFunctions, runBoopFunction } from "../functions";
   import { getMyFunctionsNote } from "../system-notes";
@@ -182,6 +182,7 @@
     openContextMenu: openContextMenu,
     openBlockSelector: openBlockSelector,
     openFunctionSelector: openFunctionSelector,
+    smartRun: smartRun,
     getPassword: getPassword,
   };
   setGlobalFuncs(gf);
@@ -534,6 +535,7 @@
   }
 
   async function openFunctionSelector(onSelection = false) {
+    console.log("openFunctionSelector");
     if (onSelection) {
       runFunctionOnSelection = true;
       functionContext = "selection";
@@ -790,6 +792,7 @@
   export const kCmdShowWelcomeDevNote = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
   export const kCmdRunFunctionWithSelection = nmid();
+  export const kCmdSmartRun = nmid();
   export const kCmdCreateYourOwnFunctions = nmid();
   export const kCmdShowBuiltInFunctions = nmid();
   export const kCmdRunHelp = nmid();
@@ -815,8 +818,12 @@
     ];
 
     const menuRun = [
-      ["Run " + language + " block\tAlt + Shift + R", kCmdRunBlock],
-      ["Run function with block content", kCmdRunFunctionWithBlockContent],
+      ["Smart Run\tMod + E", kCmdSmartRun],
+      ["Run " + language + " block", kCmdRunBlock],
+      [
+        "Run function with block content\tAlt + Shift + R",
+        kCmdRunFunctionWithBlockContent,
+      ],
       ["Run function with selection", kCmdRunFunctionWithSelection],
       ["Show built-in functions", kCmdShowBuiltInFunctions],
       ["Create your own functions", kCmdCreateYourOwnFunctions],
@@ -892,13 +899,17 @@
     // console.log("dh:", dh);
     let hasFS = supportsFileSystem();
     let view = getEditorView();
-    let ro = isReadOnly(view);
+    let readOnly = isReadOnly(view);
     if (mid === kCmdFormatBlock) {
-      if (ro || !langSupportsFormat(lang)) {
+      if (readOnly || !langSupportsFormat(lang)) {
         return kMenuStatusRemoved;
       }
     } else if (mid === kCmdRunBlock) {
-      if (ro || !langSupportsRun(lang)) {
+      if (readOnly || !langSupportsRun(lang)) {
+        return kMenuStatusDisabled;
+      }
+    } else if (mid === kCmdSmartRun) {
+      if (readOnly) {
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdMoveNotesToDirectory) {
@@ -933,13 +944,11 @@
       mid === kCmdRunFunctionWithBlockContent ||
       mid === kCmdRunFunctionWithSelection
     ) {
-      if (ro) {
+      if (readOnly) {
         return kMenuStatusDisabled;
       }
-      if (!hasSelection()) {
-        if (mid === kCmdRunFunctionWithSelection) {
-          return kMenuStatusRemoved;
-        }
+      if (mid === kCmdRunFunctionWithSelection && !hasSelection()) {
+        return kMenuStatusDisabled;
       }
     }
     return kMenuStatusNormal;
@@ -1005,8 +1014,6 @@
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
       view.focus();
-    } else if (cmdId === kCmdRunBlock) {
-      runCurrentBlock();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
     } else if (cmdId === kCmdShowHelp) {
@@ -1043,6 +1050,10 @@
       showHTMLHelp("#encryption");
     } else if (cmdId === kCmdOpenRecent) {
       openHistorySelector();
+    } else if (cmdId === kCmdRunBlock) {
+      runCurrentBlock();
+    } else if (cmdId === kCmdSmartRun) {
+      smartRun();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
       openFunctionSelector(false);
     } else if (cmdId === kCmdRunFunctionWithSelection) {
@@ -1227,6 +1238,30 @@
     runBlockContent(view);
     view.focus();
     logNoteOp("noteRunBlock");
+  }
+
+  // if have a selection, run function with selection
+  // if runnable block, run the block
+  // otherwise run a function with current block
+  function smartRun() {
+    let view = getEditorView();
+    if (isReadOnly(view)) {
+      return;
+    }
+
+    let { selectedText } = getCurrentSelection(view);
+    let hasSelection = selectedText !== "";
+    let supportsRun = currentBlockSupportsRun(view.state);
+    console.log(
+      `smartRun: hasSelection=${hasSelection} supportsRun=${supportsRun}`,
+    );
+    if (hasSelection) {
+      openFunctionSelector(true);
+    } else if (supportsRun) {
+      runCurrentBlock();
+    } else {
+      openFunctionSelector(false);
+    }
   }
 
   function toggleSpellCheck() {
@@ -1423,7 +1458,7 @@
     {languageAuto}
     {isSpellChecking}
     {formatCurrentBlock}
-    {runCurrentBlock}
+    {smartRun}
     {toggleSpellCheck}
   />
 </div>

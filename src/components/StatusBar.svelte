@@ -9,6 +9,7 @@
   import IconSettings from "./IconSettings.svelte";
   import IconGitHub from "./IconGitHub.svelte";
   import { openLanguageSelector, openSettings } from "../globals.js";
+  import { fixUpShortcuts } from "../key-helper.js";
 
   /** @type { {
     line: number,
@@ -19,7 +20,7 @@
     languageAuto: boolean,
     isSpellChecking: boolean,
     toggleSpellCheck: (ev) => void,
-    runCurrentBlock: (ev) => void,
+    smartRun: (ev) => void,
     formatCurrentBlock: (ev) => void,
 } } */
   let {
@@ -31,7 +32,7 @@
     languageAuto = false,
     isSpellChecking = false,
     toggleSpellCheck,
-    runCurrentBlock,
+    smartRun,
     formatCurrentBlock,
   } = $props();
 
@@ -47,13 +48,25 @@
   let lang = $derived(getLanguage(language));
   let supportsFormat = $derived(langSupportsFormat(lang));
   let supportsRun = $derived(langSupportsRun(lang));
-  let cmdKey = $derived(isMac ? "⌘" : "Ctrl"); // TODO: no need to be derived;
   // TODO: depend on platform
-  let formatBlockTitle = $derived(`Format Block (Alt + Shift + F)`);
-  let runBlockTitle = $derived(`Run Block Code (Alt + Shift + R)`);
+  let formatBlockTitle = $derived(
+    fixUpShortcuts(`Format Block (Alt + Shift + F)`),
+  );
+  let runBlockTitle = $derived.by(() => {
+    let s = "Smart Run";
+    if (selectionSize > 0) {
+      s = "Run Function With Selection";
+    } else if (supportsRun) {
+      s = "Run Code Block";
+    } else {
+      s = "Run Function With Block Content";
+    }
+    s += fixUpShortcuts(` (Mod + E)`);
+    return s;
+  });
   let formatSize = $derived(fmtSize(docSize));
   let changeLanguageTitle = $derived(
-    `Change language for current block (${cmdKey} + L)`,
+    fixUpShortcuts(`Change language for current block (Mod + L)`),
   );
 </script>
 
@@ -100,11 +113,9 @@
       <span class="auto">(auto)</span>
     {/if}
   </button>
-  {#if supportsRun}
-    <button onclick={runCurrentBlock} class="clickable" title={runBlockTitle}>
-      Run
-    </button>
-  {/if}
+  <button onclick={smartRun} class="clickable" title={runBlockTitle}>
+    Run
+  </button>
 
   {#if supportsFormat}
     <button

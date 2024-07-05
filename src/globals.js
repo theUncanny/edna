@@ -8,7 +8,8 @@
   createScratchNote: () => void,
   openContextMenu: (ev: MouseEvent, pos?: {x: number, y: number}) => void,
   openBlockSelector: () => void,
-  openFunctionSelector: () => void,
+  openFunctionSelector: (boolean) => void,
+  smartRun: () => void,
   getPassword: (msg: string) => Promise<string>,
 }} GlobalFuncs
 */
@@ -68,8 +69,12 @@ export function openBlockSelector() {
   globalFunctions.openBlockSelector();
 }
 
-export function openFunctionSelector() {
-  globalFunctions.openFunctionSelector();
+export function openFunctionSelector(onSelection = false) {
+  globalFunctions.openFunctionSelector(onSelection);
+}
+
+export function smartRun() {
+  globalFunctions.smartRun();
 }
 
 /**
