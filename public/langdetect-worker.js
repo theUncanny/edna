@@ -26,6 +26,8 @@ const GUESSLANG_LANGUAGES = [
   "kt",
   "groovy",
   "ps1",
+  "dart",
+  "scala",
 ];
 
 const guessLang = new self.GuessLang();

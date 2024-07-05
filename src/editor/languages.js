@@ -18,7 +18,7 @@ import { groovy } from "@codemirror/legacy-modes/mode/groovy";
 import { htmlLanguage } from "@codemirror/lang-html";
 import { javaLanguage } from "@codemirror/lang-java";
 import { jsonLanguage } from "@codemirror/lang-json";
-import { kotlin } from "@codemirror/legacy-modes/mode/clike";
+import { dart, kotlin, scala } from "@codemirror/legacy-modes/mode/clike";
 import { lezerLanguage } from "@codemirror/lang-lezer";
 import { markdownLanguage } from "@codemirror/lang-markdown";
 import { phpLanguage } from "@codemirror/lang-php";
@@ -33,6 +33,16 @@ import { toml } from "@codemirror/legacy-modes/mode/toml";
 import { vueLanguage } from "@codemirror/lang-vue";
 import { xmlLanguage } from "@codemirror/lang-xml";
 import { yaml } from "@codemirror/legacy-modes/mode/yaml";
+
+/*
+TODO: more langs from @codemirror/legacy-modes/mode/clike
+export declare const shader: StreamParser<unknown>
+export declare const nesC: StreamParser<unknown>
+export declare const objectiveC: StreamParser<unknown>
+export declare const objectiveCpp: StreamParser<unknown>
+export declare const squirrel: StreamParser<unknown>
+export declare const ceylon: StreamParser<unknown>
+*/
 
 /**
  * @typedef {Object} Language
@@ -208,43 +218,16 @@ export const LANGUAGES = [
     name: "PowerShell",
     guesslang: "ps1",
   },
-];
-
-// token, name, guesslang
-const langs = [
-  "text", "Plain Text", null,
-  "math", "Math", null,
-  "json", "JSON", "json",
-  "python", "Python", "py",
-  "html", "HTML", "html",
-  "sql", "SQL", "sql",
-  "markdown", "Markdown", "md",
-  "java", "Java", "java",
-  "lezer", "Lezer", null,
-  "php", "PHP", "php",
-  "css", "CSS", "css",
-  "xml", "XML", "xml",
-  "vue", "Vue", null,
-  "cpp", "C++", "cpp",
-  "rust", "Rust", "rs",
-  "csharp", "C#", "cs",
-  "svelte", "Svelte", null,
-  "ruby", "Ruby", "rb",
-  "shell", "Shell", "sh",
-  "yaml", "YAML", "yaml",
-  "toml", "TOML", "toml",
-  "golang", "Go", "go",
-  "clojure", "Clojure", "clj",
-  "erlang", "Erlang", "erl",
-  "javascript", "JavaScript", "js",
-  "jsx", "JSX", null,
-  "typescript", "TypeScript", "ts",
-  "tsx", "TSX", null,
-  "swift", "Swift", "swift",
-  "kotlin", "Kotlin", "kt",
-  "groovy", "Groovy", "groovy",
-  "diff", "Diff", null,
-  "powershell", "PowerShell", "ps1"
+  {
+    token: "dart",
+    name: "Dart",
+    guesslang: "dart",
+  },
+  {
+    token: "scala",
+    name: "Scala",
+    guesslang: "scala",
+  },
 ];
 
 const tokenToLanguage = Object.fromEntries(LANGUAGES.map((l) => [l.token, l]));
@@ -367,6 +350,12 @@ export function langGetParser(lang) {
   }
   if (token === "kotlin") {
     return StreamLanguage.define(kotlin).parser;
+  }
+  if (token === "dart") {
+    return StreamLanguage.define(dart).parser;
+  }
+  if (token === "scala") {
+    return StreamLanguage.define(scala).parser;
   }
   if (token === "groovy") {
     return StreamLanguage.define(groovy).parser;

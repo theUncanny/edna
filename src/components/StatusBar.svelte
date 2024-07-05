@@ -114,7 +114,7 @@
     {/if}
   </button>
   <button onclick={smartRun} class="clickable" title={runBlockTitle}>
-    Run
+    Smart Run
   </button>
 
   {#if supportsFormat}
