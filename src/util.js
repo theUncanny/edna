@@ -363,6 +363,20 @@ export function splitFilterLC(s) {
   return parts;
 }
 
+export  function findMatchingItems(items, filter, itemKey) {
+  let filterParts = splitFilterLC(filter);
+  let res = Array(len(items));
+  let i = 0;
+  for (let item of items) {
+    if (!stringMatchesParts(item[itemKey], filterParts)) {
+      continue;
+    }
+    res[i++] = item;
+  }
+  res.length = i;
+  return res;
+}
+
 /**
  * @param {string} s
  * @returns {string}

@@ -9,7 +9,7 @@
 
 <script>
   import { focus } from "../actions";
-  import { len } from "../util";
+  import { getKeyEventNumber, len } from "../util";
   import ListBox from "./ListBox.svelte";
 
   /** @type {{
@@ -57,6 +57,18 @@
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
+    if (filter === "") {
+      // '0' ... '9' picks an item when typedown filter is empty
+      let idx = getKeyEventNumber(ev);
+      let lastIdx = len(items) - 1;
+      if (idx >= 0 && idx <= lastIdx) {
+        ev.preventDefault();
+        let item = items[idx];
+        selectBlock(item);
+        return;
+      }
+    }
+
     let allowLeftRight = filter === "";
     listbox.onkeydown(ev, allowLeftRight);
   }
@@ -88,8 +100,14 @@
     onclick={(item) => selectBlock(item.item)}
     {initialSelection}
   >
-    {#snippet renderItem(item)}
-      <div>{item.item.text}</div>
+    {#snippet renderItem(item, idx)}
+      <div class="truncate">
+        {item.item.text}
+      </div>
+      <div class="grow"></div>
+      {#if idx < 10}
+        <div class="ml-4 mr-2 font-bold">{idx}</div>
+      {/if}
     {/snippet}
   </ListBox>
 </form>

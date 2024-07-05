@@ -8,6 +8,7 @@
     getNotesCount,
   } from "../notes";
   import {
+    findMatchingItems,
     getAltChar,
     isAltNumEvent,
     len,
@@ -99,23 +100,9 @@
     // must match all parts
     if (sanitizedFilter.startsWith(">")) {
       switchToCommandPalette();
-      return;
+      return null;
     }
-    let filterParts = splitFilterLC(sanitizedFilter);
-    let res = Array(len(itemsInitial));
-    let nRes = 0;
-    for (let fdef of itemsInitial) {
-      if (!stringMatchesParts(fdef.nameLC, filterParts)) {
-        continue;
-      }
-      res[nRes++] = fdef;
-    }
-    res.length = nRes;
-
-    return itemsInitial.filter((item) => {
-      let s = item.nameLC;
-      return stringMatchesParts(s, filterParts);
-    });
+    return findMatchingItems(itemsInitial, sanitizedFilter, "nameLC");
   });
 
   let selectedItem = $state(null);
