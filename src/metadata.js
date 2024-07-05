@@ -15,19 +15,17 @@ export const kMetadataName = "__metadata.edna.json";
     isStarred?: boolean,
 }} FunctionMetadata */
 
-/** @typedef {NoteMetadata[]} MetadataOld */
-
 /** @typedef {{
   ver: number,
-  files: NoteMetadata[],
+  notes: NoteMetadata[],
   functions: FunctionMetadata[],
 }} Metadata */
 
-/** @type {NoteMetadata[]} */
-let notesMetadata = [];
+/** @type {Metadata} */
+let metadata = null;
 
-export function getNotesMetadata() {
-  return notesMetadata;
+export function getMetadata() {
+  return metadata;
 }
 
 /**
@@ -37,8 +35,9 @@ export function getNotesMetadata() {
  */
 export function getMetadataForNote(noteName, createIfNotExists = false) {
   // console.log("getMetadataForNote:", noteName);
-  let meta = notesMetadata;
-  for (let m of meta) {
+  let meta = getMetadata();
+  let notes = meta.notes || [];
+  for (let m of notes) {
     if (m.name === noteName) {
       return m;
     }
@@ -49,7 +48,8 @@ export function getMetadataForNote(noteName, createIfNotExists = false) {
   let m = {
     name: noteName,
   };
-  notesMetadata.push(m);
+  notes.push(m);
+  metadata.notes = notes;
   return m;
 }
 
@@ -59,7 +59,7 @@ export function getMetadataForNote(noteName, createIfNotExists = false) {
  * @param {string} noteName
  * @param {UpdateNoteMetadataFn} updateMetaFn
  * @param {boolean} save
- * @returns {Promise<NoteMetadata[]>}
+ * @returns {Promise<Metadata>}
  */
 export async function updateMetadataForNote(
   noteName,
@@ -68,9 +68,9 @@ export async function updateMetadataForNote(
 ) {
   let meta = getMetadataForNote(noteName, true);
   updateMetaFn(meta);
-  let res = [];
+  let res = metadata;
   if (save) {
-    res = await saveNotesMetadata(notesMetadata);
+    res = await saveNotesMetadata(metadata);
   }
   return res;
 }
@@ -80,16 +80,21 @@ export async function updateMetadataForNote(
  */
 export async function removeNoteFromMetadata(noteName) {
   console.log("deleteMetadataForNote:", noteName);
-  let meta = notesMetadata;
-  let res = [];
-  for (let m of meta) {
+  let meta = getMetadata();
+  let notes = meta.notes;
+  let newNotes = [];
+  for (let m of notes) {
     if (m.name !== noteName) {
-      res.push(m);
+      newNotes.push(m);
     }
   }
-  await saveNotesMetadata(res);
+  meta.notes = newNotes;
+  await saveNotesMetadata(meta);
 }
 
+/**
+ * @returns {Promise<Metadata>}
+ */
 export async function loadNotesMetadata() {
   console.log("loadNotesMetadata: started");
   let dh = getStorageFS();
@@ -106,61 +111,69 @@ export async function loadNotesMetadata() {
     }
   }
   s = s || "[]";
-  notesMetadata = JSON.parse(s);
-  console.log("loadNotesMetadata: finished", notesMetadata);
-  return notesMetadata;
+  metadata = JSON.parse(s);
+  console.log("loadNotesMetadata: finished", metadata);
+  return metadata;
 }
 
 /**
- * @param {NoteMetadata[]} m
+ * @param {Metadata} m
  */
 async function saveNotesMetadata(m) {
   let s = JSON.stringify(m, null, 2);
   let dh = getStorageFS();
-  if (!dh) {
-    localStorage.setItem(kMetadataName, s);
+  if (dh) {
+    try {
+      await fsWriteTextFile(dh, kMetadataName, s);
+    } catch (e) {
+      console.log("fsWriteTextFile failed with:", e);
+    }
   } else {
-    await fsWriteTextFile(dh, kMetadataName, s);
+    localStorage.setItem(kMetadataName, s);
   }
-  notesMetadata = m;
+  metadata = m;
   return m;
 }
 
 /**
  * @param {string} oldName
  * @param {string} newName
- * @returns {Promise<NoteMetadata[]>}
+ * @returns {Promise<Metadata>}
  */
-export async function renameInMetadata(oldName, newName) {
-  let m = notesMetadata;
-  for (let o of notesMetadata) {
+export async function renameNoteInMetadata(oldName, newName) {
+  let meta = getMetadata();
+  let notes = meta.notes || [];
+  for (let o of notes) {
     if (o.name === oldName) {
       o.name = newName;
       break;
     }
   }
-  return await saveNotesMetadata(m);
+  let res = await saveNotesMetadata(meta);
+  return res;
 }
 
 /**
  * @param {string} name
  * @param {string} altShortcut - "0" ... "9"
- * @returns {Promise<NoteMetadata[]>}
+ * @returns {Promise<Metadata>}
  */
 export async function reassignNoteShortcut(name, altShortcut) {
   console.log("reassignNoteShortcut:", name, altShortcut);
-  let m = getNotesMetadata();
-  for (let o of m) {
-    if (o.altShortcut === altShortcut) {
-      if (o.name === name) {
-        // same note: just remove shortcut
-        delete o.altShortcut;
-        return await saveNotesMetadata(m);
-      } else {
-        // a different note: remove shortcut and then assign to the new note
-        delete o.altShortcut;
-        break;
-      }
+  let meta = getMetadata();
+  let notes = meta.notes || [];
+  for (let o of notes) {
+    if (o.altShortcut !== altShortcut) {
+      continue;
+    }
+    if (o.name === name) {
+      // same note: just remove shortcut
+      delete o.altShortcut;
+      let res = await saveNotesMetadata(meta);
+      return res;
+    } else {
+      // a different note: remove shortcut and then assign to the new note
+      delete o.altShortcut;
     }
   }
 
@@ -175,16 +188,17 @@ export async function reassignNoteShortcut(name, altShortcut) {
 }
 
 // TODO: temporary
-/**
- * @param {any} o
- * @return {Metadata}
- */
-export function updateMetadata(o) {
-  /** @type {Metadata} */
-  let res = {
+export async function upgradeMetadata() {
+  let meta = await loadNotesMetadata();
+  if (!Array.isArray(meta)) {
+    console.log("upgradeMetadata: already upgraded:", meta);
+    return;
+  }
+  let newMeta = {
     ver: 1,
-    files: [],
+    notes: meta,
     functions: [],
   };
-  if (Array.isArray(o)) return res;
+  console.log("upgradeMetadata: new meta:", newMeta);
+  await saveNotesMetadata(newMeta);
 }

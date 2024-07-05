@@ -48,7 +48,7 @@ import {
   loadNotesMetadata,
   reassignNoteShortcut,
   removeNoteFromMetadata,
-  renameInMetadata,
+  renameNoteInMetadata,
 } from "./metadata";
 
 // is set if we store notes on disk, null if in localStorage
@@ -826,7 +826,7 @@ export async function renameNote(oldName, newName, content) {
   await createNoteWithName(newName, content);
   // update metadata and history before deleteNote() because it'll
   // remove from history and metadata
-  await renameInMetadata(oldName, newName);
+  await renameNoteInMetadata(oldName, newName);
   renameInHistory(oldName, newName);
   await deleteNote(oldName);
 }

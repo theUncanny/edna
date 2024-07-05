@@ -10,7 +10,7 @@ import {
   preLoadAllNotes,
   setStorageFS,
 } from "./notes";
-import { loadNotesMetadata } from "./metadata";
+import { loadNotesMetadata, upgradeMetadata } from "./metadata";
 import { getSettings, loadInitialSettings, setSetting } from "./settings";
 import { isDev } from "./util";
 import { mount, unmount } from "svelte";
@@ -45,10 +45,15 @@ export async function boot() {
       appSvelte = mount(AskFSPermissions, args);
       return;
     }
-    await ensureValidNoteNamesFS(dh);
   } else {
     console.log("storing data in localStorage");
   }
+
+  if (dh) {
+    // TODO: can probably remove
+    await ensureValidNoteNamesFS(dh);
+  }
+  await upgradeMetadata();
 
   let noteNames = await loadNoteNames();
   let nCreated = await createDefaultNotes(noteNames);

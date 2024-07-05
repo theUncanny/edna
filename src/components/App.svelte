@@ -55,7 +55,7 @@
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
   } from "../notes";
-  import { getNotesMetadata, getMetadataForNote } from "../metadata";
+  import { getMetadata, getMetadataForNote } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
@@ -274,7 +274,7 @@
       let altN = isAltNumEvent(ev);
       // console.log("onKeyDown: e:", e, "altN:", altN)
       if (altN) {
-        let meta = getNotesMetadata();
+        let meta = getMetadata();
         for (let o of meta) {
           if (o.altShortcut == altN && o.name !== noteName) {
             // console.log("onKeyDown: opening note: ", o.name, " altN:", altN, " e:", e)
