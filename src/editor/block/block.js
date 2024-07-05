@@ -8,15 +8,13 @@ import {
 import { Document, Note, NoteDelimiter } from "../lang-heynote/parser.terms.js";
 import {
   EditorState,
-  Facet,
   RangeSet,
   RangeSetBuilder,
-  StateEffect,
   StateField,
 } from "@codemirror/state";
 import { LANGUAGE_CHANGE, heynoteEvent } from "../annotation.js";
 import { RectangleMarker, layer } from "@codemirror/view";
-import { ensureSyntaxTree, syntaxTree } from "@codemirror/language";
+import { ensureSyntaxTree } from "@codemirror/language";
 
 import { IterMode } from "@lezer/common";
 import { SelectionChangeEvent } from "../event.js";
@@ -92,10 +90,13 @@ function findBlockWithPos(blocks, pos) {
   }
   return undefined;
 }
-
+/**
+ * @param {EditorState} state
+ */
 export function getActiveNoteBlock(state) {
   // find which block the cursor is in
   const range = state.selection.asSingle().ranges[0];
+  // @ts-ignore
   let blocks = state.facet(blockState);
   return findBlockWithPos(blocks, range.head);
 }
@@ -164,6 +165,7 @@ const noteBlockWidget = () => {
     update(widgets, transaction) {
       // if widgets are empty it likely means we didn't get a parsed syntax tree, and then we want to update
       // the decorations on all updates (and not just document changes)
+      // @ts-ignore
       if (transaction.docChanged || widgets.isEmpty) {
         return decorate(transaction.state);
       }
@@ -172,6 +174,7 @@ const noteBlockWidget = () => {
       return widgets;
     },
     provide(field) {
+      // @ts-ignore
       return EditorView.decorations.from(field);
     },
   });
@@ -182,6 +185,7 @@ const noteBlockWidget = () => {
 function atomicRanges(view) {
   let builder = new RangeSetBuilder();
   view.state.facet(blockState).forEach((block) => {
+    // @ts-ignore
     builder.add(block.delimiter.from, block.delimiter.to, {});
   });
   return builder.finish();
@@ -200,6 +204,7 @@ const atomicNoteBlock = ViewPlugin.fromClass(
   },
   {
     provide: (plugin) =>
+      // @ts-ignore
       EditorView.atomicRanges.of((view) => {
         return view.plugin(plugin)?.atomicRanges || [];
       }),
@@ -216,6 +221,7 @@ const blockLayer = layer({
     function rangesOverlaps(range1, range2) {
       return range1.from <= range2.to && range2.from <= range1.to;
     }
+    // @ts-ignore
     const blocks = view.state.facet(blockState);
     blocks.forEach((block) => {
       // make sure the block is visible
@@ -244,6 +250,7 @@ const blockLayer = layer({
       if (idx === blocks.length - 1) {
         // Calculate how much extra height we need to add to the last block
         let extraHeight =
+          // @ts-ignore
           view.viewState.editorHeight -
           (view.defaultLineHeight + // when scrolling furthest down, one line is still shown at the top
             view.documentPadding.top +
@@ -276,6 +283,7 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
   //console.log("change filter!", tr)
   const protect = [];
   if (
+    // @ts-ignore
     !tr.annotations.some((a) => a.type === heynoteEvent) &&
     firstBlockDelimiterSize
   ) {
@@ -283,10 +291,12 @@ const preventFirstBlockFromBeingDeleted = EditorState.changeFilter.of((tr) => {
   }
   // if the transaction is a search and replace, we want to protect all block delimiters
   if (
+    // @ts-ignore
     tr.annotations.some(
       (a) => a.value === "input.replace" || a.value === "input.replace.all",
     )
   ) {
+    // @ts-ignore
     const blocks = tr.startState.facet(blockState);
     blocks.forEach((block) => {
       protect.push(block.delimiter.from, block.delimiter.to);
@@ -305,6 +315,7 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of(
   (tr) => {
     if (
       !firstBlockDelimiterSize ||
+      // @ts-ignore
       tr.annotations.some((a) => a.type === heynoteEvent)
     ) {
       return tr;
@@ -312,10 +323,12 @@ const preventSelectionBeforeFirstBlock = EditorState.transactionFilter.of(
     tr?.selection?.ranges.forEach((range) => {
       // change the selection to after the first block if the transaction sets the selection before the first block
       if (range && range.from < firstBlockDelimiterSize) {
+        // @ts-ignore
         range.from = firstBlockDelimiterSize;
         //console.log("changing the from selection to", markerSize)
       }
       if (range && range.to < firstBlockDelimiterSize) {
+        // @ts-ignore
         range.to = firstBlockDelimiterSize;
         //console.log("changing the from selection to", markerSize)
       }
@@ -348,7 +361,7 @@ export const blockLineNumbers = lineNumbers({
     if (state.doc.lines >= lineNo) {
       const lineInfo = getBlockLineFromPos(state, state.doc.line(lineNo).from);
       if (lineInfo !== null) {
-        return lineInfo.line;
+        return `${lineInfo.line}`;
       }
     }
     return "";
