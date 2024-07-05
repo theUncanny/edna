@@ -6,9 +6,10 @@
     getNotesCount,
   } from "../notes";
   import {
-    getMetadataForNote,
+    getNoteMeta,
     reassignNoteShortcut,
-    updateMetadataForNote,
+    toggleNoteStarred,
+    updateNoteMeta,
   } from "../metadata";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
@@ -34,6 +35,49 @@
 */
 
   /**
+   * -1 if a < b
+   * 0 if a = b
+   * 1 if a > b
+   * @param {Item} a
+   * @param {Item} b
+   */
+  function sortItem(a, b) {
+    // started before not starred
+    if (a.isStarred && !b.isStarred) {
+      return -1;
+    }
+    if (!a.isStarred && b.isStarred) {
+      return 1;
+    }
+    if (a.isStarred && b.isStarred) {
+      return a.name.localeCompare(b.name);
+    }
+    // those with shortcut are before (<) those without
+    if (a.altShortcut && !b.altShortcut) {
+      return -1;
+    }
+    // those without shortcut are after (>) those with
+    if (!a.altShortcut && b.altShortcut) {
+      return 1;
+    }
+    // if both have shortcut, sort by shortcut
+    if (a.altShortcut && b.altShortcut) {
+      return a.altShortcut - b.altShortcut;
+    }
+    let isSysA = isSystemNoteName(a.name);
+    let isSysB = isSystemNoteName(b.name);
+    // system are last
+    if (isSysA && !isSysB) {
+      return 1;
+    }
+    if (!isSysA && isSysB) {
+      return -1;
+    }
+    // if both have no shortcut, sort by name
+    return a.name.localeCompare(b.name);
+  }
+
+  /**
    * @returns {Item[]}
    */
   function buildItems() {
@@ -51,53 +95,18 @@
         isStarred: false,
         ref: null,
       };
-      let m = getMetadataForNote(item.name, false);
-      if (m) {
-        item.altShortcut = parseInt(m.altShortcut);
-        if (m.isStarred) {
-          item.isStarred = true;
-        }
-      }
       res[i] = item;
+      let m = getNoteMeta(item.name, false);
+      if (!m) {
+        continue;
+      }
+      let n = parseInt(m.altShortcut);
+      if (n >= 1 && n <= 9) {
+        item.altShortcut = n;
+      }
+      item.isStarred = !!m.isStarred;
     }
-    // -1 if a < b
-    // 0 if a = b
-    // 1 if a > b
-    res.sort((a, b) => {
-      // started before not starred
-      if (a.isStarred && !b.isStarred) {
-        return -1;
-      }
-      if (!a.isStarred && b.isStarred) {
-        return 1;
-      }
-      if (a.isStarred && b.isStarred) {
-        return a.name.localeCompare(b.name);
-      }
-      // those with shortcut are before (<) those without
-      if (a.altShortcut && !b.altShortcut) {
-        return -1;
-      }
-      // those without shortcut are after (>) those with
-      if (!a.altShortcut && b.altShortcut) {
-        return 1;
-      }
-      // if both have shortcut, sort by shortcut
-      if (a.altShortcut && b.altShortcut) {
-        return a.altShortcut - b.altShortcut;
-      }
-      let isSysA = isSystemNoteName(a.name);
-      let isSysB = isSystemNoteName(b.name);
-      // system are last
-      if (isSysA && !isSysB) {
-        return 1;
-      }
-      if (!isSysA && isSysB) {
-        return -1;
-      }
-      // if both have no shortcut, sort by name
-      return a.name.localeCompare(b.name);
-    });
+    res.sort(sortItem);
     return res;
   }
   let items = $state(buildItems());
@@ -118,33 +127,6 @@
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
 
-  /**
-   * @param {Item} item
-   */
-  function toggleStarred(item) {
-    console.log("toggleStarred:", item);
-    item.isStarred = !item.isStarred;
-    updateMetadataForNote(
-      item.name,
-      (m) => {
-        m.isStarred = item.isStarred;
-      },
-      true,
-    );
-    input.focus();
-  }
-
-  /**
-   * @param {Item} item
-   * @returns {string}
-   */
-  function iconFill(item) {
-    if (item.isStarred) {
-      return "yellow";
-    }
-    return "none";
-  }
-
   let selectedItem = $state(null);
   let selectedName = $state("");
   let canOpenSelected = $state(false);
@@ -152,18 +134,18 @@
   let canCreateWithEnter = $state(false);
   let canDeleteSelected = $state(false);
   let showDelete = $state(false);
-  let noteCount = getNotesCount();
 
-  let noteCountMsg = $derived.by(() => {
+  let itemsCountMsg = $derived.by(() => {
     // $state(`${noteCount} notes`);
     let n = len(itemsFiltered);
     if (n === 0) {
       return ""; // don't obscure user entering new, long note name
     }
-    if (n === noteCount) {
-      return `${noteCount} notes`;
+    let nItems = len(items);
+    if (n === nItems) {
+      return `${nItems} notes`;
     }
-    return `${n} of ${noteCount} notes`;
+    return `${n} of ${nItems} notes`;
   });
 
   function selectionChanged(item, idx) {
@@ -291,6 +273,15 @@
     deleteNote(name);
   }
 
+  /**
+   * @param {Item} item
+   */
+  async function toggleStarred(item) {
+    console.log("toggleStarred:", item);
+    item.isStarred = await toggleNoteStarred(item.name);
+    input.focus();
+  }
+
   let input;
   let listbox;
 </script>
@@ -310,7 +301,7 @@
       class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
     />
     <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
-      {noteCountMsg}
+      {itemsCountMsg}
     </div>
   </div>
   <ListBox
@@ -325,7 +316,8 @@
           toggleStarred(item);
           ev.preventDefault();
           ev.stopPropagation();
-        }}><IconStar fill={iconFill(item)}></IconStar></button
+        }}
+        ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
       >
       <div class="ml-2 truncate {isSysNote(item) ? 'italic' : ''}">
         {item.name}
@@ -391,16 +383,3 @@
     <div>dismiss</div> -->
   </div>
 </form>
-
-<style>
-  .kbd {
-    font-size: 10px;
-    /* @apply text-xs; */
-    @apply font-mono;
-    @apply text-nowrap whitespace-nowrap;
-    @apply px-[6px] py-[3px];
-    @apply border  rounded-md;
-    @apply border-gray-400 dark:border-gray-500;
-    @apply bg-gray-50 dark:bg-gray-800;
-  }
-</style>

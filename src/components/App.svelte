@@ -55,7 +55,7 @@
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
   } from "../notes";
-  import { getMetadata, getMetadataForNote } from "../metadata";
+  import { getMetadata, getNoteMeta } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
@@ -185,7 +185,7 @@
 
   let noteShortcut = $derived.by(() => {
     let name = noteName;
-    let m = getMetadataForNote(name);
+    let m = getNoteMeta(name);
     if (m && m.altShortcut) {
       return `${altChar} + ${m.altShortcut}`;
     }

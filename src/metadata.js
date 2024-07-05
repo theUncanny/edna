@@ -1,7 +1,6 @@
 import { fsReadTextFile, fsWriteTextFile } from "./fileutil";
 import { getStorageFS } from "./notes";
 
-// meta-data about notes and functions
 export const kMetadataName = "__metadata.edna.json";
 
 /** @typedef {{
@@ -34,6 +33,14 @@ export function getMetadata() {
 function getNotesMetadata() {
   metadata.notes = metadata.notes || [];
   return metadata.notes;
+}
+
+/**
+ * @returns {FunctionMetadata[]}
+ */
+function getFunctionsMetadata() {
+  metadata.functions = metadata.functions || [];
+  return metadata.functions;
 }
 
 /**
@@ -80,15 +87,15 @@ async function saveNotesMetadata(m) {
 }
 
 /**
- * @param {string} noteName
+ * @param {string} name
  * @param {boolean} createIfNotExists
  * @returns {NoteMetadata}
  */
-export function getMetadataForNote(noteName, createIfNotExists = false) {
-  // console.log("getMetadataForNote:", noteName);
+export function getNoteMeta(name, createIfNotExists = false) {
+  // console.log("getMetadataForNote:", name);
   let notes = getNotesMetadata();
   for (let m of notes) {
-    if (m.name === noteName) {
+    if (m.name === name) {
       return m;
     }
   }
@@ -96,7 +103,7 @@ export function getMetadataForNote(noteName, createIfNotExists = false) {
     return null;
   }
   let m = {
-    name: noteName,
+    name: name,
   };
   notes.push(m);
   return m;
@@ -105,17 +112,13 @@ export function getMetadataForNote(noteName, createIfNotExists = false) {
 /** @typedef {(meta: NoteMetadata) => void} UpdateNoteMetadataFn */
 
 /**
- * @param {string} noteName
+ * @param {string} name
  * @param {UpdateNoteMetadataFn} updateMetaFn
  * @param {boolean} save
  * @returns {Promise<Metadata>}
  */
-export async function updateMetadataForNote(
-  noteName,
-  updateMetaFn,
-  save = false,
-) {
-  let meta = getMetadataForNote(noteName, true);
+export async function updateNoteMeta(name, updateMetaFn, save = false) {
+  let meta = getNoteMeta(name, true);
   updateMetaFn(meta);
   let res = metadata;
   if (save) {
@@ -125,14 +128,31 @@ export async function updateMetadataForNote(
 }
 
 /**
- * @param {string} noteName
+ * @param {string} name
+ * @returns {Promise<boolean>}
  */
-export async function removeNoteFromMetadata(noteName) {
-  console.log("deleteMetadataForNote:", noteName);
+export async function toggleNoteStarred(name) {
+  let isStarred = false;
+  await updateNoteMeta(
+    name,
+    (m) => {
+      m.isStarred = !m.isStarred;
+      isStarred = m.isStarred;
+    },
+    true,
+  );
+  return isStarred;
+}
+
+/**
+ * @param {string} name
+ */
+export async function removeNoteFromMetadata(name) {
+  console.log("deleteMetadataForNote:", name);
   let notes = getNotesMetadata();
   let newNotes = [];
   for (let m of notes) {
-    if (m.name !== noteName) {
+    if (m.name !== name) {
       newNotes.push(m);
     }
   }
@@ -180,7 +200,7 @@ export async function reassignNoteShortcut(name, altShortcut) {
     }
   }
 
-  let res = await updateMetadataForNote(
+  let res = await updateNoteMeta(
     name,
     (meta) => {
       meta.altShortcut = altShortcut;
@@ -188,6 +208,64 @@ export async function reassignNoteShortcut(name, altShortcut) {
     true,
   );
   return res;
+}
+
+/**
+ * @param {string} name
+ * @param {boolean} createIfNotExists
+ * @returns {FunctionMetadata}
+ */
+export function getFunctionMeta(name, createIfNotExists = false) {
+  // console.log("getMetadataForFunction:", name);
+  let functions = getFunctionsMetadata();
+  for (let m of functions) {
+    if (m.name === name) {
+      return m;
+    }
+  }
+  if (!createIfNotExists) {
+    return null;
+  }
+  let m = {
+    name: name,
+  };
+  functions.push(m);
+  return m;
+}
+
+/** @typedef {(meta: FunctionMetadata) => void} UpdateFunctionMetadataFn */
+
+/**
+ * @param {string} name
+ * @param {UpdateFunctionMetadataFn} updateFn
+ * @param {boolean} save
+ * @returns {Promise<Metadata>}
+ */
+export async function updateFunctionMeta(name, updateFn, save = false) {
+  let meta = getFunctionMeta(name, true);
+  updateFn(meta);
+  let res = metadata;
+  if (save) {
+    res = await saveNotesMetadata(metadata);
+  }
+  return res;
+}
+
+/**
+ * @param {string} name
+ * @returns {Promise<boolean>}
+ */
+export async function toggleFunctionStarred(name) {
+  let isStarred = false;
+  await updateFunctionMeta(
+    name,
+    (m) => {
+      m.isStarred = !m.isStarred;
+      isStarred = m.isStarred;
+    },
+    true,
+  );
+  return isStarred;
 }
 
 // TODO: temporary

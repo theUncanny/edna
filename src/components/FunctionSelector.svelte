@@ -3,6 +3,8 @@
   import { focus } from "../actions";
   import { findMatchingItems, len } from "../util";
   import { getBoopFunctions } from "../system-notes";
+  import { getFunctionMeta, toggleFunctionStarred } from "../metadata";
+  import IconStar from "./IconStar.svelte";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -19,6 +21,7 @@
     key: number,
     name: string,
     nameLC: string,
+    isStarred: boolean,
     ref: HTMLElement,
    }} Item
   */
@@ -29,13 +32,38 @@
    * @returns {Item}
    */
   function mkItem(fdef, key) {
-    return {
-      fdef: fdef,
-      key: key,
-      name: fdef.name,
-      nameLC: fdef.name.toLowerCase(),
-      ref: null,
+    let name = fdef.name;
+    let nameLC = name.toLowerCase();
+    let ref = null;
+    let meta = getFunctionMeta(name);
+    let isStarred = meta ? !!meta.isStarred : false;
+    let res = {
+      fdef,
+      key,
+      name,
+      nameLC,
+      isStarred,
+      ref,
     };
+    return res;
+  }
+
+  /**
+   * -1 if a < b
+   * 0 if a = b
+   * 1 if a > b
+   * @param {Item} a
+   * @param {Item} b
+   */
+  function sortItem(a, b) {
+    // started before not starred
+    if (a.isStarred && !b.isStarred) {
+      return -1;
+    }
+    if (!a.isStarred && b.isStarred) {
+      return 1;
+    }
+    return a.name.localeCompare(b.name);
   }
 
   /**
@@ -52,13 +80,11 @@
     for (let fdef of userFunctions) {
       res[key++] = mkItem(fdef, key);
     }
-    res.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    });
+    res.sort(sortItem);
     return res;
   }
 
-  let items = buildItems();
+  let items = $state(buildItems());
   let filter = $state("");
 
   /**
@@ -94,7 +120,27 @@
     }
     listbox.onkeydown(ev, filter === "");
   }
+
+  let itemsCountMsg = $derived.by(() => {
+    let n = len(itemsFiltered);
+    let nItems = len(items);
+    if (n === nItems) {
+      return `${nItems} funcs`;
+    }
+    return `${n} of ${nItems} funcs`;
+  });
+
+  /**
+   * @param {Item} item
+   */
+  async function toggleStarred(item) {
+    item.isStarred = await toggleFunctionStarred(item.name);
+    console.log("toggleStarred:", item, "isStarred:", item.isStarred);
+    input.focus();
+  }
+
   let listbox;
+  let input;
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -114,12 +160,18 @@
         class="underline ml-2">help</a
       >
     </div>
-    <input
-      type="text"
-      use:focus
-      bind:value={filter}
-      class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
-    />
+    <div>
+      <input
+        type="text"
+        use:focus
+        bind:this={input}
+        bind:value={filter}
+        class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
+      />
+      <div class="absolute right-[1rem] top-[2.6rem] italic text-gray-400">
+        {itemsCountMsg}
+      </div>
+    </div>
   </div>
   <ListBox
     bind:this={listbox}
@@ -128,7 +180,15 @@
     onclick={(item) => emitRunFunction(item, false)}
   >
     {#snippet renderItem(item)}
-      <div class="truncate">
+      <button
+        onclick={(ev) => {
+          toggleStarred(item);
+          ev.preventDefault();
+          ev.stopPropagation();
+        }}
+        ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
+      >
+      <div class="truncate ml-2">
         {item.name}
       </div>
     {/snippet}
@@ -151,16 +211,3 @@
     </div>
   {/if}
 </form>
-
-<style>
-  .kbd {
-    font-size: 10px;
-    /* @apply text-xs; */
-    @apply font-mono;
-    @apply text-nowrap whitespace-nowrap;
-    @apply px-[6px] py-[3px];
-    @apply border  rounded-md;
-    @apply border-gray-400 dark:border-gray-500;
-    @apply bg-gray-50 dark:bg-gray-800;
-  }
-</style>

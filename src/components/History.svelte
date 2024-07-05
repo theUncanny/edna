@@ -25,17 +25,17 @@
   function buildItems() {
     let n = len(history);
     /** @type {HistoryItem[]} */
-    let items = Array(n);
+    let res = Array(n);
     for (let i = 0; i < n; i++) {
       let el = history[i];
-      items[i] = {
+      res[i] = {
         key: el,
         name: el,
         nameLC: el.toLowerCase(),
         ref: null,
       };
     }
-    return items;
+    return res;
   }
 
   let items = $state(buildItems());
