@@ -1016,8 +1016,10 @@
       view.focus();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
+      view.focus();
     } else if (cmdId === kCmdShowHelp) {
       showHTMLHelp();
+      view.focus();
     } else if (cmdId === kCmdShowHelpAsNote) {
       openNote(kHelpSystemNoteName);
     } else if (cmdId === kCmdShowReleaseNotes) {
@@ -1133,6 +1135,9 @@
   ];
 
   function commandNameOverride(id, name) {
+    if (id === kCmdToggleSpellChecking) {
+      return (isSpellChecking ? "Disable" : "Enable") + " spell checking";
+    }
     let n = len(commandNameOverrides);
     for (let i = 0; i < n; i += 2) {
       if (id == commandNameOverrides[i]) {
@@ -1187,6 +1192,8 @@
     console.log("openCommandPalette");
     commandsDef = buildCommandsDef();
     commandsDef.push(...commandPaletteAdditions);
+    let name = commandNameOverride(kCmdToggleSpellChecking);
+    commandsDef.push([name, kCmdToggleSpellChecking]);
     showingCommandPalette = true;
   }
 
