@@ -373,3 +373,20 @@ export function ensureStringEndsWithNL(s) {
   }
   return s;
 }
+
+const charCode0 = "0".charCodeAt(0);
+
+/**
+ * returns 0 ... 9 if ev represents char '0' ... '9', or -1 otherwise
+ * @param {KeyboardEvent} ev
+ * @returns {number}
+ */
+export function getKeyEventNumber(ev) {
+  // TODO: key could be a string like "Enter", not sure
+  // if any of them could start with a number
+  let n = ev.key.charCodeAt(0) - charCode0;
+  if (n < 0 || n > 9) {
+    return -1;
+  }
+  return n;
+}

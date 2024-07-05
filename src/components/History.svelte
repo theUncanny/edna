@@ -1,6 +1,6 @@
 <script>
   import { getHistory } from "../history";
-  import { len } from "../util";
+  import { getKeyEventNumber, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
 
@@ -44,11 +44,8 @@
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
-    // console.log(ev);
-    let key = ev.key;
-
     // '0' ... '9' picks an item
-    let idx = key.charCodeAt(0) - "0".charCodeAt(0);
+    let idx = getKeyEventNumber(ev);
     let lastIdx = len(items) - 1;
     if (idx >= 0 && idx <= lastIdx) {
       ev.preventDefault();
@@ -57,26 +54,7 @@
       return;
     }
 
-    if (key === "Enter") {
-      ev.preventDefault();
-      let item = listbox.selected();
-      if (item) {
-        selectItem(item.name);
-      }
-      return;
-    }
-
-    if (key === "ArrowUp" || key === "ArrowLeft") {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || key === "ArrowRight") {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    listbox.onkeydown(ev, true);
   }
 
   function selectItem(token) {
