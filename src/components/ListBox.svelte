@@ -117,6 +117,33 @@
     select(selectedIdx + 1);
   }
 
+  /**
+   * @param {KeyboardEvent} ev
+   * @param {boolean} [allowLeftRight]
+   * @returns {boolean}
+   */
+  export function onkeydown(ev, allowLeftRight = false) {
+    let key = ev.key;
+    let isUp = key === "ArrowUp" || (key === "ArrowLeft" && allowLeftRight);
+    let isDown =
+      key === "ArrowDown" || (key === "ArrowRight" && allowLeftRight);
+    let isEnter = selectedItem && key === "Enter";
+    let res = true;
+    if (isEnter) {
+      onclick(selectedItem);
+    } else if (isUp) {
+      up();
+    } else if (isDown) {
+      down();
+    } else {
+      res = false;
+    }
+    if (res) {
+      ev.preventDefault();
+    }
+    return res;
+  }
+
   let listbox;
   $effect(() => {
     let theme = getActiveTheme();

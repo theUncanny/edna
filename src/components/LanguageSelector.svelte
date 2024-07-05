@@ -2,34 +2,44 @@
   import { LANGUAGES } from "../editor/languages.js";
   import { focus } from "../actions.js";
   import ListBox from "./ListBox.svelte";
+  import { len } from "../util.js";
 
   /** @type {{
     selectLanguage: (name: string) => void,
-}}*/
+  }} */
   let { selectLanguage } = $props();
 
   let filter = $state("");
 
-  const items = LANGUAGES.map((l) => {
-    return {
-      key: l.name,
-      token: l.token,
-      name: l.name,
-      nameLC: l.name.toLowerCase(),
+  function buildItems() {
+    let n = len(LANGUAGES);
+    let res = Array(n);
+    let i = 0;
+    for (let l of LANGUAGES) {
+      let item = {
+        key: l.name,
+        token: l.token,
+        name: l.name,
+        nameLC: l.name.toLowerCase(),
+        ref: null,
+      };
+      res[i++] = item;
+    }
+    res.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+    res.unshift({
+      key: "auto",
+      token: "auto",
+      name: "Auto-detect",
+      nameLC: "auto-detect",
       ref: null,
-    };
-  }).sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
-  items.unshift({
-    key: "auto",
-    token: "auto",
-    name: "Auto-detect",
-    nameLC: "auto-detect",
-    ref: null,
-  });
+    });
+    return res;
+  }
+  const items = buildItems();
 
-  let filteredItems = $derived.by(() => {
+  let itemsFiltered = $derived.by(() => {
     const filterLC = filter.toLowerCase();
     return items.filter((lang) => {
       return lang.nameLC.indexOf(filterLC) !== -1;
@@ -40,27 +50,8 @@
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
-    let key = ev.key;
-    if (key === "Enter") {
-      ev.preventDefault();
-      const item = listbox.selected();
-      if (item) {
-        selectLanguage(item.token);
-      }
-      return;
-    }
-
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    let allowLeftRight = filter === "";
+    listbox.onkeydown(ev, allowLeftRight);
   }
 
   let listbox;
@@ -79,9 +70,9 @@
     class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
   />
   <ListBox
-    items={filteredItems}
-    onclick={(item) => selectLanguage(item.token)}
     bind:this={listbox}
+    items={itemsFiltered}
+    onclick={(item) => selectLanguage(item.token)}
   >
     {#snippet renderItem(item)}
       <div>{item.name}</div>
