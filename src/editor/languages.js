@@ -246,7 +246,7 @@ export function getLanguageNameFromToken(token) {
  * @returns {boolean}
  */
 export function langSupportsRun(lang) {
-  console.log("langSupportsRun:", lang);
+  // console.log("langSupportsRun:", lang);
   let token = lang ? lang.token : "";
   switch (token) {
     case "golang":

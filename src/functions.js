@@ -1,6 +1,5 @@
 // based mostly on https://github.com/IvanMathy/Boop/tree/main/Scripts
 
-import { showError, showToast } from "./components/Toaster.svelte";
 import { len } from "./util";
 
 /** @typedef {{
@@ -90,10 +89,10 @@ export function parseUserFunctions(s) {
   let res = Array(n);
   let i = 0;
   for (let p of parts) {
-    let lines = p.split("\n")
+    let lines = p.split("\n");
     // skip the type of the block
-    lines = lines.slice(1)
-    p = lines.join("\n")
+    lines = lines.slice(1);
+    p = lines.join("\n");
     let meta = parseBoopFunction(p);
     if (meta) {
       res[i++] = meta;
@@ -121,26 +120,4 @@ export const fnMain = main;
   const mod = await import(url);
   console.log(mod);
   await mod.fnMain(arg);
-}
-
-/**
- * @param {BoopFunction} f
- * @param {string} txt
- */
-export async function runBoopFunctionWithText(f, txt) {
-  /** @type {import("./functions").BoopFunctionArg} */
-  let input = {
-    text: txt,
-    fullText: txt,
-    postInfo: (s) => {
-      showToast(s, 0);
-      console.log("info:", s);
-    },
-    postError: (s) => {
-      showError(s, 0);
-      console.log("error:", s);
-    },
-  };
-  let res = await runBoopFunction(f, input);
-  console.log("res:", res);
 }

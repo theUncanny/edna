@@ -92,7 +92,11 @@
     formatBlockContent,
     insertAfterActiveBlock,
   } from "../editor/block/format-code";
-  import { getCurrentSelection, isReadOnly } from "../editor/cmutils";
+  import {
+    focusEditorView,
+    getCurrentSelection,
+    isReadOnly,
+  } from "../editor/cmutils";
   import {
     addNewBlockAfterCurrent,
     addNewBlockAfterLast,
@@ -105,12 +109,12 @@
     insertNewBlockAtCursor,
     selectAll,
   } from "../editor/block/commands";
-  import { getActiveNoteBlock } from "../editor/block/block";
-  import { EdnaEditor, getContent } from "../editor/editor";
-  import { currentBlockSupportsRun, runBlockContent } from "../run";
-  import { EditorSelection } from "@codemirror/state";
+  import { getActiveNoteBlock, getBlockN } from "../editor/block/block";
+  import { EdnaEditor, getContent, setReadOnly } from "../editor/editor";
+  import { EditorSelection, EditorState } from "@codemirror/state";
   import { parseUserFunctions, runBoopFunction } from "../functions";
   import { getMyFunctionsNote } from "../system-notes";
+  import { evalResultToString, runGo, runJS, runJSWithArg } from "../run";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -464,7 +468,8 @@
   let blockItems = $state([]);
   let initialBlockSelection = $state(0);
 
-  function openBlockSelector() {
+  function openBlockSelector(fn = selectBlock) {
+    fnSelectBlock = fn;
     let view = getEditorView();
     let blocks = getEditor().getBlocks();
     let activeBlock = getActiveNoteBlock(view.state);
@@ -770,8 +775,7 @@
   export const kCmdChangeBlockLanguage = nmid();
   export const kCmdBlockSelectAll = nmid();
   export const kCmdFormatBlock = nmid();
-  export const kCmdRunBlock = nmid();
-  const kCmdBlockLast = kCmdRunBlock;
+  const kCmdBlockLast = kCmdFormatBlock;
 
   export const kCmdShowHelp = nmid();
   export const kCmdShowHelpAsNote = nmid();
@@ -790,9 +794,11 @@
   export const kCmdOpenRecent = nmid();
   export const kCmdShowWelcomeNote = nmid();
   export const kCmdShowWelcomeDevNote = nmid();
+  export const kCmdSmartRun = nmid();
+  export const kCmdRunBlock = nmid();
+  export const kCmdRunBlockWithAnotherBlock = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
   export const kCmdRunFunctionWithSelection = nmid();
-  export const kCmdSmartRun = nmid();
   export const kCmdCreateYourOwnFunctions = nmid();
   export const kCmdShowBuiltInFunctions = nmid();
   export const kCmdRunHelp = nmid();
@@ -819,9 +825,10 @@
 
     const menuRun = [
       ["Smart Run\tMod + E", kCmdSmartRun],
-      ["Run " + language + " block", kCmdRunBlock],
+      ["Run this block", kCmdRunBlock],
+      ["Run this block with another block", kCmdRunBlockWithAnotherBlock],
       [
-        "Run function with block content\tAlt + Shift + R",
+        "Run function with this block\tAlt + Shift + R",
         kCmdRunFunctionWithBlockContent,
       ],
       ["Run function with selection", kCmdRunFunctionWithSelection],
@@ -906,6 +913,13 @@
       }
     } else if (mid === kCmdRunBlock) {
       if (readOnly || !langSupportsRun(lang)) {
+        return kMenuStatusDisabled;
+      }
+    } else if (mid === kCmdRunBlockWithAnotherBlock) {
+      if (readOnly || !langSupportsRun(lang)) {
+        return kMenuStatusDisabled;
+      }
+      if (lang.token !== "javascript") {
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdSmartRun) {
@@ -1054,6 +1068,8 @@
       openHistorySelector();
     } else if (cmdId === kCmdRunBlock) {
       runCurrentBlock();
+    } else if (cmdId === kCmdRunBlockWithAnotherBlock) {
+      runCurrentBlockWithAnotherBlock();
     } else if (cmdId === kCmdSmartRun) {
       smartRun();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
@@ -1240,11 +1256,150 @@
     logNoteOp("noteFormatBlock");
   }
 
+  /**
+   * @param {EditorView} view
+   * @returns {Promise<boolean>}
+   */
+  export async function runBlockContent(view) {
+    const { state } = view;
+    if (isReadOnly(view)) {
+      return false;
+    }
+    const block = getActiveNoteBlock(state);
+    const lang = getLanguage(block.language.name);
+    // console.log("runBlockContent: lang:", lang);
+    if (!langSupportsRun(lang)) {
+      return false;
+    }
+
+    const content = state.sliceDoc(block.content.from, block.content.to);
+
+    showModalMessageHTML("running code", 300);
+    setReadOnly(view, true);
+    let output = "";
+    let token = lang.token;
+    /** @type { import("../run").CapturingEval} */
+    let res = null;
+    if (token === "golang") {
+      res = await runGo(content);
+    } else if (token === "javascript") {
+      res = await runJS(content);
+    } else {
+      output = `Error: invalid block lang ${lang.token}`;
+    }
+    setReadOnly(view, false);
+    clearModalMessage();
+
+    output = evalResultToString(res);
+    if (!output) {
+      output = "executed code returned empty output";
+    }
+
+    console.log("output of running code:", output);
+    // const block = getActiveNoteBlock(state)
+    let text = output;
+    if (!output.startsWith("\n∞∞∞")) {
+      // text = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
+      text = "\n∞∞∞text-a\n" + output;
+    }
+    insertAfterActiveBlock(view, text);
+    return true;
+  }
+
+  /**
+   * @param {EditorView} view
+   * @param {string} arg
+   * @returns {Promise<boolean>}
+   */
+  export async function runBlockContentWithArg(view, arg) {
+    const { state } = view;
+    if (isReadOnly(view)) {
+      return false;
+    }
+    const block = getActiveNoteBlock(state);
+    const lang = getLanguage(block.language.name);
+    // console.log("runBlockContent: lang:", lang);
+    if (!langSupportsRun(lang)) {
+      return false;
+    }
+
+    const content = state.sliceDoc(block.content.from, block.content.to);
+
+    showModalMessageHTML("running code", 300);
+    setReadOnly(view, true);
+
+    /** @type {import("../run").CapturingEval} */
+    let res = null;
+    let token = lang.token;
+
+    if (token === "javascript") {
+      res = await runJSWithArg(content, arg);
+    } else {
+      res = {
+        output: "",
+        consoleLogs: [],
+        exception: `Error: unspported language '${token}'`,
+      };
+    }
+    setReadOnly(view, false);
+    clearModalMessage();
+
+    let output = evalResultToString(res);
+    if (!output) {
+      output = "executed code returned empty output";
+    }
+
+    console.log("output of running code:", res);
+    // const block = getActiveNoteBlock(state)
+    let text = output;
+    if (!output.startsWith("\n∞∞∞")) {
+      // text = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
+      text = "\n∞∞∞text-a\n" + output;
+    }
+    insertAfterActiveBlock(view, text);
+    return true;
+  }
+
   function runCurrentBlock() {
     let view = getEditorView();
     runBlockContent(view);
+    view = getEditorView();
     view.focus();
     logNoteOp("noteRunBlock");
+  }
+
+  let fnSelectBlock = $state(null);
+
+  function runBlockWithAnotherBlock(argBlockItem) {
+    console.log(argBlockItem);
+    closeBlockSelector();
+    let n = argBlockItem.key;
+    let view = getEditorView();
+    let state = view.state;
+    let blockArg = getBlockN(state, n);
+    let arg = state.sliceDoc(blockArg.content.from, blockArg.content.to);
+    runBlockContentWithArg(view, arg);
+    view.focus();
+    logNoteOp("noteRunBlock");
+  }
+
+  /**
+   * @param {EditorState} state
+   * @returns {boolean}
+   */
+  function currentBlockSupportsRun(state) {
+    const block = getActiveNoteBlock(state);
+    const lang = getLanguage(block.language.name);
+    // console.log("runBlockContent: lang:", lang);
+    return langSupportsRun(lang);
+  }
+
+  function runCurrentBlockWithAnotherBlock() {
+    let view = getEditorView();
+    if (!currentBlockSupportsRun(view.state)) {
+      return;
+    }
+    openBlockSelector(runBlockWithAnotherBlock);
   }
 
   // if have a selection, run function with selection
@@ -1481,7 +1636,7 @@
   <Overlay onclose={closeBlockSelector} blur={true}>
     <BlockSelector
       blocks={blockItems}
-      {selectBlock}
+      selectBlock={fnSelectBlock}
       initialSelection={initialBlockSelection}
     ></BlockSelector>
   </Overlay>

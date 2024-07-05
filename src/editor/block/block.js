@@ -111,6 +111,16 @@ export function getLastNoteBlock(state) {
   return blocks[blocks.length - 1];
 }
 
+/**
+ * @param {EditorState} state
+ * @param {number} n
+ */
+export function getBlockN(state, n) {
+  // @ts-ignore
+  let blocks = state.facet(blockState);
+  return blocks[n];
+}
+
 export function getNoteBlockFromPos(state, pos) {
   let blocks = state.facet(blockState);
   return findBlockWithPos(blocks, pos);

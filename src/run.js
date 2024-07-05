@@ -1,12 +1,30 @@
-import { EditorView } from "@codemirror/view";
-import { getActiveNoteBlock } from "./editor/block/block";
-import { setReadOnly } from "./editor/editor";
-import { getLanguage, langSupportsRun } from "./editor/languages";
-import { insertAfterActiveBlock } from "./editor/block/format-code";
-import { isReadOnly } from "./editor/cmutils";
 import { ensureStringEndsWithNL, len } from "./util";
-import { EditorState } from "@codemirror/state";
 
+/** @typedef {{
+  output: any,
+  exception: string,
+  consoleLogs: string[],
+ }} CapturingEval
+*/
+
+/** @typedef {{
+   Message: string,
+   Kind: string, // stdout or stderr
+   Delay: number,
+ }} GoEvalEvent */
+
+/** @typedef {{
+  Body: string,
+  Events: GoEvalEvent[],
+  Error?: string,
+  Errors?: string,
+ }} GoEvalResult */
+
+/**
+ *
+ * @param {GoEvalResult} res
+ * @returns {string}
+ */
 function getError(res) {
   // TODO: don't get why there are Error and Errors
   // maybe can improve backend code?
@@ -19,37 +37,69 @@ function getError(res) {
   return "";
 }
 
+/**
+ * @param {string} code
+ * @returns {Promise<CapturingEval>}
+ */
 export async function runGo(code) {
   const uri = "/api/goplay/compile";
-  const rsp = await fetch(uri, {
-    method: "POST",
-    body: code,
-  });
+  /** @type {CapturingEval} */
+  let res = {
+    output: "",
+    exception: null,
+    consoleLogs: [],
+  };
+  let rsp;
+  try {
+    rsp = await fetch(uri, {
+      method: "POST",
+      body: code,
+    });
+  } catch (e) {
+    res.exception = e.message;
+    return res;
+  }
+
   if (!rsp.ok) {
-    return `Error: ${rsp.status} ${rsp.statusText}`;
+    res.exception = `Error: bad HTTP status ${rsp.status} ${rsp.statusText}`;
+    return res;
   }
-  const res = await rsp.json();
-  //console.log("res:", res);
-  const err = getError(res);
+  /** @type {GoEvalResult} */
+  const rspJSON = await rsp.json();
+  console.log("rspJSON:", rspJSON);
+  const err = getError(rspJSON);
   if (err != "") {
-    return err;
+    res.exception = err;
+    return res;
   }
-  let s = "";
-  for (const ev of res.Events) {
-    if (s !== "") {
-      s += "\n";
-    }
+  let stdout = [];
+  let stderr = [];
+  for (const ev of rspJSON.Events) {
     if (ev.Kind === "stderr") {
-      s += "Stderr:\n";
+      stderr.push(ev.Message);
+      continue;
     }
-    s += ev.Message;
+    if (ev.Kind === "stdout") {
+      stdout.push(ev.Message);
+      continue;
+    }
   }
-  return s;
+  res.output = stdout.join("\n");
+  if (len(stderr) > 0) {
+    res.output += "stderr:\n" + stderr.join("\n");
+  }
+  return res;
 }
 
-async function evalWithConsoleCapture(js) {
-  const originalConsole = console;
-  const capturedLogs = [];
+/**
+ * returns last returned javascript expression
+ * (undefined if there was no expression)
+ * @param {string} code
+ * @returns {Promise<CapturingEval>}
+ */
+async function evalWithConsoleCapture(code) {
+  /** @type {string[]} */
+  const consoleLogs = [];
   function logFn(...args) {
     let all = "";
     for (let arg of args) {
@@ -59,91 +109,63 @@ async function evalWithConsoleCapture(js) {
       }
       all += s;
     }
-    capturedLogs.push(all);
+    consoleLogs.push(all);
   }
+  const originalConsole = console;
   console.log = logFn;
   console.debug = logFn;
   console.warn = logFn;
   console.error = logFn;
-  let res = await eval(js);
-  console.log = originalConsole.log;
-  console.debug = originalConsole.debug;
-  console.warn = originalConsole.warn;
-  console.error = originalConsole.error;
-  return [res, capturedLogs];
+  let output = "";
+  let exception = null;
+  try {
+    output = await eval(code);
+  } catch (e) {
+    exception = e.message;
+  } finally {
+    console.log = originalConsole.log;
+    console.debug = originalConsole.debug;
+    console.warn = originalConsole.warn;
+    console.error = originalConsole.error;
+  }
+  return {
+    output,
+    exception,
+    consoleLogs,
+  };
 }
 
-/*
- * @param {string} js
+/**
+ * @param {CapturingEval} res
+ * @returns {string}
  */
-export async function runJS(js) {
-  // let res = await eval(js);
-  let [res, logs] = await evalWithConsoleCapture(js);
-  // this returns last returned javascript value or undefined
-  let resTxt = `${res}`;
-  if (len(logs) > 0) {
+export function evalResultToString(res) {
+  let resTxt = res.exception || `${res.output}`;
+  if (len(res.consoleLogs) > 0) {
     resTxt = ensureStringEndsWithNL(resTxt);
     resTxt += "console output:\n";
-    resTxt += logs.join("\n");
+    resTxt += res.consoleLogs.join("\n");
   }
-  console.log(logs);
+  // console.log(res.consoleLogs);
   return resTxt;
 }
 
 /**
- * @param {EditorState} state
- * @returns {boolean}
+ * @param {string} code
+ * @returns {Promise<CapturingEval>}
  */
-export function currentBlockSupportsRun(state) {
-  const block = getActiveNoteBlock(state);
-  const lang = getLanguage(block.language.name);
-  // console.log("runBlockContent: lang:", lang);
-  return langSupportsRun(lang);
+export async function runJS(code) {
+  return await evalWithConsoleCapture(code);
 }
 
 /**
- * @param {EditorView} view
- * @returns {Promise<boolean>}
+ * @param {string} code
+ * @param {string} arg
+ * @returns {Promise<CapturingEval>}
  */
-export async function runBlockContent(view) {
-  const { state } = view;
-  if (isReadOnly(view)) {
-    return false;
-  }
-  const block = getActiveNoteBlock(state);
-  const lang = getLanguage(block.language.name);
-  // console.log("runBlockContent: lang:", lang);
-  if (!langSupportsRun(lang)) {
-    return false;
-  }
-
-  const content = state.sliceDoc(block.content.from, block.content.to);
-
-  setReadOnly(view, true);
-  let output = "";
-  let token = lang.token;
-  try {
-    if (token === "golang") {
-      output = await runGo(content);
-    } else if (token === "javascript") {
-      output = await runJS(content);
-    }
-  } catch (e) {
-    console.log(e);
-    output = `error: ${e.message}`;
-  }
-  setReadOnly(view, false);
-  if (!output) {
-    output = "executed code returned empty output";
-  }
-
-  console.log("output of running code:", output);
-  // const block = getActiveNoteBlock(state)
-  let text = output;
-  if (!output.startsWith("\n∞∞∞")) {
-    // text = "\n∞∞∞text-a\n" + "output of running the code:\n" + output;
-    text = "\n∞∞∞text-a\n" + output;
-  }
-  insertAfterActiveBlock(view, text);
-  return true;
+export async function runJSWithArg(code, arg) {
+  let qarg = JSON.stringify(arg);
+  code = code + "\n" + `main(${qarg})`;
+  // console.log("code:", code);
+  return evalWithConsoleCapture(code);
 }
