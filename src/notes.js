@@ -229,12 +229,11 @@ export const blockHdrMarkdown = "\n∞∞∞markdown\n";
 export const blockHdrJSON = "\n∞∞∞json\n";
 export const blockHdrPHP = "\n∞∞∞php\n";
 
-
 /**
  * @param {string} name
  * @param {string} content
  * @returns {Promise<number>}
-*/
+ */
 export async function createIfNotExists(name, content, existingNotes) {
   if (!existingNotes) {
     existingNotes = getLatestNoteNames();
@@ -253,7 +252,9 @@ export async function createIfNotExists(name, content, existingNotes) {
  */
 export async function createDefaultNotes(existingNotes) {
   let isFirstRun = getStats().appOpenCount < 2;
-  console.log(`isFirstRun: ${isFirstRun}, len(existingNotes): ${len(existingNotes)}`);
+  console.log(
+    `isFirstRun: ${isFirstRun}, len(existingNotes): ${len(existingNotes)}`,
+  );
   if (len(existingNotes) == 0) {
     // scenario: moved notes to disk and switched back to local storage
     isFirstRun = true;
@@ -261,14 +262,22 @@ export async function createDefaultNotes(existingNotes) {
 
   let welcomeNote = getWelcomeNote();
 
-  let nCreated = await createIfNotExists(kScratchNoteName, welcomeNote, existingNotes);
+  let nCreated = await createIfNotExists(
+    kScratchNoteName,
+    welcomeNote,
+    existingNotes,
+  );
   // scratch note must always exist but the user can delete inbox / daily journal notes
   if (isFirstRun) {
     let inbox = getInboxNote();
     nCreated += await createIfNotExists(kInboxNoteName, inbox, existingNotes);
     // re-create those notes if the user hasn't deleted them
     let journal = getJournalNote();
-    nCreated += await createIfNotExists(kDailyJournalNoteName, journal, existingNotes);
+    nCreated += await createIfNotExists(
+      kDailyJournalNoteName,
+      journal,
+      existingNotes,
+    );
   }
   if (nCreated > 0) {
     await loadNoteNames();
@@ -302,10 +311,10 @@ export function debugRemoveLocalStorageNotes() {
     let isRegular = key.startsWith(kLSKeyPrefix);
     if (isEncr || isRegular) {
       localStorage.removeItem(key);
-      console.log(`removed ${key}`)
+      console.log(`removed ${key}`);
     }
   }
-  localStorage.removeItem(kMetadataName)
+  localStorage.removeItem(kMetadataName);
 }
 
 /**
@@ -955,11 +964,12 @@ export async function pickAnotherDirectory() {
 // meta-data about notes
 export const kMetadataName = "__metadata.edna.json";
 
-/**
- * @typedef {Object} NoteMetadata
- * @property {string} name
- * @property {string} [altShortcut]
- */
+/** @typedef {{
+    name: string,
+    altShortcut?: string,
+    isStarred?: boolean,
+ }} NoteMetadata 
+*/
 
 /** @type {NoteMetadata[]} */
 let notesMetadata = [];
@@ -970,9 +980,10 @@ export function getNotesMetadata() {
 
 /**
  * @param {string} noteName
+ * @param {boolean} createIfNotExists
  * @returns {NoteMetadata}
  */
-export function getMetadataForNote(noteName) {
+export function getMetadataForNote(noteName, createIfNotExists = false) {
   // console.log("getMetadataForNote:", noteName);
   let meta = notesMetadata;
   for (let m of meta) {
@@ -980,7 +991,36 @@ export function getMetadataForNote(noteName) {
       return m;
     }
   }
-  return null;
+  if (!createIfNotExists) {
+    return null;
+  }
+  let m = {
+    name: noteName,
+  };
+  notesMetadata.push(m);
+  return m;
+}
+
+/** @typedef {(meta: NoteMetadata) => void} UpdateNoteMetadataFn */
+
+/**
+ * @param {string} noteName
+ * @param {UpdateNoteMetadataFn} updateMetaFn
+ * @param {boolean} save
+ * @returns {Promise<NoteMetadata[]>}
+ */
+export async function updateMetadataForNote(
+  noteName,
+  updateMetaFn,
+  save = false,
+) {
+  let meta = getMetadataForNote(noteName, true);
+  updateMetaFn(meta);
+  let res = [];
+  if (save) {
+    res = await saveNotesMetadata(notesMetadata);
+  }
+  return res;
 }
 
 /**
@@ -996,21 +1036,6 @@ export async function removeNoteFromMetadata(noteName) {
     }
   }
   await saveNotesMetadata(res);
-}
-
-/**
- * @param {string} oldName
- * @param {string} newName
- * @returns
- */
-function renameLS(oldName, newName) {
-  let s = localStorage.getItem(oldName);
-  if (s === null) {
-    // doesn't exist
-    return;
-  }
-  localStorage.setItem(newName, s);
-  localStorage.removeItem(oldName);
 }
 
 export async function loadNotesMetadata() {
@@ -1087,22 +1112,14 @@ export async function reassignNoteShortcut(name, altShortcut) {
     }
   }
 
-  /** @type {NoteMetadata} */
-  let found;
-  for (let o of m) {
-    if (o.name === name) {
-      found = o;
-      console.log("reassignNoteShortcut: found note", name);
-      break;
-    }
-  }
-  if (!found) {
-    found = { name: name };
-    m.push(found);
-    console.log("reassignNoteShortcut: created for note", name);
-  }
-  found.altShortcut = altShortcut;
-  return await saveNotesMetadata(m);
+  let res = await updateMetadataForNote(
+    name,
+    (meta) => {
+      meta.altShortcut = altShortcut;
+    },
+    true,
+  );
+  return res;
 }
 
 /**

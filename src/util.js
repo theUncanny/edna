@@ -415,3 +415,18 @@ export function getKeyEventNumber(ev) {
 export async function getClipboardText() {
   return await navigator.clipboard.readText();
 }
+
+/**
+ * @param {string} oldName
+ * @param {string} newName
+ * @returns
+ */
+function renameLS(oldName, newName) {
+  let s = localStorage.getItem(oldName);
+  if (s === null) {
+    // doesn't exist
+    return;
+  }
+  localStorage.setItem(newName, s);
+  localStorage.removeItem(oldName);
+}
