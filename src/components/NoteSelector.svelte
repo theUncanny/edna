@@ -6,10 +6,12 @@
     reassignNoteShortcut,
     sanitizeNoteName,
     getNotesCount,
+    updateMetadataForNote,
   } from "../notes";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
+  import IconStar from "./IconStar.svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -19,14 +21,15 @@
 }}*/
   let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
 
-  /**
-   * @typedef {Object} Item
-   * @property {string} name
-   * @property {string} nameLC
-   * @property {string} key
-   * @property {number} [altShortcut] - -1 if no shortcut, 0 to 9 for Alt-0 to Alt-9
-   * @property {HTMLElement} ref
-   */
+  /** @typedef {{
+    key: string,
+    name: string,
+    nameLC: string,
+    altShortcut?: number, // if present, 1 to 9 for Alt-1 to Alt-9
+    isStarred: boolean,
+    ref: HTMLElement,
+  }} Item
+*/
 
   /**
    * @returns {Item[]}
@@ -38,15 +41,20 @@
     let res = Array(len(noteNames));
     for (let i = 0; i < len(noteNames); i++) {
       let name = noteNames[i];
+      /** @type {Item} */
       let item = {
         key: name,
         name: name,
         nameLC: name.toLowerCase(),
+        isStarred: false,
         ref: null,
       };
-      let m = getMetadataForNote(item.name);
-      if (m && m.altShortcut) {
+      let m = getMetadataForNote(item.name, false);
+      if (m) {
         item.altShortcut = parseInt(m.altShortcut);
+        if (m.isStarred) {
+          item.isStarred = true;
+        }
       }
       res[i] = item;
     }
@@ -54,6 +62,16 @@
     // 0 if a = b
     // 1 if a > b
     res.sort((a, b) => {
+      // started before not starred
+      if (a.isStarred && !b.isStarred) {
+        return -1;
+      }
+      if (!a.isStarred && b.isStarred) {
+        return 1;
+      }
+      if (a.isStarred && b.isStarred) {
+        return a.name.localeCompare(b.name);
+      }
       // those with shortcut are before (<) those without
       if (a.altShortcut && !b.altShortcut) {
         return -1;
@@ -97,6 +115,32 @@
     }
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
+
+  /**
+   * @param {Item} item
+   */
+  function toggleStarred(item) {
+    console.log("toggleStarred:", item);
+    item.isStarred = !item.isStarred;
+    updateMetadataForNote(
+      item.name,
+      (m) => {
+        m.isStarred = item.isStarred;
+      },
+      true,
+    );
+  }
+
+  /**
+   * @param {Item} item
+   * @returns {string}
+   */
+  function iconFill(item) {
+    if (item.isStarred) {
+      return "yellow";
+    }
+    return "none";
+  }
 
   let selectedItem = $state(null);
   let selectedName = $state("");
@@ -271,7 +315,14 @@
     onclick={(item) => emitOpenNote(item)}
   >
     {#snippet renderItem(item)}
-      <div class="truncate {isSysNote(item) ? 'italic' : ''}">
+      <button
+        onclick={(ev) => {
+          toggleStarred(item);
+          ev.preventDefault();
+          ev.stopPropagation();
+        }}><IconStar fill={iconFill(item)}></IconStar></button
+      >
+      <div class="ml-2 truncate {isSysNote(item) ? 'italic' : ''}">
         {item.name}
       </div>
       <div class="grow"></div>
