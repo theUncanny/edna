@@ -12,9 +12,6 @@
   import { len } from "../util";
   import ListBox from "./ListBox.svelte";
 
-  /** @type {BlockItem} */
-  let selectedItem = $state(null);
-
   /** @type {{
    items: Item[],
    selectBlock: (block : Item) => void,
@@ -60,26 +57,8 @@
    * @param {KeyboardEvent} ev
    */
   function onkeydown(ev) {
-    let key = ev.key;
-    if (key === "Enter") {
-      ev.preventDefault();
-      if (selectedItem) {
-        selectBlock(selectedItem.item);
-      }
-      return;
-    }
-
-    if (key === "ArrowUp" || (key === "ArrowLeft" && filter === "")) {
-      ev.preventDefault();
-      listbox.up();
-      return;
-    }
-
-    if (key === "ArrowDown" || (key === "ArrowRight" && filter === "")) {
-      ev.preventDefault();
-      listbox.down();
-      return;
-    }
+    let allowLeftRight = filter === "";
+    listbox.onkeydown(ev, allowLeftRight);
   }
 
   let listbox;
@@ -105,7 +84,6 @@
   </div>
   <ListBox
     bind:this={listbox}
-    bind:selectedItem
     items={itemsFiltered}
     onclick={(item) => selectBlock(item.item)}
     {initialSelection}
