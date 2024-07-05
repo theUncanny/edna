@@ -1,6 +1,6 @@
 {
   "name": "edna",
-  "version": "1.10",
+  "version": "1.12",
   "main": "webapp/main.js",
   "description": "A scratch pad and note taking app for devs",
   "author": "Krzysztof Kowalczyk (https://blog.kowalczyk.info) based on Jonatan Heyman (https://heyman.info)",
@@ -8,11 +8,6 @@
   "private": true,
   "type": "module",
   "keywords": [],
-  "debug": {
-    "env": {
-      "VITE_DEV_SERVER_URL": "http://127.0.0.1:3344/"
-    }
-  },
   "scripts": {
     "preview": "vite preview",
     "build_grammar": "lezer-generator src/editor/lang-heynote/heynote.grammar -o src/editor/lang-heynote/parser.js",

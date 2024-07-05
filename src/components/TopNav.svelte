@@ -48,21 +48,6 @@
       <IconCommandPalette></IconCommandPalette>
     </button>
 
-    <!-- <button
-      onclick={(ev) => {
-        let pos = { x: ev.x - 180, y: ev.y + 8 };
-        openContextMenu(ev, pos);
-      }}
-      class="clickable-icon"
-      title="Menu"
-    >
-      <IconMenu></IconMenu>
-    </button> -->
-
-    <!-- <button onclick={openSettings} class="clickable-icon" title="Settings">
-      <IconSettings></IconSettings>
-    </button> -->
-
     <a class="clickable" href="/help" title="Documentation" target="_blank">?</a
     >
   </div>

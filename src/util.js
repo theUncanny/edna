@@ -411,3 +411,7 @@ export function getKeyEventNumber(ev) {
   }
   return n;
 }
+
+export async function getClipboardText() {
+  return await navigator.clipboard.readText();
+}

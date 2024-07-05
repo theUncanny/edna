@@ -6,7 +6,6 @@
   openCommandPalette: () => void,
   openHistorySelector: () => void,
   createScratchNote: () => void,
-  openContextMenu: (ev: MouseEvent, pos?: {x: number, y: number}) => void,
   openBlockSelector: () => void,
   openFunctionSelector: (boolean) => void,
   smartRun: () => void,
@@ -27,14 +26,6 @@ let globalFunctions;
  */
 export function setGlobalFuncs(gf) {
   globalFunctions = gf;
-}
-
-/**
- * @param {MouseEvent} ev
- * @param {{x: number, y: number}} [pos]
- */
-export function openContextMenu(ev, pos = null) {
-  globalFunctions.openContextMenu(ev, pos);
 }
 
 export function openSettings() {

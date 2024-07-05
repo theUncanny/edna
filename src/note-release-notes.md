@@ -1,5 +1,14 @@
 # Release notes for Edna
 
+## 1.12
+
+- add `Run this block with selection` command
+
+## 1.11
+
+- add `Mod + E`, `Smart Run` command
+- add `Run this block with another block` command
+
 ## 1.10
 
 - add ability to execute JavaScript code blocks

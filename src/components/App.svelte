@@ -62,6 +62,7 @@
   } from "../notes";
   import {
     getAltChar,
+    getClipboardText,
     isAltNumEvent,
     isDev,
     len,
@@ -183,7 +184,6 @@
     openCommandPalette: openCommandPalette,
     openHistorySelector: openHistorySelector,
     createScratchNote: createScratchNote,
-    openContextMenu: openContextMenu,
     openBlockSelector: openBlockSelector,
     openFunctionSelector: openFunctionSelector,
     smartRun: smartRun,
@@ -797,6 +797,7 @@
   export const kCmdSmartRun = nmid();
   export const kCmdRunBlock = nmid();
   export const kCmdRunBlockWithAnotherBlock = nmid();
+  export const kCmdRunBlockWithClipboard = nmid();
   export const kCmdRunFunctionWithBlockContent = nmid();
   export const kCmdRunFunctionWithSelection = nmid();
   export const kCmdCreateYourOwnFunctions = nmid();
@@ -827,6 +828,7 @@
       ["Smart Run\tMod + E", kCmdSmartRun],
       ["Run this block", kCmdRunBlock],
       ["Run this block with another block", kCmdRunBlockWithAnotherBlock],
+      ["Run this block with clipboard", kCmdRunBlockWithClipboard],
       [
         "Run function with this block\tAlt + Shift + R",
         kCmdRunFunctionWithBlockContent,
@@ -891,8 +893,18 @@
     return contextMenu;
   }
 
+  // getting clipboard status is async, this allows us to make
+  // menuItemStatus not async
+  let mostRecentHasClipboardText = false;
+
+  async function updateMostRcentHasCliboardText() {
+    mostRecentHasClipboardText = (await getClipboardText()) != "";
+    console.log("updateMostRcentHasCliboardText:", mostRecentHasClipboardText);
+  }
+
   /**
    * @param {import("../Menu.svelte").MenuItemDef} mi
+   * @returns {number}
    */
   function menuItemStatus(mi) {
     let mid = mi[1];
@@ -916,10 +928,14 @@
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdRunBlockWithAnotherBlock) {
-      if (readOnly || !langSupportsRun(lang)) {
+      if (readOnly || lang.token !== "javascript") {
         return kMenuStatusDisabled;
       }
-      if (lang.token !== "javascript") {
+    } else if (mid === kCmdRunBlockWithClipboard) {
+      if (readOnly || lang.token !== "javascript") {
+        return kMenuStatusDisabled;
+      }
+      if (!mostRecentHasClipboardText) {
         return kMenuStatusDisabled;
       }
     } else if (mid === kCmdSmartRun) {
@@ -1070,6 +1086,8 @@
       runCurrentBlock();
     } else if (cmdId === kCmdRunBlockWithAnotherBlock) {
       runCurrentBlockWithAnotherBlock();
+    } else if (cmdId === kCmdRunBlockWithClipboard) {
+      runCurrentBlockWithClipboard();
     } else if (cmdId === kCmdSmartRun) {
       smartRun();
     } else if (cmdId === kCmdRunFunctionWithBlockContent) {
@@ -1095,7 +1113,7 @@
   /**
    * @param {MouseEvent} ev
    */
-  function oncontextmenu(ev) {
+  async function oncontextmenu(ev) {
     if (isShowingDialog) {
       console.log("oncontestmenu: isShowingDialog");
       return;
@@ -1107,20 +1125,21 @@
     if (forceNativeMenu) {
       return;
     }
-    openContextMenu(ev);
+    await openContextMenu(ev);
   }
 
   /**
    * @param {MouseEvent} ev
    * @param {{x: number, y: number}} pos
    */
-  function openContextMenu(ev, pos = null) {
+  async function openContextMenu(ev, pos = null) {
     console.log("openContextMenu:", ev);
     ev.preventDefault();
     ev.stopPropagation();
     ev.stopImmediatePropagation();
     contextMenuDef = buildMenuDef();
     contextMenuPos = pos || { x: ev.x, y: ev.y };
+    await updateMostRcentHasCliboardText();
     showingMenu = true;
   }
 
@@ -1166,9 +1185,9 @@
     return name;
   }
 
-  function buildCommandsDef() {
+  async function buildCommandsDef() {
     let a = [];
-    function addMenuItems(items) {
+    async function addMenuItems(items) {
       for (let mi of items) {
         // console.log(mi);
         let name = mi[0];
@@ -1185,7 +1204,7 @@
         if (id === kCmdCommandPalette) {
           continue;
         }
-        const miStatus = menuItemStatus(mi);
+        const miStatus = await menuItemStatus(mi);
         if (miStatus != kMenuStatusNormal) {
           // filter out disabled and removed
           continue;
@@ -1196,7 +1215,7 @@
       }
     }
     let mdef = buildMenuDef();
-    addMenuItems(mdef);
+    await addMenuItems(mdef);
     return a;
   }
 
@@ -1204,9 +1223,10 @@
     ["Open recent note", kCmdOpenRecent],
     ["Export current note", kCmdExportCurrentNote],
   ];
-  function openCommandPalette() {
+
+  async function openCommandPalette() {
     console.log("openCommandPalette");
-    commandsDef = buildCommandsDef();
+    commandsDef = await buildCommandsDef();
     commandsDef.push(...commandPaletteAdditions);
     let name = commandNameOverride(kCmdToggleSpellChecking);
     commandsDef.push([name, kCmdToggleSpellChecking]);
@@ -1368,6 +1388,17 @@
     logNoteOp("noteRunBlock");
   }
 
+  /**
+   * @param {string} arg
+   */
+  function runCurrentBlockWithArg(arg) {
+    console.log("runCurrentBlockWithArg:", arg);
+    let view = getEditorView();
+    runBlockContentWithArg(view, arg);
+    view.focus();
+    logNoteOp("noteRunBlock");
+  }
+
   let fnSelectBlock = $state(null);
 
   function runBlockWithAnotherBlock(argBlockItem) {
@@ -1400,6 +1431,15 @@
       return;
     }
     openBlockSelector(runBlockWithAnotherBlock);
+  }
+
+  async function runCurrentBlockWithClipboard() {
+    let view = getEditorView();
+    if (!currentBlockSupportsRun(view.state)) {
+      return;
+    }
+    let text = await getClipboardText();
+    runCurrentBlockWithArg(text);
   }
 
   // if have a selection, run function with selection
