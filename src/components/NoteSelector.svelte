@@ -1,13 +1,15 @@
 <script>
   import {
     getLatestNoteNames,
-    getMetadataForNote,
     isSystemNoteName,
-    reassignNoteShortcut,
     sanitizeNoteName,
     getNotesCount,
-    updateMetadataForNote,
   } from "../notes";
+  import {
+    getMetadataForNote,
+    reassignNoteShortcut,
+    updateMetadataForNote,
+  } from "../metadata";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";

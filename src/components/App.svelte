@@ -33,8 +33,6 @@
     createNoteWithName,
     dbDelDirHandle,
     deleteNote,
-    getNotesMetadata,
-    getMetadataForNote,
     getStorageFS,
     pickAnotherDirectory,
     switchToStoringNotesOnDisk,
@@ -51,15 +49,13 @@
     decryptAllNotes,
     kWelcomeSystemNoteName,
     kWelcomeDevSystemNoteName,
-    saveCurrentNote,
-    kInboxNoteName,
     kBuiltInFunctionsNoteName,
     createIfNotExists,
     kMyFunctionsNoteName,
-    loadNote,
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
   } from "../notes";
+  import { getNotesMetadata, getMetadataForNote } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
@@ -93,11 +89,7 @@
     formatBlockContent,
     insertAfterActiveBlock,
   } from "../editor/block/format-code";
-  import {
-    focusEditorView,
-    getCurrentSelection,
-    isReadOnly,
-  } from "../editor/cmutils";
+  import { getCurrentSelection, isReadOnly } from "../editor/cmutils";
   import {
     addNewBlockAfterCurrent,
     addNewBlockAfterLast,

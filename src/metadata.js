@@ -8,22 +8,20 @@ export const kMetadataName = "__metadata.edna.json";
     name: string,
     altShortcut?: string,
     isStarred?: boolean,
-}} NoteMetadata
-*/
+}} NoteMetadata */
 
 /** @typedef {{
     name: string,
     isStarred?: boolean,
-}} FunctionMetadata
-*/
+}} FunctionMetadata */
 
 /** @typedef {NoteMetadata[]} MetadataOld */
 
 /** @typedef {{
+  ver: number,
   files: NoteMetadata[],
   functions: FunctionMetadata[],
-}} Metadata
- */
+}} Metadata */
 
 /** @type {NoteMetadata[]} */
 let notesMetadata = [];
@@ -178,7 +176,15 @@ export async function reassignNoteShortcut(name, altShortcut) {
 
 // TODO: temporary
 /**
- *
- * @param {} o
+ * @param {any} o
+ * @return {Metadata}
  */
-export function updateMetadata(o) {}
+export function updateMetadata(o) {
+  /** @type {Metadata} */
+  let res = {
+    ver: 1,
+    files: [],
+    functions: [],
+  };
+  if (Array.isArray(o)) return res;
+}

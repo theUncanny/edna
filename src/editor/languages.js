@@ -52,7 +52,7 @@ export declare const ceylon: StreamParser<unknown>
  */
 
 /** @type {Language[]} */
-export const LANGUAGES = [
+export const kLanguages = [
   {
     token: "text",
     name: "Plain Text",
@@ -230,7 +230,15 @@ export const LANGUAGES = [
   },
 ];
 
-const tokenToLanguage = Object.fromEntries(LANGUAGES.map((l) => [l.token, l]));
+function buildTokenToLanguage() {
+  let res = {};
+  for (let l of kLanguages) {
+    res[l.token] = l;
+  }
+  return res;
+}
+
+const tokenToLanguage = buildTokenToLanguage();
 
 export function getLanguage(token) {
   return tokenToLanguage[token];

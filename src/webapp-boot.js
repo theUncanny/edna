@@ -7,10 +7,10 @@ import {
   isSystemNoteName,
   kScratchNoteName,
   loadNoteNames,
-  loadNotesMetadata,
   preLoadAllNotes,
   setStorageFS,
 } from "./notes";
+import { loadNotesMetadata } from "./metadata";
 import { getSettings, loadInitialSettings, setSetting } from "./settings";
 import { isDev } from "./util";
 import { mount, unmount } from "svelte";

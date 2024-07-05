@@ -12,16 +12,13 @@ import {
 import {
   forEachNoteFileFS,
   getStorageFS,
-  kEdnaFileExt,
-  kMetadataName,
   loadNote,
   loadNoteNames,
-  loadNotesMetadata,
   notePathFromNameFS,
 } from "./notes";
+import { kMetadataName, loadNotesMetadata } from "./metadata";
 import { formatDateYYYYMMDD, len, throwIf } from "./util";
 import { getSettings, kSettingsPath, loadSettings } from "./settings";
-import { toFileName } from "./filenamify";
 
 /**
  * @param {any} libZip

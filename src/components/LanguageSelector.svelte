@@ -1,5 +1,5 @@
 <script>
-  import { LANGUAGES } from "../editor/languages.js";
+  import { kLanguages } from "../editor/languages.js";
   import { focus } from "../actions.js";
   import ListBox from "./ListBox.svelte";
   import { findMatchingItems, len } from "../util.js";
@@ -12,10 +12,10 @@
   let filter = $state("");
 
   function buildItems() {
-    let n = len(LANGUAGES);
+    let n = len(kLanguages);
     let res = Array(n);
     let i = 0;
-    for (let l of LANGUAGES) {
+    for (let l of kLanguages) {
       let item = {
         key: l.name,
         token: l.token,

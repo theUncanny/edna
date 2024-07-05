@@ -9,7 +9,7 @@ export function getFontTheme(fontFamily, fontSize) {
   // quote fontFamily name in case it has spaces in it
   // provide monospace fallback if the font doesn't exist (e.g. Linux)
   fontFamily = `'${fontFamily}', monospace`;
-  console.log("getFontTheme:", fontFamily);
+  // console.log("getFontTheme:", fontFamily);
 
   return EditorView.theme({
     ".cm-scroller": {

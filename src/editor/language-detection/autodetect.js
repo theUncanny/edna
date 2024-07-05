@@ -3,11 +3,11 @@ import { EditorView } from "@codemirror/view";
 import { redoDepth } from "@codemirror/commands";
 import { getActiveNoteBlock, blockState } from "../block/block";
 import { levenshtein_distance } from "./levenshtein";
-import { LANGUAGES } from "../languages";
+import { kLanguages } from "../languages";
 import { changeLanguageTo } from "../block/commands";
 
 const GUESSLANG_TO_TOKEN = Object.fromEntries(
-  LANGUAGES.map((l) => [l.guesslang, l.token]),
+  kLanguages.map((l) => [l.guesslang, l.token]),
 );
 
 function requestIdleCallbackCompat(cb) {
