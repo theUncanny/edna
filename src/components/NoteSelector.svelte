@@ -129,6 +129,7 @@
       },
       true,
     );
+    input.focus();
   }
 
   /**
@@ -288,6 +289,7 @@
     deleteNote(name);
   }
 
+  let input;
   let listbox;
 </script>
 
@@ -301,6 +303,7 @@
     <input
       type="text"
       use:focus
+      bind:this={input}
       bind:value={filter}
       class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
     />

@@ -1,5 +1,9 @@
 # Release notes for Edna
 
+## 1.13
+
+- added ability to star / favourite notes
+
 ## 1.12
 
 - add `Run this block with selection` command
