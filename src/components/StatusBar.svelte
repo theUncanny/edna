@@ -97,18 +97,18 @@
       Sel <span class="num">{selectionSize}</span>
     {/if}
   </div>
-  <div>&bull;</div>
+  <div class="text-gray-400">&bull;</div>
   <div class="doc-size px-[6px]" title="Note Size: {docSize} bytes">
     {formatSize}
   </div>
 
-  <div>&bull;</div>
+  <div class="text-gray-400">&bull;</div>
   <button onclick={toggleSpellCheck} class="clickable">
     <span
       >{#if isSpellChecking}Disable{:else}Enable{/if} spell checking</span
     >
   </button>
-  <div>&bull;</div>
+  <div class="text-gray-400">&bull;</div>
   <button
     onclick={openLanguageSelector}
     class="clickable"
@@ -119,13 +119,13 @@
       <span class="auto">(auto)</span>
     {/if}
   </button>
-  <div>&bull;</div>
+  <div class="text-gray-400">&bull;</div>
   <button onclick={smartRun} class="clickable" title={runBlockTitle}>
     Smart Run
   </button>
 
   {#if supportsFormat}
-    <div>&bull;</div>
+    <div class="text-gray-400">&bull;</div>
     <button
       title={formatBlockTitle}
       onclick={formatCurrentBlock}
@@ -147,7 +147,9 @@
     </button>
   {/if}
 
-  <div>&bull;</div>
+  {#if !supportsFormat}
+    <div class="text-gray-400">&bull;</div>
+  {/if}
   <button onclick={openSettings} class="clickable-icon ml-1" title="Settings">
     <IconSettings></IconSettings>
   </button>
