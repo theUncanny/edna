@@ -29,67 +29,11 @@ export function getMetadata() {
 }
 
 /**
- * @param {string} noteName
- * @param {boolean} createIfNotExists
- * @returns {NoteMetadata}
+ * @returns {NoteMetadata[]}
  */
-export function getMetadataForNote(noteName, createIfNotExists = false) {
-  // console.log("getMetadataForNote:", noteName);
-  let meta = getMetadata();
-  let notes = meta.notes || [];
-  for (let m of notes) {
-    if (m.name === noteName) {
-      return m;
-    }
-  }
-  if (!createIfNotExists) {
-    return null;
-  }
-  let m = {
-    name: noteName,
-  };
-  notes.push(m);
-  metadata.notes = notes;
-  return m;
-}
-
-/** @typedef {(meta: NoteMetadata) => void} UpdateNoteMetadataFn */
-
-/**
- * @param {string} noteName
- * @param {UpdateNoteMetadataFn} updateMetaFn
- * @param {boolean} save
- * @returns {Promise<Metadata>}
- */
-export async function updateMetadataForNote(
-  noteName,
-  updateMetaFn,
-  save = false,
-) {
-  let meta = getMetadataForNote(noteName, true);
-  updateMetaFn(meta);
-  let res = metadata;
-  if (save) {
-    res = await saveNotesMetadata(metadata);
-  }
-  return res;
-}
-
-/**
- * @param {string} noteName
- */
-export async function removeNoteFromMetadata(noteName) {
-  console.log("deleteMetadataForNote:", noteName);
-  let meta = getMetadata();
-  let notes = meta.notes;
-  let newNotes = [];
-  for (let m of notes) {
-    if (m.name !== noteName) {
-      newNotes.push(m);
-    }
-  }
-  meta.notes = newNotes;
-  await saveNotesMetadata(meta);
+function getNotesMetadata() {
+  metadata.notes = metadata.notes || [];
+  return metadata.notes;
 }
 
 /**
@@ -136,20 +80,80 @@ async function saveNotesMetadata(m) {
 }
 
 /**
+ * @param {string} noteName
+ * @param {boolean} createIfNotExists
+ * @returns {NoteMetadata}
+ */
+export function getMetadataForNote(noteName, createIfNotExists = false) {
+  // console.log("getMetadataForNote:", noteName);
+  let notes = getNotesMetadata();
+  for (let m of notes) {
+    if (m.name === noteName) {
+      return m;
+    }
+  }
+  if (!createIfNotExists) {
+    return null;
+  }
+  let m = {
+    name: noteName,
+  };
+  notes.push(m);
+  return m;
+}
+
+/** @typedef {(meta: NoteMetadata) => void} UpdateNoteMetadataFn */
+
+/**
+ * @param {string} noteName
+ * @param {UpdateNoteMetadataFn} updateMetaFn
+ * @param {boolean} save
+ * @returns {Promise<Metadata>}
+ */
+export async function updateMetadataForNote(
+  noteName,
+  updateMetaFn,
+  save = false,
+) {
+  let meta = getMetadataForNote(noteName, true);
+  updateMetaFn(meta);
+  let res = metadata;
+  if (save) {
+    res = await saveNotesMetadata(metadata);
+  }
+  return res;
+}
+
+/**
+ * @param {string} noteName
+ */
+export async function removeNoteFromMetadata(noteName) {
+  console.log("deleteMetadataForNote:", noteName);
+  let notes = getNotesMetadata();
+  let newNotes = [];
+  for (let m of notes) {
+    if (m.name !== noteName) {
+      newNotes.push(m);
+    }
+  }
+  metadata.notes = newNotes;
+  await saveNotesMetadata(metadata);
+}
+
+/**
  * @param {string} oldName
  * @param {string} newName
  * @returns {Promise<Metadata>}
  */
 export async function renameNoteInMetadata(oldName, newName) {
-  let meta = getMetadata();
-  let notes = meta.notes || [];
+  let notes = getNotesMetadata();
   for (let o of notes) {
     if (o.name === oldName) {
       o.name = newName;
       break;
     }
   }
-  let res = await saveNotesMetadata(meta);
+  let res = await saveNotesMetadata(metadata);
   return res;
 }
 
@@ -160,8 +164,7 @@ export async function renameNoteInMetadata(oldName, newName) {
  */
 export async function reassignNoteShortcut(name, altShortcut) {
   console.log("reassignNoteShortcut:", name, altShortcut);
-  let meta = getMetadata();
-  let notes = meta.notes || [];
+  let notes = getNotesMetadata();
   for (let o of notes) {
     if (o.altShortcut !== altShortcut) {
       continue;
@@ -169,7 +172,7 @@ export async function reassignNoteShortcut(name, altShortcut) {
     if (o.name === name) {
       // same note: just remove shortcut
       delete o.altShortcut;
-      let res = await saveNotesMetadata(meta);
+      let res = await saveNotesMetadata(metadata);
       return res;
     } else {
       // a different note: remove shortcut and then assign to the new note
