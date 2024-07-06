@@ -2,6 +2,7 @@
   import RenameNote from "./RenameNote.svelte";
   import History from "./History.svelte";
   import NoteSelector from "./NoteSelector.svelte";
+  import NoteSelector2 from "./NoteSelector2.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
   import Editor from "./Editor.svelte";
   import ModalMessage, {
@@ -137,6 +138,8 @@
   let showingFind = $state(false);
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
+
+  let useWideNoteSelector = $state(true);
 
   let contextMenuPos = $state({ x: 0, y: 0 });
 
@@ -1671,14 +1674,25 @@
 {/if}
 
 {#if showingNoteSelector}
-  <Overlay onclose={closeNoteSelector} blur={true}>
-    <NoteSelector
-      {switchToCommandPalette}
-      openNote={onOpenNote}
-      createNote={onCreateNote}
-      deleteNote={onDeleteNote}
-    />
-  </Overlay>
+  {#if useWideNoteSelector}
+    <Overlay onclose={closeNoteSelector} blur={true}>
+      <NoteSelector2
+        {switchToCommandPalette}
+        openNote={onOpenNote}
+        createNote={onCreateNote}
+        deleteNote={onDeleteNote}
+      />
+    </Overlay>
+  {:else}
+    <Overlay onclose={closeNoteSelector} blur={true}>
+      <NoteSelector
+        {switchToCommandPalette}
+        openNote={onOpenNote}
+        createNote={onCreateNote}
+        deleteNote={onDeleteNote}
+      />
+    </Overlay>
+  {/if}
 {/if}
 
 {#if showingLanguageSelector}

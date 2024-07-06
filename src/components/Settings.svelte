@@ -232,24 +232,21 @@
   select {
     @apply w-[200px];
     @apply ml-4;
-    @apply border;
-    @apply border-black;
-    @apply px-2 py-1;
+    @apply border border-gray-400;
+    @apply px-1 py-1;
   }
 
   option {
-    @apply px-2 py-2;
-  }
-  h2 ~ label {
-    margin-left: 2px;
+    @apply px-2 py-4;
+    @apply text-[16px];
   }
 
   label {
-    @apply flex items-center relative;
+    @apply flex;
   }
 
   input[type="checkbox"] {
-    @apply mr-1;
+    @apply mr-2;
   }
 
   h2 {

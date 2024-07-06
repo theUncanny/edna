@@ -178,25 +178,21 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-  class="items overflow-y-auto cursor-pointer flex flex-row flex-wrap"
+  class="items overflow-y-auto cursor-pointer flex flex-row justify-between flex-wrap"
   tabindex="-1"
   role="listbox"
   bind:this={listbox}
   onclick={listboxclick}
 >
   {#each items as item, idx (item.key)}
-    {@const isLast = idx == len(items) - 1}
     <div
       role="option"
       aria-selected={idx === selectedIdx}
-      class=" py-0.5 px-2 leading-5 flex flex-row aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[24ch]"
+      class=" py-0.5 px-2 flex aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[28ch] even:text-blue-700"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}
     </div>
-    {#if !isLast}
-      <div class="mx-0.5 text-gray-400">&bull;</div>
-    {/if}
   {/each}
 </div>
 

@@ -106,6 +106,19 @@
   let canDeleteSelected = $state(false);
   let showDelete = $state(false);
 
+  let itemsCountMsg = $derived.by(() => {
+    // $state(`${noteCount} notes`);
+    let n = len(itemsFiltered);
+    if (n === 0) {
+      return ""; // don't obscure user entering new, long note name
+    }
+    let nItems = len(items);
+    if (n === nItems) {
+      return `${nItems} notes`;
+    }
+    return `${n} of ${nItems} notes`;
+  });
+
   function selectionChanged(item, idx) {
     // console.log("selectionChanged:", item, idx);
     selectedNote = item;
@@ -241,12 +254,17 @@
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[90vw] p-2"
 >
-  <input
-    type="text"
-    use:focus
-    bind:value={filter}
-    class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
-  />
+  <div>
+    <input
+      type="text"
+      use:focus
+      bind:value={filter}
+      class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
+    />
+    <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
+      {itemsCountMsg}
+    </div>
+  </div>
   <ListBox
     bind:this={listbox}
     items={itemsFiltered}
@@ -310,12 +328,3 @@
     {/if}
   </div>
 </form>
-
-<style>
-  .kbd {
-    @apply font-mono;
-    @apply text-nowrap whitespace-nowrap;
-    @apply font-semibold;
-    @apply text-center;
-  }
-</style>

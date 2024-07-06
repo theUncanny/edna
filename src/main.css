@@ -87,8 +87,15 @@ html.dark input {
   }
 }
 
-html.dark select {
-  @apply bg-gray-800;
+select {
+  @apply dark:bg-gray-800;
+}
+
+.kbd {
+  @apply font-mono;
+  @apply text-nowrap whitespace-nowrap;
+  @apply font-semibold;
+  @apply text-center;
 }
 
 .selector {

@@ -296,7 +296,7 @@
       use:focus
       bind:this={input}
       bind:value={filter}
-      class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
+      class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
     />
     <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
       {itemsCountMsg}
@@ -378,12 +378,3 @@
     {/if}
   </div>
 </form>
-
-<style>
-  .kbd {
-    @apply font-mono;
-    @apply text-nowrap whitespace-nowrap;
-    @apply font-semibold;
-    @apply text-center;
-  }
-</style>

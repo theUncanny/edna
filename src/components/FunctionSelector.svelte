@@ -212,12 +212,3 @@
     </div>
   {/if}
 </form>
-
-<style>
-  .kbd {
-    @apply font-mono;
-    @apply text-nowrap whitespace-nowrap;
-    @apply font-semibold;
-    @apply text-center;
-  }
-</style>
