@@ -28,6 +28,7 @@ const GUESSLANG_LANGUAGES = [
   "ps1",
   "dart",
   "scala",
+  "lua",
 ];
 
 const guessLang = new self.GuessLang();

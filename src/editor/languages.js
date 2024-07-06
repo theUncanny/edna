@@ -12,6 +12,7 @@ import { cppLanguage } from "@codemirror/lang-cpp";
 import { csharpLanguage } from "@replit/codemirror-lang-csharp";
 import { cssLanguage } from "@codemirror/lang-css";
 import { diff } from "@codemirror/legacy-modes/mode/diff";
+import { lua } from "@codemirror/legacy-modes/mode/lua";
 import { erlang } from "@codemirror/legacy-modes/mode/erlang";
 import { go } from "@codemirror/legacy-modes/mode/go";
 import { groovy } from "@codemirror/legacy-modes/mode/groovy";
@@ -228,6 +229,11 @@ export const kLanguages = [
     name: "Scala",
     guesslang: "scala",
   },
+  {
+    token: "lua",
+    name: "Lua",
+    guesslang: "lua",
+  },
 ];
 
 function buildTokenToLanguage() {
@@ -373,6 +379,9 @@ export function langGetParser(lang) {
   }
   if (token === "powershell") {
     return StreamLanguage.define(powerShell).parser;
+  }
+  if (token === "lua") {
+    return StreamLanguage.define(lua).parser;
   }
   return null;
 }
