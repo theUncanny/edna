@@ -135,7 +135,7 @@
 
   export function down() {
     let nItems = len(items);
-    console.log("donw: selectedIdx:", selectedIdx, "nItems:", nItems);
+    // console.log("donw: selectedIdx:", selectedIdx, "nItems:", nItems);
     let lastIdx = nItems - 1;
     if (nItems <= 0 || selectedIdx >= lastIdx) {
       return;

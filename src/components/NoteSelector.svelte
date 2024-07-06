@@ -25,9 +25,6 @@
       return 1;
     }
 
-    // TODO: when both are starred, those with shortcut should be first
-    // I can't figure out why the below isn't that
-
     // with shortcut are before (<) those without
     if (a.altShortcut && !b.altShortcut) {
       return -1;

@@ -251,55 +251,68 @@
     {/snippet}
   </ListBox2>
   <div
-    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
+    class="flex flex-row items-baseline justify-between mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
   >
     {#if canOpenSelected}
-      <div class="kbd">Enter</div>
-      <div>
-        open note
-        <span class="font-bold truncate">
-          {selectedName}
-        </span>
+      <div class="flex items-baseline">
+        <div class="kbd">Enter</div>
+        <div class="ml-2 mr-2">open</div>
       </div>
+      <div class="text-gray-400">&bull;</div>
     {/if}
 
-    {#if canCreateWithEnter}
-      <div class="kbd">Enter</div>
-    {/if}
-    {#if canCreate && !canCreateWithEnter}
-      <div class="kbd">Ctrl + Enter</div>
-    {/if}
     {#if canCreate}
-      <div>
-        create note <span class="font-bold truncate">
-          {filter}
-        </span>
+      <div class="flex items-baseline">
+        {#if canCreateWithEnter}
+          <div class="kbd">Enter</div>
+        {/if}
+        {#if canCreate && !canCreateWithEnter}
+          <div class="kbd">Ctrl + Enter</div>
+        {/if}
+        {#if canCreate}
+          <div class="ml-2">
+            create <span class="font-bold truncate">
+              {filter}
+            </span>
+          </div>
+        {/if}
       </div>
-    {/if}
-
-    {#if showDelete}
-      <div class="kbd">Ctrl + Delete</div>
-      {#if canDeleteSelected}
-        <div class="red">
-          delete note <span class="font-bold truncate">
-            {selectedName}
-          </span>
-        </div>
-      {:else}
-        <div class="red">
-          can't delete <span class="font-bold truncate">{selectedName}</span>
-        </div>
+      {#if !canCreateWithEnter}
+        <div class="text-gray-400">&bull;</div>
       {/if}
     {/if}
 
-    {#if canOpenSelected}
-      <div class="kbd">{altChar} 1...9</div>
-      <div>assign quick access shortcut</div>
+    {#if showDelete}
+      <div class="flex items-baseline">
+        <div class="kbd">Ctrl + Delete</div>
+        {#if canDeleteSelected}
+          <div class="ml-2 red">delete</div>
+        {:else}
+          <div class="ml-2 red">
+            can't delete <span class="font-bold truncate">{selectedName}</span>
+          </div>
+        {/if}
+      </div>
     {/if}
 
     {#if canOpenSelected}
-      <div class="kbd">{altChar} + S</div>
-      <div>toggle favorite</div>
+      <div class="text-gray-400">&bull;</div>
+      <div class="flex items-baseline">
+        <div class="kbd">{altChar} 1...9</div>
+        <div class="ml-2">assign quick access shortcut</div>
+      </div>
+
+      <div class="text-gray-400">&bull;</div>
+      <div class="flex items-baseline">
+        <div class="kbd">{altChar} + S</div>
+        <div class="ml-2">toggle favorite</div>
+      </div>
     {/if}
+
+    <div class="text-gray-400">&bull;</div>
+    <div class="flex items-baseline">
+      <div class="kbd">Esc</div>
+      <div class="ml-2">dismiss</div>
+    </div>
   </div>
 </form>
