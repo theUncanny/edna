@@ -20,12 +20,107 @@ import { IterMode } from "@lezer/common";
 import { SelectionChangeEvent } from "../event.js";
 import { emptyBlockSelected } from "./select-all.js";
 import { mathBlock } from "./math.js";
+import { len, objectEqualDeep, startTimer } from "../../util.js";
 
 // tracks the size of the first delimiter
 let firstBlockDelimiterSize;
 
+/** @typedef {{
+    name: string,
+    auto: boolean,
+}} BlockLanguage
+*/
+
+/** @typedef {{
+  from: number,
+  to: number,
+ }} BlockRange */
+
+/** @typedef {{
+  language: BlockLanguage,
+  content: BlockRange,
+  delimiter: BlockRange,
+  range: BlockRange,
+}} Block */
+
+/**
+ * Original implementation was forcing syntax tree parse on whole document to get
+ * block boundaries. That is slow for large documents (e.g. >300ms for 357kb doc)
+ * which causes un-styled content to flash (e.g. exposing delimiters).
+ * CodeMirror parses things incrementally, so this usually doesn't happen.
+ * This implementation does same doc in 2ms
+ * @param {EditorState} state
+ * @returns {Block[]}
+ */
+function getBlocks2(state) {
+  let res = [];
+  let doc = state.doc;
+  let n = doc.length;
+  if (n === 0) {
+    return [];
+  }
+  let s = doc.sliceString(0, n);
+  let delim = "\n∞∞∞";
+  let delimLen = len(delim);
+  for (let pos = 0; pos < doc.length; ) {
+    let blockStart = s.indexOf(delim, pos);
+    if (blockStart != pos) {
+      // shouldn't happen
+      break;
+    }
+    let langStart = blockStart + delimLen;
+    let delimiterEnd = s.indexOf("\n", langStart);
+    if (delimiterEnd < 0) {
+      // shouldn't happen
+      break;
+    }
+    let langFull = s.substring(langStart, delimiterEnd);
+    // console.log("langFull:", langFull);
+    let auto = false;
+    let lang = langFull;
+    if (langFull.endsWith("-a")) {
+      auto = true;
+      lang = langFull.substring(0, len(langFull) - 2);
+    }
+    let contentFrom = delimiterEnd + 1;
+    let blockEnd = s.indexOf(delim, contentFrom);
+    if (blockEnd < 0) {
+      blockEnd = doc.length;
+    }
+    /** @type {Block} */
+    let block = {
+      language: {
+        name: lang,
+        auto: auto,
+      },
+      content: {
+        from: contentFrom,
+        to: blockEnd,
+      },
+      delimiter: {
+        from: blockStart,
+        to: delimiterEnd + 1,
+      },
+      range: {
+        from: blockStart,
+        to: blockEnd,
+      },
+    };
+    res.push(block);
+    pos = blockEnd;
+  }
+  return res;
+}
+
+/**
+ * @param {EditorState} state
+ * @param {number} timeout
+ * @returns {Block[]}
+ */
 function getBlocks(state, timeout = 50) {
+  let timer = startTimer();
   const tree = ensureSyntaxTree(state, state.doc.length, timeout);
+  console.log("ensureSyntaxTree took:", timer(), " ms");
   if (!tree) {
     return [];
   }
@@ -67,15 +162,53 @@ function getBlocks(state, timeout = 50) {
   return blocks;
 }
 
+let flagCompareGetBlocks = false;
+/**
+ * @param {EditorState} state
+ * @param {number} timeout
+ * @returns {Block[]}
+ */
+function getBlocksCompare(state, timeout = 50) {
+  if (!flagCompareGetBlocks) {
+    let timer = startTimer();
+    let res = getBlocks2(state);
+    console.log("getBlocks2 took:", timer(), " ms");
+    return res;
+  }
+  // TODO: for now keeping the old getBlocks() implementation and this
+  // comparison code
+  let res1 = getBlocks(state, timeout);
+  let timer = startTimer();
+  let res2 = getBlocks2(state);
+  console.log("getBlocks2 took:", timer(), " ms");
+  if (len(res1) == len(res2)) {
+    if (objectEqualDeep(res1, res2)) {
+      console.log("great success!!!");
+    } else {
+      for (let i = 0; i < len(res1); i++) {
+        console.log(`res1[${i}]:`, res1[i]);
+        console.log(`res2[${i}]:`, res2[i]);
+      }
+    }
+  } else {
+    console.log("Not even lengths match!");
+    for (let i = 0; i < len(res1); i++) {
+      console.log(`res1[${i}]:`, res1[i]);
+      console.log(`res2[${i}]:`, res2[i]);
+    }
+  }
+  return res1;
+}
+
 export const blockState = StateField.define({
   create(state) {
-    return getBlocks(state, 1000);
+    return getBlocksCompare(state, 1000);
   },
   update(blocks, transaction) {
     // if blocks are empty it likely means we didn't get a parsed syntax tree, and then we want to update
     // the blocks on all updates (and not just document changes)
     if (transaction.docChanged || blocks.length === 0) {
-      return getBlocks(transaction.state);
+      blocks = getBlocksCompare(transaction.state, 50);
     }
     return blocks;
   },
