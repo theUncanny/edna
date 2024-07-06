@@ -283,8 +283,16 @@
    * @param {Item} item
    */
   async function toggleStarred(item) {
-    console.log("toggleStarred:", item);
-    item.isStarred = await toggleNoteStarred(item.name);
+    // there's a noticeable UI lag when we do the obvious:
+    // item.isStarred = toggleNoteStarred(item.name);
+    // because we wait until metadata file is saved
+    // this version makes an optimistic change to reflect in UI
+    // and, just to be extra sure, reflects the state after saving
+    item.isStarred = !item.isStarred;
+    toggleNoteStarred(item.name).then((isStarred) => {
+      // not really necessary, should be in-sync
+      item.isStarred = isStarred;
+    });
     input.focus();
   }
 
