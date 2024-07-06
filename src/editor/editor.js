@@ -9,7 +9,7 @@ import {
 import { foldGutter, indentUnit } from "@codemirror/language";
 
 import { autoSaveContent } from "./save.js";
-import { customCloseBracketsExtension } from "./extensions.js";
+import { createDynamicCloseBracketsExtension } from "./extensions.js";
 import { customSetup } from "./setup.js";
 import { ednaKeymap } from "./keymap.js";
 import { emacsKeymap } from "./emacs.js";
@@ -93,7 +93,7 @@ export class EdnaEditor {
           this.foldGutterCompartment.of(showFoldGutter ? [foldGutter()] : []),
 
           this.closeBracketsCompartment.of(
-            bracketClosing ? customCloseBracketsExtension : [],
+            bracketClosing ? createDynamicCloseBracketsExtension() : [],
           ),
 
           this.readOnlyCompartment.of([]),
@@ -251,7 +251,7 @@ export class EdnaEditor {
   setBracketClosing(value) {
     this.view.dispatch({
       effects: this.closeBracketsCompartment.reconfigure(
-        value ? customCloseBracketsExtension : [],
+        value ? createDynamicCloseBracketsExtension() : [],
       ),
     });
   }
