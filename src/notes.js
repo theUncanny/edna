@@ -638,11 +638,19 @@ function loadNoteLS(name) {
 
 /**
  * @param {string} name
+ * @returns {boolean}
+ */
+export function noteExists(name) {
+  let notes = getLatestNoteNames();
+  return notes.includes(name);
+}
+
+/**
+ * @param {string} name
  * @returns {Promise<string>}
  */
 export async function loadNoteIfExists(name) {
-  let notes = getLatestNoteNames();
-  if (!notes.includes(name)) {
+  if (!noteExists(name)) {
     return null;
   }
   return await loadNote(name);

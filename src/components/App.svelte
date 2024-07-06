@@ -55,15 +55,16 @@
     kMyFunctionsNoteName,
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
+    noteExists,
   } from "../notes";
-  import { getMetadata, getNoteMeta, getNotesMetadata } from "../metadata";
+  import { getNoteMeta, getNotesMetadata } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
     isAltNumEvent,
     isDev,
     len,
-    setURLHashNoReload,
+    pushHistory,
     stringSizeInUtf8Bytes,
     throwIf,
     trimPrefix,
@@ -230,18 +231,27 @@
       }
     });
 
-    //    window.onbeforeunload = async (ev) => {
-    // //ev.preventDefault();
-    // try {
-    //   await onAppExit();
-    // } catch (e) {
-    //   console.log(e);
-    // }
-    // setTimeout(() => {
-    //   console.log("yes, fnished");
-    // }, 1000); // wait for 1 second
-    // return false;
-    //  };
+    window.addEventListener("popstate", function (ev) {
+      let state = ev.state;
+      if (!state || !state.noteName) {
+        console.log(
+          "popstate: state is null or has no 'noteName' field:",
+          state,
+        );
+        return;
+      }
+      let name = state.noteName;
+      console.log("popstate:", name, state);
+      if (name === noteName) {
+        console.log("smae as noteName, nothing to do");
+        return;
+      }
+      if (!noteExists(name)) {
+        console.log(`Note with name '${name}' doesn't exist`);
+        return;
+      }
+      openNote(name, false /* skip save */, true /* noPushHistory */);
+    });
 
     logAppOpen();
 
@@ -1514,13 +1524,18 @@
     }
   }
 
-  async function openNote(name, skipSave = false) {
+  /**
+   * @param {string} name
+   * @param {boolean} skipSave
+   * @param {boolean} noPushHistory
+   */
+  async function openNote(name, skipSave = false, noPushHistory = false) {
     console.log("App.openNote:", name);
     let editor = getEditorComp();
     editor.setReadOnly(true);
     let msg = `Loading <span class="font-bold">${name}</span>...`;
     showModalMessageHTML(msg, 300);
-    await editor.openNote(name, skipSave);
+    await editor.openNote(name, skipSave, noPushHistory);
     // await sleep(400);
     clearModalMessage();
     getEditorComp().focus();
@@ -1590,8 +1605,9 @@
 
   /**
    * @param {string} name
+   * @param {boolean} noPushHistory
    */
-  function didOpenNote(name) {
+  function didOpenNote(name, noPushHistory = false) {
     console.log("didOpenNote:", name);
     throwIf(!name);
     noteName = name;
@@ -1604,7 +1620,9 @@
     }
 
     window.document.title = name;
-    setURLHashNoReload(name);
+    if (!noPushHistory) {
+      pushHistory(name);
+    }
     setSetting("currentNoteName", name);
     updateDocSize();
   }

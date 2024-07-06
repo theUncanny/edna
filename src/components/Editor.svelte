@@ -32,7 +32,7 @@
     fontSize: number,
     cursorChange: (e: SelectionChangeEvent) => void,
     docDidChange: () => void,
-    didOpenNote: (name: string) => void,
+    didOpenNote: (name: string, noPushHistory: boolean) => void,
    }}*/
 
   let {
@@ -138,7 +138,7 @@
       let settings = getSettings();
       let name = settings.currentNoteName;
       throwIf(!name);
-      didOpenNote(name);
+      didOpenNote(name, false);
 
       scheduleRefreshFromDisk();
     });
@@ -323,7 +323,11 @@
   /**
    * @param {string} name
    */
-  export async function openNote(name, skipSave = false) {
+  export async function openNote(
+    name,
+    skipSave = false,
+    noPushHistory = false,
+  ) {
     console.log("openNote:", name);
     if (!skipSave) {
       // TODO: this is async so let's hope it works
@@ -346,7 +350,7 @@
     });
     focus();
     console.log("openNote: triggering docChanged event, name:", name);
-    didOpenNote(name);
+    didOpenNote(name, noPushHistory);
   }
 </script>
 

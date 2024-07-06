@@ -230,14 +230,15 @@ export function isAltNumEvent(e) {
 }
 
 /**
- * @param {string} hash
+ * @param {string} noteName
  */
-export function setURLHashNoReload(hash) {
+export function pushHistory(noteName) {
   // @ts-ignore
   let url = new URL(window.location);
-  url.hash = encodeURIComponent(hash);
+  url.hash = encodeURIComponent(noteName);
   // update browser's URL without reloading the page
-  window.history.pushState({}, "", url);
+  window.history.pushState({ noteName: noteName }, noteName, url);
+  console.log("window.history.pushState:", noteName);
 }
 
 let sleepSetTimeout_ctrl;
