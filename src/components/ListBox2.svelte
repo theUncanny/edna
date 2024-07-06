@@ -98,6 +98,11 @@
   export function onkeydown(ev, allowLeftRight = false) {
     let key = ev.key;
     let isUp = key === "ArrowUp" || (key === "ArrowLeft" && allowLeftRight);
+    if (isUp && selectedIdx <= 0) {
+      // don't block cursor going left if input box has cursor at the end
+      // of text and we're at first item
+      return;
+    }
     let isDown =
       key === "ArrowDown" || (key === "ArrowRight" && allowLeftRight);
     let isEnter = selectedItem && key === "Enter";

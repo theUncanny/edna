@@ -31,6 +31,7 @@
   let fontSize = $state(initialSettings.fontSize || kDefaultFontSize);
   let theme = $state(initialSettings.theme);
   let backupNotes = $state(initialSettings.backupNotes);
+  let useWideSelectors = $state(initialSettings.useWideSelectors);
 
   let showBackupSetting = !!getStorageFS();
 
@@ -100,6 +101,7 @@
       showFoldGutter: showFoldGutter,
       showLineNumberGutter: showLineNumberGutter,
       backupNotes: backupNotes,
+      useWideSelectors: useWideSelectors,
       theme: theme,
     };
     saveSettings(newSettings);
@@ -199,9 +201,9 @@
     </select>
   </div>
 
-  {#if showBackupSetting}
-    <div class="mt-2 flex flex-col">
-      <h2>Misc</h2>
+  <div class="mt-2 flex flex-col">
+    <h2>Misc</h2>
+    {#if showBackupSetting}
       <label class="flex">
         <input
           type="checkbox"
@@ -216,8 +218,22 @@
           title="info about backup">help</a
         >
       </label>
-    </div>
-  {/if}
+    {/if}
+    <label class="flex">
+      <input
+        type="checkbox"
+        bind:checked={useWideSelectors}
+        onchange={updateSettings}
+      />
+      <div>Use Wide Selectors</div>
+      <!-- <a
+        href="/help#backing-up-notes"
+        class="underline ml-2"
+        target="_blank"
+        title="info about backup">help</a
+      > -->
+    </label>
+  </div>
 
   <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
     Current Version: {appVersion}&nbsp;

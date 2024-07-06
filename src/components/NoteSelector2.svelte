@@ -221,7 +221,14 @@
     }
 
     console.log("listbox:", listbox);
-    listbox.onkeydown(ev, filter === "");
+    let allowLeftRight = filter === "" || isCursorAtEnd(input);
+    listbox.onkeydown(ev, allowLeftRight);
+  }
+
+  function isCursorAtEnd(input) {
+    const cursorPosition = input.selectionStart;
+    const inputLength = input.value.length;
+    return cursorPosition === inputLength;
   }
 
   /**
@@ -245,6 +252,7 @@
     deleteNote(name);
   }
 
+  let input;
   let listbox;
 </script>
 
@@ -256,9 +264,10 @@
 >
   <div>
     <input
-      type="text"
-      use:focus
+      bind:this={input}
       bind:value={filter}
+      use:focus
+      type="text"
       class="py-1 px-2 bg-white w-full mb-2 rounded-sm"
     />
     <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">

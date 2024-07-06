@@ -62,18 +62,21 @@
 
   let theme = getSettings().theme;
 
-  function updateEditorForSettings(newSettings) {
+  /**
+   * @param {import("../settings").Settings} settings
+   */
+  function updateForSettings(settings) {
     if (!editor) {
       return;
     }
-    editor.setTheme(newSettings.theme);
-    editor.setKeymap(newSettings.keymap, newSettings.emacsMetaKey);
-    editor.setBracketClosing(newSettings.bracketClosing);
-    editor.setFoldGutter(newSettings.showFoldGutter);
-    editor.setLineNumberGutter(newSettings.showLineNumberGutter);
-    editor.setFont(newSettings.fontFamily, newSettings.fontSize);
+    editor.setTheme(settings.theme);
+    editor.setKeymap(settings.keymap, settings.emacsMetaKey);
+    editor.setBracketClosing(settings.bracketClosing);
+    editor.setFoldGutter(settings.showFoldGutter);
+    editor.setLineNumberGutter(settings.showLineNumberGutter);
+    editor.setFont(settings.fontFamily, settings.fontSize);
   }
-  onSettingsChange(updateEditorForSettings);
+  onSettingsChange(updateForSettings);
 
   function mounted() {
     console.log("Editor.svelte: mounted, editorEl:", editorEl);

@@ -27,7 +27,7 @@
   import Overlay from "./Overlay.svelte";
   import CreateNewNote from "./CreateNewNote.svelte";
 
-  import { getSettings, setSetting } from "../settings";
+  import { getSettings, onSettingsChange, setSetting } from "../settings";
   import { logAppExit, logAppOpen, logNoteOp } from "../log";
   import {
     createNewScratchNote,
@@ -138,8 +138,7 @@
   let showingFind = $state(false);
   let isSpellChecking = $state(false);
   let altChar = getAltChar();
-
-  let useWideNoteSelector = $state(true);
+  let useWideSelectors = $state(initialSettings.useWideSelectors);
 
   let contextMenuPos = $state({ x: 0, y: 0 });
 
@@ -152,6 +151,15 @@
   $effect(() => {
     console.log("showingCreateNewNote changed to:", showingCreateNewNote);
   });
+
+  /**
+   * @param {import("../settings").Settings} settings
+   */
+  function updateForSettings(settings) {
+    console.log("updateForSettings");
+    useWideSelectors = settings.useWideSelectors;
+  }
+  onSettingsChange(updateForSettings);
 
   let isShowingDialog = $derived.by(() => {
     return (
@@ -1674,7 +1682,7 @@
 {/if}
 
 {#if showingNoteSelector}
-  {#if useWideNoteSelector}
+  {#if useWideSelectors}
     <Overlay onclose={closeNoteSelector} blur={true}>
       <NoteSelector2
         {switchToCommandPalette}

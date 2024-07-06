@@ -3,19 +3,19 @@ import { cloneObjectDeep, objectEqualDeep, platform, throwIf } from "./util";
 import { ipcRenderer } from "./ipcrenderer";
 import { kScratchNoteName } from "./notes";
 
-/**
- * @typedef {Object} Settings
- * @property {boolean} bracketClosing
- * @property {string} currentNoteName
- * @property {string} emacsMetaKey
- * @property {string} [fontFamily]
- * @property {number} [fontSize]
- * @property {string} keymap
- * @property {boolean} showFoldGutter
- * @property {boolean} showLineNumberGutter
- * @property {boolean} backupNotes
- * @property {string} [theme] // "system", "light", "dark"
- */
+/** @typedef {{
+ bracketClosing: boolean,
+ currentNoteName: string,
+emacsMetaKey: string,
+fontFamily?: string,
+fontSize?: number,
+keymap: string,
+showFoldGutter: boolean,
+showLineNumberGutter: boolean,
+backupNotes: boolean,
+useWideSelectors: boolean,
+theme?: string, // "system", "light", "dark"
+}} Settings */
 
 export const kEventSettingsChange = "settings-change";
 
@@ -120,6 +120,7 @@ export function loadInitialSettings() {
     keymap: "default",
     showFoldGutter: true,
     showLineNumberGutter: true,
+    useWideSelectors: false,
     backupNotes: false,
     theme: "system",
   };
