@@ -50,8 +50,12 @@ const validOps = [
   "noteDelete",
   "noteRename",
   "noteFormatBlock",
-  "noteRunBlock",
-  "noteRunFunction",
+  "runBlock",
+  "runBlockWithBlock",
+  "runBlockWithClipboard",
+  "runFunction",
+  "runFunctionWithSelection",
+  ,
 ];
 function validateNoteOp(op) {
   throwIf(!validOps.includes(op), `invalid op: ${op}`);

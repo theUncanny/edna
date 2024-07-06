@@ -689,8 +689,8 @@
    * @param {BoopFunction} fdef
    * @param {boolean} replace
    */
-  async function runFunctionWithActiveBlock(fdef, replace) {
-    console.log("runFunctionWithActiveBlock");
+  async function runFunction(fdef, replace) {
+    console.log("runFunction");
     showingFunctionSelector = false;
     let view = getEditorView();
     if (isReadOnly(view)) {
@@ -702,8 +702,10 @@
     showModalMessageHTML(msg, 300);
     if (runFunctionOnSelection) {
       await runBoopFunctionWithSelection(view, fdef, replace);
+      logNoteOp("runFunctionWithSelection");
     } else {
       await runBoopFunctionWithBlockContent(view, fdef, replace);
+      logNoteOp("runFunction");
     }
     clearModalMessage();
     view.focus();
@@ -867,9 +869,9 @@
     const contextMenu = [
       ["Command Palette\tMod + Shift + P", kCmdCommandPalette],
       ["Open note\tMod + P", kCmdOpenNote],
-      ["This Note", menuNote],
+      ["This note", menuNote],
       ["Block", menuBlock],
-      ["Run", menuRun],
+      ["Run code", menuRun],
       ["Notes storage", menuStorage],
     ];
     if (dh) {
@@ -1373,18 +1375,7 @@
     runBlockContent(view);
     view = getEditorView();
     view.focus();
-    logNoteOp("noteRunBlock");
-  }
-
-  /**
-   * @param {string} arg
-   */
-  function runCurrentBlockWithArg(arg) {
-    console.log("runCurrentBlockWithArg:", arg);
-    let view = getEditorView();
-    runBlockContentWithArg(view, arg);
-    view.focus();
-    logNoteOp("noteRunBlock");
+    logNoteOp("runBlock");
   }
 
   let fnSelectBlock = $state(null);
@@ -1399,7 +1390,7 @@
     let arg = state.sliceDoc(blockArg.content.from, blockArg.content.to);
     runBlockContentWithArg(view, arg);
     view.focus();
-    logNoteOp("noteRunBlock");
+    logNoteOp("runBlockWithBlock");
   }
 
   /**
@@ -1426,8 +1417,10 @@
     if (!currentBlockSupportsRun(view.state)) {
       return;
     }
-    let text = await getClipboardText();
-    runCurrentBlockWithArg(text);
+    let arg = await getClipboardText();
+    runBlockContentWithArg(view, arg);
+    view.focus();
+    logNoteOp("runBlockWithClipboard");
   }
 
   // if have a selection, run function with selection
@@ -1672,10 +1665,7 @@
 
 {#if showingFunctionSelector}
   <Overlay onclose={closeFunctionSelector} blur={true}>
-    <FunctionSelector
-      context={functionContext}
-      {userFunctions}
-      runFunction={runFunctionWithActiveBlock}
+    <FunctionSelector context={functionContext} {userFunctions} {runFunction}
     ></FunctionSelector>
   </Overlay>
 {/if}
