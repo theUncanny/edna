@@ -1,10 +1,10 @@
 <script>
-  let { fill = "none" } = $props();
+  let { fill = "none", class: klass = "" } = $props();
 </script>
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  class="icon icon-tabler icon-tabler-star"
+  class="icon icon-tabler icon-tabler-star {klass}"
   width="1em"
   height="1em"
   viewBox="0 0 24 24"
