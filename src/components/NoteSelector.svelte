@@ -3,13 +3,11 @@
     getLatestNoteNames,
     isSystemNoteName,
     sanitizeNoteName,
-    getNotesCount,
   } from "../notes";
   import {
     getNoteMeta,
     reassignNoteShortcut,
     toggleNoteStarred,
-    updateNoteMeta,
   } from "../metadata";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
@@ -149,7 +147,7 @@
   });
 
   function selectionChanged(item, idx) {
-    console.log("selectionChanged:", item, idx);
+    // console.log("selectionChanged:", item, idx);
     selectedItem = item;
     selectedName = item ? selectedItem.name : "";
     canOpenSelected = !!selectedItem;
@@ -312,6 +310,7 @@
   >
     {#snippet renderItem(item)}
       <button
+        class="ml-[-6px]"
         onclick={(ev) => {
           toggleStarred(item);
           ev.preventDefault();
@@ -328,14 +327,14 @@
   </ListBox>
 
   {#if canOpenSelected || canDeleteSelected || filter.length > 0}
-    <hr class="mt-0.5 mb-0.5 border-gray-300 dark:border-gray-600" />
+    <!-- <hr class="mt-2 border-gray-300 dark:border-gray-600" /> -->
   {/if}
 
   <div
-    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3 mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50"
+    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
   >
     {#if canOpenSelected}
-      <div><span class="kbd">Enter</span></div>
+      <div class="kbd">Enter</div>
       <div class="truncate">
         open note <span class="font-bold">
           {selectedName}
@@ -344,12 +343,10 @@
     {/if}
 
     {#if canCreateWithEnter}
-      <div><span class="kbd">Enter</span></div>
+      <div class="kbd">Enter</div>
     {/if}
     {#if canCreate && !canCreateWithEnter}
-      <div>
-        <span class="kbd">Ctrl + Enter</span>
-      </div>
+      <div class="kbd">Ctrl + Enter</div>
     {/if}
     {#if canCreate}
       <div class="truncate">
@@ -360,7 +357,7 @@
     {/if}
 
     {#if showDelete && canDeleteSelected}
-      <div><span class="kbd">Ctrl + Delete</span></div>
+      <div class="kbd">Ctrl + Delete</div>
       <div class="red truncate">
         delete note <span class="font-bold">
           {selectedName}
@@ -369,17 +366,24 @@
     {/if}
 
     {#if showDelete && !canDeleteSelected}
-      <div><span class="kbd">Ctrl + Delete</span></div>
+      <div class="kbd">Ctrl + Delete</div>
       <div class="red truncate">
         can't delete <span class="font-bold">{selectedName}</span>
       </div>
     {/if}
 
     {#if canOpenSelected}
-      <div><span class="kbd">{altChar} + 1...9</span></div>
+      <div class="kbd">{altChar} + 1...9</div>
       <div>assign quick access shortcut</div>
     {/if}
-    <!-- <div><span class="kbd">Esc</span></div>
-    <div>dismiss</div> -->
   </div>
 </form>
+
+<style>
+  .kbd {
+    @apply font-mono;
+    @apply text-nowrap whitespace-nowrap;
+    @apply font-semibold;
+    @apply text-center;
+  }
+</style>

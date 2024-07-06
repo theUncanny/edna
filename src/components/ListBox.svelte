@@ -193,7 +193,7 @@
     <li
       role="option"
       aria-selected={idx === selectedIdx}
-      class="flex items-center py-0.5 px-2 leading-5 hover:bg-gray-100 aria-selected:bg-gray-300 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
+      class="flex items-center py-0.5 px-2 leading-5 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}

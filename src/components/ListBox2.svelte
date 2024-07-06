@@ -10,11 +10,13 @@
     renderItem: any,
     selectionChanged?: (any, number) => void,
     initialSelection?: number,
+    selectedItem?: any,
   }}*/
   let {
     items,
     onclick,
     renderItem,
+    selectedItem = $bindable(null),
     selectionChanged = (el, idx) => {
       /* no op */
     },
@@ -71,6 +73,7 @@
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;
+        selectedItem = null;
         selectionChanged(null, -1);
       }
       return;
@@ -83,7 +86,35 @@
     let ref = refs[selectedIdx];
     ref.scrollIntoView({ block: "nearest" });
     let item = items[selectedIdx];
+    selectedItem = item;
     selectionChanged(item, selectedIdx);
+  }
+
+  /**
+   * @param {KeyboardEvent} ev
+   * @param {boolean} [allowLeftRight]
+   * @returns {boolean}
+   */
+  export function onkeydown(ev, allowLeftRight = false) {
+    let key = ev.key;
+    let isUp = key === "ArrowUp" || (key === "ArrowLeft" && allowLeftRight);
+    let isDown =
+      key === "ArrowDown" || (key === "ArrowRight" && allowLeftRight);
+    let isEnter = selectedItem && key === "Enter";
+    let res = true;
+    if (isEnter) {
+      onclick(selectedItem);
+    } else if (isUp) {
+      up();
+    } else if (isDown) {
+      down();
+    } else {
+      res = false;
+    }
+    if (res) {
+      ev.preventDefault();
+    }
+    return res;
   }
 
   export function selected() {
@@ -158,13 +189,13 @@
     <div
       role="option"
       aria-selected={idx === selectedIdx}
-      class=" py-0.5 px-2 leading-5 flex flex-row dark:text-opacity-50 hover:bg-gray-200 dark:hover:bg-gray-600 aria-selected:text-white aria-selected:bg-gray-400 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[24ch]"
+      class=" py-0.5 px-2 leading-5 flex flex-row aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[24ch]"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}
     </div>
     {#if !isLast}
-      <div class="mx-1 text-gray-400">&bull;</div>
+      <div class="mx-0.5 text-gray-400">&bull;</div>
     {/if}
   {/each}
 </div>

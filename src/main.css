@@ -104,17 +104,6 @@ html.dark select {
   @apply text-red-500 dark:text-red-400;
 }
 
-.kbd {
-  font-size: 10px;
-  /* @apply text-xs; */
-  @apply font-mono;
-  @apply text-nowrap whitespace-nowrap;
-  @apply px-[6px] py-[3px];
-  @apply border  rounded-md;
-  @apply border-gray-400 dark:border-gray-500;
-  @apply bg-gray-50 dark:bg-gray-800;
-}
-
 /* for getScrollbarWidth() */
 .scrollbar-width-detector {
   position: absolute;

@@ -1,22 +1,22 @@
 <script>
   import {
     getLatestNoteNames,
-    getMetadataForNote,
     isSystemNoteName,
     kScratchNoteName,
-    reassignNoteShortcut,
     sanitizeNoteName,
   } from "../notes";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox2.svelte";
+  import { getNoteMeta, reassignNoteShortcut } from "../metadata";
 
   /** @type {{
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => void,
+    switchToCommandPalette: () => void,
 }}*/
-  let { openNote, createNote, deleteNote } = $props();
+  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
 
   /**
    * @typedef {Object} Item
@@ -30,7 +30,7 @@
   /**
    * @returns {Item[]}
    */
-  function rebuildItems() {
+  function buildItems() {
     const noteNames = getLatestNoteNames();
     // console.log("rebuildNotesInfo, notes", noteInfos)
     /** @type {Item[]} */
@@ -44,7 +44,7 @@
         nameLC: name.toLowerCase(),
         ref: null,
       };
-      let m = getMetadataForNote(item.name);
+      let m = getNoteMeta(item.name);
       if (m && m.altShortcut) {
         item.altShortcut = parseInt(m.altShortcut);
       }
@@ -80,7 +80,7 @@
     });
     return res;
   }
-  let items = $state(rebuildItems());
+  let items = $state(buildItems());
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -88,7 +88,15 @@
     return sanitizeNoteName(filter);
   });
 
-  let itemsFiltered = $derived(findMatchingItems(items, filter, "nameLC"));
+  let itemsFiltered = $derived.by(() => {
+    // we split the search term by space, the name of the note
+    // must match all parts
+    if (sanitizedFilter.startsWith(">")) {
+      switchToCommandPalette();
+      return [];
+    }
+    return findMatchingItems(items, sanitizedFilter, "nameLC");
+  });
 
   let selectedNote = $state(null);
   let selectedName = $state("");
@@ -133,14 +141,6 @@
   }
 
   /**
-   * @param {string} name
-   * @returns {string}
-   */
-  function quoteNoteName(name) {
-    return `"` + sanitizeNoteName(name) + `"`;
-  }
-
-  /**
    * @param {Item} note
    * @returns {string}
    */
@@ -175,7 +175,7 @@
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          items = rebuildItems();
+          items = buildItems();
         });
         return;
       }
@@ -207,6 +207,7 @@
       return;
     }
 
+    console.log("listbox:", listbox);
     listbox.onkeydown(ev, filter === "");
   }
 
@@ -261,72 +262,60 @@
       {/if}
     {/snippet}
   </ListBox>
-  {#if canOpenSelected || canDeleteSelected || filter.length > 0}
-    <hr class="mt-1 mb-1 border-gray-400" />
-  {/if}
   <div
-    class="grid grid-cols-[auto_auto_1fr] gap-x-3 gap-y-3 mt-4 text-gray-700 leading-[1em] max-w-full dark:text-white dark:text-opacity-50"
+    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
   >
     {#if canOpenSelected}
-      <div><span class="kbd">Enter</span></div>
-      <div>open note</div>
-      <div class="font-bold truncate">
-        {quoteNoteName(selectedName)}
+      <div class="kbd">Enter</div>
+      <div>
+        open note
+        <span class="font-bold truncate">
+          {selectedName}
+        </span>
       </div>
     {/if}
 
     {#if canCreateWithEnter}
-      <div><span class="kbd">Enter</span></div>
+      <div class="kbd">Enter</div>
     {/if}
     {#if canCreate && !canCreateWithEnter}
-      <div>
-        <span class="kbd">Ctrl + Enter</span>
-      </div>
+      <div class="kbd">Ctrl + Enter</div>
     {/if}
     {#if canCreate}
-      <div>create note</div>
-      <div class="font-bold truncate">
-        {quoteNoteName(filter)}
+      <div>
+        create note <span class="font-bold truncate">
+          {filter}
+        </span>
       </div>
     {/if}
 
     {#if showDelete}
-      <div><span class="kbd">Ctrl + Delete</span></div>
-      <div class="red">delete note</div>
-    {/if}
-    {#if showDelete && canDeleteSelected}
-      <div class="font-bold truncate">
-        {quoteNoteName(selectedName)}
-      </div>
-    {/if}
-
-    {#if showDelete && !canDeleteSelected}
-      <div>
-        <span class="red"
-          >can't delete <span class="font-bold truncate"
-            >{quoteNoteName(selectedName)}</span
-          ></span
-        >
-      </div>
+      <div class="kbd">Ctrl + Delete</div>
+      {#if canDeleteSelected}
+        <div class="red">
+          delete note <span class="font-bold truncate">
+            {selectedName}
+          </span>
+        </div>
+      {:else}
+        <div class="red">
+          can't delete <span class="font-bold truncate">selectedName}</span>
+        </div>
+      {/if}
     {/if}
 
-    <div><span class="kbd">{altChar} 1...9</span></div>
-    <div class="col-span-2">assign quick access shortcut</div>
-
-    <div><span class="kbd">Esc</span></div>
-    <div>dismiss</div>
-    <div class="italic"></div>
+    {#if canOpenSelected}
+      <div class="kbd">{altChar} 1...9</div>
+      <div>assign quick access shortcut</div>
+    {/if}
   </div>
 </form>
 
 <style>
   .kbd {
-    font-size: 10px;
-    /* @apply text-xs; */
     @apply font-mono;
-    @apply px-[6px] py-[3px];
-    @apply border  rounded-md;
-    @apply border-gray-400 dark:border-gray-500;
-    @apply bg-gray-50 dark:bg-gray-800;
+    @apply text-nowrap whitespace-nowrap;
+    @apply font-semibold;
+    @apply text-center;
   }
 </style>

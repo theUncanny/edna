@@ -92,7 +92,7 @@ async function saveNotesMetadata(m) {
  * @returns {NoteMetadata}
  */
 export function getNoteMeta(name, createIfNotExists = false) {
-  // console.log("getMetadataForNote:", name);
+  // console.log("getNoteMeta:", name);
   let notes = getNotesMetadata();
   for (let m of notes) {
     if (m.name === name) {
