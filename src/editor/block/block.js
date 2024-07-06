@@ -75,7 +75,6 @@ function getBlocks2(state) {
       break;
     }
     let langFull = s.substring(langStart, delimiterEnd);
-    // console.log("langFull:", langFull);
     let auto = false;
     let lang = langFull;
     if (langFull.endsWith("-a")) {
@@ -118,9 +117,7 @@ function getBlocks2(state) {
  * @returns {Block[]}
  */
 function getBlocks(state, timeout = 50) {
-  let timer = startTimer();
   const tree = ensureSyntaxTree(state, state.doc.length, timeout);
-  console.log("ensureSyntaxTree took:", timer(), " ms");
   if (!tree) {
     return [];
   }
@@ -170,14 +167,17 @@ let flagCompareGetBlocks = false;
  */
 function getBlocksCompare(state, timeout = 50) {
   if (!flagCompareGetBlocks) {
-    let timer = startTimer();
+    // let timer = startTimer();
     let res = getBlocks2(state);
-    console.log("getBlocks2 took:", timer(), " ms");
+    // console.log("getBlocks2 took:", timer(), " ms");
     return res;
   }
   // TODO: for now keeping the old getBlocks() implementation and this
   // comparison code
+
+  let timer1 = startTimer();
   let res1 = getBlocks(state, timeout);
+  console.log("getBlocks took:", timer1(), " ms");
   let timer = startTimer();
   let res2 = getBlocks2(state);
   console.log("getBlocks2 took:", timer(), " ms");
