@@ -1,27 +1,4 @@
-<script>
-  import {
-    getLatestNoteNames,
-    isSystemNoteName,
-    sanitizeNoteName,
-  } from "../notes";
-  import {
-    getNoteMeta,
-    reassignNoteShortcut,
-    toggleNoteStarred,
-  } from "../metadata";
-  import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
-  import { focus } from "../actions";
-  import ListBox from "./ListBox.svelte";
-  import IconStar from "./IconStar.svelte";
-
-  /** @type {{
-    openNote: (name: string) => void,
-    createNote: (name: string) => void,
-    deleteNote: (name: string) => void,
-    switchToCommandPalette: () => void,
-}}*/
-  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
-
+<script context="module">
   /** @typedef {{
     key: string,
     name: string,
@@ -76,11 +53,11 @@
   }
 
   /**
+   * @param {string[]} noteNames
    * @returns {Item[]}
    */
-  function buildItems() {
-    const noteNames = getLatestNoteNames();
-    // console.log("rebuildNotesInfo, notes", noteInfos)
+  export function buildItems(noteNames) {
+    // console.log("buildItems, notes", noteInfos)
     /** @type {Item[]} */
     let res = Array(len(noteNames));
     for (let i = 0; i < len(noteNames); i++) {
@@ -107,7 +84,34 @@
     res.sort(sortItem);
     return res;
   }
-  let items = $state(buildItems());
+</script>
+
+<script>
+  import {
+    getLatestNoteNames,
+    isSystemNoteName,
+    sanitizeNoteName,
+  } from "../notes";
+  import {
+    getNoteMeta,
+    reassignNoteShortcut,
+    toggleNoteStarred,
+  } from "../metadata";
+  import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
+  import { focus } from "../actions";
+  import ListBox from "./ListBox.svelte";
+  import IconStar from "./IconStar.svelte";
+
+  /** @type {{
+    openNote: (name: string) => void,
+    createNote: (name: string) => void,
+    deleteNote: (name: string) => void,
+    switchToCommandPalette: () => void,
+}}*/
+  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
+
+  let noteNames = getLatestNoteNames();
+  let items = $state(buildItems(noteNames));
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -215,7 +219,8 @@
       let note = selectedItem;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          items = buildItems();
+          let noteNames = getLatestNoteNames();
+          items = buildItems(noteNames);
         });
         return;
       }

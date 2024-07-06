@@ -8,7 +8,8 @@
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox2.svelte";
-  import { getNoteMeta, reassignNoteShortcut } from "../metadata";
+  import { reassignNoteShortcut } from "../metadata";
+  import { buildItems } from "./NoteSelector.svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -18,69 +19,8 @@
 }}*/
   let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
 
-  /**
-   * @typedef {Object} Item
-   * @property {string} name
-   * @property {string} nameLC
-   * @property {string} key
-   * @property {number} [altShortcut] - -1 if no shortcut, 0 to 9 for Alt-0 to Alt-9
-   * @property {HTMLElement} ref
-   */
-
-  /**
-   * @returns {Item[]}
-   */
-  function buildItems() {
-    const noteNames = getLatestNoteNames();
-    // console.log("rebuildNotesInfo, notes", noteInfos)
-    /** @type {Item[]} */
-    let res = Array(len(noteNames));
-    // let res = [];
-    for (let i = 0; i < len(noteNames); i++) {
-      let name = noteNames[i];
-      let item = {
-        key: name,
-        name: name,
-        nameLC: name.toLowerCase(),
-        ref: null,
-      };
-      let m = getNoteMeta(item.name);
-      if (m && m.altShortcut) {
-        item.altShortcut = parseInt(m.altShortcut);
-      }
-      res[i] = item;
-    }
-    // -1 if a < b
-    // 0 if a = b
-    // 1 if a > b
-    res.sort((a, b) => {
-      // those with shortcut are before (<) those without
-      if (a.altShortcut && !b.altShortcut) {
-        return -1;
-      }
-      // those without shortcut are after (>) those with
-      if (!a.altShortcut && b.altShortcut) {
-        return 1;
-      }
-      // if both have shortcut, sort by shortcut
-      if (a.altShortcut && b.altShortcut) {
-        return a.altShortcut - b.altShortcut;
-      }
-      let isSysA = isSystemNoteName(a.name);
-      let isSysB = isSystemNoteName(b.name);
-      // system are last
-      if (isSysA && !isSysB) {
-        return 1;
-      }
-      if (!isSysA && isSysB) {
-        return -1;
-      }
-      // if both have no shortcut, sort by name
-      return a.name.localeCompare(b.name);
-    });
-    return res;
-  }
-  let items = $state(buildItems());
+  let noteNames = getLatestNoteNames();
+  let items = $state(buildItems(noteNames));
   let filter = $state("");
   let altChar = $state(getAltChar());
 
@@ -153,6 +93,8 @@
     showDelete = canOpenSelected;
   }
 
+  /** @typedef {import("./NoteSelector.svelte").Item} Item */
+
   /**
    * @param {Item} note
    * @returns {string}
@@ -174,7 +116,11 @@
    * @returns {string}
    */
   function noteShortcut(note) {
-    return note.altShortcut ? altChar + " + " + note.altShortcut : "";
+    if (note.altShortcut) {
+      console.log("noteShortctu:", note);
+      return `${altChar} + ${note.altShortcut}`;
+    }
+    return "";
   }
 
   /**
@@ -188,7 +134,8 @@
       let note = selectedNote;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
-          items = buildItems();
+          let noteNames = getLatestNoteNames();
+          items = buildItems(noteNames);
         });
         return;
       }
@@ -220,7 +167,7 @@
       return;
     }
 
-    console.log("listbox:", listbox);
+    // console.log("listbox:", listbox);
     let allowLeftRight = filter === "" || isCursorAtEnd(input);
     listbox.onkeydown(ev, allowLeftRight);
   }
@@ -281,12 +228,10 @@
     onclick={(item) => emitOpenNote(item)}
   >
     {#snippet renderItem(item)}
-      <div class="truncate {isSysNote(item) ? 'italic' : ''}">
+      <div class="truncate">
         {item.name}
+        <span class="ml-0.5 text-xs text-gray-400">{noteShortcut(item)}</span>
       </div>
-      {#if noteShortcut(item) !== ""}
-        <div class="ml-2 text-gray-600">({noteShortcut(item)})</div>
-      {/if}
     {/snippet}
   </ListBox>
   <div

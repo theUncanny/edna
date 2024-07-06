@@ -225,7 +225,7 @@
         bind:checked={useWideSelectors}
         onchange={updateSettings}
       />
-      <div>Use Wide Selectors</div>
+      <div>Use wide selectors</div>
       <!-- <a
         href="/help#backing-up-notes"
         class="underline ml-2"

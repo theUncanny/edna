@@ -1,5 +1,9 @@
 # Release notes for Edna
 
+## 1.14
+
+- added a wide selector for `Mod + P` note selector. Use settings `Use wide selectors` to use it
+
 ## 1.13
 
 - added ability to star / favourite notes
