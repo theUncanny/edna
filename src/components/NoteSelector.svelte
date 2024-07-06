@@ -122,7 +122,7 @@
     // must match all parts
     if (sanitizedFilter.startsWith(">")) {
       switchToCommandPalette();
-      return null;
+      return [];
     }
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });

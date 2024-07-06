@@ -55,7 +55,7 @@
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
   } from "../notes";
-  import { getMetadata, getNoteMeta } from "../metadata";
+  import { getMetadata, getNoteMeta, getNotesMetadata } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
@@ -274,11 +274,11 @@
       let altN = isAltNumEvent(ev);
       // console.log("onKeyDown: e:", e, "altN:", altN)
       if (altN) {
-        let meta = getMetadata();
-        for (let o of meta) {
-          if (o.altShortcut == altN && o.name !== noteName) {
+        let notes = getNotesMetadata();
+        for (let note of notes) {
+          if (note.altShortcut == altN && note.name !== noteName) {
             // console.log("onKeyDown: opening note: ", o.name, " altN:", altN, " e:", e)
-            openNote(o.name);
+            openNote(note.name);
             ev.preventDefault();
             return;
           }
@@ -1155,10 +1155,6 @@
     "Help",
     kCmdShowHelpAsNote,
     "Help as note",
-    kCmdRunFunctionWithBlockContent,
-    "Run function with block content",
-    kCmdRunFunctionWithSelection,
-    "Run function with selection",
   ];
 
   function commandNameOverride(id, name) {
@@ -1177,9 +1173,9 @@
     return name;
   }
 
-  async function buildCommandsDef() {
+  function buildCommandsDef() {
     let a = [];
-    async function addMenuItems(items) {
+    function addMenuItems(items) {
       for (let mi of items) {
         // console.log(mi);
         let name = mi[0];
@@ -1196,7 +1192,7 @@
         if (id === kCmdCommandPalette) {
           continue;
         }
-        const miStatus = await menuItemStatus(mi);
+        const miStatus = menuItemStatus(mi);
         if (miStatus != kMenuStatusNormal) {
           // filter out disabled and removed
           continue;
@@ -1207,7 +1203,7 @@
       }
     }
     let mdef = buildMenuDef();
-    await addMenuItems(mdef);
+    addMenuItems(mdef);
     return a;
   }
 
@@ -1216,9 +1212,9 @@
     ["Export current note", kCmdExportCurrentNote],
   ];
 
-  async function openCommandPalette() {
+  function openCommandPalette() {
     console.log("openCommandPalette");
-    commandsDef = await buildCommandsDef();
+    commandsDef = buildCommandsDef();
     commandsDef.push(...commandPaletteAdditions);
     let name = commandNameOverride(kCmdToggleSpellChecking);
     commandsDef.push([name, kCmdToggleSpellChecking]);

@@ -30,7 +30,7 @@ export function getMetadata() {
 /**
  * @returns {NoteMetadata[]}
  */
-function getNotesMetadata() {
+export function getNotesMetadata() {
   metadata.notes = metadata.notes || [];
   return metadata.notes;
 }
