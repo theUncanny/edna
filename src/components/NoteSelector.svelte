@@ -24,14 +24,15 @@
     if (!a.isStarred && b.isStarred) {
       return 1;
     }
-    if (a.isStarred && b.isStarred) {
-      return a.name.localeCompare(b.name);
-    }
-    // those with shortcut are before (<) those without
+
+    // TODO: when both are starred, those with shortcut should be first
+    // I can't figure out why the below isn't that
+
+    // with shortcut are before (<) those without
     if (a.altShortcut && !b.altShortcut) {
       return -1;
     }
-    // those without shortcut are after (>) those with
+    // without shortcut are after (>) those with
     if (!a.altShortcut && b.altShortcut) {
       return 1;
     }
@@ -129,6 +130,7 @@
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
 
+  /** @type {Item} */
   let selectedItem = $state(null);
   let selectedName = $state("");
   let canOpenSelected = $state(false);

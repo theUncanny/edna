@@ -1,7 +1,6 @@
 <script>
   import { len } from "../util";
   import "overlayscrollbars/overlayscrollbars.css";
-  import { OverlayScrollbars } from "overlayscrollbars";
   import { getActiveTheme } from "../settings";
 
   /** @type {{ 
@@ -183,21 +182,22 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-  class="items overflow-y-auto cursor-pointer flex flex-row justify-between flex-wrap"
+  class="overflow-y-auto cursor-pointer flex flex-row justify-between items-center flex-wrap"
   tabindex="-1"
   role="listbox"
   bind:this={listbox}
   onclick={listboxclick}
 >
   {#each items as item, idx (item.key)}
-    <div
+    {@const isSelected = idx === selectedIdx}
+    <span
       role="option"
-      aria-selected={idx === selectedIdx}
-      class=" py-0.5 px-2 flex aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[28ch] even:text-blue-700"
+      aria-selected={isSelected}
+      class="py-0.5 px-2 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[28ch] even:text-blue-700"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}
-    </div>
+    </span>
   {/each}
 </div>
 

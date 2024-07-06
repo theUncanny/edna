@@ -7,9 +7,10 @@
   } from "../notes";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
-  import ListBox from "./ListBox2.svelte";
-  import { reassignNoteShortcut } from "../metadata";
+  import ListBox2 from "./ListBox2.svelte";
+  import { reassignNoteShortcut, toggleNoteStarred } from "../metadata";
   import { buildItems } from "./NoteSelector.svelte";
+  import IconStar from "./IconStar.svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -38,7 +39,8 @@
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
 
-  let selectedNote = $state(null);
+  /** @type {Item} */
+  let selectedItem = $state(null);
   let selectedName = $state("");
   let canOpenSelected = $state(false);
   let canCreate = $state(false);
@@ -61,9 +63,9 @@
 
   function selectionChanged(item, idx) {
     // console.log("selectionChanged:", item, idx);
-    selectedNote = item;
-    selectedName = item ? selectedNote.name : "";
-    canOpenSelected = !!selectedNote;
+    selectedItem = item;
+    selectedName = item ? selectedItem.name : "";
+    canOpenSelected = !!selectedItem;
 
     // TODO: use lowerCase name?
     let name = sanitizeNoteName(filter);
@@ -131,7 +133,7 @@
     let altN = isAltNumEvent(ev);
     if (altN !== null) {
       ev.preventDefault();
-      let note = selectedNote;
+      let note = selectedItem;
       if (note) {
         reassignNoteShortcut(note.name, altN).then(() => {
           let noteNames = getLatestNoteNames();
@@ -141,6 +143,10 @@
       }
     }
     let key = ev.key;
+
+    if (key === "s" && ev.altKey && selectedItem) {
+      toggleStarred(selectedItem);
+    }
 
     if (key === "Enter") {
       ev.preventDefault();
@@ -153,16 +159,16 @@
         emitCreateNote(sanitizedFilter);
         return;
       }
-      if (selectedNote) {
-        emitOpenNote(selectedNote);
+      if (selectedItem) {
+        emitOpenNote(selectedItem);
       }
     } else if (isCtrlDelete(ev)) {
       ev.preventDefault();
       if (!canDeleteSelected) {
         return;
       }
-      if (selectedNote) {
-        emitDeleteNote(selectedNote.name);
+      if (selectedItem) {
+        emitDeleteNote(selectedItem.name);
       }
       return;
     }
@@ -199,6 +205,15 @@
     deleteNote(name);
   }
 
+  /**
+   * @param {Item} item
+   */
+  async function toggleStarred(item) {
+    console.log("toggleStarred:", item);
+    item.isStarred = await toggleNoteStarred(item.name);
+    input.focus();
+  }
+
   let input;
   let listbox;
 </script>
@@ -221,19 +236,20 @@
       {itemsCountMsg}
     </div>
   </div>
-  <ListBox
+  <ListBox2
     bind:this={listbox}
     items={itemsFiltered}
     {selectionChanged}
     onclick={(item) => emitOpenNote(item)}
   >
     {#snippet renderItem(item)}
-      <div class="truncate">
-        {item.name}
-        <span class="ml-0.5 text-xs text-gray-400">{noteShortcut(item)}</span>
-      </div>
+      {#if item.isStarred}
+        <IconStar class="inline-block mt-[-3px]" fill="yellow"></IconStar>
+      {/if}
+      {item.name}
+      <span class="ml-0.5 text-xs text-gray-400">{noteShortcut(item)}</span>
     {/snippet}
-  </ListBox>
+  </ListBox2>
   <div
     class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
   >
@@ -271,7 +287,7 @@
         </div>
       {:else}
         <div class="red">
-          can't delete <span class="font-bold truncate">selectedName}</span>
+          can't delete <span class="font-bold truncate">{selectedName}</span>
         </div>
       {/if}
     {/if}
@@ -279,6 +295,11 @@
     {#if canOpenSelected}
       <div class="kbd">{altChar} 1...9</div>
       <div>assign quick access shortcut</div>
+    {/if}
+
+    {#if canOpenSelected}
+      <div class="kbd">{altChar} + S</div>
+      <div>toggle favorite</div>
     {/if}
   </div>
 </form>
