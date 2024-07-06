@@ -229,6 +229,10 @@
     }
     let key = ev.key;
 
+    if (key === "s" && ev.altKey && selectedItem) {
+      toggleStarred(selectedItem);
+    }
+
     if (key === "Enter") {
       ev.preventDefault();
       let name = sanitizedFilter;
@@ -382,6 +386,10 @@
     {#if canOpenSelected}
       <div class="kbd">{altChar} + 1...9</div>
       <div>assign quick access shortcut</div>
+    {/if}
+    {#if canOpenSelected}
+      <div class="kbd">{altChar} + S</div>
+      <div>toggle favorite</div>
     {/if}
   </div>
 </form>
