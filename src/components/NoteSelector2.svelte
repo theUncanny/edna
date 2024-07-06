@@ -255,7 +255,9 @@
         <IconStar class="inline-block mt-[-3px]" fill="yellow"></IconStar>
       {/if}
       {item.name}
-      <span class="ml-0.5 text-xs text-gray-400">{noteShortcut(item)}</span>
+      <span class="ml-0.5 text-xs text-gray-400 whitespace-nowrap"
+        >{noteShortcut(item)}</span
+      >
     {/snippet}
   </ListBox2>
   <div

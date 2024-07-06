@@ -106,7 +106,7 @@
       <div class="grow"></div>
       {#if idx < 10}
         {@const s = `Ctrl + ${idx}`}
-        <div class="ml-4 mr-2 text-xs text-gray-400">{s}</div>
+        <div class="ml-4 mr-2 text-xs text-gray-400 whitespace-nowrap">{s}</div>
       {/if}
     {/snippet}
   </ListBox>
