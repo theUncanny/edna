@@ -146,6 +146,8 @@
 
     if (key === "s" && ev.altKey && selectedItem) {
       toggleStarred(selectedItem);
+      ev.preventDefault();
+      return;
     }
 
     if (key === "Enter") {

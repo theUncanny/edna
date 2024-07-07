@@ -1,7 +1,7 @@
 <script>
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
-  import { findMatchingItems, len } from "../util";
+  import { findMatchingItems, getModChar, len } from "../util";
   import { getBoopFunctions } from "../system-notes";
   import { getFunctionMeta, toggleFunctionStarred } from "../metadata";
   import IconStar from "./IconStar.svelte";
@@ -25,6 +25,8 @@
     ref: HTMLElement,
    }} Item
   */
+
+  const modChar = getModChar();
 
   /**
    * @param {BoopFunction} fdef
@@ -110,6 +112,12 @@
   function onKeydown(ev) {
     // console.log("onKeyDown:", event);
     let key = ev.key;
+
+    if (key === "s" && ev.altKey && selectedItem) {
+      toggleStarred(selectedItem);
+      ev.preventDefault();
+      return;
+    }
 
     if (key === "Enter") {
       ev.preventDefault();
@@ -201,14 +209,12 @@
     <div
       class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
     >
-      <div>
-        <span class="kbd">Enter</span>
-      </div>
+      <div class="kbd">Enter</div>
       <div>Run function, output in new block</div>
-      <div>
-        <span class="kbd">Ctrl + Enter</span>
-      </div>
+      <div class="kbd">Ctrl + Enter</div>
       <div>Run function, output replaces block content</div>
+      <div class="kbd">{modChar} + S</div>
+      <div>toggle favorite</div>
     </div>
   {/if}
 </form>
