@@ -71,7 +71,7 @@
   {onkeydown}
 >
   <div
-    class="items w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center dark:text-gray-400"
+    class="w-[400px] py-0.5 px-2 rounder-sm leading-5 mb-2 text-center dark:text-gray-400"
   >
     Recently opened
   </div>
