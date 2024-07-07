@@ -642,7 +642,7 @@ function loadNoteLS(name) {
  */
 export function noteExists(name) {
   let notes = getLatestNoteNames();
-  return notes.includes(name);
+  return notes.includes(name) || isSystemNoteName(name);
 }
 
 /**
