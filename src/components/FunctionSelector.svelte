@@ -1,7 +1,7 @@
 <script>
   import ListBox from "./ListBox.svelte";
   import { focus } from "../actions";
-  import { findMatchingItems, getModChar, len } from "../util";
+  import { findMatchingItems, getAltChar, len } from "../util";
   import { getBoopFunctions } from "../system-notes";
   import { getFunctionMeta, toggleFunctionStarred } from "../metadata";
   import IconStar from "./IconStar.svelte";
@@ -26,7 +26,7 @@
    }} Item
   */
 
-  const modChar = getModChar();
+  let altChar = getAltChar();
 
   /**
    * @param {BoopFunction} fdef
@@ -213,7 +213,7 @@
       <div>Run function, output in new block</div>
       <div class="kbd">Ctrl + Enter</div>
       <div>Run function, output replaces block content</div>
-      <div class="kbd">{modChar} + S</div>
+      <div class="kbd">{altChar} + S</div>
       <div>toggle favorite</div>
     </div>
   {/if}

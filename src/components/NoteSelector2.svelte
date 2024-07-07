@@ -23,7 +23,7 @@
   let noteNames = getLatestNoteNames();
   let items = $state(buildItems(noteNames));
   let filter = $state("");
-  let altChar = $state(getAltChar());
+  let altChar = getAltChar();
 
   let sanitizedFilter = $derived.by(() => {
     return sanitizeNoteName(filter);
