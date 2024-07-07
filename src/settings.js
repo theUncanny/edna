@@ -114,7 +114,7 @@ export function loadInitialSettings() {
   // ensure all possible settings are present. Start with defaults and overwrite with persisted settings
   /** @type {Settings} */
   let initialSettings = {
-    bracketClosing: false,
+    bracketClosing: true,
     currentNoteName: kScratchNoteName,
     emacsMetaKey: "alt",
     keymap: "default",
