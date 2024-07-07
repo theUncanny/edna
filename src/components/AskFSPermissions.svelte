@@ -74,7 +74,7 @@
         >Switch to storing notes in browser</button
       >
       <a
-        class="mt-4 self-center underline"
+        class="mt-4 self-center underline underline-offset-2"
         target="_blank"
         href="/help#storing-notes-on-disk">learn more</a
       >

@@ -157,7 +157,7 @@
       <a
         href="https://edna.arslexis.io/help#running-code"
         target="_blank"
-        class="underline ml-2">help</a
+        class="underline underline-offset-2 ml-2">help</a
       >
     </div>
     <div>

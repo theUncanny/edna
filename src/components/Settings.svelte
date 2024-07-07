@@ -213,7 +213,7 @@
         <div>Backup notes</div>
         <a
           href="/help#backing-up-notes"
-          class="underline ml-2"
+          class="underline underline-offset-2 ml-2"
           target="_blank"
           title="info about backup">help</a
         >
@@ -228,7 +228,7 @@
       <div>Use wide selectors</div>
       <!-- <a
         href="/help#backing-up-notes"
-        class="underline ml-2"
+        class="underline underline-offset-2 ml-2"
         target="_blank"
         title="info about backup">help</a
       > -->
@@ -237,7 +237,9 @@
 
   <div class="mt-2 mr-0.5 flex text-xs justify-end text-gray-400">
     Current Version: {appVersion}&nbsp;
-    <a href={gitURL} target="_blank" class="underline">{gitHash}</a>
+    <a href={gitURL} target="_blank" class="underline underline-offset-2"
+      >{gitHash}</a
+    >
   </div>
   <div class="mt-0.5 mr-0.5 flex text-xs justify-end text-gray-400">
     Session: {getSessionDur()}
