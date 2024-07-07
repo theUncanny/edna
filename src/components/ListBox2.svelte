@@ -182,7 +182,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-  class="overflow-y-auto cursor-pointer flex flex-row justify-between items-center flex-wrap"
+  class="overflow-y-auto cursor-pointer flex flex-wrap gap-y-[2px]"
   tabindex="-1"
   role="listbox"
   bind:this={listbox}
@@ -193,7 +193,7 @@
     <span
       role="option"
       aria-selected={isSelected}
-      class="py-0.5 px-2 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 whitespace-nowrap truncate max-w-[28ch] even:text-blue-700"
+      class="item px-1 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 even:text-blue-700"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}
@@ -204,5 +204,19 @@
 <style>
   :global(.os-scrollbar) {
     --os-size: 10px;
+  }
+
+  /*
+    I'm trying to force a break of <span> in wrapper <div> but it doesn't work.
+    This is based on what ChatGPT told me.
+    But maybe it's not needed. With left alignment it looks ok, not much empty space.
+    flex: 1 1 auto; will align on both sides, which I think looks worse (white space 
+    is distributed between )
+  */
+  .item {
+    flex: 0 1 auto;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }
 </style>

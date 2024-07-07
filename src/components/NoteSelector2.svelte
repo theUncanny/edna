@@ -230,7 +230,7 @@
 <form
   onkeydown={onKeydown}
   tabindex="-1"
-  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[90vw] p-2"
+  class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[95vw] p-2"
 >
   <div>
     <input
