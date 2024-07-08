@@ -52,7 +52,8 @@ let firstBlockDelimiterSize;
  * @param {EditorState} state
  * @returns {Block[]}
  */
-function getBlocks2(state) {
+function getBlocks(state) {
+  firstBlockDelimiterSize = 0;
   let res = [];
   let doc = state.doc;
   let n = doc.length;
@@ -108,6 +109,9 @@ function getBlocks2(state) {
     res.push(block);
     pos = blockEnd;
   }
+  if (len(res) > 0) {
+    firstBlockDelimiterSize = res[0].delimiter.to;
+  }
   return res;
 }
 
@@ -116,7 +120,7 @@ function getBlocks2(state) {
  * @param {number} timeout
  * @returns {Block[]}
  */
-function getBlocks(state, timeout = 50) {
+function getBlocksOriginal(state, timeout = 50) {
   const tree = ensureSyntaxTree(state, state.doc.length, timeout);
   if (!tree) {
     return [];
@@ -168,7 +172,7 @@ let flagCompareGetBlocks = false;
 function getBlocksCompare(state, timeout = 50) {
   if (!flagCompareGetBlocks) {
     // let timer = startTimer();
-    let res = getBlocks2(state);
+    let res = getBlocks(state);
     // console.log("getBlocks2 took:", timer(), " ms");
     return res;
   }
@@ -176,10 +180,10 @@ function getBlocksCompare(state, timeout = 50) {
   // comparison code
 
   let timer1 = startTimer();
-  let res1 = getBlocks(state, timeout);
+  let res1 = getBlocksOriginal(state, timeout);
   console.log("getBlocks took:", timer1(), " ms");
   let timer = startTimer();
-  let res2 = getBlocks2(state);
+  let res2 = getBlocks(state);
   console.log("getBlocks2 took:", timer(), " ms");
   if (len(res1) == len(res2)) {
     if (objectEqualDeep(res1, res2)) {
@@ -202,6 +206,7 @@ function getBlocksCompare(state, timeout = 50) {
 
 export const blockState = StateField.define({
   create(state) {
+    ensureSyntaxTree(state, state.doc.length, 1000);
     return getBlocksCompare(state, 1000);
   },
   update(blocks, transaction) {
