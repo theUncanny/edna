@@ -612,7 +612,7 @@
 
     const { state } = view;
     if (state.readOnly) return false;
-    let { selectedText } = getCurrentSelection(view);
+    let { selectedText } = getCurrentSelection(state);
     const content = selectedText;
     let res = "";
     let input = null;
@@ -1004,7 +1004,7 @@
    */
   function hasSelection() {
     let view = getEditorView();
-    let { selectedText } = getCurrentSelection(view);
+    let { selectedText } = getCurrentSelection(state);
     return selectedText != "";
   }
 
@@ -1453,7 +1453,7 @@
       return;
     }
 
-    let { selectedText } = getCurrentSelection(view);
+    let { selectedText } = getCurrentSelection(state);
     let hasSelection = selectedText !== "";
     let supportsRun = currentBlockSupportsRun(view.state);
     console.log(

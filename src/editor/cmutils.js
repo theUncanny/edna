@@ -1,5 +1,6 @@
 // codemirror utilities
 
+import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 /**
@@ -11,13 +12,22 @@ export function isReadOnly(view) {
 }
 
 /**
- * @param {EditorView} view
+ * @param {EditorState} state
  * @returns {{from: number, to: number, selectedText: string}}
  */
-export function getCurrentSelection(view) {
-  const { from, to } = view.state.selection.main;
-  const selectedText = view.state.doc.sliceString(from, to);
+export function getCurrentSelection(state) {
+  const { from, to } = state.selection.main;
+  const selectedText = state.doc.sliceString(from, to);
   return { from, to, selectedText };
+}
+
+/**
+ * @param {EditorState} state
+ * @returns {boolean}
+ */
+export function hasSelection(state) {
+  const { from, to } = state.selection.main;
+  return from != to;
 }
 
 /**

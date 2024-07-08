@@ -2,6 +2,7 @@ import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { EditorState } from "@codemirror/state";
 import { keymap } from "@codemirror/view";
 import { getActiveNoteBlock } from "./block/block.js";
+import { hasSelection } from "./cmutils.js";
 
 const defaultCloseBracketsConfig = {
   closeBrackets: {
@@ -26,8 +27,11 @@ export function createDynamicCloseBracketsExtension() {
     closeBrackets(),
     keymap.of(closeBracketsKeymap),
     EditorState.languageData.of((state) => {
-      const block = getActiveNoteBlock(state);
-      if (block && block.language && block.language.name === "markdown") {
+      let block = getActiveNoteBlock(state);
+      let isMarkdown =
+        block && block.language && block.language.name === "markdown";
+      let hasSel = hasSelection(state);
+      if (isMarkdown && hasSel) {
         return [markdownCloseBracketsConfig];
       } else {
         return [defaultCloseBracketsConfig];
