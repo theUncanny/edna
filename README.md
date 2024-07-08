@@ -15,3 +15,11 @@ To run: `./edna -run-prod`
 
 Edna runs on port `9325` so visit http://localhost:9325'
 
+## Credits
+
+Edna started as a fork of Heynote but I've added many features since:
+* ability to have multiple notes, so that it can be used as a note taking app in addition to being a scratchpad
+* command palette
+* context menu
+* ability to run JavaScript functions, either to produce output or transform the content of block or selection
+* ability to execute Go code blocks
