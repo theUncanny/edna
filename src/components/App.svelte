@@ -559,7 +559,7 @@
       functionContext = "selection";
     } else {
       runFunctionOnSelection = false;
-      functionContext = "current block content";
+      functionContext = "content of current block";
     }
     let userFunctionsStr = await loadNoteIfExists(kMyFunctionsNoteName);
     if (!userFunctionsStr) {
