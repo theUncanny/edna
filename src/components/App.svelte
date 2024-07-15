@@ -79,6 +79,7 @@
   } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
+    extForLang,
     getLanguage,
     langSupportsFormat,
     langSupportsRun,
@@ -110,7 +111,11 @@
     insertNewBlockAtCursor,
     selectAll,
   } from "../editor/block/commands";
-  import { getActiveNoteBlock, getBlockN } from "../editor/block/block";
+  import {
+    getActiveNoteBlock,
+    getBlockN,
+    getBlocksInfo,
+  } from "../editor/block/block";
   import { EdnaEditor, getContent, setReadOnly } from "../editor/editor";
   import { EditorSelection, EditorState } from "@codemirror/state";
   import { parseUserFunctions, runBoopFunction } from "../functions";
@@ -395,24 +400,45 @@
     exportNotesToZip();
   }
 
-  async function exportCurrentNote() {
-    let settings = getSettings();
-    let name = toFileName(settings.currentNoteName) + kEdnaFileExt;
-    let view = getEditorView();
-    let s = getContent(view);
-    console.log("exportCurrentNote:", name);
-    const blob = new Blob([s], { type: "text/plain" });
-    if (supportsFileSystem()) {
-      let opts = {
-        suggestedName: name,
-      };
-      // @ts-ignore
-      let fh = await window.showSaveFilePicker(opts);
-      await fsFileHandleWriteBlob(fh, blob);
+  /**
+   * @param {Blob} blob
+   * @param {string} fileName
+   */
+  async function exportBlobToFile(blob, fileName) {
+    if (!supportsFileSystem()) {
+      browserDownloadBlob(blob, fileName);
       return;
     }
-    // fs support
-    browserDownloadBlob(blob, name);
+    let opts = {
+      suggestedName: fileName,
+    };
+    // @ts-ignore
+    let fh = await window.showSaveFilePicker(opts);
+    await fsFileHandleWriteBlob(fh, blob);
+  }
+
+  async function exportCurrentBlock() {
+    let settings = getSettings();
+    let view = getEditorView();
+    let bi = getBlocksInfo(view.state);
+    let b = bi.blocks[bi.active];
+    let block = getActiveNoteBlock(view.state);
+    let ext = extForLang(block.language.name);
+    let name = toFileName(settings.currentNoteName) + `-${bi.active}.` + ext;
+    let s = view.state.sliceDoc(block.content.from, block.content.to);
+    console.log("exportCurrentBlock:", name);
+    const blob = new Blob([s], { type: "text/plain" });
+    await exportBlobToFile(blob, name);
+  }
+
+  async function exportCurrentNote() {
+    let settings = getSettings();
+    let fileName = toFileName(settings.currentNoteName) + kEdnaFileExt;
+    let view = getEditorView();
+    let s = getContent(view);
+    console.log("exportCurrentNote:", fileName);
+    const blob = new Blob([s], { type: "text/plain" });
+    await exportBlobToFile(blob, fileName);
   }
 
   function openSettings() {
@@ -835,6 +861,7 @@
   export const kCmdCreateYourOwnFunctions = nmid();
   export const kCmdShowBuiltInFunctions = nmid();
   export const kCmdRunHelp = nmid();
+  export const kCmdExportCurrentBlock = nmid();
 
   function buildMenuDef() {
     const menuNote = [
@@ -855,6 +882,7 @@
       ["Change language\tMod + L", kCmdChangeBlockLanguage],
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
+      ["Export", kCmdExportCurrentBlock],
     ];
 
     const menuRun = [
@@ -1077,6 +1105,9 @@
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
       view.focus();
+    } else if (cmdId === kCmdExportCurrentBlock) {
+      exportCurrentBlock();
+      view.focus();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
       view.focus();
@@ -1185,9 +1216,13 @@
 
   const commandNameOverrides = [
     kCmdRenameCurrentNote,
-    "Rename Current Note",
+    "Rename current note",
     kCmdDeleteCurrentNote,
-    "Delete Current Note",
+    "Delete current note",
+    kCmdExportCurrentNote,
+    "Export current note",
+    kCmdExportCurrentBlock,
+    "Export current block",
     kCmdShowStorageHelp,
     "Help: storage",
     kCmdRunHelp,

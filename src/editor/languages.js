@@ -45,11 +45,12 @@ export declare const squirrel: StreamParser<unknown>
 export declare const ceylon: StreamParser<unknown>
 */
 
-/**
- * @typedef {Object} Language
- * @property {string} token
- * @property {string} name
- * @property {string} guesslang
+/** @typedef {{
+  token: string,
+  name: string,
+  guesslang: string,
+  ext?: string,
+}} Language
  */
 
 /** @type {Language[]} */
@@ -58,11 +59,13 @@ export const kLanguages = [
     token: "text",
     name: "Plain Text",
     guesslang: null,
+    ext: "txt",
   },
   {
     token: "math",
     name: "Math",
     guesslang: null,
+    ext: "math.txt",
   },
   {
     token: "json",
@@ -235,6 +238,27 @@ export const kLanguages = [
     guesslang: "lua",
   },
 ];
+
+/**
+ * @param {string} lang
+ * @returns {string}
+ */
+export function extForLang(lang) {
+  for (let i of kLanguages) {
+    let found = lang == i.token || lang == i.name;
+    if (!found) {
+      continue;
+    }
+    if (i.ext) {
+      return i.ext;
+    }
+    if (i.guesslang) {
+      return i.guesslang;
+    }
+    return i.token;
+  }
+  return "txt";
+}
 
 function buildTokenToLanguage() {
   let res = {};

@@ -43,6 +43,9 @@ let firstBlockDelimiterSize;
   range: BlockRange,
 }} Block */
 
+/** @typedef {{
+}} BlockWithNo */
+
 /**
  * Original implementation was forcing syntax tree parse on whole document to get
  * block boundaries. That is slow for large documents (e.g. >300ms for 357kb doc)
@@ -219,6 +222,11 @@ export const blockState = StateField.define({
   },
 });
 
+/**
+ * @param {Block[]} blocks
+ * @param {number} pos
+ * @returns {Block}
+ */
 function findBlockWithPos(blocks, pos) {
   for (let block of blocks) {
     let r = block.range;
@@ -228,8 +236,27 @@ function findBlockWithPos(blocks, pos) {
   }
   return undefined;
 }
+
+/**
+ * @param {Block[]} blocks
+ * @param {number} pos
+ * @returns {number}
+ */
+function findBlocNokWithPos(blocks, pos) {
+  let no = 0;
+  for (let block of blocks) {
+    let r = block.range;
+    if (r.from <= pos && r.to >= pos) {
+      return no;
+    }
+    no++;
+  }
+  return -1;
+}
+
 /**
  * @param {EditorState} state
+ * @returns {Block}
  */
 export function getActiveNoteBlock(state) {
   // find which block the cursor is in
@@ -239,11 +266,41 @@ export function getActiveNoteBlock(state) {
   return findBlockWithPos(blocks, range.head);
 }
 
+/** @typedef {{
+  blocks: Block[],
+  active: number,
+}} BlocksInfo */
+
+/**
+ * @param {EditorState} state
+ * @returns {BlocksInfo}
+ */
+export function getBlocksInfo(state) {
+  // find which block the cursor is in
+  const range = state.selection.asSingle().ranges[0];
+  // @ts-ignore
+  let blocks = state.facet(blockState);
+  let active = findBlocNokWithPos(blocks, range.head);
+  if (active < 0) {
+    active = 0;
+  }
+  return {
+    blocks: blocks,
+    active: active,
+  };
+}
+
+/**
+ * @returns {Block}
+ */
 export function getFirstNoteBlock(state) {
   let blocks = state.facet(blockState);
   return blocks[0];
 }
 
+/**
+ * @returns {Block}
+ */
 export function getLastNoteBlock(state) {
   let blocks = state.facet(blockState);
   return blocks[blocks.length - 1];
