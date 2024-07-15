@@ -334,16 +334,24 @@ export async function fsWriteTextFile(dh, fileName, content) {
 }
 
 /**
+ * @param {FileSystemFileHandle} fh
+ * @param {Blob} blob
+ */
+export async function fsFileHandleWriteBlob(fh, blob) {
+  const writable = await fh.createWritable();
+  await writable.write(blob);
+  await writable.close();
+}
+
+/**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
- * @param {Blob} content
+ * @param {Blob} blob
  */
-export async function fsWriteBlob(dh, fileName, content) {
-  console.log("writing to file:", fileName, content.size);
-  let fileHandle = await dh.getFileHandle(fileName, { create: true });
-  const writable = await fileHandle.createWritable();
-  await writable.write(content);
-  await writable.close();
+export async function fsWriteBlob(dh, fileName, blob) {
+  console.log("writing to file:", fileName, blob.size);
+  let fh = await dh.getFileHandle(fileName, { create: true });
+  await fsFileHandleWriteBlob(fh, blob);
 }
 
 /**

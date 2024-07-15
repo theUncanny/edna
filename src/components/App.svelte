@@ -56,6 +56,7 @@
     loadNoteIfExists,
     debugRemoveLocalStorageNotes,
     noteExists,
+    kEdnaFileExt,
   } from "../notes";
   import { getNoteMeta, getNotesMetadata } from "../metadata";
   import {
@@ -70,7 +71,12 @@
     trimPrefix,
     trimSuffix,
   } from "../util";
-  import { supportsFileSystem, openDirPicker } from "../fileutil";
+  import {
+    supportsFileSystem,
+    openDirPicker,
+    fsWriteBlob,
+    fsFileHandleWriteBlob,
+  } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
     getLanguage,
@@ -110,6 +116,7 @@
   import { parseUserFunctions, runBoopFunction } from "../functions";
   import { getMyFunctionsNote } from "../system-notes";
   import { evalResultToString, runGo, runJS, runJSWithArg } from "../run";
+  import { toFileName } from "../filenamify";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -390,11 +397,21 @@
 
   async function exportCurrentNote() {
     let settings = getSettings();
-    let name = settings.currentNoteName;
+    let name = toFileName(settings.currentNoteName) + kEdnaFileExt;
     let view = getEditorView();
     let s = getContent(view);
     console.log("exportCurrentNote:", name);
     const blob = new Blob([s], { type: "text/plain" });
+    if (supportsFileSystem()) {
+      let opts = {
+        suggestedName: name,
+      };
+      // @ts-ignore
+      let fh = await window.showSaveFilePicker(opts);
+      await fsFileHandleWriteBlob(fh, blob);
+      return;
+    }
+    // fs support
     browserDownloadBlob(blob, name);
   }
 
@@ -823,6 +840,7 @@
     const menuNote = [
       ["Rename", kCmdRenameCurrentNote],
       ["Delete", kCmdDeleteCurrentNote],
+      ["Export", kCmdExportCurrentNote],
     ];
 
     const menuBlock = [
