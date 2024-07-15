@@ -9,11 +9,11 @@ To make it easier to use we auto-create a block for the current day at the top o
 
 The format of the block is: `# YYYY-MM-DD DayOfWeek`
 
-`Alt + 2` is default quick access shortcut for Inbox note.
+`Alt + 2` is default quick access shortcut for Daily Journal note.
 
-If you don't care about inbox note, delete it with:
+If you don't care about daily journal note, delete it with:
 
 * right-click for context menu, `Note / Delete current note`
-* `Mod + P` for note selector, position on inbox and `Mod + Delete`
+* `Mod + P` for note selector, position on daily journal and `Mod + Delete`
 
 You can re-create `daily journal` note in the future.
