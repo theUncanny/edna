@@ -1262,6 +1262,15 @@
     if (id >= kCmdBlockFirst && id <= kCmdBlockLast) {
       return "Block: " + name;
     }
+    if (id === kCmdNoteToggleStarred) {
+      let starAction = "Add current note to favorites";
+      let meta = getNoteMeta(noteName);
+      if (meta && meta.isStarred) {
+        //starAction = "Un-star";
+        starAction = "Remove current note from favorites";
+      }
+      return starAction;
+    }
     return name;
   }
 

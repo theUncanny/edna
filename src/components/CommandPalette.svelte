@@ -1,5 +1,5 @@
 <script>
-  import { findMatchingItems, len, splitMax, trimPrefix } from "../util";
+  import { findMatchingItems, isDev, len, splitMax, trimPrefix } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
   import { extractShortcut } from "../keys";
@@ -28,10 +28,26 @@
   }} Item 
    */
 
+  function verifyCommandsAreUnique() {
+    let m = new Map();
+    for (let i = 0; i < len(commandsDef); i++) {
+      let s = commandsDef[i][0];
+      let id = commandsDef[i][1];
+      if (m.has(id)) {
+        console.log(`Duplicate items with id ${id}: '${s}' and '${m.get(id)}'`);
+      }
+      m.set(id, s);
+    }
+  }
+
   /**
    * @returns {Item[]}
    */
   function buildCommands() {
+    if (isDev()) {
+      verifyCommandsAreUnique();
+    }
+
     // console.log("rebuildCommands:", commands);
     /** @type {Item[]} */
     let res = Array(len(commandsDef));
@@ -60,9 +76,6 @@
     res.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
-    console.log("16: ", res[16]);
-    console.log("17: ", res[17]);
-    console.log("18: ", res[18]);
     return res;
   }
   let items = $state(buildCommands());
