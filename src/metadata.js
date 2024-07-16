@@ -87,6 +87,7 @@ async function saveNotesMetadata(m) {
 }
 
 /**
+ * can return null if there is no metadata
  * @param {string} name
  * @param {boolean} createIfNotExists
  * @returns {NoteMetadata}

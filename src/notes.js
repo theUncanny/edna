@@ -361,6 +361,18 @@ let latestNoteNames = [];
 /** @type {string[]} */
 let encryptedNoteNames = [];
 
+/** @typedef {{
+  handle: FileSystemFileHandle,
+  fileNaem: string,
+}} OpenedNote */
+
+// list of notes opened from disk. They are not part of the workspace, will be forgotten
+// on app reload. Their names are their full fileNames which helps to ensure that
+// their names don't conflict with notes in the workspace
+// TODO: maybe add some unique prefix to the name (like `system:` for system notes?)
+/** @type {OpenedNote[]} */
+let openedNotes = [];
+
 /**
  * returns null if not a valid name
  * @param {string} fileName

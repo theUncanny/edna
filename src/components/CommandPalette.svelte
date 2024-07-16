@@ -13,6 +13,12 @@
 }}*/
   let { executeCommand, switchToNoteSelector, commandsDef } = $props();
 
+  console.log("CommandPalette.svelte");
+
+  $effect(() => {
+    console.log("CommandPalette.svelte mounted");
+  });
+
   /** @typedef {{
    key: number,
    name: string,
@@ -38,7 +44,7 @@
       if (len(parts) > 1) {
         shortcut = extractShortcut(parts[1]);
       }
-      // console.log("name:", name, "id:", id);
+      // console.log(`i: ${i}, name: ${name} id: ${id}`);
       let item = {
         key: id,
         name: name,
@@ -54,6 +60,9 @@
     res.sort((a, b) => {
       return a.name.localeCompare(b.name);
     });
+    console.log("16: ", res[16]);
+    console.log("17: ", res[17]);
+    console.log("18: ", res[18]);
     return res;
   }
   let items = $state(buildCommands());

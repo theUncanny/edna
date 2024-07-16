@@ -58,7 +58,11 @@
     noteExists,
     kEdnaFileExt,
   } from "../notes";
-  import { getNoteMeta, getNotesMetadata } from "../metadata";
+  import {
+    getNoteMeta,
+    getNotesMetadata,
+    toggleNoteStarred,
+  } from "../metadata";
   import {
     getAltChar,
     getClipboardText,
@@ -862,12 +866,22 @@
   export const kCmdShowBuiltInFunctions = nmid();
   export const kCmdRunHelp = nmid();
   export const kCmdExportCurrentBlock = nmid();
+  export const kCmdNoteToggleStarred = nmid();
 
   function buildMenuDef() {
+    // let starAction = "Star";
+    let starAction = "Add to favorites";
+    let meta = getNoteMeta(noteName);
+    if (meta && meta.isStarred) {
+      //starAction = "Un-star";
+      starAction = "Remove from favorites";
+    }
+
     const menuNote = [
       ["Rename", kCmdRenameCurrentNote],
       ["Delete", kCmdDeleteCurrentNote],
-      ["Export", kCmdExportCurrentNote],
+      [starAction, kCmdNoteToggleStarred],
+      ["Export to file", kCmdExportCurrentNote],
     ];
 
     const menuBlock = [
@@ -882,7 +896,7 @@
       ["Change language\tMod + L", kCmdChangeBlockLanguage],
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
-      ["Export", kCmdExportCurrentBlock],
+      ["Export to file", kCmdExportCurrentBlock],
     ];
 
     const menuRun = [
@@ -911,7 +925,7 @@
       ["Switch to browser (local storage)", kCmdSwitchToLocalStorage],
       ["Switch to notes in a directory", kCmdSwitchToNotesInDir],
       kMenuSeparator,
-      ["Export notes to .zip file", kCmdExportNotes],
+      ["Export all notes to .zip file", kCmdExportNotes],
       kMenuSeparator,
       ["Help: storage", kCmdShowStorageHelp],
     ];
@@ -1134,6 +1148,8 @@
       exportNotesToZipFile();
     } else if (cmdId === kCmdExportCurrentNote) {
       exportCurrentNote();
+    } else if (cmdId === kCmdNoteToggleStarred) {
+      toggleCurrentNoteStar();
     } else if (cmdId === kCmdShowStorageHelp) {
       showHTMLHelp("#storing-notes-on-disk");
     } else if (cmdId === kCmdSettings) {
@@ -1220,9 +1236,9 @@
     kCmdDeleteCurrentNote,
     "Delete current note",
     kCmdExportCurrentNote,
-    "Export current note",
+    "Export current note to a file",
     kCmdExportCurrentBlock,
-    "Export current block",
+    "Export current block to a file",
     kCmdShowStorageHelp,
     "Help: storage",
     kCmdRunHelp,
@@ -1285,7 +1301,7 @@
 
   const commandPaletteAdditions = [
     ["Open recent note", kCmdOpenRecent],
-    ["Export current note", kCmdExportCurrentNote],
+    // ["Export current note", kCmdExportCurrentNote],
   ];
 
   function openCommandPalette() {
@@ -1338,6 +1354,11 @@
     let view = getEditorView();
     formatBlockContent(view);
     logNoteOp("noteFormatBlock");
+  }
+
+  function toggleCurrentNoteStar() {
+    toggleNoteStarred(noteName);
+    getEditor().focus();
   }
 
   /**
