@@ -6,7 +6,7 @@ class DocDirtyState {
 export const dirtyState = new DocDirtyState();
 
 class AppState {
-  noteSelectorInfoCollapsed = $state(true);
+  noteSelectorInfoCollapsed = $state(false);
 }
 
 export const appState = new AppState();
