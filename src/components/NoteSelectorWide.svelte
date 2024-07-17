@@ -17,8 +17,15 @@
     createNote: (name: string) => void,
     deleteNote: (name: string) => void,
     switchToCommandPalette: () => void,
+    switchToRegularNoteSelector: () => void,
 }}*/
-  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
+  let {
+    openNote,
+    createNote,
+    deleteNote,
+    switchToCommandPalette,
+    switchToRegularNoteSelector,
+  } = $props();
 
   let noteNames = getLatestNoteNames();
   let items = $state(buildItems(noteNames));
@@ -325,6 +332,14 @@
     <div class="flex items-baseline">
       <div class="kbd">Esc</div>
       <div class="ml-2">dismiss</div>
+    </div>
+
+    <div class="text-gray-400">&bull;</div>
+    <div class="flex items-baseline">
+      <button
+        onclick={switchToRegularNoteSelector}
+        class="underline underline-offset-2">regular</button
+      >
     </div>
   </div>
 </form>

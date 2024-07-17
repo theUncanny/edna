@@ -105,8 +105,15 @@
     createNote: (name: string) => void,
     deleteNote: (name: string) => void,
     switchToCommandPalette: () => void,
+    switchToWideNoteSelector: () => void,
 }}*/
-  let { openNote, createNote, deleteNote, switchToCommandPalette } = $props();
+  let {
+    openNote,
+    createNote,
+    deleteNote,
+    switchToCommandPalette,
+    switchToWideNoteSelector,
+  } = $props();
 
   let noteNames = getLatestNoteNames();
   let items = $state(buildItems(noteNames));
@@ -353,6 +360,11 @@
   <div
     class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-start mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
   >
+    <button
+      onclick={switchToWideNoteSelector}
+      class="absolute bottom-3 right-4 underline underline-offset-2"
+      >wide</button
+    >
     {#if canOpenSelected}
       <div class="kbd">Enter</div>
       <div class="truncate">

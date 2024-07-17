@@ -2,7 +2,7 @@
   import RenameNote from "./RenameNote.svelte";
   import History from "./History.svelte";
   import NoteSelector from "./NoteSelector.svelte";
-  import NoteSelector2 from "./NoteSelector2.svelte";
+  import NoteSelectorWide from "./NoteSelectorWide.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
   import Editor from "./Editor.svelte";
   import ModalMessage, {
@@ -126,6 +126,7 @@
   import { getMyFunctionsNote } from "../system-notes";
   import { evalResultToString, runGo, runJS, runJSWithArg } from "../run";
   import { toFileName } from "../filenamify";
+  import { tick } from "svelte";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -597,6 +598,25 @@
   function closeNoteSelector() {
     showingNoteSelector = false;
     getEditorComp().focus();
+  }
+
+  function reOpenNoteSelector() {
+    showingNoteSelector = false;
+    tick().then(() => {
+      showingNoteSelector = true;
+    });
+  }
+
+  function switchToWideNoteSelector() {
+    useWideSelectors = true;
+    setSetting("useWideSelectors", true);
+    reOpenNoteSelector();
+  }
+
+  async function switchToRegularNoteSelector() {
+    useWideSelectors = false;
+    setSetting("useWideSelectors", false);
+    reOpenNoteSelector();
   }
 
   async function openFunctionSelector(onSelection = false) {
@@ -1785,7 +1805,8 @@
 {#if showingNoteSelector}
   {#if useWideSelectors}
     <Overlay onclose={closeNoteSelector} blur={true}>
-      <NoteSelector2
+      <NoteSelectorWide
+        {switchToRegularNoteSelector}
         {switchToCommandPalette}
         openNote={onOpenNote}
         createNote={onCreateNote}
@@ -1795,6 +1816,7 @@
   {:else}
     <Overlay onclose={closeNoteSelector} blur={true}>
       <NoteSelector
+        {switchToWideNoteSelector}
         {switchToCommandPalette}
         openNote={onOpenNote}
         createNote={onCreateNote}
