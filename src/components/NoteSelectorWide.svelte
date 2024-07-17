@@ -338,7 +338,8 @@
     <div class="flex items-baseline">
       <button
         onclick={switchToRegularNoteSelector}
-        class="underline underline-offset-2">regular</button
+        class="underline underline-offset-2"
+        title="switch to regualar note selector">regular</button
       >
     </div>
   </div>

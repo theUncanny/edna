@@ -362,6 +362,7 @@
   >
     <button
       onclick={switchToWideNoteSelector}
+      title="switch to wide note selector"
       class="absolute bottom-3 right-4 underline underline-offset-2"
       >wide</button
     >
