@@ -57,6 +57,10 @@
     debugRemoveLocalStorageNotes,
     noteExists,
     kEdnaFileExt,
+    notePathFromNameFS,
+    noteNameFromFileNameFS,
+    rememberOpenedNote,
+    unrememberOpenedNote,
   } from "../notes";
   import {
     getNoteMeta,
@@ -80,6 +84,8 @@
     openDirPicker,
     fsWriteBlob,
     fsFileHandleWriteBlob,
+    requestHandlePermission,
+    hasHandlePermission,
   } from "../fileutil";
   import { boot } from "../webapp-boot";
   import {
@@ -127,6 +133,7 @@
   import { evalResultToString, runGo, runJS, runJSWithArg } from "../run";
   import { toFileName } from "../filenamify";
   import { tick } from "svelte";
+  import AskFileWritePermissions from "./AskFileWritePermissions.svelte";
 
   /** @typedef {import("../functions").BoopFunction} BoopFunction */
 
@@ -192,6 +199,7 @@
       showingBlockSelector ||
       showingDecryptPassword ||
       showingEncryptPassword ||
+      showingAskFileWritePermissions ||
       showingFind ||
       showingSettings
     );
@@ -209,6 +217,7 @@
     openFunctionSelector: openFunctionSelector,
     smartRun: smartRun,
     getPassword: getPassword,
+    requestFileWritePermission: requestFileWritePermission,
   };
   setGlobalFuncs(gf);
 
@@ -357,12 +366,8 @@
 
   let showingDecryptPassword = $state(false);
   let showingDecryptMessage = $state("");
-  let closeDecryptPassword = () => {
-    console.log("empty closeDecryptPassword");
-  };
-  let onDecryptPassword = (pwd) => {
-    console.log("onDecryptPassword:", pwd);
-  };
+  let closeDecryptPassword = $state(null);
+  let onDecryptPassword = $state(null);
 
   /**
    * @param {string} [msg]
@@ -380,6 +385,36 @@
       closeDecryptPassword = () => {
         resolve("");
         showingDecryptPassword = false;
+      };
+    });
+  }
+
+  /** @type {FileSystemFileHandle} */
+  let fileWritePermissionsFileHandle = $state(null);
+  let showingAskFileWritePermissions = $state(false);
+  /** @type {(boolean) => void} */
+  let askFileWritePermissionsClose = $state(null);
+
+  /**
+   * @param {FileSystemFileHandle} fh
+   * @returns {Promise<boolean>}
+   */
+  async function requestFileWritePermission(fh) {
+    if (hasHandlePermission(fh, true)) {
+      console.log(
+        "requestFileWritePermission: already have write permissions to",
+        fh,
+      );
+      return true;
+    }
+    fileWritePermissionsFileHandle = fh;
+    showingAskFileWritePermissions = true;
+    clearModalMessage();
+    return new Promise((resolve, reject) => {
+      askFileWritePermissionsClose = (ok) => {
+        console.log("requestFileWritePermission: ok", ok);
+        showingAskFileWritePermissions = false;
+        resolve(ok);
       };
     });
   }
@@ -414,17 +449,36 @@
         {
           description: "Edna notes",
           accept: {
-            "text/plain": [".edna.txt"],
+            "application/text": [".edna.txt"],
           },
         },
       ],
       excludeAcceptAllOption: true,
-      multiple: false,
+      multiple: true,
     };
-    // @ts-ignore
-    let fileHandles = await window.showSaveFilePicker(opts);
-    let fh = fileHandles[0];
-    console.log("fh:", fh);
+    let fileHandles = [];
+    try {
+      // @ts-ignore
+      fileHandles = await window.showOpenFilePicker(opts);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+    let noteToOpen = null;
+    for (let fh of fileHandles) {
+      console.log("fh:", fh);
+      let noteName = rememberOpenedNote(fh);
+      if (noteName === null || noteName === "") {
+        continue;
+      }
+      // will open the first selected note
+      if (noteToOpen === null) {
+        noteToOpen = noteName;
+      }
+    }
+    if (noteToOpen) {
+      openNote(noteToOpen);
+    }
   }
 
   /**
@@ -439,8 +493,14 @@
     let opts = {
       suggestedName: fileName,
     };
-    // @ts-ignore
-    let fh = await window.showSaveFilePicker(opts);
+    let fh = null;
+    try {
+      // @ts-ignore
+      fh = await window.showSaveFilePicker(opts);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
     await fsFileHandleWriteBlob(fh, blob);
   }
 
@@ -1923,5 +1983,14 @@
       msg={showingDecryptMessage}
       onpassword={onDecryptPassword}
     ></EnterDecryptPassword>
+  </Overlay>
+{/if}
+
+{#if showingAskFileWritePermissions}
+  <Overlay noCloseOnEsc={true} blur={true}>
+    <AskFileWritePermissions
+      fileHandle={fileWritePermissionsFileHandle}
+      close={askFileWritePermissionsClose}
+    ></AskFileWritePermissions>
   </Overlay>
 {/if}

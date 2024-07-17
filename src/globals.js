@@ -10,10 +10,20 @@
   openFunctionSelector: (boolean) => void,
   smartRun: () => void,
   getPassword: (msg: string) => Promise<string>,
+  requestFileWritePermission: (fh: FileSystemFileHandle) => Promise<boolean>,
 }} GlobalFuncs
 */
 
 import { formatDurationShort } from "./util";
+
+let sessionStart = performance.now();
+/**
+ * @returns {string}
+ */
+export function getSessionDur() {
+  let durMs = Math.round(performance.now() - sessionStart);
+  return formatDurationShort(durMs);
+}
 
 // it's easier to make some functions from App.vue available this way
 // then elaborate scheme of throwing and catching events
@@ -78,11 +88,9 @@ export async function getPasswordFromUser(msg) {
   return pwd;
 }
 
-let sessionStart = performance.now();
-/**
- * @returns {string}
- */
-export function getSessionDur() {
-  let durMs = Math.round(performance.now() - sessionStart);
-  return formatDurationShort(durMs);
+export async function requestFileWritePermission(fh) {
+  let ok = await globalFunctions.requestFileWritePermission(fh);
+  console.log("ok:", ok);
+  // TODO: check permissions
+  return ok;
 }

@@ -33,7 +33,7 @@
   // selection, so if there's state calcualted based on that,
   // it gets properly initalized
   setTimeout(() => {
-    console.log("initialSelection:", initialSelection, "n:", n);
+    // console.log("initialSelection:", initialSelection, "n:", n);
     if (initialSelection > n - 1) {
       initialSelection = n - 1;
     }

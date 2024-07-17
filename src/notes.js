@@ -1,6 +1,8 @@
 import {
   blobFromUint8Array,
   fsDeleteFile,
+  fsFileHandleReadTextFile,
+  fsFileHandleWriteText,
   fsReadBinaryFile,
   fsReadTextFile,
   fsRenameFile,
@@ -8,6 +10,7 @@ import {
   fsWriteTextFile,
   openDirPicker,
   readDir,
+  requestHandlePermission,
 } from "./fileutil";
 import {
   clearModalMessage,
@@ -42,7 +45,7 @@ import { historyPush, removeNoteFromHistory, renameInHistory } from "./history";
 
 import { KV } from "./dbutil";
 import { dirtyState } from "./state.svelte";
-import { getPasswordFromUser } from "./globals";
+import { getPasswordFromUser, requestFileWritePermission } from "./globals";
 import {
   kMetadataName,
   loadNotesMetadata,
@@ -363,7 +366,8 @@ let encryptedNoteNames = [];
 
 /** @typedef {{
   handle: FileSystemFileHandle,
-  fileNaem: string,
+  fileName: string,
+  noteName: string,
 }} OpenedNote */
 
 // list of notes opened from disk. They are not part of the workspace, will be forgotten
@@ -374,12 +378,75 @@ let encryptedNoteNames = [];
 let openedNotes = [];
 
 /**
+ *
+ * @param {string} noteName
+ * @returns {OpenedNote}
+ */
+function getOpenedNote(noteName) {
+  for (let i of openedNotes) {
+    if (i.noteName === noteName) {
+      return i;
+    }
+  }
+  return null;
+}
+
+/**
+ * @param {string} noteName
+ */
+export function unrememberOpenedNote(noteName) {
+  openedNotes = openedNotes.filter(
+    (openedNote) => openedNote.noteName !== noteName,
+  );
+  latestNoteNames = latestNoteNames.filter((name) => name != noteName);
+}
+
+/**
+ * @param {FileSystemFileHandle} fh
+ * @returns string
+ */
+export function rememberOpenedNote(fh) {
+  if (fh.name.endsWith(kEdnaEncrFileExt)) {
+    // we don't support encrypted notes
+    return null;
+  }
+  let noteName = noteNameFromFileNameFS(fh.name);
+  if (!noteName) {
+    return null;
+  }
+
+  // ensure name is unique
+  // TODO: should clear when switching workspaces because the uniqueness
+  // will no longer be guaranteed
+  // note: could solve that by using unique IDs for files and returning
+  // NoteInfo[] that contains info about note, including id and using
+  // ids to identify notes
+  let baseNoteName = noteName;
+  let n = 1;
+  while (latestNoteNames.includes(noteName)) {
+    noteName = baseNoteName + `-${n}`;
+    n++;
+  }
+  let opened = {
+    handle: fh,
+    fileName: fh.name,
+    noteName: noteName,
+  };
+  openedNotes.push(opened);
+  latestNoteNames.push(noteName);
+  return noteName;
+}
+
+/**
  * returns null if not a valid name
  * @param {string} fileName
  * @returns {string}
  */
-function nameFromFileName(fileName) {
-  throwIf(!isValidFileName(fileName));
+export function noteNameFromFileNameFS(fileName) {
+  // throwIf(!isValidFileName(fileName));
+  if (!isValidFileName) {
+    return null;
+  }
   let encodedName = trimEdnaExt(fileName);
   let name = fromFileName(encodedName);
   return name;
@@ -430,9 +497,9 @@ export async function forEachNoteFileFS(dh, fn) {
     if (!isValidFileName(fileName)) {
       continue;
     }
-    let name = nameFromFileName(fileName);
+    let name = noteNameFromFileNameFS(fileName);
     // filter out empty names, can be created maliciously or due to a bug
-    if (name === "") {
+    if (name === null || name === "") {
       continue;
     }
     let isEncr = fileName.endsWith(kEdnaEncrFileExt);
@@ -549,7 +616,7 @@ function pickUniqueName(base, existingNames) {
 
 /**
  * @param {string} content
- * @returns
+ * @returns {Promise<void>}
  */
 export async function saveCurrentNote(content) {
   let settings = getSettings();
@@ -557,6 +624,19 @@ export async function saveCurrentNote(content) {
   console.log("note name:", name);
   if (isSystemNoteName(name)) {
     console.log("skipped saving system note", name);
+    return;
+  }
+  let openedNote = getOpenedNote(name);
+  if (openedNote) {
+    let fh = openedNote.handle;
+    let ok = await requestFileWritePermission(fh);
+    if (!ok) {
+      return;
+    }
+    console.log("saveCurrentNote: ok:", ok);
+    await fsFileHandleWriteText(fh, content);
+    dirtyState.isDirty = false;
+    incNoteSaveCount();
     return;
   }
   let path = notePathFromName(name);
@@ -669,6 +749,7 @@ export async function loadNoteIfExists(name) {
 }
 
 /**
+ * returns null if can't read the note
  * @param {string} name
  * @returns {Promise<string>}
  */
@@ -678,12 +759,20 @@ export async function loadNote(name) {
   if (isSystemNoteName(name)) {
     res = getSystemNoteContent(name);
   } else {
-    let dh = getStorageFS();
-    if (!dh) {
-      res = loadNoteLS(name);
+    let openedNote = getOpenedNote(name);
+    if (openedNote) {
+      res = await fsFileHandleReadTextFile(openedNote.handle);
     } else {
-      res = await readMaybeEncryptedNoteFS(dh, name);
+      let dh = getStorageFS();
+      if (!dh) {
+        res = loadNoteLS(name);
+      } else {
+        res = await readMaybeEncryptedNoteFS(dh, name);
+      }
     }
+  }
+  if (res === null) {
+    return null;
   }
   historyPush(name);
   // TODO: this should happen in App.vue:onDocChange(); this was easier to write
@@ -801,6 +890,10 @@ export async function loadCurrentNoteIfOnDisk() {
   if (isSystemNoteName(name)) {
     return null;
   }
+  let openedNote = getOpenedNote(name);
+  if (openedNote) {
+    return null;
+  }
   let dh = getStorageFS();
   if (!dh) {
     return null;
@@ -814,6 +907,10 @@ export async function loadCurrentNoteIfOnDisk() {
  */
 export function canDeleteNote(name) {
   if (name === kScratchNoteName) {
+    return false;
+  }
+  let openedNote = getOpenedNote(name);
+  if (openedNote) {
     return false;
   }
   return !isSystemNoteName(name);
@@ -946,11 +1043,19 @@ export async function switchToStoringNotesOnDisk(dh) {
     if (isSystemNoteName(name)) {
       continue;
     }
+    let openedNote = getOpenedNote(name);
+    if (openedNote) {
+      continue;
+    }
     migrateNote(name, diskNoteNames, dh);
   }
   // remove migrated notes
   for (let name of latestNoteNames) {
     if (isSystemNoteName(name)) {
+      continue;
+    }
+    let openedNote = getOpenedNote(name);
+    if (openedNote) {
       continue;
     }
     let key = notePathFromNameLS(name);
@@ -963,6 +1068,7 @@ export async function switchToStoringNotesOnDisk(dh) {
   // save in indexedDb so that it persists across sessions
   await dbSetDirHandle(dh);
   let noteNames = await loadNoteNames();
+  openedNotes = []; // can't guarantee names will be unique
 
   // migrate settings, update currentNoteName
   let settings = loadSettings();
@@ -974,13 +1080,17 @@ export async function switchToStoringNotesOnDisk(dh) {
   return noteNames;
 }
 
+/**
+ * @returns {Promise<boolean>}
+ */
 export async function pickAnotherDirectory() {
   try {
     let newDh = await openDirPicker(true);
     if (!newDh) {
-      return;
+      return false;
     }
     await dbSetDirHandle(newDh);
+    openedNotes = []; // can't guarantee names will be unique
     return true;
   } catch (e) {
     console.error("pickAnotherDirectory", e);

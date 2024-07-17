@@ -1,29 +1,30 @@
 import { throwIf } from "./util";
 
 /**
- * @param {any} fileHandle
+ * @param {any} fh
  * @param {boolean} withWrite
  * @returns {Promise<boolean>}
  */
-export async function requestHandlePermission(fileHandle, withWrite) {
+export async function requestHandlePermission(fh, withWrite) {
   const opts = {};
   if (withWrite) {
     opts.mode = "readwrite";
   }
-  return (await fileHandle.requestPermission(opts)) === "granted";
+  return (await fh.requestPermission(opts)) === "granted";
 }
 
 /**
- * @param {any} fileHandle
+ * @param {any} fh
  * @param {boolean} withWrite
  * @returns {Promise<boolean>}
  */
-export async function hasHandlePermission(fileHandle, withWrite) {
+export async function hasHandlePermission(fh, withWrite) {
   const opts = {};
   if (withWrite) {
     opts.mode = "readwrite";
   }
-  return (await fileHandle.queryPermission(opts)) === "granted";
+  let res = await fh.queryPermission(opts);
+  return res === "granted";
 }
 
 /**
@@ -321,16 +322,24 @@ export function supportsFileSystem() {
 
 /**
  * chatgpt says the string is saved in utf-8
+ * @param {FileSystemFileHandle} fh
+ * @param {string} content
+ */
+export async function fsFileHandleWriteText(fh, content) {
+  const writable = await fh.createWritable();
+  await writable.write(content);
+  await writable.close();
+}
+
+/**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
  * @param {string} content
  */
 export async function fsWriteTextFile(dh, fileName, content) {
   console.log("writing to file:", fileName, content.length);
-  let fileHandle = await dh.getFileHandle(fileName, { create: true });
-  const writable = await fileHandle.createWritable();
-  await writable.write(content);
-  await writable.close();
+  let fh = await dh.getFileHandle(fileName, { create: true });
+  fsFileHandleWriteText(fh, content);
 }
 
 /**
@@ -355,17 +364,24 @@ export async function fsWriteBlob(dh, fileName, blob) {
 }
 
 /**
+ * @param {FileSystemFileHandle} fh
+ * @returns {Promise<string>}
+ */
+export async function fsFileHandleReadTextFile(fh) {
+  const file = await fh.getFile();
+  const res = await file.text(); // reads utf-8
+  return res;
+}
+
+/**
  * @param {FileSystemDirectoryHandle} dh
  * @param {string} fileName
  * @returns {Promise<string>}
  */
 export async function fsReadTextFile(dh, fileName) {
   // console.log("fsReadTextFile:", fileName);
-  let fileHandle = await dh.getFileHandle(fileName, { create: false });
-  const file = await fileHandle.getFile();
-  // I assume this reads utf-8
-  const res = await file.text();
-  return res;
+  let fh = await dh.getFileHandle(fileName, { create: false });
+  return await fsFileHandleReadTextFile(fh);
 }
 
 /**
@@ -375,8 +391,8 @@ export async function fsReadTextFile(dh, fileName) {
  */
 export async function fsReadBinaryFile(dh, fileName) {
   // console.log("fsReadBinaryFile:", fileName);
-  let fileHandle = await dh.getFileHandle(fileName, { create: false });
-  const blob = await fileHandle.getFile();
+  let fh = await dh.getFileHandle(fileName, { create: false });
+  const blob = await fh.getFile();
   const res = await readBlobAsUint8Array(blob);
   return res;
 }
