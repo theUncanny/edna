@@ -1,15 +1,10 @@
-/**
- * @template T
- * @typedef {import('vue').Ref<T>} Ref<T>
- */
-
-/**
- * @typedef {Object} Stats
- * @property {number} appOpenCount
- * @property {number} noteCreateCount
- * @property {number} noteDeleteCount
- * @property {number} noteSaveCount
- */
+/** @typedef {{
+  appOpenCount: number,
+  noteCreateCount: number,
+  noteDeleteCount: number,
+  noteSaveCount: number,
+}} Stats
+*/
 
 let sessionStart = performance.now();
 

@@ -2,6 +2,10 @@
 ∞∞∞markdown
 # Release notes for Edna
 
+## 1.16
+
+- add `hide` / `show` button to hide info panel in note selector 
+
 ## 1.15
 
 - added `Add current note to favorites`, `Remove current note from favorites` commannds

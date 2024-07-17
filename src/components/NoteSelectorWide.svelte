@@ -126,7 +126,7 @@
    */
   function noteShortcut(note) {
     if (note.altShortcut) {
-      console.log("noteShortctu:", note);
+      //console.log("noteShortcut:", note);
       return `${altChar} + ${note.altShortcut}`;
     }
     return "";
@@ -337,7 +337,10 @@
     <div class="text-gray-400">&bull;</div>
     <div class="flex items-baseline">
       <button
-        onclick={switchToRegularNoteSelector}
+        onclick={(ev) => {
+          ev.preventDefault();
+          switchToRegularNoteSelector();
+        }}
         class="underline underline-offset-2"
         title="switch to regualar note selector">regular</button
       >

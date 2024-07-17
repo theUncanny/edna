@@ -4,3 +4,9 @@ class DocDirtyState {
 }
 
 export const dirtyState = new DocDirtyState();
+
+class AppState {
+  noteSelectorInfoCollapsed = $state(true);
+}
+
+export const appState = new AppState();

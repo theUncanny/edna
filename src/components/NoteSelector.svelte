@@ -99,6 +99,7 @@
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
   import IconStar from "./IconStar.svelte";
+  import { appState } from "../state.svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -305,6 +306,10 @@
     input.focus();
   }
 
+  function toggleInfoPanelCollapsed() {
+    appState.noteSelectorInfoCollapsed = !appState.noteSelectorInfoCollapsed;
+  }
+
   let input;
   let listbox;
 </script>
@@ -339,7 +344,6 @@
         onclick={(ev) => {
           toggleStarred(item);
           ev.preventDefault();
-          ev.stopPropagation();
         }}
         ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
       >
@@ -357,61 +361,119 @@
     <!-- <hr class="mt-2 border-gray-300 dark:border-gray-600" /> -->
   {/if}
 
-  <div
-    class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-start mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
-  >
-    <button
-      onclick={switchToWideNoteSelector}
-      title="switch to wide note selector"
-      class="absolute bottom-3 right-4 underline underline-offset-2"
-      >wide</button
+  {#if appState.noteSelectorInfoCollapsed}
+    <div
+      class="flex justify-between text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg px-2 pt-1 pb-1.5 mt-2"
     >
-    {#if canOpenSelected}
-      <div class="kbd">Enter</div>
-      <div class="truncate">
-        open note <span class="font-bold">
-          {selectedName}
-        </span>
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          switchToCommandPalette();
+        }}
+        class="underline underline-offset-2">command palette</button
+      >
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          switchToWideNoteSelector();
+        }}
+        title="switch to wide note selector"
+        class="underline underline-offset-2">wide</button
+      >
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          toggleInfoPanelCollapsed();
+        }}
+        title="show info panel"
+        class="underline underline-offset-2"
+      >
+        show</button
+      >
+    </div>
+  {:else}
+    <div
+      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-start mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
+    >
+      <div class="flex flex-col items-right absolute bottom-3 right-4">
+        <button
+          onclick={(ev) => {
+            ev.preventDefault();
+            switchToWideNoteSelector();
+          }}
+          title="switch to wide note selector"
+          class="underline underline-offset-2 mb-1">wide</button
+        >
+        <button
+          onclick={(ev) => {
+            ev.preventDefault();
+            toggleInfoPanelCollapsed();
+          }}
+          title="hide info panel"
+          class="underline underline-offset-2"
+        >
+          hide</button
+        >
       </div>
-    {/if}
+      {#if canOpenSelected}
+        <div class="kbd">Enter</div>
+        <div class="truncate">
+          open note <span class="font-bold">
+            {selectedName}
+          </span>
+        </div>
+      {/if}
 
-    {#if canCreateWithEnter}
-      <div class="kbd">Enter</div>
-    {/if}
-    {#if canCreate && !canCreateWithEnter}
-      <div class="kbd">Ctrl + Enter</div>
-    {/if}
-    {#if canCreate}
-      <div class="truncate">
-        create note <span class="font-bold">
-          {filter}
-        </span>
+      {#if canCreateWithEnter}
+        <div class="kbd">Enter</div>
+      {/if}
+      {#if canCreate && !canCreateWithEnter}
+        <div class="kbd">Ctrl + Enter</div>
+      {/if}
+      {#if canCreate}
+        <div class="truncate">
+          create note <span class="font-bold">
+            {filter}
+          </span>
+        </div>
+      {/if}
+
+      {#if showDelete && canDeleteSelected}
+        <div class="kbd">Ctrl + Delete</div>
+        <div class="red truncate">
+          delete note <span class="font-bold">
+            {selectedName}
+          </span>
+        </div>
+      {/if}
+
+      {#if showDelete && !canDeleteSelected}
+        <div class="kbd">Ctrl + Delete</div>
+        <div class="red truncate">
+          can't delete <span class="font-bold">{selectedName}</span>
+        </div>
+      {/if}
+
+      {#if canOpenSelected}
+        <div class="kbd">{altChar} + 1...9</div>
+        <div>assign quick access shortcut</div>
+      {/if}
+
+      {#if canOpenSelected}
+        <div class="kbd">{altChar} + S</div>
+        <div>toggle favorite</div>
+      {/if}
+
+      <div class="kbd">&gt;</div>
+      <div>
+        <button
+          onclick={(ev) => {
+            ev.preventDefault();
+            switchToCommandPalette();
+          }}
+          class="underline underline-offset-2">command palette</button
+        >
       </div>
-    {/if}
-
-    {#if showDelete && canDeleteSelected}
-      <div class="kbd">Ctrl + Delete</div>
-      <div class="red truncate">
-        delete note <span class="font-bold">
-          {selectedName}
-        </span>
-      </div>
-    {/if}
-
-    {#if showDelete && !canDeleteSelected}
-      <div class="kbd">Ctrl + Delete</div>
-      <div class="red truncate">
-        can't delete <span class="font-bold">{selectedName}</span>
-      </div>
-    {/if}
-
-    {#if canOpenSelected}
-      <div class="kbd">{altChar} + 1...9</div>
-      <div>assign quick access shortcut</div>
-    {/if}
-    {#if canOpenSelected}
-      <div class="kbd">{altChar} + S</div>
-      <div>toggle favorite</div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </form>
