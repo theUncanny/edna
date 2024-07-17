@@ -1,4 +1,11 @@
+
+∞∞∞markdown
 # Release notes for Edna
+
+## 1.15
+
+- added `Add current note to favorites`, `Remove current note from favorites` commannds
+- added `Export current note to a file` and `Export current block to a file` commands
 
 ## 1.14
 

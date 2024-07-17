@@ -1,3 +1,5 @@
+
+∞∞∞markdown
 Welcome to Edna - a note taking app for developers and power users.
 
 To learn more: https://edna.arslexis.io/help (or right-click for context menu and use `Help` / `Show help`).

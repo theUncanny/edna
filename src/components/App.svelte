@@ -405,6 +405,28 @@
     exportNotesToZip();
   }
 
+  async function openNoteFromDisk() {
+    if (!supportsFileSystem()) {
+      return;
+    }
+    let opts = {
+      types: [
+        {
+          description: "Edna notes",
+          accept: {
+            "text/plain": [".edna.txt"],
+          },
+        },
+      ],
+      excludeAcceptAllOption: true,
+      multiple: false,
+    };
+    // @ts-ignore
+    let fileHandles = await window.showSaveFilePicker(opts);
+    let fh = fileHandles[0];
+    console.log("fh:", fh);
+  }
+
   /**
    * @param {Blob} blob
    * @param {string} fileName
@@ -426,7 +448,6 @@
     let settings = getSettings();
     let view = getEditorView();
     let bi = getBlocksInfo(view.state);
-    let b = bi.blocks[bi.active];
     let block = getActiveNoteBlock(view.state);
     let ext = extForLang(block.language.name);
     let name = toFileName(settings.currentNoteName) + `-${bi.active}.` + ext;
@@ -887,6 +908,7 @@
   export const kCmdRunHelp = nmid();
   export const kCmdExportCurrentBlock = nmid();
   export const kCmdNoteToggleStarred = nmid();
+  export const kCmdOpenNoteFromDisk = nmid();
 
   function buildMenuDef() {
     // let starAction = "Star";
@@ -1006,14 +1028,17 @@
     if (mid === kMenuIdJustText) {
       return kMenuStatusDisabled;
     }
+
     // console.log("menuItemStatus:", mi);
     // console.log("s:", s, "mid:", mid);
+    // note: this is called for each menu item so should be fast
     let lang = getLanguage(language);
     let dh = getStorageFS();
     // console.log("dh:", dh);
     let hasFS = supportsFileSystem();
     let view = getEditorView();
     let readOnly = isReadOnly(view);
+
     if (mid === kCmdFormatBlock) {
       if (readOnly || !langSupportsFormat(lang)) {
         return kMenuStatusRemoved;
@@ -1036,6 +1061,10 @@
     } else if (mid === kCmdSmartRun) {
       if (readOnly) {
         return kMenuStatusDisabled;
+      }
+    } else if (mid === kCmdOpenNoteFromDisk) {
+      if (!hasFS) {
+        return kMenuStatusRemoved;
       }
     } else if (mid === kCmdMoveNotesToDirectory) {
       if (!hasFS) {
@@ -1140,8 +1169,10 @@
       formatCurrentBlock();
       view.focus();
     } else if (cmdId === kCmdExportCurrentBlock) {
-      exportCurrentBlock();
+      await exportCurrentBlock();
       view.focus();
+    } else if (cmdId === kCmdOpenNoteFromDisk) {
+      openNoteFromDisk();
     } else if (cmdId === kCmdToggleSpellChecking) {
       toggleSpellCheck();
       view.focus();
@@ -1330,6 +1361,7 @@
 
   const commandPaletteAdditions = [
     ["Open recent note", kCmdOpenRecent],
+    ["Open note from disk", kCmdOpenNoteFromDisk],
     // ["Export current note", kCmdExportCurrentNote],
   ];
 

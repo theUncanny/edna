@@ -39,8 +39,10 @@ test("parseBuiltInFunctiosn", async () => {
 });
 
 test("parseCustomFunctions", async () => {
-  let jsRaw = await Bun.file("./src/note-custom-functions.md").text();
+  let jsRaw = await Bun.file(
+    "./src/notes/note-custom-functions.edna.txt",
+  ).text();
   let res = parseUserFunctions(jsRaw);
   expect(len(res)).toBe(1);
-  expect(res[0].name).toBe("My Camel Case")
-})
+  expect(res[0].name).toBe("My Camel Case");
+});

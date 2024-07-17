@@ -1,3 +1,5 @@
+
+∞∞∞markdown
 # Welcome to Edna
 
 [Edna](https://edna.arslexis.io) is a note taking app for developers and power users. A cross between Obsidian and Notational Velocity.
@@ -5,15 +7,11 @@
 This is a help note. To switch to a different note, press `Mod + P`.
 
 To see help in HTML, press `Help` at the bottom right or visit https://edna.arslexis.io/help
-
 ∞∞∞markdown
-
 # Keyboard shortcuts
 
 {{keyHelp}}
-
 ∞∞∞markdown
-
 # Why Edna?
 
 ## Notes and blocks
@@ -101,9 +99,7 @@ You can format current block using:
 - press format icon in status bar (bottom right)
 
 We support formatting of Go, JSON, JavaScript, HTML, CSS and Markdown blocks.
-
 ∞∞∞markdown
-
 # Multiple notes
 
 ## Open another note
@@ -157,9 +153,7 @@ Notes with assigned shortcut show up at the top of note switcher.
 ## Open recent note
 
 Press `Mod + E` to open a note from history. You can press `0` to `9` to open one of the last 10 notes.
-
 ∞∞∞markdown
-
 # Default notes
 
 At first run we create 3 default notes:
@@ -175,9 +169,7 @@ You can delete them (except the `scratch` note).
 `inbox` for storing things to process later e.g. links to YouTube videos to watch later or web pages to read later.
 
 `daily journal` is for daily notes. We auto-create a block for each day.
-
 ∞∞∞markdown
-
 # Storing notes on disk
 
 By default notes are stored in the browser (localStorage).
@@ -195,9 +187,7 @@ You can have multiple directories with notes. Think of each directory with notes
 Use context menu `Notes storage / Switch to notes in directory` to switch to notes in a different directory. If it's an empty directory, without existing notes, we'll create default `scratch` note.
 
 You can go back to storing notes in the browser with context menu `Notes storage / Switch to browser (localStorage)`. Unlike going from browser => directory, it doesn't import the notes from directory.
-
 ∞∞∞markdown
-
 # Accessing notes on multiple computers
 
 If you pick a directory managed by Dropbox or One Drive or Google Drive etc. then you'll be able to access notes on multiple computers.
@@ -213,9 +203,7 @@ On other computers:
 - pick the same directory
 
 Please note that that the last written version wins. If you switch really quickly between computers, before the directory with notes has been replicated, you might over-write previous content.
-
 ∞∞∞markdown
-
 # Encryption
 
 When storing notes on disk, you can encrypt them with a password.
@@ -243,9 +231,7 @@ We recommend passwords that are long, memorable phrases.
 Example: `Blue bear attacked a tiny dog`.
 
 Such passwords are easier to type and remember than typical "8a$7y!glo" passwords.
-
 ∞∞∞markdown
-
 # Running code
 
 ## Run code blocks
@@ -494,7 +480,6 @@ Share your functions with other via https://github.com/kjk/edna/discussions/cate
 
 Use `Alt + Shift + R` to force `Run function with block content` command.
 ∞∞∞markdown
-
 # Backing up notes
 
 For notes stored in file system, you can enable notes backup via Settings.
@@ -506,9 +491,7 @@ To save space only last 14 backups are stored.
 To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Switch to notes in directory`.
 
 Encrypted notes are stored in their encrypted form.
-
 ∞∞∞markdown
-
 # Exporting notes to a .zip file
 
 Edna files are just text files with `.edna.txt` extension.
@@ -520,16 +503,13 @@ Context menu: `Export notes to zip file` menu.
 We pack all the notes into a .zip file and initiate auto-download as `edna.notes.export-YYYY-MM-DD.zip` file to browser's downloads directory.
 
 You can then e.g. restore the notes by unzipping it to a directory and opening that directory in Edna with `Notes storage` / `Switch to notes in a directory` context menu.
-
 ∞∞∞markdown
-
 # Lists with TODO items
 
 In Markdown blocks, lists with [x] and [ ] are rendered as checkboxes:
 
 - [ ] Try out Edna
 - [ ] Do laundry
-
 ∞∞∞math
 This is a Math block. Lines are evaluated as math expressions.
 
@@ -544,20 +524,15 @@ time = 3900 seconds to minutes
 time \* 2
 
 1 EUR in USD
-
-∞∞∞markdown
-
-# code blocks
-
 ∞∞∞javascript
+// code blocks
 // Edna is great for storing code snippets
 // this is a javascript block
-// change type of block with `Mod + L`
+// change type of block with `Mod + L` or `Block: Change Language` command in command palette (`Mod + P`)
 // you can format it with `Alt + Shift + F`
 let x = 5
 console.log("x is", x)
 ∞∞∞markdown
-
 # Privacy and security
 
 Your notes are private and secure.
@@ -567,9 +542,7 @@ Notes are stored on your computer: in the browser (local storage) or on disk.
 For additional security, you can [encrypt notes](#encryption) with a password.
 
 The code is [open source](https://github.com/kjk/edna) so you can audit it.
-
 ∞∞∞markdown
-
 # No lock in
 
 The notes are stored in plain text files on disk (or in localStorage under `note:${name}` key)
@@ -581,9 +554,7 @@ You can edit the notes in any text editor (just be mindful of the above block ma
 You can back them up, store in git repositories, write scripts to process them.
 
 They are not locked in a proprietary Edna format.
-
 ∞∞∞markdown
-
 # How I use Edna
 
 Edna is flexible and you should find your own way of using it.
@@ -597,25 +568,19 @@ I use Edna daily::
 - I have a note for each programming language / technology I use. I keep code snippets and notes about it
 - I have `ideas` note for jotting down ideas
 - I have `investing` note for keeping track of various stock investment ideas
-
 ∞∞∞markdown
-
 # Open source
 
 [Edna](https://edna.arslexis.io) is open source: https://github.com/kjk/edna
 
 To report a bug or request a feature: https://github.com/kjk/edna/issues
-
 ∞∞∞markdown
-
 # Contact
 
 You can contact me via https://blog.kowalczyk.info/contactme
 
 You can find more software by [me](https://blog.kowalczyk.info/) on https://arslexis.io
-
 ∞∞∞markdown
-
 # Credits
 
 Edna is a fork of [Heynote](https://github.com/heyman/heynote) with the following differences:

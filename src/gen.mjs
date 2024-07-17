@@ -4,7 +4,9 @@ import markdownIt from "markdown-it";
 import markdownItAnchor from "markdown-it-anchor";
 import path from "node:path";
 
-console.log("Generating html-win.html and html-mac.html from note-help.md");
+console.log(
+  "Generating html-win.html and html-mac.html from note-help.edna.txt",
+);
 
 /**
  * @param {string} platform
@@ -125,12 +127,13 @@ function collapseMultipleEmptyLines(lines) {
  * @returns {string}
  */
 function getHelp(platform) {
-  let path = "./src/note-help.md";
+  let path = "./src/notes/note-help.edna.txt";
   let helpRaw = fs.readFileSync(path, "utf8");
 
   let lines = helpRaw.split("\n");
   lines = removeMathBlock(lines);
   lines = replaceJSBlock(lines);
+  lines = removeLineStartingWith(lines, "∞∞∞markdown");
   lines = removeLineStartingWith(lines, "This is a help note");
   lines = removeLineStartingWith(lines, "To see help in HTML");
   lines = collapseMultipleEmptyLines(lines);

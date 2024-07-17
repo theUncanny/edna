@@ -1,15 +1,15 @@
 import { len, platformName } from "./util.js";
 
-import dailyJournalRaw from "./note-daily-journal.md?raw";
+import dailyJournalRaw from "./notes/note-daily-journal.edna.txt?raw";
 import { fixUpNoteContent } from "./notes.js";
-import helpRaw from "./note-help.md?raw";
-import inboxRaw from "./note-inbox.md?raw";
-import scratchDevRaw from "./note-scratch-dev.md?raw";
-import scratchRaw from "./note-scratch.md?raw";
+import helpRaw from "./notes/note-help.edna.txt?raw";
+import inboxRaw from "./notes/note-inbox.edna.txt?raw";
+import scratchDevRaw from "./notes/note-scratch-dev.edna.txt?raw";
+import scratchRaw from "./notes/note-scratch.edna.txt?raw";
 import { fixUpShortcuts, keyHelpStr } from "./key-helper.js";
-import releaseNotesRaw from "./note-release-notes.md?raw";
-import builtInFunctionsRaw from "./note-built-in-functions.js?raw";
-import myFunctionsRaw from "./note-custom-functions.md?raw";
+import releaseNotesRaw from "./notes/note-release-notes.edna.txt?raw";
+import builtInFunctionsRaw from "./notes/note-built-in-functions.js?raw";
+import myFunctionsRaw from "./notes/note-custom-functions.edna.txt?raw";
 
 import { parseBuiltInFunctions } from "./functions.js";
 
