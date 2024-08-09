@@ -15,6 +15,23 @@ To run: `./edna -run-prod`
 
 Edna runs on port `9325` so visit http://localhost:9325'
 
+## Development or production in docker:
+
+### Build
+```
+docker build -t edna .
+```
+### Run Production
+```
+docker run -p 80:9325 edna -run-prod
+```
+
+### Run development frontend
+```
+docker run -v ${PWD}/src:/app/src -p 8080:3035 edna -run-dev
+```
+
+
 ## Credits
 
 Edna started as a fork of Heynote but I've added many features since:
