@@ -25,7 +25,7 @@
   let selectedIdx = $state(-1);
 
   let n = len(items);
-  let refs = new Array(n);
+  let refs = $state(new Array(n));
   let prevItemsLen = n;
 
   // make sure to call selectionChanged() callback on initial
