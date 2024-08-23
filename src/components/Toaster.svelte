@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   /**
    * @typedef {Object} Toast
    * @property {string} msg

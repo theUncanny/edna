@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   let modalMessageHTML = $state("");
   /** @type {Timer} */
   let timerID;

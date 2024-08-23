@@ -11,6 +11,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"path"
 	"slices"
 	"strings"
 	"sync"
@@ -249,7 +250,8 @@ func makeHTTPServer(serveOpts *hutil.ServeFileOptions, proxyHandler *httputil.Re
 			if isMacBasedOnUserAgent(r) {
 				file = "help-mac.html"
 			}
-			ok := hutil.TryServeFileFromFS(w, r, serveOpts, file)
+			filePath := path.Join(serveOpts.DirPrefix, file)
+			ok := hutil.TryServeFileFromFS(w, r, serveOpts, filePath)
 			panicIf(!ok)
 			return
 		}

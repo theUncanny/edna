@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   /** @typedef {[string, number|MenuItemDef[]]} MenuItemDef */
   /** @typedef {MenuItemDef[]} MenuDef */
 

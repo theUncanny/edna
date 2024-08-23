@@ -1,4 +1,4 @@
-<script context="module">
+<script module>
   /** @typedef {{
    block: any,
    text: string,
