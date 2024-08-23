@@ -203,11 +203,11 @@
     {/snippet}
   </ListBox>
   {#if selectedItem}
-    <div class="px-2 py-1 mt-2 text-sm text-gray-800 bg-yellow-50">
+    <div class="px-2 py-1 mt-2 text-sm text-gray-800 bg-yellow-100">
       {selectedItem.fdef.description}
     </div>
     <div
-      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-800 rounded-lg py-1 px-2"
+      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
     >
       <div class="kbd">Enter</div>
       <div>Run function, output in new block</div>

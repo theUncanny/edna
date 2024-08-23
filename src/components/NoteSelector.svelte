@@ -342,8 +342,9 @@
       <button
         class="ml-[-6px]"
         onclick={(ev) => {
-          toggleStarred(item);
           ev.preventDefault();
+          ev.stopPropagation();
+          toggleStarred(item);
         }}
         ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
       >
