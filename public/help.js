@@ -60,8 +60,8 @@ function fixNesting(hdrs) {
 
 function genTocMini(hdrs) {
   let tmp = "";
-  let t = `<div class="toc-item-mini">▃</div>`;
-  for (let h of hdrs) {
+  let t = `<div class="toc-item-mini toc-light">▃</div>`;
+  for (let i = 0; i < hdrs.length; i++) {
     tmp += t;
   }
   return `<div class="toc-mini">` + tmp + `</div>`;
@@ -86,14 +86,13 @@ function genTocList(hdrs) {
 
 let hdrs = [];
 function tocGoTo(n) {
-  console.log("tocGoTo:", n);
   let el = hdrs[n].el;
   let y = el.getBoundingClientRect().top + window.scrollY;
-  let offY = 57;
-  let navEl = document.getElementsByClassName("nav")[0];
-  if (navEl) {
-    offY = navEl.getBoundingClientRect().height;
-  }
+  let offY = 12;
+  // let navEl = document.getElementsByClassName("content")[0];
+  // if (navEl) {
+  //   offY = navEl.getBoundingClientRect().height;
+  // }
   y -= offY;
   window.scrollTo({
     top: y,
@@ -111,4 +110,39 @@ function genToc() {
   document.body.appendChild(container);
 }
 
+function updateClosestToc() {
+  let closestIdx = -1;
+  let closestDistance = Infinity;
+
+  for (let i = 0; i < hdrs.length; i++) {
+    let hdr = hdrs[i];
+    const rect = hdr.el.getBoundingClientRect();
+    const distanceFromTop = Math.abs(rect.top);
+    if (
+      distanceFromTop < closestDistance &&
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight
+    ) {
+      closestDistance = distanceFromTop;
+      closestIdx = i;
+    }
+  }
+  if (closestIdx >= 0) {
+    console.log("Closest element:", closestIdx);
+    let els = document.querySelectorAll(".toc-item-mini");
+    let cls = "toc-light";
+    for (let i = 0; i < els.length; i++) {
+      let el = els[i];
+      if (i == closestIdx) {
+        el.classList.remove(cls);
+      } else {
+        el.classList.add(cls);
+      }
+    }
+  }
+}
+
+window.addEventListener("scroll", updateClosestToc);
+
 genToc();
+updateClosestToc();
