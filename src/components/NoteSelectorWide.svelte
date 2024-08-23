@@ -15,7 +15,7 @@
   /** @type {{
     openNote: (name: string) => void,
     createNote: (name: string) => void,
-    deleteNote: (name: string) => void,
+    deleteNote: (name: string) => Promise<void>,
     switchToCommandPalette: () => void,
     switchToRegularNoteSelector: () => void,
 }}*/
@@ -54,6 +54,11 @@
   let canCreateWithEnter = $state(false);
   let canDeleteSelected = $state(false);
   let showDelete = $state(false);
+
+  function reloadNotes() {
+    let noteNames = getLatestNoteNames();
+    items = buildItems(noteNames);
+  }
 
   let itemsCountMsg = $derived.by(() => {
     // $state(`${noteCount} notes`);
@@ -142,10 +147,7 @@
       ev.preventDefault();
       let note = selectedItem;
       if (note) {
-        reassignNoteShortcut(note.name, altN).then(() => {
-          let noteNames = getLatestNoteNames();
-          items = buildItems(noteNames);
-        });
+        reassignNoteShortcut(note.name, altN).then(reloadNotes);
         return;
       }
     }
@@ -177,7 +179,7 @@
         return;
       }
       if (selectedItem) {
-        emitDeleteNote(selectedItem.name);
+        deleteNote(selectedItem.name).then(reloadNotes);
       }
       return;
     }
@@ -204,14 +206,6 @@
   function emitCreateNote(name) {
     // log("create note", name);
     createNote(name);
-  }
-
-  /**
-   * @param {string} name
-   */
-  function emitDeleteNote(name) {
-    // console.log("deleteNote", name);
-    deleteNote(name);
   }
 
   /**
