@@ -207,7 +207,7 @@
       {selectedItem.fdef.description}
     </div>
     <div
-      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
+      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-xs max-w-full bg-gray-100 dark:bg-gray-700 rounded-lg py-1 px-2"
     >
       <div class="kbd">Enter</div>
       <div>Run function, output in new block</div>
