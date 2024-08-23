@@ -2,7 +2,7 @@
   import { len } from "../util";
   import "overlayscrollbars/overlayscrollbars.css";
   import { OverlayScrollbars } from "overlayscrollbars";
-  import { getActiveTheme } from "../settings";
+  import { getOverlayScrollbarOptions } from "../settings";
 
   /** @type {{ 
     items: any[],
@@ -146,16 +146,7 @@
 
   let listbox;
   $effect(() => {
-    let theme = getActiveTheme();
-    // console.log("listbox overlay scrollbars, theme:", theme);
-    let opts = {};
-    if (theme === "dark") {
-      opts = {
-        scrollbars: {
-          theme: "os-theme-dark",
-        },
-      };
-    }
+    let opts = getOverlayScrollbarOptions();
     OverlayScrollbars(listbox, opts);
   });
 

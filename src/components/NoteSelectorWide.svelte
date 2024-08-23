@@ -270,7 +270,7 @@
     {/snippet}
   </ListBox2>
   <div
-    class="flex flex-row items-baseline justify-between mt-2 text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg py-1 px-2"
+    class="flex flex-row items-baseline justify-between mt-2 text-xs max-w-full bg-gray-100 dark:bg-gray-700 rounded-lg py-1 px-2"
   >
     {#if canOpenSelected}
       <div class="flex items-baseline">

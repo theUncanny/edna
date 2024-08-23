@@ -206,9 +206,7 @@
     <div class="px-2 py-1 mt-2 text-sm text-gray-800 bg-yellow-100">
       {selectedItem.fdef.description}
     </div>
-    <div
-      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-center mt-2 text-xs max-w-full bg-gray-100 dark:bg-gray-700 rounded-lg py-1 px-2"
-    >
+    <div class="selector-info">
       <div class="kbd">Enter</div>
       <div>Run function, output in new block</div>
       <div class="kbd">Ctrl + Enter</div>

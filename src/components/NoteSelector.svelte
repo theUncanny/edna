@@ -393,9 +393,7 @@
       >
     </div>
   {:else}
-    <div
-      class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 items-start mt-2 text-xs max-w-full bg-gray-100 rounded-lg py-1 px-2"
-    >
+    <div class="selector-info">
       <div class="flex flex-col items-right absolute bottom-3 right-4">
         <button
           onclick={(ev) => {

@@ -1,7 +1,8 @@
 <script>
   import { len } from "../util";
   import "overlayscrollbars/overlayscrollbars.css";
-  import { getActiveTheme } from "../settings";
+  import { getOverlayScrollbarOptions } from "../settings";
+  import { OverlayScrollbars } from "overlayscrollbars";
 
   /** @type {{ 
     items: any[],
@@ -145,17 +146,10 @@
 
   let listbox;
   $effect(() => {
-    let theme = getActiveTheme();
-    // console.log("listbox overlay scrollbars, theme:", theme);
-    let opts = {};
-    if (theme === "dark") {
-      opts = {
-        scrollbars: {
-          theme: "os-theme-dark",
-        },
-      };
-    }
-    // OverlayScrollbars(listbox, opts);
+    $effect(() => {
+      let opts = getOverlayScrollbarOptions();
+      OverlayScrollbars(listbox, opts);
+    });
   });
 
   /**
@@ -193,7 +187,7 @@
     <span
       role="option"
       aria-selected={isSelected}
-      class="item px-1 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 even:text-blue-700"
+      class="item px-1 aria-selected:bg-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 dark:aria-selected:text-opacity-85 dark:aria-selected:bg-gray-700 even:text-blue-700 dark:even:text-blue-200"
       bind:this={refs[idx]}
     >
       {@render renderItem(item, idx)}

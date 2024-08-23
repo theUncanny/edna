@@ -77,6 +77,17 @@ export function getActiveTheme() {
   return "light";
 }
 
+export function getOverlayScrollbarOptions() {
+  let theme = getActiveTheme();
+  // yes, light scrollbar theme for dark theme
+  let st = theme === "dark" ? "os-theme-light" : "os-theme-dark";
+  return {
+    scrollbars: {
+      theme: st,
+    },
+  };
+}
+
 mediaMatch.addEventListener("change", async () => {
   if (settings.theme === "system") {
     console.log("change event listener");
