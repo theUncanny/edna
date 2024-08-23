@@ -20,7 +20,6 @@ var (
 	panicIf    = u.PanicIf
 	panicIfErr = u.PanicIfErr
 	isWinOrMac = u.IsWinOrMac
-	isLinux    = u.IsLinux
 	formatSize = u.FormatSize
 )
 
@@ -70,16 +69,17 @@ func waitForSigIntOrKill() {
 	<-sctx.Done()
 }
 
-func printFS(fsys fs.FS, startDir string) {
-	logf("printFS('%s')\n", startDir)
+func printFS(fsys fs.FS) {
+	logf("printFS('%s')\n", fsys)
 	dfs := fsys.(fs.ReadDirFS)
 	nFiles := 0
-	u.IterReadDirFS(dfs, startDir, func(filePath string, d fs.DirEntry) error {
+	u.IterReadDirFS(dfs, ".", func(filePath string, d fs.DirEntry) error {
 		logf("%s\n", filePath)
 		nFiles++
 		return nil
 	})
 	logf("%d files\n", nFiles)
+	panicIf(nFiles == 0)
 }
 
 func updateGoDeps(noProxy bool) {

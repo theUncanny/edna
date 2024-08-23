@@ -185,7 +185,7 @@ func main() {
 			path := filepath.Join("src", "gen.mjs")
 			u.RunLoggedInDirMust(".", "bun", "run", path)
 		} else {
-			runLoggedInDir(".", "yarn", "run", "gen")
+			runLoggedInDir(".", "npm", "run", "gen")
 		}
 		return
 	}
@@ -357,7 +357,7 @@ func testCompress() {
 	if hasBun() {
 		u.RunLoggedInDirMust(".", "bun", "run", "build")
 	} else if u.IsWindows() {
-		u.RunLoggedInDirMust(".", "yarn", "build")
+		u.RunLoggedInDirMust(".", "npm", "build")
 	}
 
 	dir := filepath.Join("webapp", "dist", "assets")

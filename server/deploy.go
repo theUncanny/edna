@@ -142,8 +142,6 @@ func reinstallPackages() {
 	os.Remove("package-lock.json")
 	if hasBun() {
 		u.RunLoggedInDirMust(".", "bun", "install")
-	} else if hasYarn() {
-		u.RunLoggedInDirMust(".", "yarn", "install")
 	} else {
 		u.RunLoggedInDirMust(".", "npm", "install")
 	}
@@ -154,11 +152,6 @@ func hasBun() bool {
 	return err == nil
 }
 
-func hasYarn() bool {
-	_, err := exec.LookPath("yarn")
-	return err != nil
-}
-
 func rebuildFrontend() {
 	// assuming this is not deployment: re-build the frontend
 	emptyFrontEndBuildDir()
@@ -166,8 +159,6 @@ func rebuildFrontend() {
 	reinstallPackages()
 	if hasBun() {
 		u.RunLoggedInDirMust(".", "bun", "run", "build")
-	} else if hasYarn() {
-		u.RunLoggedInDirMust(".", "yarn", "build")
 	} else {
 		u.RunLoggedInDirMust(".", "npm", "run", "build")
 	}

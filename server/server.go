@@ -11,7 +11,6 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -245,18 +244,19 @@ func makeHTTPServer(serveOpts *hutil.ServeFileOptions, proxyHandler *httputil.Re
 			logtastic.HandleEvent(w, r)
 			return
 		}
+		if uri == "/help" {
+			file := "help-win.html"
+			if isMacBasedOnUserAgent(r) {
+				file = "help-mac.html"
+			}
+			ok := hutil.TryServeFileFromFS(w, r, serveOpts, file)
+			panicIf(!ok)
+			return
+		}
 
 		tryServeRedirect := func(uri string) bool {
 			if uri == "/home" {
 				http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-				return true
-			}
-			if uri == "/help" {
-				newURL := "/help-win.html"
-				if isMacBasedOnUserAgent(r) {
-					newURL = "/help-mac.html"
-				}
-				http.Redirect(w, r, newURL, http.StatusTemporaryRedirect)
 				return true
 			}
 			return false
@@ -267,7 +267,7 @@ func makeHTTPServer(serveOpts *hutil.ServeFileOptions, proxyHandler *httputil.Re
 
 		if proxyHandler != nil {
 			transformRequestForProxy := func() {
-				uris := []string{"/github_success", "/gisteditor/nogist", "/gisteditor/edit"}
+				uris := []string{}
 				shouldProxyURI := slices.Contains(uris, uri)
 				if !shouldProxyURI {
 					return
@@ -356,7 +356,7 @@ func serverListenAndWait(httpSrv *http.Server) func() {
 
 func mkFsysEmbedded() fs.FS {
 	fsys := wwwFS
-	printFS(fsys, "dist")
+	printFS(fsys)
 	logf("mkFsysEmbedded: serving from embedded FS\n")
 	return fsys
 }
@@ -364,15 +364,15 @@ func mkFsysEmbedded() fs.FS {
 func mkFsysDirDist() fs.FS {
 	dir := "server"
 	fsys := os.DirFS(dir)
-	printFS(fsys, "dist")
+	printFS(fsys)
 	logf("mkFsysDirDist: serving from dir '%s'\n", dir)
 	return fsys
 }
 
 func mkFsysDirPublic() fs.FS {
-	dir := filepath.Join("..", "public")
+	dir := "public"
 	fsys := os.DirFS(dir)
-	printFS(fsys, "dist")
+	printFS(fsys)
 	logf("mkFsysDirPublic: serving from dir '%s'\n", dir)
 	return fsys
 }
@@ -398,8 +398,8 @@ func runServerDev() {
 		must(err)
 		defer closeDev()
 	} else {
-		runLoggedInDir(".", "yarn")
-		closeDev, err := startLoggedInDir(".", "yarn", "dev")
+		runLoggedInDir(".", "npm")
+		closeDev, err := startLoggedInDir(".", "npm", "dev")
 		must(err)
 		defer closeDev()
 	}
@@ -410,6 +410,7 @@ func runServerDev() {
 
 	fsys := mkFsysDirPublic()
 	serveOpts := mkServeFileOptions(fsys)
+	serveOpts.DirPrefix = "./"
 	httpSrv := makeHTTPServer(serveOpts, proxyHandler)
 
 	//closeHTTPLog := OpenHTTPLog("onlinetool")
