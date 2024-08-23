@@ -81,6 +81,21 @@ p {
   /* border: 1px solid black; */
   /* padding: 4px 4px; */
   z-index: 50;
+
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #d3d3d3;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #fafafa;
+  }
 }
 
 .toc-mini {
@@ -104,11 +119,8 @@ p {
     rgba(15, 15, 15, 0.04) 0px 0px 0px 1px,
     rgba(15, 15, 15, 0.03) 0px 3px 6px,
     rgba(15, 15, 15, 0.06) 0px 9px 24px;
-  border: 1px solid rgba(55, 53, 47, 0.06);
-  border-radius: 14px;
-
-  /* max-height: 80vh; */
-  /* overflow-y: scroll; */
+  border: 1px solid rgba(55, 53, 47, 0.26);
+  border-radius: 8px;
 }
 
 .toc-trunc {
