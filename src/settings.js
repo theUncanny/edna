@@ -12,7 +12,6 @@ fontSize?: number,
 keymap: string,
 showFoldGutter: boolean,
 showLineNumberGutter: boolean,
-backupNotes: boolean,
 useWideSelectors: boolean,
 theme?: string, // "system", "light", "dark"
 }} Settings */
@@ -121,7 +120,6 @@ export function loadInitialSettings() {
     showFoldGutter: true,
     showLineNumberGutter: true,
     useWideSelectors: false,
-    backupNotes: false,
     theme: "system",
   };
   let updatedSettings = Object.assign(initialSettings, settings);

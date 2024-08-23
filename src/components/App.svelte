@@ -94,11 +94,7 @@
     langSupportsFormat,
     langSupportsRun,
   } from "../editor/languages";
-  import {
-    browserDownloadBlob,
-    exportNotesToZip,
-    maybeBackupNotes,
-  } from "../notes-export";
+  import { browserDownloadBlob, exportNotesToZip } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
   import CommandPalette from "./CommandPalette.svelte";
   import Find from "./Find.svelte";
@@ -235,7 +231,6 @@
 
   $effect(() => {
     console.log("App.svelte did mount");
-    maybeBackupNotes();
     window.addEventListener("keydown", onKeyDown);
 
     window.addEventListener("beforeunload", async (ev) => {

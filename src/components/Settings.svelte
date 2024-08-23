@@ -30,10 +30,7 @@
   let fontFamily = $state(initialSettings.fontFamily || kDefaultFontFamily);
   let fontSize = $state(initialSettings.fontSize || kDefaultFontSize);
   let theme = $state(initialSettings.theme);
-  let backupNotes = $state(initialSettings.backupNotes);
   let useWideSelectors = $state(initialSettings.useWideSelectors);
-
-  let showBackupSetting = !!getStorageFS();
 
   let defFont = [kDefaultFontFamily, kDefaultFontFamily + " (default)"];
   let systemFonts = $state([defFont]);
@@ -100,7 +97,6 @@
       keymap: keymap,
       showFoldGutter: showFoldGutter,
       showLineNumberGutter: showLineNumberGutter,
-      backupNotes: backupNotes,
       useWideSelectors: useWideSelectors,
       theme: theme,
     };
@@ -203,22 +199,6 @@
 
   <div class="mt-2 flex flex-col">
     <h2>Misc</h2>
-    {#if showBackupSetting}
-      <label class="flex">
-        <input
-          type="checkbox"
-          bind:checked={backupNotes}
-          onchange={updateSettings}
-        />
-        <div>Backup notes</div>
-        <a
-          href="/help#backing-up-notes"
-          class="underline underline-offset-2 ml-2"
-          target="_blank"
-          title="info about backup">help</a
-        >
-      </label>
-    {/if}
     <label class="flex">
       <input
         type="checkbox"

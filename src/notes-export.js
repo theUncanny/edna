@@ -158,33 +158,6 @@ async function deleteOldBackups(dhBackup) {
   }
 }
 
-export async function maybeBackupNotes() {
-  let settings = getSettings();
-  if (!settings.backupNotes) {
-    console.log(
-      "maybeBackupNotes: not backing up because settings.backupNotes is false",
-    );
-    return;
-  }
-  let dh = getStorageFS();
-  if (!dh) {
-    // only do backups for fs
-    return;
-  }
-  let fileName = "edna.backup." + formatDateYYYYMMDD() + ".zip";
-  let dhBackup = await dh.getDirectoryHandle("backup", { create: true });
-  let backupExists = await fsFileExists(dhBackup, fileName);
-  if (backupExists) {
-    console.log(`maybeBackupNotes: ${fileName} already exists`);
-    return;
-  }
-  showModalMessageHTML(`creating backup <b>${fileName}</b>`, 300);
-  let zipBlob = await exportRawNotesToZipBlob();
-  await fsWriteBlob(dhBackup, fileName, zipBlob);
-  await deleteOldBackups(dhBackup);
-  clearModalMessage();
-}
-
 /**
  * @param {Blob} blob
  * @param {string} name

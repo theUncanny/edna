@@ -480,18 +480,6 @@ Share your functions with other via https://github.com/kjk/edna/discussions/cate
 
 Use `Alt + Shift + R` to force `Run function with block content` command.
 ∞∞∞markdown
-# Backing up notes
-
-For notes stored in file system, you can enable notes backup via Settings.
-
-Once a day notes will be packed into a .zip file and saved in `backup` folder as `edna.backup.<YYYY-MM-DD>.zip` file.
-
-To save space only last 14 backups are stored.
-
-To restore from a backup, unzip files to an empty folder and switch to it via context menu `Notes storage / Switch to notes in directory`.
-
-Encrypted notes are stored in their encrypted form.
-∞∞∞markdown
 # Exporting notes to a .zip file
 
 Edna files are just text files with `.edna.txt` extension.
