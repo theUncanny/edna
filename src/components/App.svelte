@@ -1767,11 +1767,13 @@
     // must delete after openNote() because openNote() saves
     // current note
     await deleteNote(name);
-    getEditorComp().focus();
+    // getEditorComp().focus();
     console.log("deleted note", name);
     // TODO: add a way to undo deletion of the note
     showToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
+    await tick();
+    openNoteSelector();
   }
 
   /** @typedef {import("../editor/event.js").SelectionChangeEvent} SelectionChangeEvent */
