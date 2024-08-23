@@ -516,7 +516,8 @@ time \* 2
 // code blocks
 // Edna is great for storing code snippets
 // this is a javascript block
-// change type of block with `Mod + L` or `Block: Change Language` command in command palette (`Mod + P`)
+// change type of block with `Mod + L`
+// or `Block: Change Language` command in command palette (`Mod + P`)
 // you can format it with `Alt + Shift + F`
 let x = 5
 console.log("x is", x)

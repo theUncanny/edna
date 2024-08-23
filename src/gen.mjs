@@ -179,6 +179,7 @@ let htmlStart = `
 
 let htmlEnd = `
     </div>
+  <script src="/help.js" defer></script>
   </body>
 </html>
 `;
