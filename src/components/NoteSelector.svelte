@@ -104,7 +104,7 @@
   /** @type {{
     openNote: (name: string) => void,
     createNote: (name: string) => void,
-    deleteNote: (name: string) => void,
+    deleteNote: (name: string) => Promise<void>,
     switchToCommandPalette: () => void,
     switchToWideNoteSelector: () => void,
 }}*/
@@ -120,6 +120,12 @@
   let items = $state(buildItems(noteNames));
   let filter = $state("");
   let altChar = $state(getAltChar());
+
+  function reloadNotes() {
+    console.log("reloadNotes");
+    let noteNames = getLatestNoteNames();
+    items = buildItems(noteNames);
+  }
 
   let sanitizedFilter = $derived.by(() => {
     return sanitizeNoteName(filter);
@@ -225,10 +231,7 @@
       ev.preventDefault();
       let note = selectedItem;
       if (note) {
-        reassignNoteShortcut(note.name, altN).then(() => {
-          let noteNames = getLatestNoteNames();
-          items = buildItems(noteNames);
-        });
+        reassignNoteShortcut(note.name, altN).then(reloadNotes);
         return;
       }
     }
@@ -260,7 +263,8 @@
         return;
       }
       if (selectedItem) {
-        emitDeleteNote(selectedItem.name);
+        // console.log("deleteNote", name);
+        deleteNote(selectedItem.name).then(reloadNotes);
       }
       return;
     }
@@ -279,14 +283,6 @@
   function emitCreateNote(name) {
     // log("create note", name);
     createNote(name);
-  }
-
-  /**
-   * @param {string} name
-   */
-  function emitDeleteNote(name) {
-    // console.log("deleteNote", name);
-    deleteNote(name);
   }
 
   /**

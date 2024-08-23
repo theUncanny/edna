@@ -1756,7 +1756,6 @@
    * @param {string} name
    */
   async function onDeleteNote(name) {
-    showingNoteSelector = false;
     let settings = getSettings();
     // if deleting current note, first switch to scratch note
     // TODO: maybe switch to the most recently opened
@@ -1772,8 +1771,6 @@
     // TODO: add a way to undo deletion of the note
     showToast(`Deleted note '${name}'`);
     logNoteOp("noteDelete");
-    await tick();
-    openNoteSelector();
   }
 
   /** @typedef {import("../editor/event.js").SelectionChangeEvent} SelectionChangeEvent */
