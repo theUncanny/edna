@@ -3,44 +3,36 @@ function getAllHeaders() {
   return Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
 }
 
+/**
+ * @param {string} str
+ * @returns {string}
+ */
 function removeHash(str) {
   return str.replace(/#$/, "");
 }
 
 class TocItem {
-  id = "";
   text = "";
   hLevel = 0;
   nesting = 0;
-  el;
+  element;
 }
 
-function collectHeaders() {
+function buildTocItems() {
   let allHdrs = getAllHeaders();
   let res = [];
-  let el = document.getElementsByClassName("breadcrumbs")[0];
-  if (el) {
-    let h = new TocItem();
-    h.text = "Home";
-    h.el = el;
-    res.push(h);
-  }
   for (let el of allHdrs) {
-    let id = el.getAttribute("id");
     /** @type {string} */
-    let text = el.innerText;
-    text = text.trim();
+    let text = el.innerText.trim();
     text = removeHash(text);
     text = text.trim();
     let hLevel = parseInt(el.tagName[1]);
     let h = new TocItem();
-    h.id = id;
     h.text = text;
     h.hLevel = hLevel;
     h.nesting = 0;
-    h.el = el;
+    h.element = el;
     res.push(h);
-    // console.log(h);
   }
   return res;
 }
@@ -58,20 +50,20 @@ function fixNesting(hdrs) {
   }
 }
 
-function genTocMini(hdrs) {
+function genTocMini(items) {
   let tmp = "";
   let t = `<div class="toc-item-mini toc-light">▃</div>`;
-  for (let i = 0; i < hdrs.length; i++) {
+  for (let i = 0; i < items.length; i++) {
     tmp += t;
   }
   return `<div class="toc-mini">` + tmp + `</div>`;
 }
 
-function genTocList(hdrs) {
+function genTocList(items) {
   let tmp = "";
   let t = `<div title="{title}" class="toc-item toc-trunc {ind}" onclick=tocGoTo({n})>{text}</div>`;
   let n = 0;
-  for (let h of hdrs) {
+  for (let h of items) {
     let s = t;
     s = s.replace("{n}", n);
     let ind = "toc-ind-" + h.nesting;
@@ -84,15 +76,11 @@ function genTocList(hdrs) {
   return `<div class="toc-list">` + tmp + `</div>`;
 }
 
-let hdrs = [];
+let tocItems = [];
 function tocGoTo(n) {
-  let el = hdrs[n].el;
+  let el = tocItems[n].element;
   let y = el.getBoundingClientRect().top + window.scrollY;
   let offY = 12;
-  // let navEl = document.getElementsByClassName("content")[0];
-  // if (navEl) {
-  //   offY = navEl.getBoundingClientRect().height;
-  // }
   y -= offY;
   window.scrollTo({
     top: y,
@@ -100,12 +88,12 @@ function tocGoTo(n) {
 }
 
 function genToc() {
-  hdrs = collectHeaders();
-  fixNesting(hdrs);
+  tocItems = buildTocItems();
+  fixNesting(tocItems);
   const container = document.createElement("div");
   container.className = "toc-wrapper";
-  let s = genTocMini(hdrs);
-  let s2 = genTocList(hdrs);
+  let s = genTocMini(tocItems);
+  let s2 = genTocList(tocItems);
   container.innerHTML = s + s2;
   document.body.appendChild(container);
 }
@@ -114,9 +102,9 @@ function updateClosestToc() {
   let closestIdx = -1;
   let closestDistance = Infinity;
 
-  for (let i = 0; i < hdrs.length; i++) {
-    let hdr = hdrs[i];
-    const rect = hdr.el.getBoundingClientRect();
+  for (let i = 0; i < tocItems.length; i++) {
+    let tocItem = tocItems[i];
+    const rect = tocItem.element.getBoundingClientRect();
     const distanceFromTop = Math.abs(rect.top);
     if (
       distanceFromTop < closestDistance &&

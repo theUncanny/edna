@@ -75,11 +75,6 @@ p {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  display: flex;
-  flex-direction: column;
-  font-size: 6pt;
-  /* border: 1px solid black; */
-  /* padding: 4px 4px; */
   z-index: 50;
 
   max-height: calc(100vh - 2rem);
@@ -101,6 +96,8 @@ p {
 .toc-mini {
   display: flex;
   flex-direction: column;
+  font-size: 6pt;
+  cursor: pointer;
 }
 
 .toc-list {
@@ -145,10 +142,6 @@ p {
   &:hover {
     background-color: #f6f6f6;
   }
-}
-
-.toc-item-mini {
-  cursor: pointer;
 }
 
 .toc-light {
