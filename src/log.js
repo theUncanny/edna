@@ -49,6 +49,7 @@ const validOps = [
   "noteCreate",
   "noteDelete",
   "noteRename",
+  "noteSave",
   "noteFormatBlock",
   "runBlock",
   "runBlockWithBlock",
@@ -57,9 +58,11 @@ const validOps = [
   "runFunctionWithSelection",
   ,
 ];
+
 function validateNoteOp(op) {
   throwIf(!validOps.includes(op), `invalid op: ${op}`);
 }
+
 export function logNoteOp(op) {
   validateNoteOp(op);
   let e = {

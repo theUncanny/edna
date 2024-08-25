@@ -6,6 +6,8 @@
 }} Stats
 */
 
+import { logNoteOp } from "./log";
+
 let sessionStart = performance.now();
 
 export function getSessionDurationInMs() {
@@ -74,6 +76,7 @@ export function incNoteDeleteCount() {
  * @returns {number}
  */
 export function incNoteSaveCount() {
+  logNoteOp("noteSave");
   return incCount("noteSaveCount");
 }
 

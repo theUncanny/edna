@@ -52,6 +52,7 @@ import {
   removeNoteFromMetadata,
   renameNoteInMetadata,
 } from "./metadata";
+import { logNoteOp } from "./log";
 
 // is set if we store notes on disk, null if in localStorage
 /** @type {FileSystemDirectoryHandle | null} */
