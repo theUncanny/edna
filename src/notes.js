@@ -10,7 +10,6 @@ import {
   fsWriteTextFile,
   openDirPicker,
   readDir,
-  requestHandlePermission,
 } from "./fileutil";
 import {
   clearModalMessage,
