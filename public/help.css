@@ -71,6 +71,17 @@ p {
   margin-block-end: 0.5em;
 }
 
+/* table of contents */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  transition: background-color 1s ease;
+}
+
 .toc-wrapper {
   position: fixed;
   top: 1rem;
@@ -142,6 +153,10 @@ p {
   &:hover {
     background-color: #f6f6f6;
   }
+}
+
+.toc-bold {
+  font-weight: bold;
 }
 
 .toc-light {

@@ -76,6 +76,21 @@ function genTocList(items) {
   return `<div class="toc-list">` + tmp + `</div>`;
 }
 
+/**
+ * @param {HTMLElement} el
+ */
+function highlightElement(el) {
+  let tempBgColor = "yellow";
+  let origCol = el.style.backgroundColor;
+  if (origCol === tempBgColor) {
+    return;
+  }
+  el.style.backgroundColor = tempBgColor;
+  setTimeout(() => {
+    el.style.backgroundColor = origCol;
+  }, 1000);
+}
+
 let tocItems = [];
 function tocGoTo(n) {
   let el = tocItems[n].element;
@@ -85,6 +100,12 @@ function tocGoTo(n) {
   window.scrollTo({
     top: y,
   });
+  highlightElement(el);
+  // the above scrollTo() triggers updateClosestToc() which might
+  // not be accurate so we set the exact selected after a small delay
+  setTimeout(() => {
+    showSelectedTocItem(n);
+  }, 100);
 }
 
 function genToc() {
@@ -98,6 +119,31 @@ function genToc() {
   document.body.appendChild(container);
 }
 
+function showSelectedTocItem(elIdx) {
+  // make toc-mini-item black for closest element
+  let els = document.querySelectorAll(".toc-item-mini");
+  let cls = "toc-light";
+  for (let i = 0; i < els.length; i++) {
+    let el = els[i];
+    if (i == elIdx) {
+      el.classList.remove(cls);
+    } else {
+      el.classList.add(cls);
+    }
+  }
+
+  // make toc-item bold for closest element
+  els = document.querySelectorAll(".toc-item");
+  cls = "toc-bold";
+  for (let i = 0; i < els.length; i++) {
+    let el = els[i];
+    if (i == elIdx) {
+      el.classList.add(cls);
+    } else {
+      el.classList.remove(cls);
+    }
+  }
+}
 function updateClosestToc() {
   let closestIdx = -1;
   let closestDistance = Infinity;
@@ -116,17 +162,7 @@ function updateClosestToc() {
     }
   }
   if (closestIdx >= 0) {
-    console.log("Closest element:", closestIdx);
-    let els = document.querySelectorAll(".toc-item-mini");
-    let cls = "toc-light";
-    for (let i = 0; i < els.length; i++) {
-      let el = els[i];
-      if (i == closestIdx) {
-        el.classList.remove(cls);
-      } else {
-        el.classList.add(cls);
-      }
-    }
+    showSelectedTocItem(closestIdx);
   }
 }
 
