@@ -128,6 +128,7 @@
     <div class="text-gray-400">&bull;</div>
     <button
       title={formatBlockTitle}
+      aria-label={formatBlockTitle}
       onclick={formatCurrentBlock}
       class="clickable-icon"
     >

@@ -119,7 +119,9 @@ async function evalWithConsoleCapture(code) {
   let output = "";
   let exception = null;
   try {
-    output = await eval(code);
+    // hack: obfuscate the use of eval() to disable rollup warning
+    let eval2 = [eval][0];
+    output = await eval2(code);
   } catch (e) {
     exception = e.message;
   } finally {

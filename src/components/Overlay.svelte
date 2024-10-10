@@ -53,7 +53,12 @@
     {@render children()}
   </div>
   <!-- this captures the click outside of the actual element -->
-  <button {onclick} class="absolute inset-0 z-10" class:bg-blur={blur}></button>
+  <button
+    {onclick}
+    class="absolute inset-0 z-10"
+    class:bg-blur={blur}
+    aria-label="close"
+  ></button>
 </div>
 
 <style>

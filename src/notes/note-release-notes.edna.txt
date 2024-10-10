@@ -2,6 +2,10 @@
 ∞∞∞markdown
 # Release notes for Edna
 
+## 1.18
+
+- fix https://github.com/kjk/edna/issues/78 : duplicate running of functions
+
 ## 1.17
 
 - add `Open note from disk` command
