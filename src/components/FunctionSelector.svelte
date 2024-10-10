@@ -125,6 +125,7 @@
         let replace = ev.ctrlKey;
         emitRunFunction(selectedItem, replace);
       }
+      return;
     }
     listbox.onkeydown(ev, filter === "");
   }
