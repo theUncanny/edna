@@ -58,6 +58,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   role="dialog"
+  tabindex="0"
   {onkeydown}
   class="selector z-20 absolute center-x-with-translate top-[4rem] flex flex-col max-w-full p-3"
 >
