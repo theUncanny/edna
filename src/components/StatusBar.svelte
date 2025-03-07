@@ -5,11 +5,12 @@
     langSupportsFormat,
     langSupportsRun,
   } from "../editor/languages.js";
-  import { fmtSize, getScrollbarWidth, platform } from "../util";
+  import { fmtSize, getScrollbarWidth } from "../util";
   import IconSettings from "./IconSettings.svelte";
   import IconGitHub from "./IconGitHub.svelte";
   import { openLanguageSelector, openSettings } from "../globals.js";
   import { fixUpShortcuts } from "../key-helper.js";
+  import CurrentTime from "./CurrentTime.svelte";
 
   /** @type { {
     line: number,
@@ -22,7 +23,7 @@
     toggleSpellCheck: (ev) => void,
     smartRun: (ev) => void,
     formatCurrentBlock: (ev) => void,
-} } */
+  } } */
   let {
     line = 0,
     column = 0,
@@ -36,7 +37,6 @@
     formatCurrentBlock,
   } = $props();
 
-  let isMac = $state(platform.isMac);
   let style = $state("");
   $effect(() => {
     let dx = getScrollbarWidth();
@@ -165,6 +165,8 @@
   >
     <IconGitHub></IconGitHub>
   </a>
+  <div class="text-gray-400">&bull;</div>
+  <CurrentTime class="ml-1"></CurrentTime>
 </div>
 
 <style scoped>
