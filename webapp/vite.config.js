@@ -3,12 +3,13 @@ import * as child from "child_process";
 import { defineConfig } from "vite";
 import path from "path";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   publicDir: "../public",
 
-  plugins: [svelte()],
+  plugins: [svelte(), tailwindcss()],
 
   build: {
     // target: "esnext", // needed for top-level await
@@ -58,16 +59,12 @@ export default defineConfig({
     },
   },
 
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, ".."),
-    },
-  },
+  resolve: { alias: { "@": path.resolve(__dirname, "..") } },
 
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
     __GIT_HASH__: JSON.stringify(
-      child.execSync("git rev-parse --short HEAD").toString().trim()
+      child.execSync("git rev-parse --short HEAD").toString().trim(),
     ),
   },
 
