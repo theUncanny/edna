@@ -172,22 +172,22 @@
   .clickable-icon {
     cursor: pointer;
 
-    @apply px-[6px];
-    @apply py-[4px];
+    padding-inline: 6px; /* px-[6px]; */
+    padding-block: 4px; /* py-[4px]; */
 
     &:hover {
-      @apply bg-gray-100;
+      background-color: var(--color-gray-100); /* bg-gray-100 */
     }
   }
 
   .clickable-icon {
-    @apply px-[4px];
+    padding-inline: 4px;
   }
 
   :global(html.dark) .clickable,
   :global(html.dark) .clickable-icon {
     &:hover {
-      @apply bg-gray-500;
+      background-color: var(--color-gray-500); /* bg-gray-500 */
     }
   }
 </style>

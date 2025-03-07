@@ -54,6 +54,8 @@
 {/if}
 
 <style>
+  @reference "../main.css";
+
   .clickable,
   .clickable-icon {
     @apply cursor-pointer px-[6px] py-[4px];

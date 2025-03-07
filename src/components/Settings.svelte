@@ -227,6 +227,8 @@
 </div>
 
 <style>
+  @reference "../main.css";
+
   select {
     @apply w-[200px];
     @apply ml-4;

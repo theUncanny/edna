@@ -86,7 +86,7 @@
       use:focus
       type="text"
       bind:value={filter}
-      class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-sm"
+      class="py-1 px-2 bg-white w-full min-w-[400px] mb-2 rounded-xs"
     />
 
     <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">

@@ -65,7 +65,7 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
-  class="selector absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-2 focus:outline-none"
+  class="selector absolute z-20 center-x-with-translate max-h-[94vh] flex flex-col top-[2rem] p-2 focus:outline-hidden"
   tabindex="-1"
   use:focus
   {onkeydown}

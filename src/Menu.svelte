@@ -517,7 +517,7 @@
   tabindex="-1"
   use:focus
   use:ensurevisible
-  class="absolute z-20 mt-1 rounded-md border border-neutral-50 bg-white dark:bg-gray-700 dark:text-gray-300 py-1 shadow-lg focus:outline-none cursor-pointer select-none"
+  class="absolute z-20 mt-1 rounded-md border border-neutral-50 bg-white dark:bg-gray-700 dark:text-gray-300 py-1 shadow-lg focus:outline-hidden cursor-pointer select-none"
   style={initialPositionStyle()}
   onclick={handleClicked}
   onmouseover={handleMouseOver}
@@ -528,6 +528,8 @@
 </div>
 
 <style>
+  @reference "./main.css";
+
   .is-selected {
     @apply bg-gray-100 dark:bg-gray-600;
   }

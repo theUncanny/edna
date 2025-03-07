@@ -116,7 +116,7 @@
       type="text"
       use:focus
       bind:value={filter}
-      class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
+      class="py-1 px-2 bg-white w-full mb-2 rounded-xs relative"
     />
     <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
       {cmdCountMsg}

@@ -62,8 +62,9 @@
 </div>
 
 <style>
+  @reference "../main.css";
+
   .bg-blur {
-    @apply bg-black/50;
-    @apply dark:bg-gray-400/30;
+    @apply dark:bg-gray-400/30 bg-black/50;
   }
 </style>

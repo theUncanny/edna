@@ -160,7 +160,7 @@
 >
   <div>
     <div class="flex">
-      <div class="text-center mb-2 font-semibold flex-grow">
+      <div class="text-center mb-2 font-semibold grow">
         run function with {context}
       </div>
       <a
@@ -175,7 +175,7 @@
         use:focus
         bind:this={input}
         bind:value={filter}
-        class="py-1 px-2 bg-white w-full mb-2 rounded-sm relative"
+        class="py-1 px-2 bg-white w-full mb-2 rounded-xs relative"
       />
       <div class="absolute right-[1rem] top-[2.6rem] italic text-gray-400">
         {itemsCountMsg}

@@ -68,7 +68,7 @@
     bind:this={input}
     bind:value={password}
     type={hidePassword ? "password" : "text"}
-    class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
+    class="py-1 px-2 bg-white mt-2 rounded-xs w-[80ch]"
   />
   <label class="mt-2 ml-1.5">
     <input type="checkbox" bind:checked={hidePassword} {onchange} />
@@ -84,7 +84,7 @@
       class="ml-1 text-lg underline underline-offset-2 text-blue-700"
       >about encryption</a
     >
-    <div class="flex-grow"></div>
+    <div class="grow"></div>
     <button
       onclick={() => emitGotPassword()}
       disabled={!validPassword}

@@ -16,7 +16,7 @@
 </script>
 
 <div
-  class="fixed top-[34px] z-10 pl-2 py-0.5 bg-white flex border text-xs border-gray-400 rounded"
+  class="fixed top-[34px] z-10 pl-2 py-0.5 bg-white flex border text-xs border-gray-400 rounded-sm"
   {style}
 >
   <input type="text" bind:value={searchTerm} class="w-[24ch]" use:focus />
@@ -25,11 +25,12 @@
 </div>
 
 <style>
+  @reference "../main.css";
+
   input {
     @apply border-none outline-none;
   }
   button {
-    @apply px-[6px] py-[2px];
-    @apply hover:bg-gray-200;
+    @apply px-[6px] py-[2px] hover:bg-gray-200;
   }
 </style>

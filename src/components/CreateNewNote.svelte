@@ -65,7 +65,7 @@
   <input
     bind:value={newName}
     use:focus
-    class="py-1 px-2 bg-white mt-2 rounded-sm w-[80ch]"
+    class="py-1 px-2 bg-white mt-2 rounded-xs w-[80ch]"
   />
   <div class=" text-sm mt-2">
     {#if canCreate}
