@@ -100,7 +100,6 @@
   import ListBox from "./ListBox.svelte";
   import IconStar from "./IconStar.svelte";
   import { appState } from "../state.svelte";
-  import { tick } from "svelte";
 
   /** @type {{
     openNote: (name: string) => void,
