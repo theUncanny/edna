@@ -82,12 +82,14 @@
   let cmdCountMsg = `${len(items)} commands`;
   let filter = $state(">");
 
+  $effect(() => {
+    if (filter === "") {
+      switchToNoteSelector();
+    }
+  });
+
   let itemsFiltered = $derived.by(() => {
     let lc = filter.toLowerCase();
-    if (lc === "") {
-      switchToNoteSelector();
-      return;
-    }
     lc = trimPrefix(lc, ">");
     return findMatchingItems(items, lc, "nameLC");
   });

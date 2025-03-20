@@ -100,6 +100,7 @@
   import ListBox from "./ListBox.svelte";
   import IconStar from "./IconStar.svelte";
   import { appState } from "../state.svelte";
+  import { tick } from "svelte";
 
   /** @type {{
     openNote: (name: string) => void,
@@ -131,13 +132,15 @@
     return sanitizeNoteName(filter);
   });
 
+  $effect(() => {
+    if (sanitizedFilter.startsWith(">")) {
+      switchToCommandPalette();
+    }
+  });
+
   let itemsFiltered = $derived.by(() => {
     // we split the search term by space, the name of the note
     // must match all parts
-    if (sanitizedFilter.startsWith(">")) {
-      switchToCommandPalette();
-      return [];
-    }
     return findMatchingItems(items, sanitizedFilter, "nameLC");
   });
 
@@ -375,7 +378,7 @@
           switchToWideNoteSelector();
         }}
         title="switch to wide note selector"
-        class="underline underline-offset-2">wide</button
+        class="underline underline-offset-2 cursor-pointer">wide</button
       >
       <button
         onclick={(ev) => {
@@ -383,7 +386,7 @@
           toggleInfoPanelCollapsed();
         }}
         title="show info panel"
-        class="underline underline-offset-2"
+        class="underline underline-offset-2 cursor-pointer"
       >
         show</button
       >
@@ -397,7 +400,7 @@
             switchToWideNoteSelector();
           }}
           title="switch to wide note selector"
-          class="underline underline-offset-2 mb-1">wide</button
+          class="underline underline-offset-2 mb-1 cursor-pointer">wide</button
         >
         <button
           onclick={(ev) => {
@@ -405,7 +408,7 @@
             toggleInfoPanelCollapsed();
           }}
           title="hide info panel"
-          class="underline underline-offset-2"
+          class="underline underline-offset-2 cursor-pointer"
         >
           hide</button
         >
@@ -466,7 +469,8 @@
             ev.preventDefault();
             switchToCommandPalette();
           }}
-          class="underline underline-offset-2">command palette</button
+          class="underline underline-offset-2 cursor-pointer"
+          >command palette</button
         >
       </div>
     </div>

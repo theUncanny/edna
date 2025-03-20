@@ -1,7 +1,7 @@
 <script>
   /** @type { {
     class: string,
-    formatTime: (date: Date) => string,
+    formatTime?: (date: Date) => string,
   } } */
   let { class: className = "", formatTime = formatTimeMyStyle } = $props();
 
