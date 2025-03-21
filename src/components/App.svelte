@@ -108,6 +108,7 @@
     addNewBlockBeforeCurrent,
     addNewBlockBeforeFirst,
     changeCurrentBlockLanguage,
+    deleteBlock,
     gotoBlock,
     gotoNextBlock,
     gotoPreviousBlock,
@@ -946,6 +947,7 @@
   export const kCmdNewBlockBeforeCurrent = nmid();
   export const kCmdNewBlockAtEnd = nmid();
   export const kCmdNewBlockAtStart = nmid();
+  export const kCmdBlockDelete = nmid();
   export const kCmdSplitBlockAtCursor = nmid();
   export const kCmdGoToNextBlock = nmid();
   export const kCmdGoToPreviousBlock = nmid();
@@ -1013,6 +1015,7 @@
       ["Select all text\tMod + A", kCmdBlockSelectAll],
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
       ["Export to file", kCmdExportCurrentBlock],
+      ["Delete", kCmdBlockDelete],
     ];
 
     const menuRun = [
@@ -1244,6 +1247,9 @@
       view.focus();
     } else if (cmdId === kCmdExportCurrentBlock) {
       await exportCurrentBlock();
+      view.focus();
+    } else if (cmdId === kCmdBlockDelete) {
+      deleteBlock(view);
       view.focus();
     } else if (cmdId === kCmdOpenNoteFromDisk) {
       openNoteFromDisk();

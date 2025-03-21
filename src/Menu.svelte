@@ -47,7 +47,7 @@
     children = null;
     cmdId = 0;
     /** @type {HTMLElement} */
-    element = null;
+    element = $state(null);
     /** @type {HTMLElement} */
     submenuElement = null;
     /** @type {MenuItem} */
