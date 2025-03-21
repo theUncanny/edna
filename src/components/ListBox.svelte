@@ -181,13 +181,13 @@
     if (idx < 0) {
       return;
     }
-    let item = items[i];
+    let item = items[idx];
     onclick(item);
     // console.log("didn't find item for ev.target:", ev.target);
   }
 
   /**
-   * @param {MouseEvent}
+   * @param {MouseEvent} ev
    */
   function mousemove(ev) {
     let idx = findItemIdxForMouseEvent(ev);
