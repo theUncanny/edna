@@ -102,11 +102,12 @@
   import { appState } from "../state.svelte";
 
   /** @type {{
+    onclose: () => void, // if given, will call it when clicked 
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => Promise<void>,
   }}*/
-  let { openNote, createNote, deleteNote } = $props();
+  let { onclose, openNote, createNote, deleteNote } = $props();
 
   let noteNames = getLatestNoteNames();
   let items = $state(buildItems(noteNames));
@@ -234,9 +235,12 @@
     if (key === "Escape") {
       if (filter !== "") {
         filter = "";
-        ev.preventDefault();
-        ev.stopPropagation();
+      } else {
+        onclose();
       }
+      ev.preventDefault();
+      ev.stopPropagation();
+      return;
     }
 
     if (key === "Enter") {
@@ -310,7 +314,7 @@
 <form
   onkeydown={onKeydown}
   tabindex="-1"
-  class="fixed inset-0 flex flex-col z-20 w-full h-full p-2 text-sm bg-white dark:bg-gray-900 dark:text-gray-300"
+  class="fixed inset-0 overflow-hidden flex flex-col z-20 w-full h-full p-2 text-sm bg-white dark:bg-gray-900 dark:text-gray-300"
 >
   <div class="">
     <input

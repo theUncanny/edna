@@ -2,6 +2,7 @@
   import RenameNote from "./RenameNote.svelte";
   import History from "./History.svelte";
   import NoteSelector from "./NoteSelector.svelte";
+  import NoteSelector2 from "./NoteSelector2.svelte";
   import NoteSelectorWide from "./NoteSelectorWide.svelte";
   import LanguageSelector from "./LanguageSelector.svelte";
   import Editor from "./Editor.svelte";
@@ -146,6 +147,7 @@
   let showingMenu = $state(false);
   let showingLanguageSelector = $state(false);
   let showingNoteSelector = $state(false);
+  let showingNoteSelector2 = $state(false);
   let showingCommandPalette = $state(false);
   let showingCreateNewNote = $state(false);
   let showingFunctionSelector = $state(false);
@@ -189,6 +191,7 @@
       showingMenu ||
       showingRenameNote ||
       showingNoteSelector ||
+      showingNoteSelector2 ||
       showingCreateNewNote ||
       showingCommandPalette ||
       showingCreateNewNote ||
@@ -285,17 +288,18 @@
    * @param {KeyboardEvent} ev
    */
   function onKeyDown(ev) {
-    // if (event.key === "Escape") {
-    //   if (isShowingDialog) {
-    //     return;
-    //   }
-    //   event.preventDefault();
-    //   event.stopImmediatePropagation();
-    //   openHistorySelector();
-    //   return;
-    // }
+    if (ev.key === "Escape") {
+      if (isShowingDialog) {
+        return;
+      }
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
 
-    // if (event.key === "F2") {
+      openNoteSelector2();
+      return;
+    }
+
+    // if (ev.key === "F2") {
     //   console.log("F2");
     //   let undoAction = () => {
     //     console.log("undoAction")
@@ -681,6 +685,14 @@
     tick().then(() => {
       showingNoteSelector = true;
     });
+  }
+
+  function openNoteSelector2() {
+    showingNoteSelector2 = true;
+  }
+  function closeNoteSelector2() {
+    showingNoteSelector2 = false;
+    getEditorComp().focus();
   }
 
   function switchToWideNoteSelector() {
@@ -1736,6 +1748,7 @@
    */
   function onOpenNote(name) {
     showingNoteSelector = false;
+    showingNoteSelector2 = false;
     openNote(name);
   }
 
@@ -1744,6 +1757,7 @@
    */
   async function onCreateNote(name) {
     showingNoteSelector = false;
+    showingNoteSelector2 = false;
     showingCreateNewNote = false;
     await createNoteWithName(name);
     openNote(name);
@@ -1910,6 +1924,15 @@
       />
     </Overlay>
   {/if}
+{/if}
+
+{#if showingNoteSelector2}
+  <NoteSelector2
+    onclose={closeNoteSelector2}
+    openNote={onOpenNote}
+    createNote={onCreateNote}
+    deleteNote={onDeleteNote}
+  />
 {/if}
 
 {#if showingLanguageSelector}
