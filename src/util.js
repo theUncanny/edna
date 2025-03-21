@@ -373,6 +373,7 @@ export function findMatchingItems(items, filter, itemKey) {
   for (let [i, part] of filterParts.entries()) {
     filterParts[i] = part.trim();
   }
+  // perf: pre-allocate result to max capacity
   let res = Array(len(items));
   let i = 0;
   for (let item of items) {
