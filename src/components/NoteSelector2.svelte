@@ -19,7 +19,7 @@
   /** @typedef {import("./NoteSelector.svelte").Item} Item */
 
   /** @type {{
-    onclose: () => void, // if given, will call it when clicked 
+    onclose: () => void,
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => Promise<void>,

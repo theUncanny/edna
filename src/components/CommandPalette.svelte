@@ -13,12 +13,6 @@
 }}*/
   let { executeCommand, switchToNoteSelector, commandsDef } = $props();
 
-  console.log("CommandPalette.svelte");
-
-  $effect(() => {
-    console.log("CommandPalette.svelte mounted");
-  });
-
   /** @typedef {{
    key: number,
    name: string,
@@ -108,7 +102,8 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
   onkeydown={(ev) => {
-    listbox.onkeydown(ev, filter === "");
+    let allowLeftRight = filter === "";
+    listbox.onkeydown(ev, allowLeftRight);
   }}
   tabindex="-1"
   class="selector z-20 absolute center-x-with-translate top-[2rem] flex flex-col max-h-[90vh] w-[32em] p-2"
