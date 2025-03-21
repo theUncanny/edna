@@ -200,7 +200,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <ul
-  class="overflow-y-auto cursor-pointer"
+  class="overflow-y-auto cursor-pointer select-none"
   role="listbox"
   bind:this={listbox}
   data-overlayscrollbars-initialize

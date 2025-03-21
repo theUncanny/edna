@@ -282,6 +282,7 @@
     <div
       class="flex justify-between text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg px-2 pt-1 pb-1.5 mt-2"
     >
+      <div></div>
       <button
         onclick={(ev) => {
           ev.preventDefault();
@@ -295,6 +296,19 @@
     </div>
   {:else}
     <div class="selector-info">
+      <div class="flex flex-col items-right absolute bottom-3 right-4">
+        <button
+          onclick={(ev) => {
+            ev.preventDefault();
+            toggleInfoPanelCollapsed();
+          }}
+          title="hide info panel"
+          class="underline underline-offset-2 cursor-pointer"
+        >
+          hide</button
+        >
+      </div>
+
       {#if canOpenSelected}
         <div class="kbd">Enter</div>
         <div class="truncate">
