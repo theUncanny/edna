@@ -72,7 +72,7 @@
    */
   export function select(n) {
     let nItems = len(items);
-    console.log("select:", n, "nItems:", nItems);
+    // console.log("select:", n, "nItems:", nItems);
     if (nItems <= 0) {
       if (selectedIdx != -1) {
         selectedIdx = -1;

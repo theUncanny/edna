@@ -58,10 +58,7 @@
     debugRemoveLocalStorageNotes,
     noteExists,
     kEdnaFileExt,
-    notePathFromNameFS,
-    noteNameFromFileNameFS,
     rememberOpenedNote,
-    unrememberOpenedNote,
   } from "../notes";
   import {
     getNoteMeta,
@@ -83,9 +80,7 @@
   import {
     supportsFileSystem,
     openDirPicker,
-    fsWriteBlob,
     fsFileHandleWriteBlob,
-    requestHandlePermission,
     hasHandlePermission,
   } from "../fileutil";
   import { boot } from "../webapp-boot";
@@ -98,6 +93,7 @@
   import { browserDownloadBlob, exportNotesToZip } from "../notes-export";
   import { setGlobalFuncs } from "../globals";
   import CommandPalette from "./CommandPalette.svelte";
+  import CommandPalette2 from "./CommandPalette2.svelte";
   import Find from "./Find.svelte";
   import FunctionSelector from "./FunctionSelector.svelte";
   import { dirtyState } from "../state.svelte";
@@ -149,6 +145,7 @@
   let showingNoteSelector = $state(false);
   let showingNoteSelector2 = $state(false);
   let showingCommandPalette = $state(false);
+  let showingCommandPalette2 = $state(false);
   let showingCreateNewNote = $state(false);
   let showingFunctionSelector = $state(false);
   let functionContext = $state("");
@@ -194,6 +191,7 @@
       showingNoteSelector2 ||
       showingCreateNewNote ||
       showingCommandPalette ||
+      showingCommandPalette2 ||
       showingCreateNewNote ||
       showingBlockSelector ||
       showingDecryptPassword ||
@@ -610,6 +608,7 @@
   let initialBlockSelection = $state(0);
 
   function openBlockSelector(fn = selectBlock) {
+    console.log("openBlockSelector");
     fnSelectBlock = fn;
     let view = getEditorView();
     let blocks = getEditor().getBlocks();
@@ -647,7 +646,7 @@
   }
 
   function selectBlock(blockItem) {
-    console.log(blockItem);
+    // console.log("selectBlock", $state.snapshot(blockItem));
     let n = blockItem.key;
     let view = getEditorView();
     gotoBlock(view, n);
@@ -660,15 +659,23 @@
   }
 
   function switchToNoteSelector() {
-    console.log("switch to note selector");
-    showingCommandPalette = false;
-    openNoteSelector();
+    if (showingCommandPalette) {
+      showingCommandPalette = false;
+      openNoteSelector();
+    } else {
+      showingCommandPalette2 = false;
+      openNoteSelector2();
+    }
   }
 
   function switchToCommandPalette() {
-    console.log("Switch to command palette");
-    showingNoteSelector = false;
-    openCommandPalette();
+    if (showingNoteSelector) {
+      showingNoteSelector = false;
+      openCommandPalette();
+    } else {
+      showingNoteSelector2 = false;
+      openCommandPalette2();
+    }
   }
 
   function openNoteSelector() {
@@ -1432,24 +1439,37 @@
     // ["Export current note", kCmdExportCurrentNote],
   ];
 
-  function openCommandPalette() {
-    console.log("openCommandPalette");
+  function buildCommandPaletteDef() {
     commandsDef = buildCommandsDef();
     commandsDef.push(...commandPaletteAdditions);
     let name = commandNameOverride(kCmdToggleSpellChecking);
     commandsDef.push([name, kCmdToggleSpellChecking]);
+  }
+
+  function openCommandPalette() {
+    buildCommandPaletteDef();
     showingCommandPalette = true;
   }
 
   function closeCommandPalette() {
-    console.log("closeCommandPalette");
     showingCommandPalette = false;
     getEditorComp().focus();
   }
 
+  function openCommandPalette2() {
+    buildCommandPaletteDef();
+    showingCommandPalette2 = true;
+  }
+
+  function closeCommandPalette2() {
+    showingCommandPalette2 = false;
+    getEditorComp().focus();
+  }
+
   async function executeCommand(cmdId) {
+    console.log("executeCommand:", cmdId);
     showingCommandPalette = false;
-    // closeCommandPalette();
+    showingCommandPalette2 = false;
     onmenucmd(cmdId);
   }
 
@@ -1928,6 +1948,7 @@
 
 {#if showingNoteSelector2}
   <NoteSelector2
+    {switchToCommandPalette}
     onclose={closeNoteSelector2}
     openNote={onOpenNote}
     createNote={onCreateNote}
@@ -1968,6 +1989,15 @@
   <Overlay onclose={closeCommandPalette} blur={true}>
     <CommandPalette {commandsDef} {executeCommand} {switchToNoteSelector} />
   </Overlay>
+{/if}
+
+{#if showingCommandPalette2}
+  <CommandPalette2
+    onclose={closeCommandPalette2}
+    {commandsDef}
+    {executeCommand}
+    {switchToNoteSelector}
+  />
 {/if}
 
 {#if showingFind}

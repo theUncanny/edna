@@ -4,11 +4,7 @@
     isSystemNoteName,
     sanitizeNoteName,
   } from "../notes";
-  import {
-    getNoteMeta,
-    reassignNoteShortcut,
-    toggleNoteStarred,
-  } from "../metadata";
+  import { reassignNoteShortcut, toggleNoteStarred } from "../metadata";
   import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
@@ -23,8 +19,10 @@
     openNote: (name: string) => void,
     createNote: (name: string) => void,
     deleteNote: (name: string) => Promise<void>,
+    switchToCommandPalette: () => void,
   }}*/
-  let { onclose, openNote, createNote, deleteNote } = $props();
+  let { onclose, openNote, createNote, deleteNote, switchToCommandPalette } =
+    $props();
 
   let noteNames = getLatestNoteNames();
   let items = $state(buildItems(noteNames));
@@ -39,6 +37,12 @@
 
   let sanitizedFilter = $derived.by(() => {
     return sanitizeNoteName(filter);
+  });
+
+  $effect(() => {
+    if (sanitizedFilter.startsWith(">")) {
+      switchToCommandPalette();
+    }
   });
 
   let itemsFiltered = $derived.by(() => {
