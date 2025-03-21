@@ -12,6 +12,8 @@
   import { buildItems } from "./NoteSelector.svelte";
   import IconStar from "./IconStar.svelte";
 
+  /** @typedef {import("./NoteSelector.svelte").Item} Item */
+
   /** @type {{
     openNote: (name: string) => void,
     createNote: (name: string) => void,
@@ -105,16 +107,6 @@
     }
 
     showDelete = canOpenSelected;
-  }
-
-  /** @typedef {import("./NoteSelector.svelte").Item} Item */
-
-  /**
-   * @param {Item} note
-   * @returns {string}
-   */
-  function isSysNote(note) {
-    return isSystemNoteName(note.name) ? "italic" : "";
   }
 
   /**

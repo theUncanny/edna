@@ -203,7 +203,7 @@
    * @param {Item} note
    * @returns {string}
    */
-  function isSysNote(note) {
+  function sysNoteCls(note) {
     return isSystemNoteName(note.name) ? "italic" : "";
   }
 
@@ -346,7 +346,7 @@
         }}
         ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
       >
-      <div class="ml-2 truncate {isSysNote(item) ? 'italic' : ''}">
+      <div class="ml-2 truncate {sysNoteCls(item) ? 'italic' : ''}">
         {item.name}
       </div>
       <div class="grow"></div>

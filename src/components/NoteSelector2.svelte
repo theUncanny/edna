@@ -1,89 +1,3 @@
-<script module>
-  /** @typedef {{
-    key: string,
-    name: string,
-    nameLC: string,
-    altShortcut?: number, // if present, 1 to 9 for Alt-1 to Alt-9
-    isStarred: boolean,
-    ref: HTMLElement,
-  }} Item
-*/
-
-  /**
-   * -1 if a < b
-   * 0 if a = b
-   * 1 if a > b
-   * @param {Item} a
-   * @param {Item} b
-   */
-  function sortItem(a, b) {
-    // started before not starred
-    if (a.isStarred && !b.isStarred) {
-      return -1;
-    }
-    if (!a.isStarred && b.isStarred) {
-      return 1;
-    }
-
-    // with shortcut are before (<) those without
-    if (a.altShortcut && !b.altShortcut) {
-      return -1;
-    }
-    // without shortcut are after (>) those with
-    if (!a.altShortcut && b.altShortcut) {
-      return 1;
-    }
-    // if both have shortcut, sort by shortcut
-    if (a.altShortcut && b.altShortcut) {
-      return a.altShortcut - b.altShortcut;
-    }
-    let isSysA = isSystemNoteName(a.name);
-    let isSysB = isSystemNoteName(b.name);
-    // system are last
-    if (isSysA && !isSysB) {
-      return 1;
-    }
-    if (!isSysA && isSysB) {
-      return -1;
-    }
-    // if both have no shortcut, sort by name
-    return a.name.localeCompare(b.name);
-  }
-
-  /**
-   * @param {string[]} noteNames
-   * @returns {Item[]}
-   */
-  export function buildItems(noteNames) {
-    // console.log("buildItems, notes", noteInfos)
-    /** @type {Item[]} */
-    let res = Array(len(noteNames));
-    for (let i = 0; i < len(noteNames); i++) {
-      let name = noteNames[i];
-      /** @type {Item} */
-      let item = {
-        key: name,
-        name: name,
-        nameLC: name.toLowerCase(),
-        isStarred: false,
-        ref: null,
-      };
-      res[i] = item;
-      let m = getNoteMeta(item.name, false);
-      if (!m) {
-        continue;
-      }
-      let n = parseInt(m.altShortcut);
-      if (n >= 1 && n <= 9) {
-        item.altShortcut = n;
-      }
-      item.isStarred = !!m.isStarred;
-    }
-    res.sort(sortItem);
-    return res;
-  }
-</script>
-
 <script>
   import {
     getLatestNoteNames,
@@ -100,6 +14,9 @@
   import ListBox from "./ListBox.svelte";
   import IconStar from "./IconStar.svelte";
   import { appState } from "../state.svelte";
+  import { buildItems } from "./NoteSelector.svelte";
+
+  /** @typedef {import("./NoteSelector.svelte").Item} Item */
 
   /** @type {{
     onclose: () => void, // if given, will call it when clicked 
@@ -190,7 +107,7 @@
    * @param {Item} note
    * @returns {string}
    */
-  function isSysNote(note) {
+  function sysNoteCls(note) {
     return isSystemNoteName(note.name) ? "italic" : "";
   }
 
@@ -345,7 +262,7 @@
         }}
         ><IconStar fill={item.isStarred ? "yellow" : "none"}></IconStar></button
       >
-      <div class="ml-2 truncate {isSysNote(item) ? 'italic' : ''}">
+      <div class="ml-2 truncate {sysNoteCls(item) ? 'italic' : ''}">
         {item.name}
       </div>
       <div class="grow"></div>
