@@ -81,6 +81,9 @@
       }
       return;
     }
+    if (n === selectedIdx) {
+      return;
+    }
     selectedIdx = 0;
     if (n >= 0 && n < nItems) {
       selectedIdx = n;
@@ -152,8 +155,9 @@
 
   /**
    * @param {MouseEvent} ev
+   * @returns {number}
    */
-  function listboxclick(ev) {
+  function findItemIdxForMouseEvent(ev) {
     // note: could also traverse from ev.target via parentElement
     // until finds tagName === "LI", but this seems more reliable
     // slower but only executed on click
@@ -163,12 +167,34 @@
     for (let i = 0; i < n; i++) {
       let el = refs[i];
       if (el.contains(ev.target)) {
-        let item = items[i];
-        onclick(item);
-        return;
+        return i;
       }
     }
+    return -1;
+  }
+
+  /**
+   * @param {MouseEvent} ev
+   */
+  function click(ev) {
+    let idx = findItemIdxForMouseEvent(ev);
+    if (idx < 0) {
+      return;
+    }
+    let item = items[i];
+    onclick(item);
     // console.log("didn't find item for ev.target:", ev.target);
+  }
+
+  /**
+   * @param {MouseEvent}
+   */
+  function mousemove(ev) {
+    let idx = findItemIdxForMouseEvent(ev);
+    if (idx < 0) {
+      return;
+    }
+    select(idx);
   }
 </script>
 
@@ -178,7 +204,8 @@
   role="listbox"
   bind:this={listbox}
   data-overlayscrollbars-initialize
-  onclick={listboxclick}
+  onclick={click}
+  onmousemove={mousemove}
 >
   {#each items as item, idx (item.key)}
     <li

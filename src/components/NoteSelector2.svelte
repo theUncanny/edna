@@ -336,7 +336,11 @@
 
       {#if canOpenSelected}
         <div class="kbd">{altChar} + 1...9</div>
-        <div>assign quick access shortcut</div>
+        <div>
+          assign quick access shortcut to <span class="font-bold"
+            >{selectedName}</span
+          >
+        </div>
       {/if}
 
       {#if canOpenSelected}
