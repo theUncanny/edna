@@ -168,6 +168,14 @@ func rebuildFrontend() {
 
 // get date and hash of current git checkin
 func getGitHashDateMust() (string, string) {
+
+	// If 'edna' precompiled binary is "standalone" in a non-git directory
+	cwd, _ := os.Getwd()
+
+	if _, err := os.Stat(cwd + "/.git" ); os.IsNotExist(err) {
+		return "master", time.Now().Local().Format("2006-01-02")
+	}
+
 	// git log --pretty=format:"%h %ad %s" --date=short -1
 	cmd := exec.Command("git", "log", "-1", `--pretty=format:%h %ad %s`, "--date=short")
 	out, err := cmd.Output()
