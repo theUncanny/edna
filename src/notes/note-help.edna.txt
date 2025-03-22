@@ -132,7 +132,7 @@ Context menu: `This Note / Delete` or:
 
 - `Mod + P` for note switcher
 - select a note with arrow key or by typing a partial name match
-- `Mod + Delete` or `Mod + Backspace` to delete selected note
+- `Mod + Delete` to delete selected note
 
 A `scratch` note cannot be deleted.
 

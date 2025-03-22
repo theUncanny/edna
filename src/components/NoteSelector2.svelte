@@ -120,7 +120,7 @@
    * @returns {boolean}
    */
   function isCtrlDelete(ev) {
-    return (ev.key === "Delete" || ev.key === "Backspace") && ev.ctrlKey;
+    return (ev.key === "Delete") && ev.ctrlKey;
   }
 
   /**
