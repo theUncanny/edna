@@ -432,3 +432,7 @@ export function renameLS(oldName, newName) {
   localStorage.setItem(newName, s);
   localStorage.removeItem(oldName);
 }
+
+export function noOp() {
+  // do nothing
+}

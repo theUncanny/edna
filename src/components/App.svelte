@@ -144,6 +144,7 @@
   let showingMenu = $state(false);
   let showingLanguageSelector = $state(false);
   let showingNoteSelector = $state(false);
+  let showingBlockMoveSelector = $state(false);
   let showingNoteSelector2 = $state(false);
   let showingCommandPalette = $state(false);
   let showingCommandPalette2 = $state(false);
@@ -190,6 +191,7 @@
       showingRenameNote ||
       showingNoteSelector ||
       showingNoteSelector2 ||
+      showingBlockMoveSelector ||
       showingCreateNewNote ||
       showingCommandPalette ||
       showingCommandPalette2 ||
@@ -698,6 +700,7 @@
   function openNoteSelector2() {
     showingNoteSelector2 = true;
   }
+
   function closeNoteSelector2() {
     showingNoteSelector2 = false;
     getEditorComp().focus();
@@ -953,6 +956,7 @@
   export const kCmdGoToPreviousBlock = nmid();
   export const kCmdChangeBlockLanguage = nmid();
   export const kCmdBlockSelectAll = nmid();
+  export const kCmdMoveBlock = nmid();
   export const kCmdFormatBlock = nmid();
   const kCmdBlockLast = kCmdFormatBlock;
 
@@ -1016,6 +1020,7 @@
       ["Format as " + language + "\tAlt + Shift + F", kCmdFormatBlock],
       ["Export to file", kCmdExportCurrentBlock],
       ["Delete", kCmdBlockDelete],
+      ["Move to another note", kCmdMoveBlock],
     ];
 
     const menuRun = [
@@ -1119,6 +1124,10 @@
     if (mid === kCmdFormatBlock) {
       if (readOnly || !langSupportsFormat(lang)) {
         return kMenuStatusRemoved;
+      }
+    } else if (mid === kCmdMoveBlock) {
+      if (readOnly) {
+        return kMenuStatusDisabled;
       }
     } else if (mid === kCmdRunBlock) {
       if (readOnly || !langSupportsRun(lang)) {
@@ -1245,6 +1254,8 @@
     } else if (cmdId === kCmdFormatBlock) {
       formatCurrentBlock();
       view.focus();
+    } else if (cmdId === kCmdMoveBlock) {
+      moveCurrentBlock();
     } else if (cmdId === kCmdExportCurrentBlock) {
       await exportCurrentBlock();
       view.focus();
@@ -1778,6 +1789,28 @@
     openNote(name);
   }
 
+  function moveCurrentBlock() {
+    showingBlockMoveSelector = true;
+  }
+
+  function closeBlockMoveSelector() {
+    showingBlockMoveSelector = false;
+  }
+
+  /**
+   * @param {string} name
+   */
+  function onMoveBlockToNote(name) {
+    showingBlockMoveSelector = false;
+  }
+
+  /**
+   * @param {string} name
+   */
+  async function onMoveBlockToNewNote(name) {
+    showingBlockMoveSelector = false;
+  }
+
   /**
    * @param {string} name
    */
@@ -1925,6 +1958,17 @@
   <Overlay onclose={closeFunctionSelector} blur={true}>
     <FunctionSelector context={functionContext} {userFunctions} {runFunction}
     ></FunctionSelector>
+  </Overlay>
+{/if}
+
+{#if showingBlockMoveSelector}
+  <Overlay onclose={closeBlockMoveSelector} blur={true}>
+    <NoteSelector
+      header="Move current block to note:"
+      forMoveBlock={true}
+      openNote={onMoveBlockToNote}
+      createNote={onMoveBlockToNewNote}
+    />
   </Overlay>
 {/if}
 

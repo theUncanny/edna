@@ -95,25 +95,35 @@
     reassignNoteShortcut,
     toggleNoteStarred,
   } from "../metadata";
-  import { findMatchingItems, getAltChar, isAltNumEvent, len } from "../util";
+  import {
+    findMatchingItems,
+    getAltChar,
+    isAltNumEvent,
+    len,
+    noOp,
+  } from "../util";
   import { focus } from "../actions";
   import ListBox from "./ListBox.svelte";
   import IconStar from "./IconStar.svelte";
   import { appState } from "../state.svelte";
 
   /** @type {{
+    header?: string,
     openNote: (name: string) => void,
     createNote: (name: string) => void,
-    deleteNote: (name: string) => Promise<void>,
-    switchToCommandPalette: () => void,
-    switchToWideNoteSelector: () => void,
+    deleteNote?: (name: string) => Promise<void>,
+    switchToCommandPalette?: () => void,
+    switchToWideNoteSelector?: () => void,
+    forMoveBlock?: boolean,
 }}*/
   let {
+    header = undefined,
     openNote,
     createNote,
-    deleteNote,
-    switchToCommandPalette,
-    switchToWideNoteSelector,
+    deleteNote = async (name) => {},
+    switchToCommandPalette = noOp,
+    switchToWideNoteSelector = noOp,
+    forMoveBlock = false,
   } = $props();
 
   let noteNames = getLatestNoteNames();
@@ -259,12 +269,12 @@
       if (selectedItem) {
         emitOpenNote(selectedItem);
       }
-    } else if (isCtrlDelete(ev)) {
+      return;
+    }
+
+    if (isCtrlDelete(ev)) {
       ev.preventDefault();
-      if (!canDeleteSelected) {
-        return;
-      }
-      if (selectedItem) {
+      if (canDeleteSelected && selectedItem) {
         // console.log("deleteNote", name);
         deleteNote(selectedItem.name).then(reloadNotes);
       }
@@ -312,13 +322,133 @@
   let listbox;
 </script>
 
+{#snippet shortHelp()}
+  <div
+    class="flex justify-between text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg px-2 pt-1 pb-1.5 mt-2"
+  >
+    <button
+      onclick={(ev) => {
+        ev.preventDefault();
+        switchToCommandPalette();
+      }}
+      class="underline underline-offset-2">command palette</button
+    >
+    <button
+      onclick={(ev) => {
+        ev.preventDefault();
+        switchToWideNoteSelector();
+      }}
+      title="switch to wide note selector"
+      class="underline underline-offset-2 cursor-pointer">wide</button
+    >
+    <button
+      onclick={(ev) => {
+        ev.preventDefault();
+        toggleInfoPanelCollapsed();
+      }}
+      title="show info panel"
+      class="underline underline-offset-2 cursor-pointer"
+    >
+      show</button
+    >
+  </div>
+{/snippet}
+
+{#snippet longHelp()}
+  <div class="selector-info">
+    <div class="flex flex-col items-right absolute bottom-3 right-4">
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          switchToWideNoteSelector();
+        }}
+        title="switch to wide note selector"
+        class="underline underline-offset-2 mb-1 cursor-pointer">wide</button
+      >
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          toggleInfoPanelCollapsed();
+        }}
+        title="hide info panel"
+        class="underline underline-offset-2 cursor-pointer"
+      >
+        hide</button
+      >
+    </div>
+    {#if canOpenSelected}
+      <div class="kbd">Enter</div>
+      <div class="truncate">
+        open note <span class="font-bold">
+          {selectedName}
+        </span>
+      </div>
+    {/if}
+
+    {#if canCreateWithEnter}
+      <div class="kbd">Enter</div>
+    {/if}
+    {#if canCreate && !canCreateWithEnter}
+      <div class="kbd">Ctrl + Enter</div>
+    {/if}
+    {#if canCreate}
+      <div class="truncate">
+        create note <span class="font-bold">
+          {filter}
+        </span>
+      </div>
+    {/if}
+
+    {#if showDelete && canDeleteSelected}
+      <div class="kbd">Ctrl + Delete</div>
+      <div class="red truncate">
+        delete note <span class="font-bold">
+          {selectedName}
+        </span>
+      </div>
+    {/if}
+
+    {#if showDelete && !canDeleteSelected}
+      <div class="kbd">Ctrl + Delete</div>
+      <div class="red truncate">
+        can't delete <span class="font-bold">{selectedName}</span>
+      </div>
+    {/if}
+
+    {#if canOpenSelected}
+      <div class="kbd">{altChar} + 1...9</div>
+      <div>assign quick access shortcut</div>
+    {/if}
+
+    {#if canOpenSelected}
+      <div class="kbd">{altChar} + S</div>
+      <div>toggle favorite</div>
+    {/if}
+
+    <div class="kbd">&gt;</div>
+    <div>
+      <button
+        onclick={(ev) => {
+          ev.preventDefault();
+          switchToCommandPalette();
+        }}
+        class="underline underline-offset-2 cursor-pointer"
+        >command palette</button
+      >
+    </div>
+  </div>
+{/snippet}
+
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <form
   onkeydown={onKeydown}
   tabindex="-1"
   class="selector absolute flex flex-col z-20 center-x-with-translate top-[2rem] max-h-[90vh] w-[32em] p-2"
 >
-  <div>
+  {#if header}
+    <div class="font-bold mb-2 text-lg ml-1">{header}</div>
+  {/if}
+  <div class="relative">
     <input
       type="text"
       use:focus
@@ -326,7 +456,7 @@
       bind:value={filter}
       class="py-1 px-2 bg-white w-full mb-2 rounded-xs"
     />
-    <div class="absolute right-[1rem] top-[0.75rem] italic text-gray-400">
+    <div class="absolute right-[0.5rem] top-[0.25rem] italic text-gray-400">
       {itemsCountMsg}
     </div>
   </div>
@@ -360,118 +490,11 @@
     <!-- <hr class="mt-2 border-gray-300 dark:border-gray-600" /> -->
   {/if}
 
-  {#if appState.noteSelectorInfoCollapsed}
-    <div
-      class="flex justify-between text-gray-700 text-xs max-w-full dark:text-white dark:text-opacity-50 bg-gray-100 rounded-lg px-2 pt-1 pb-1.5 mt-2"
-    >
-      <button
-        onclick={(ev) => {
-          ev.preventDefault();
-          switchToCommandPalette();
-        }}
-        class="underline underline-offset-2">command palette</button
-      >
-      <button
-        onclick={(ev) => {
-          ev.preventDefault();
-          switchToWideNoteSelector();
-        }}
-        title="switch to wide note selector"
-        class="underline underline-offset-2 cursor-pointer">wide</button
-      >
-      <button
-        onclick={(ev) => {
-          ev.preventDefault();
-          toggleInfoPanelCollapsed();
-        }}
-        title="show info panel"
-        class="underline underline-offset-2 cursor-pointer"
-      >
-        show</button
-      >
-    </div>
-  {:else}
-    <div class="selector-info">
-      <div class="flex flex-col items-right absolute bottom-3 right-4">
-        <button
-          onclick={(ev) => {
-            ev.preventDefault();
-            switchToWideNoteSelector();
-          }}
-          title="switch to wide note selector"
-          class="underline underline-offset-2 mb-1 cursor-pointer">wide</button
-        >
-        <button
-          onclick={(ev) => {
-            ev.preventDefault();
-            toggleInfoPanelCollapsed();
-          }}
-          title="hide info panel"
-          class="underline underline-offset-2 cursor-pointer"
-        >
-          hide</button
-        >
-      </div>
-      {#if canOpenSelected}
-        <div class="kbd">Enter</div>
-        <div class="truncate">
-          open note <span class="font-bold">
-            {selectedName}
-          </span>
-        </div>
-      {/if}
-
-      {#if canCreateWithEnter}
-        <div class="kbd">Enter</div>
-      {/if}
-      {#if canCreate && !canCreateWithEnter}
-        <div class="kbd">Ctrl + Enter</div>
-      {/if}
-      {#if canCreate}
-        <div class="truncate">
-          create note <span class="font-bold">
-            {filter}
-          </span>
-        </div>
-      {/if}
-
-      {#if showDelete && canDeleteSelected}
-        <div class="kbd">Ctrl + Delete</div>
-        <div class="red truncate">
-          delete note <span class="font-bold">
-            {selectedName}
-          </span>
-        </div>
-      {/if}
-
-      {#if showDelete && !canDeleteSelected}
-        <div class="kbd">Ctrl + Delete</div>
-        <div class="red truncate">
-          can't delete <span class="font-bold">{selectedName}</span>
-        </div>
-      {/if}
-
-      {#if canOpenSelected}
-        <div class="kbd">{altChar} + 1...9</div>
-        <div>assign quick access shortcut</div>
-      {/if}
-
-      {#if canOpenSelected}
-        <div class="kbd">{altChar} + S</div>
-        <div>toggle favorite</div>
-      {/if}
-
-      <div class="kbd">&gt;</div>
-      <div>
-        <button
-          onclick={(ev) => {
-            ev.preventDefault();
-            switchToCommandPalette();
-          }}
-          class="underline underline-offset-2 cursor-pointer"
-          >command palette</button
-        >
-      </div>
-    </div>
+  {#if !forMoveBlock}
+    {#if appState.noteSelectorInfoCollapsed}
+      {@render shortHelp()}
+    {:else}
+      {@render longHelp()}
+    {/if}
   {/if}
 </form>
