@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io/fs"
 	"os"
+	"os/user"
 	"path/filepath"
 	"strings"
 	"time"
@@ -28,9 +29,14 @@ func getDataDirMust() string {
 	}
 
 	dataDirCached = "data"
-	if flgRunProd && u.IsLinux() {
-		dataDirCached = "/home/data/" + projectName
+	if flgRunProd || flgRunProdLocal && u.IsLinux() {
+
+		currentUser, err := user.Current()
+		panicIfErr(err)
+		dataDirCached = currentUser.HomeDir + "/.cache/" + projectName
+
 	}
+
 	err := os.MkdirAll(dataDirCached, 0755)
 	must(err)
 
