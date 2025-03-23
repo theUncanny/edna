@@ -172,7 +172,7 @@ func getGitHashDateMust() (string, string) {
 	// If 'edna' precompiled binary is "standalone" in a non-git directory
 	cwd, _ := os.Getwd()
 
-	if _, err := os.Stat(cwd + "/.git" ); os.IsNotExist(err) {
+	if _, err := os.Stat(cwd + "/.git"); os.IsNotExist(err) {
 		return "master", time.Now().Local().Format("2006-01-02")
 	}
 
