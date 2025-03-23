@@ -156,6 +156,7 @@ func main() {
 		flgGen            bool
 		flgAdHoc          bool
 		flgClean          bool
+		flgHttpPort       int
 	)
 	{
 		flag.BoolVar(&flgRunDev, "run-dev", false, "run the server in dev mode")
@@ -169,8 +170,12 @@ func main() {
 		flag.BoolVar(&flgGen, "gen", false, "generate code")
 		flag.BoolVar(&flgAdHoc, "ad-hoc", false, "run ad-hoc code")
 		flag.BoolVar(&flgClean, "clean", false, "remove all files")
+		flag.IntVar(&flgHttpPort, "http-port", 9325, "set edna server HTTP port")
 		flag.Parse()
 	}
+
+	// Set edna server HTTP port
+	httpPort = flgHttpPort
 
 	if flgAdHoc {
 		testCompress()
