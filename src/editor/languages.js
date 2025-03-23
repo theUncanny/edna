@@ -34,6 +34,7 @@ import { toml } from "@codemirror/legacy-modes/mode/toml";
 import { vueLanguage } from "@codemirror/lang-vue";
 import { xmlLanguage } from "@codemirror/lang-xml";
 import { yaml } from "@codemirror/legacy-modes/mode/yaml";
+import { asciidoc } from "codemirror-asciidoc"
 
 /*
 TODO: more langs from @codemirror/legacy-modes/mode/clike
@@ -237,6 +238,11 @@ export const kLanguages = [
     name: "Lua",
     guesslang: "lua",
   },
+  {
+    token: "asciidoc",
+    name: "AsciiDoc",
+    guesslang: "adoc",
+  },
 ];
 
 /**
@@ -406,6 +412,9 @@ export function langGetParser(lang) {
   }
   if (token === "lua") {
     return StreamLanguage.define(lua).parser;
+  }
+  if (token === "asciidoc") {
+    return StreamLanguage.define(asciidoc).parser;
   }
   return null;
 }
